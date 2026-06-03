@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Working at Height — Safe Practices and Equipment</title>
+    <style>
+      :root {
+        --blue: #2448db;
+        --navy: #071735;
+        --text: #21304a;
+        --muted: #63718a;
+        --line: #dfe6f2;
+        --bg: #ffffff;
+        --soft: #f8fbff;
+        --red: #dc2626;
+        --redbg: #fff1f2;
+        --yellow: #d97706;
+        --yellowbg: #fffbeb;
+        --green: #15803d;
+        --greenbg: #f0fdf4;
+        --shadow: 0 14px 35px rgba(5, 20, 50, 0.08);
+        --r: 24px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: white;
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.55;
+      }
+      .topbar {
+        position: sticky;
+        top: 0;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+        z-index: 9;
+      }
+      .topbar-inner {
+        max-width: 1180px;
+        margin: auto;
+        padding: 14px 22px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .brand {
+        font-weight: 900;
+        color: var(--navy);
+        letter-spacing: 0.04em;
+      }
+      .tag {
+        font-size: 12px;
+        color: #fff;
+        background: var(--blue);
+        border-radius: 999px;
+        padding: 5px 10px;
+      }
+      .meter {
+        height: 8px;
+        background: #edf2fb;
+        flex: 1;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .meter > span {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(
+          90deg,
+          var(--red),
+          var(--yellow),
+          var(--green)
+        );
+        transition: 0.3s;
+      }
+      .score {
+        font-weight: 800;
+        color: var(--blue);
+      }
+      main {
+        max-width: 1180px;
+        margin: auto;
+        padding: 26px 22px 80px;
+      }
+      .hero {
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        box-shadow: var(--shadow);
+        padding: 34px;
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 28px;
+        background: linear-gradient(180deg, #fff, #fbfdff);
+      }
+      h1 {
+        font-size: 42px;
+        line-height: 1.05;
+        margin: 0 0 14px;
+        color: var(--navy);
+        letter-spacing: -0.04em;
+      }
+      .subtitle {
+        font-size: 18px;
+        color: var(--muted);
+        max-width: 760px;
+      }
+      .chips {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+      .chip {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 13px;
+        background: #fff;
+        font-weight: 700;
+        color: #344761;
+      }
+      .btn {
+        border: 0;
+        border-radius: 18px;
+        background: var(--blue);
+        color: #fff;
+        font-weight: 900;
+        padding: 14px 22px;
+        cursor: pointer;
+        box-shadow: 0 12px 26px rgba(36, 72, 219, 0.22);
+        font-size: 15px;
+      }
+      .btn.secondary {
+        background: #fff;
+        color: var(--navy);
+        border: 1px solid var(--line);
+        box-shadow: none;
+      }
+      .btn.small {
+        padding: 10px 14px;
+        border-radius: 14px;
+      }
+      .hero-actions {
+        margin-top: 24px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .visual {
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        background: white;
+        padding: 16px;
+      }
+      .module-nav {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+        margin: 24px 0;
+      }
+      .module-tab {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 18px;
+        padding: 12px;
+        text-align: left;
+        cursor: pointer;
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .module-tab.active {
+        outline: 3px solid rgba(36, 72, 219, 0.12);
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+      .module-tab.done {
+        border-color: #86efac;
+        background: var(--greenbg);
+        color: var(--green);
+      }
+      .module {
+        display: none;
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        box-shadow: var(--shadow);
+        padding: 28px;
+        background: white;
+      }
+      .module.active {
+        display: block;
+      }
+      .eyebrow {
+        color: var(--blue);
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 13px;
+      }
+      .module h2 {
+        font-size: 32px;
+        line-height: 1.1;
+        color: var(--navy);
+        margin: 8px 0 10px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 20px;
+        background: #fff;
+      }
+      .card.soft {
+        background: var(--soft);
+      }
+      .callout {
+        border-radius: 20px;
+        padding: 16px 18px;
+        margin: 14px 0;
+        font-weight: 700;
+      }
+      .red {
+        background: var(--redbg);
+        border: 1px solid #fecdd3;
+        color: #8a1020;
+      }
+      .yellow {
+        background: var(--yellowbg);
+        border: 1px solid #fde68a;
+        color: #7c3d12;
+      }
+      .green {
+        background: var(--greenbg);
+        border: 1px solid #bbf7d0;
+        color: #14532d;
+      }
+      .traffic {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .light {
+        border-radius: 22px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        font-weight: 800;
+      }
+      .light b {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 6px;
+      }
+      .activity,
+      .quiz,
+      .assessment {
+        margin-top: 18px;
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        padding: 22px;
+      }
+      .activity h3,
+      .quiz h3,
+      .assessment h3 {
+        margin: 0 0 14px;
+        color: var(--navy);
+        font-size: 24px;
+      }
+      .option {
+        display: block;
+        width: 100%;
+        text-align: left;
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 18px;
+        padding: 14px 16px;
+        margin: 10px 0;
+        color: var(--text);
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .option:hover {
+        border-color: var(--blue);
+      }
+      .option.correct {
+        background: var(--greenbg);
+        border-color: var(--green);
+        color: var(--green);
+        font-weight: 800;
+      }
+      .option.wrong {
+        background: var(--redbg);
+        border-color: var(--red);
+        color: var(--red);
+        font-weight: 800;
+      }
+      .feedback {
+        display: none;
+        margin-top: 12px;
+        padding: 14px;
+        border-radius: 18px;
+        font-weight: 700;
+      }
+      .feedback.show {
+        display: block;
+      }
+      .controls {
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+        margin-top: 24px;
+        border-top: 1px solid var(--line);
+        padding-top: 20px;
+      }
+      .narration {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 16px 0;
+      }
+      .result {
+        display: none;
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        box-shadow: var(--shadow);
+        padding: 34px;
+        text-align: center;
+      }
+      .result.show {
+        display: block;
+      }
+      .certificate {
+        border: 2px dashed var(--blue);
+        border-radius: 28px;
+        padding: 28px;
+        margin-top: 18px;
+        background: #fbfdff;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .assessment-card {
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 18px;
+        margin: 12px 0;
+        background: #fff;
+      }
+      .small-note {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      @media (max-width: 850px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .module-nav {
+          grid-template-columns: 1fr 1fr;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .traffic {
+          grid-template-columns: 1fr;
+        }
+        h1 {
+          font-size: 34px;
+        }
+        .module h2 {
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">🪜 Working at Height</div>
+        <span class="tag"
+          >P2 Operations · Safety Management Interactive Course</span
+        >
+        <div class="meter"><span id="progressBar"></span></div>
+        <div class="score"><span id="score">0</span> XP</div>
+      </div>
+    </header>
+    <main>
+      <section class="hero" id="hero">
+        <div>
+          <div class="eyebrow">STCW mandatory interactive course</div>
+          <h1>Working at Height — Safe Practices and Equipment</h1>
+          <p class="subtitle">
+            A practical shipboard course covering working at height and
+            fall-risk assessment, permit controls, access equipment, scaffolds
+            and staging, harnesses, fall arrest systems, rescue planning,
+            equipment inspection and stop-work authority.
+          </p>
+          <div class="chips">
+            <span class="chip">Narration enabled</span
+            ><span class="chip">Every module has activity + quiz</span
+            ><span class="chip">Red / Yellow / Green decision logic</span
+            ><span class="chip">Final assessment</span>
+          </div>
+          <div class="hero-actions">
+            <button class="btn" id="startBtn" onclick="startCourse()">
+              Start course</button
+            ><button class="btn secondary" onclick="speakText(heroNarration)">
+              ▶ Play narration</button
+            ><button class="btn secondary" onclick="stopSpeech()">
+              ■ Stop narration
+            </button>
+          </div>
+        </div>
+        <div class="visual">
+          <svg
+            viewBox="0 0 520 360"
+            width="100%"
+            role="img"
+            aria-label="Shipboard working at height visual"
+          >
+            <rect
+              x="10"
+              y="20"
+              width="500"
+              height="320"
+              rx="26"
+              fill="#f8fbff"
+              stroke="#dfe6f2"
+            />
+            <rect
+              x="40"
+              y="260"
+              width="440"
+              height="32"
+              rx="10"
+              fill="#cbd5e1"
+            />
+            <rect x="95" y="92" width="26" height="170" rx="6" fill="#64748b" />
+            <rect
+              x="230"
+              y="92"
+              width="26"
+              height="170"
+              rx="6"
+              fill="#64748b"
+            />
+            <g stroke="#94a3b8" stroke-width="10">
+              <line x1="108" y1="115" x2="243" y2="115" />
+              <line x1="108" y1="155" x2="243" y2="155" />
+              <line x1="108" y1="195" x2="243" y2="195" />
+              <line x1="108" y1="235" x2="243" y2="235" />
+            </g>
+            <rect
+              x="300"
+              y="120"
+              width="120"
+              height="86"
+              rx="14"
+              fill="#fffbeb"
+              stroke="#d97706"
+            />
+            <text x="360" y="155" text-anchor="middle" font-size="38">🪢</text>
+            <text
+              x="360"
+              y="186"
+              text-anchor="middle"
+              font-size="13"
+              fill="#7c3d12"
+              font-weight="800"
+            >
+              Harness + anchor
+            </text>
+            <g>
+              <circle cx="130" cy="310" r="18" fill="#dc2626" />
+              <circle cx="205" cy="310" r="18" fill="#d97706" />
+              <circle cx="280" cy="310" r="18" fill="#15803d" />
+              <text
+                x="130"
+                y="342"
+                text-anchor="middle"
+                font-size="12"
+                fill="#334155"
+              >
+                Stop
+              </text>
+              <text
+                x="205"
+                y="342"
+                text-anchor="middle"
+                font-size="12"
+                fill="#334155"
+              >
+                Verify
+              </text>
+              <text
+                x="280"
+                y="342"
+                text-anchor="middle"
+                font-size="12"
+                fill="#334155"
+              >
+                Proceed
+              </text>
+            </g>
+            <text
+              x="260"
+              y="62"
+              text-anchor="middle"
+              font-size="20"
+              fill="#071735"
+              font-weight="900"
+            >
+              Plan access before anyone climbs
+            </text>
+          </svg>
+        </div>
+      </section>
+      <div class="module-nav" id="moduleNav"></div>
+      <section id="modules"></section>
+      <section class="result" id="result">
+        <h2>Course complete</h2>
+        <p id="resultText"></p>
+        <div class="certificate">
+          <h3>Certificate screen</h3>
+          <p>
+            This confirms completion of the interactive course:
+            <b>Working at Height — Safe Practices and Equipment</b>.
+          </p>
+          <p id="certScore"></p>
+          <p class="small-note">
+            For LMS deployment, this screen can be connected to SCORM/xAPI or
+            your internal competency matrix.
+          </p>
+        </div>
+        <button class="btn" onclick="goModule(0)">Review course</button>
+      </section>
+    </main>
+    <script>
+      const heroNarration =
+        "Welcome to Working at Height. This course is about preventing falls during shipboard maintenance and operations. The simple rule is stop, verify, proceed. If the access, equipment, weather, permit or rescue plan is not right, the job must not start.";
+      const modules = [
+        {
+          icon: "🪜",
+          title: "What Counts as Working at Height",
+          narr: "Working at height is any work where a person could fall and be injured. On ships this can mean ladders, tank tops, hatch coamings, masts, crane pedestals, accommodation ladders, staging, scaffolds, gangways and machinery spaces. The first question is always whether the work can be avoided or done from a safer position.",
+          bullets: [
+            "A small height can still cause serious injury if the landing area has steel edges, machinery or uneven deck.",
+            "The hierarchy is: avoid the height, prevent the fall, then minimise the consequences if a fall occurs.",
+            "Ship movement, wind, rain, oil, cargo residues and poor lighting increase the risk.",
+          ],
+          activityQ:
+            "A crew member says: “It is only a quick job on top of the tank hatch, no need for a permit.” What is the safest response?",
+          activity: [
+            "Stop and assess the fall risk, permit requirement and safe access before starting.",
+            "Allow the job because it is quick.",
+            "Let him climb if another crew member watches from below.",
+            "Ask him to finish before the vessel starts rolling.",
+          ],
+          activityCorrect: 0,
+          quizQ: "The best first control for working at height is:",
+          quiz: [
+            "Wear any available harness without inspection.",
+            "Ask the tallest crew member to do it.",
+            "Avoid working at height if the job can be done safely from deck level.",
+            "Use a rope if a ladder is not available.",
+          ],
+          quizCorrect: 2,
+          why: "The safest work at height is the work that is avoided or engineered out. If it cannot be avoided, controls must be planned before anyone climbs.",
+        },
+        {
+          icon: "📋",
+          title: "Permit to Work, JSA and Toolbox Talk",
+          narr: "Work at height must be controlled through the ship's safety management system. A permit to work may be required depending on company procedures and the job risk. The job safety analysis and toolbox talk confirm who is doing the job, where they will stand, what they may fall through or from, what equipment is used, and how rescue will be carried out.",
+          bullets: [
+            "The permit must match the actual job, actual location and actual weather conditions.",
+            "Controls must be understood by the work party, not only written on a form.",
+            "The job must stop if conditions change: rain, rolling, wind, lighting, fatigue, adjacent work or equipment defects.",
+          ],
+          activityQ:
+            "During the toolbox talk, the crew cannot explain how a fallen person will be recovered. What should happen?",
+          activity: [
+            "Proceed because a rescue can be improvised later.",
+            "Stop and develop a rescue plan before work starts.",
+            "Only tell the crew to be careful.",
+            "Allow work if the harness is new.",
+          ],
+          activityCorrect: 1,
+          quizQ: "A permit to work is valid only when:",
+          quiz: [
+            "It reflects the actual task, conditions, controls and authorised persons.",
+            "It was signed sometime earlier in the week.",
+            "The job is being done by an experienced rating.",
+            "The equipment looks clean from a distance.",
+          ],
+          quizCorrect: 0,
+          why: "A permit is a live control document. If the task, location or conditions differ from the permit, the work must be reassessed.",
+        },
+        {
+          icon: "🪜",
+          title: "Ladders, Access and Three-Point Contact",
+          narr: "Ladders are common on ships but they are also a frequent cause of falls. A ladder must be suitable for the job, placed on a firm surface, secured against movement, extend above the landing point when required, and allow three point contact. Never use a ladder as a work platform for forceful or extended work unless the method has been specifically assessed.",
+          bullets: [
+            "Inspect rungs, side rails, feet, securing points and contamination before use.",
+            "Maintain three points of contact while climbing: two hands and one foot, or two feet and one hand.",
+            "Do not carry tools in your hands while climbing; use a tool belt or hauling line.",
+          ],
+          activityQ:
+            "A ladder is oily at the feet and slightly twisted, but the work is urgent. What is the correct action?",
+          activity: [
+            "Use it slowly.",
+            "Ask one person to hold it and climb anyway.",
+            "Do not use it; clean, repair or replace it and reassess the access.",
+            "Put cardboard under the feet.",
+          ],
+          activityCorrect: 2,
+          quizQ: "Three-point contact means:",
+          quiz: [
+            "Three persons hold the ladder.",
+            "Two hands and one foot, or two feet and one hand, remain in contact while climbing.",
+            "The ladder touches three different pipes.",
+            "The permit is signed by three officers.",
+          ],
+          quizCorrect: 1,
+          why: "Defective or contaminated access equipment must not be used. Three-point contact reduces the chance of a slip becoming a fall.",
+        },
+        {
+          icon: "🏗️",
+          title: "Staging, Scaffolds and Temporary Platforms",
+          narr: "Temporary platforms must be planned, erected, inspected and used correctly. On ships, staging and scaffolds may be affected by vibration, movement, wind, crane operations and limited deck space. Guardrails, toe boards, safe access, load limits and inspection tags are not decorative: they are critical fall-prevention controls.",
+          bullets: [
+            "Scaffolds and staging must be erected or checked by competent persons as per company procedure.",
+            "Do not remove guardrails, planks, lashings or toe boards without authorisation and reassessment.",
+            "Keep the platform tidy; dropped tools and loose materials create hazards for people below.",
+          ],
+          activityQ:
+            "A guardrail is removed from a staging platform to pass a tool, and the work continues. What is the safest response?",
+          activity: [
+            "Stop work and restore or reassess fall protection before continuing.",
+            "Continue if the weather is calm.",
+            "Stand further from the edge and continue.",
+            "Ask the newest crew member to hold the opening.",
+          ],
+          activityCorrect: 0,
+          quizQ: "The purpose of toe boards on staging is to:",
+          quiz: [
+            "Make the staging look complete.",
+            "Give the scaffold more colour.",
+            "Replace the need for a harness.",
+            "Stop tools and materials from falling onto people below.",
+          ],
+          quizCorrect: 3,
+          why: "Removing guardrails or toe boards changes the risk. Work must stop until fall prevention and dropped-object controls are restored.",
+        },
+        {
+          icon: "🪢",
+          title: "Harnesses, Lanyards and Anchor Points",
+          narr: "Fall arrest equipment is used when a fall cannot be fully prevented. A harness, lanyard and anchor point must work as a system. The anchor must be strong enough, positioned to reduce swing fall, and located so that the fall distance is less than the available clearance. A harness without a rescue plan can still leave a person suspended and in danger.",
+          bullets: [
+            "Inspect harness webbing, stitching, buckles, D-rings, labels and expiry or inspection records before use.",
+            "Use only approved anchor points; handrails, small pipes and temporary fittings may not be suitable.",
+            "Plan for fall clearance, swing fall and rescue before clipping on.",
+          ],
+          activityQ:
+            "A crew member clips his lanyard to a small handrail because it is nearby. What is the correct response?",
+          activity: [
+            "Accept it because he is clipped on.",
+            "Stop and verify a suitable approved anchor point before work continues.",
+            "Tie another rope to the handrail and continue.",
+            "Ask him not to lean too far.",
+          ],
+          activityCorrect: 1,
+          quizQ:
+            "Fall arrest equipment must be supported by a rescue plan because:",
+          quiz: [
+            "A suspended person can be seriously injured if not recovered quickly.",
+            "The harness will automatically pull the person back up.",
+            "Rescue planning is only for drills.",
+            "It is needed only when working over the side.",
+          ],
+          quizCorrect: 0,
+          why: "An unsuitable anchor can fail, and post-fall suspension can become a medical emergency. Rescue planning is part of the job plan.",
+        },
+        {
+          icon: "🛑",
+          title: "Stop-Work Authority, Weather and Equipment Condition",
+          narr: "Every person involved in work at height has the authority to stop the job when controls are missing or conditions change. Rain, wind, vessel movement, poor lighting, fatigue, dropped objects, damaged equipment or unclear instructions are all reasons to pause and reassess. A safe ship does not treat stopping as disobedience; it treats stopping as professionalism.",
+          bullets: [
+            "Stop if weather, vessel motion or lighting makes the access unsafe.",
+            "Stop if equipment inspection fails or the correct PPE is not available.",
+            "Stop if the work party does not understand the plan or rescue arrangements.",
+          ],
+          activityQ:
+            "The vessel begins rolling heavily while a crew member is working from a ladder. What should the team do?",
+          activity: [
+            "Stop the job, bring the person down safely and reassess when conditions improve.",
+            "Tell him to hold tighter.",
+            "Continue because the permit is already signed.",
+            "Send another person up to steady him.",
+          ],
+          activityCorrect: 0,
+          quizQ: "Stop-work authority means:",
+          quiz: [
+            "Only the Master can stop a task.",
+            "Work must continue if the permit is signed.",
+            "Anyone may stop the job when they see an unsafe condition.",
+            "Only officers may question equipment condition.",
+          ],
+          quizCorrect: 2,
+          why: "The permit does not override changing conditions. Any crew member must be able to stop unsafe work without fear.",
+        },
+      ];
+      const assessment = [
+        [
+          "What is the first question before planning work at height?",
+          [
+            "Can the work be avoided or done from a safer place?",
+            "Who is fastest at climbing?",
+            "Can the job be done without a permit?",
+            "Can we work during meal break?",
+          ],
+          0,
+        ],
+        [
+          "A JSA for work at height must include:",
+          [
+            "Fall hazards, access, equipment, dropped-object controls and rescue arrangements.",
+            "Only the names of the workers.",
+            "Only the expected completion time.",
+            "Only the weather forecast.",
+          ],
+          0,
+        ],
+        [
+          "A ladder with damaged rungs should be:",
+          [
+            "Used carefully.",
+            "Painted to hide the damage.",
+            "Used only by experienced crew.",
+            "Rejected from use until repaired or replaced.",
+          ],
+          3,
+        ],
+        [
+          "Three-point contact is most relevant while:",
+          [
+            "Signing permits.",
+            "Climbing or descending ladders.",
+            "Painting cargo lines.",
+            "Testing radios.",
+          ],
+          1,
+        ],
+        [
+          "A missing guardrail on staging means:",
+          [
+            "Continue if nobody stands near the edge.",
+            "Use the staging only for short jobs.",
+            "Stop and restore or reassess controls.",
+            "Ask the fire watch to monitor.",
+          ],
+          2,
+        ],
+        [
+          "Toe boards help prevent:",
+          [
+            "Dropped objects from falling onto persons below.",
+            "Vessel rolling.",
+            "Paint drying too quickly.",
+            "Harness expiry.",
+          ],
+          0,
+        ],
+        [
+          "A safe anchor point for fall arrest must be:",
+          [
+            "Any nearby pipe.",
+            "A handrail if freshly painted.",
+            "A loose pad eye if convenient.",
+            "Approved and strong enough for the intended system.",
+          ],
+          3,
+        ],
+        [
+          "Why is a rescue plan required for harness work?",
+          [
+            "Suspension after a fall can become dangerous and recovery must be planned.",
+            "It replaces the need for inspection.",
+            "It allows work in any weather.",
+            "It is required only for shore jobs.",
+          ],
+          0,
+        ],
+        [
+          "If weather or vessel motion worsens during work at height:",
+          [
+            "Continue because the permit is signed.",
+            "Stop and reassess.",
+            "Rush the job.",
+            "Send more people up.",
+          ],
+          1,
+        ],
+        [
+          "Stop-work authority applies to:",
+          [
+            "Only the Master.",
+            "Only the safety officer.",
+            "Only contractors.",
+            "All crew involved in or observing the work.",
+          ],
+          3,
+        ],
+      ];
+      let current = 0,
+        xp = 0,
+        done = new Set(),
+        assessmentScore = 0,
+        wahAssessmentReported = false;
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function reportAssessment({ score, maxScore, passingScore }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function escapeHtml(str) {
+        return String(str).replace(
+          /[&<>"']/g,
+          (s) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[s],
+        );
+      }
+      function renderNav() {
+        const nav = document.getElementById("moduleNav");
+        nav.innerHTML = modules
+          .map(
+            (m, i) =>
+              `<button class="module-tab ${i === current ? "active" : ""} ${done.has(i) ? "done" : ""}" onclick="goModule(${i})"><div>${m.icon} Module ${i + 1}</div><small>${escapeHtml(m.title)}</small></button>`,
+          )
+          .join("");
+      }
+      function renderModules() {
+        const box = document.getElementById("modules");
+        box.innerHTML = modules
+          .map(
+            (m, i) =>
+              `<article class="module ${i === current ? "active" : ""}" id="mod${i}"><div class="eyebrow">Module ${i + 1} of ${modules.length}</div><h2>${m.icon} ${escapeHtml(m.title)}</h2><div class="narration"><button class="btn secondary small" onclick="speakText(modules[${i}].narr)">▶ Play narration</button><button class="btn secondary small" onclick="pauseSpeech()">⏸ Pause</button><button class="btn secondary small" onclick="resumeSpeech()">▶ Resume</button><button class="btn secondary small" onclick="stopSpeech()">■ Stop</button></div><div class="grid"><div class="card soft"><p>${escapeHtml(m.narr)}</p><ul>${m.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}</ul></div><div class="card"><svg viewBox="0 0 420 250" width="100%"><rect width="420" height="250" rx="22" fill="#f8fbff" stroke="#dfe6f2"/><text x="210" y="38" text-anchor="middle" font-size="18" font-weight="800" fill="#071735">${escapeHtml(m.title)}</text><line x1="90" y1="205" x2="330" y2="205" stroke="#94a3b8" stroke-width="16" stroke-linecap="round"/><line x1="130" y1="75" x2="130" y2="205" stroke="#64748b" stroke-width="14" stroke-linecap="round"/><line x1="130" y1="95" x2="250" y2="95" stroke="#94a3b8" stroke-width="10"/><line x1="130" y1="135" x2="250" y2="135" stroke="#94a3b8" stroke-width="10"/><line x1="130" y1="175" x2="250" y2="175" stroke="#94a3b8" stroke-width="10"/><circle cx="290" cy="118" r="34" fill="#fffbeb" stroke="#d97706"/><text x="290" y="130" text-anchor="middle" font-size="34">${m.icon}</text><text x="210" y="232" text-anchor="middle" font-size="13" fill="#63718a">Stop · Verify · Proceed</text></svg></div></div><div class="traffic"><div class="light red"><b>Red — Stop</b>Missing permit, unsafe access, equipment defect, poor weather or no rescue plan.</div><div class="light yellow"><b>Yellow — Verify</b>Check fall risk, anchor points, ladder condition, staging, dropped objects and communication.</div><div class="light green"><b>Green — Proceed</b>Only when controls are confirmed and the work party understands the plan.</div></div><div class="activity"><h3>Interactive activity</h3><p><b>${escapeHtml(m.activityQ)}</b></p>${m.activity.map((o, k) => `<button class="option" onclick="answer(this,${k === m.activityCorrect},'af${i}',${i})">${escapeHtml(o)}</button>`).join("")}<div class="feedback" id="af${i}"></div><button class="btn secondary small" onclick="resetBlock(this)">↻ Refresh Activity</button></div><div class="quiz"><h3>Module quiz</h3><p><b>${escapeHtml(m.quizQ)}</b></p>${m.quiz.map((o, k) => `<button class="option" onclick="answer(this,${k === m.quizCorrect},'qf${i}',${i})">${escapeHtml(o)}</button>`).join("")}<div class="feedback" id="qf${i}"></div><button class="btn secondary small" onclick="resetBlock(this)">↻ Refresh Quiz</button></div><div class="controls"><button class="btn secondary" onclick="goModule(${Math.max(0, i - 1)})">← Previous</button><button class="btn" onclick="${i === modules.length - 1 ? "showAssessment()" : "goModule(" + (i + 1) + ")"}">${i === modules.length - 1 ? "Final assessment" : "Next module →"}</button></div></article>`,
+          )
+          .join("");
+      }
+      function render() {
+        renderNav();
+        renderModules();
+        updateProgress();
+      }
+      function startCourse() {
+        document.getElementById("hero").classList.add("hidden");
+        goModule(0);
+      }
+      function goModule(i) {
+        current = i;
+        document.getElementById("hero").classList.add("hidden");
+        document.getElementById("result").classList.remove("show");
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function answer(btn, ok, fid, mi) {
+        const group = btn.parentElement.querySelectorAll(".option");
+        group.forEach((b) => (b.disabled = true));
+        const fb = document.getElementById(fid);
+        fb.className = "feedback show " + (ok ? "green" : "red");
+        if (ok) {
+          btn.classList.add("correct");
+          fb.textContent = "Correct. " + modules[mi].why;
+          addXp(10);
+          if (!done.has(mi)) {
+            done.add(mi);
+            reportModuleComplete({ moduleIndex: mi, moduleTitle: modules[mi].title, score: 1, maxScore: 1, passingScore: 80, totalModules: modules.length, completedModules: done.size });
+          }
+        } else {
+          btn.classList.add("wrong");
+          fb.textContent = "Not safe. " + modules[mi].why;
+        }
+        updateProgress();
+        renderNav();
+      }
+      function resetBlock(button) {
+        const box = button.parentElement;
+        box.querySelectorAll(".option").forEach((b) => {
+          b.disabled = false;
+          b.classList.remove("correct", "wrong");
+        });
+        const fb = box.querySelector(".feedback");
+        if (fb) {
+          fb.className = "feedback";
+          fb.textContent = "";
+        }
+      }
+      function addXp(n) {
+        xp += n;
+        document.getElementById("score").textContent = xp;
+      }
+      function updateProgress() {
+        const pct = Math.round((done.size / modules.length) * 100);
+        document.getElementById("progressBar").style.width = pct + "%";
+      }
+      function showAssessment() {
+        done.add(current);
+        updateProgress();
+        renderNav();
+        const box = document.getElementById("modules");
+        box.innerHTML = `<article class="module active"><div class="eyebrow">Final assessment</div><h2>Working at Height — Knowledge Check</h2><p class="small-note">Answer all questions. The result appears immediately after submission.</p><div class="assessment" id="assessmentBox">${assessment.map((q, i) => `<div class="assessment-card"><h3>Question ${i + 1}</h3><p><b>${escapeHtml(q[0])}</b></p>${q[1].map((o, k) => `<label class="option"><input type="radio" name="aq${i}" value="${k}"> ${escapeHtml(o)}</label>`).join("")}</div>`).join("")}<button class="btn" onclick="submitAssessment()">Submit assessment</button><button class="btn secondary" onclick="showAssessment()">↻ Refresh Assessment</button><div class="feedback" id="assessmentFeedback"></div></div></article>`;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function submitAssessment() {
+        let total = assessment.length,
+          correct = 0;
+
+        assessment.forEach((q, i) => {
+          const chosen = document.querySelector(`input[name="aq${i}"]:checked`);
+          if (chosen && Number(chosen.value) === q[2]) correct++;
+        });
+
+        assessmentScore = correct;
+
+        const fb = document.getElementById("assessmentFeedback");
+        const pct = Math.round((correct / total) * 100);
+
+        fb.className = "feedback show " + (pct >= 80 ? "green" : "red");
+
+        fb.textContent =
+          "Score: " +
+          correct +
+          " / " +
+          total +
+          " (" +
+          pct +
+          "%). " +
+          (pct >= 80
+            ? "Assessment passed."
+            : "Please review the modules and try again.");
+
+        if (!wahAssessmentReported) {
+          wahAssessmentReported = true;
+          reportAssessment({ score: correct, maxScore: total, passingScore: 80 });
+        }
+        if (pct >= 80) {
+          addXp(50);
+
+          // Remove old certificate if refreshed
+          const oldCert = document.getElementById("inlineCertificate");
+          if (oldCert) oldCert.remove();
+
+          const certHtml = `
+      <div id="inlineCertificate" class="certificate">
+        <h2 style="color:#2448db;text-align:center;">
+          Certificate of Completion
+        </h2>
+
+        <p style="text-align:center;font-size:18px;">
+          This certifies successful completion of
+        </p>
+
+        <p style="text-align:center;font-size:22px;font-weight:700;">
+          Working at Height — Safe Practices and Equipment
+        </p>
+
+        <p style="text-align:center;">
+          Final Assessment Score:
+          <strong>${correct} / ${total} (${pct}%)</strong>
+        </p>
+
+        <p style="text-align:center;">
+          XP Earned: <strong>${xp}</strong>
+        </p>
+
+        <p class="small-note" style="text-align:center;">
+          Congratulations on successfully completing the course.
+        </p>
+      </div>
+    `;
+
+          document
+            .getElementById("assessmentBox")
+            .insertAdjacentHTML("beforeend", certHtml);
+
+          window.scrollTo({
+            top: document.getElementById("inlineCertificate").offsetTop - 20,
+            behavior: "smooth",
+          });
+        }
+      }
+      function finishCourse() {
+        done = new Set(modules.map((_, i) => i));
+        updateProgress();
+        document.getElementById("modules").innerHTML = "";
+        document.getElementById("result").classList.add("show");
+        document.getElementById("resultText").textContent =
+          "You have completed the Working at Height course. Keep applying stop, verify and proceed during real shipboard jobs.";
+        document.getElementById("certScore").textContent =
+          "XP earned: " +
+          xp +
+          " | Final assessment: " +
+          assessmentScore +
+          " / " +
+          assessment.length;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function speakText(txt) {
+        stopSpeech();
+        if (!("speechSynthesis" in window)) {
+          alert("Narration is not supported in this browser.");
+          return;
+        }
+        const u = new SpeechSynthesisUtterance(txt);
+        u.rate = 0.92;
+        u.pitch = 1;
+        speechSynthesis.speak(u);
+      }
+      function stopSpeech() {
+        if ("speechSynthesis" in window) speechSynthesis.cancel();
+      }
+      function pauseSpeech() {
+        if ("speechSynthesis" in window) speechSynthesis.pause();
+      }
+      function resumeSpeech() {
+        if ("speechSynthesis" in window) speechSynthesis.resume();
+      }
+      render();
+    </script>
+  </body>
+</html>

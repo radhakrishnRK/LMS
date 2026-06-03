@@ -1,0 +1,1442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Permit to Work — System, Purpose and Crew Responsibilities</title>
+    <style>
+      :root {
+        --ink: #071935;
+        --muted: #596a84;
+        --line: #dce5f0;
+        --blue: #2447d8;
+        --blue2: #eef3ff;
+        --red: #dc2626;
+        --red2: #fff1f2;
+        --yellow: #ca8a04;
+        --yellow2: #fff8dc;
+        --green: #14803a;
+        --green2: #effdf4;
+        --bg: #ffffff;
+        --card: #ffffff;
+        --soft: #f7faff;
+        --shadow: 0 18px 45px rgba(7, 25, 53, 0.08);
+        --r: 24px;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        --sans: Inter, Segoe UI, Roboto, Arial, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+        font-family: var(--sans);
+        color: var(--ink);
+      }
+      #topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: #e9eef7;
+        z-index: 10;
+      }
+      #progress {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(
+          90deg,
+          var(--red),
+          var(--yellow),
+          var(--green)
+        );
+        transition: 0.35s;
+      }
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 8;
+        background: rgba(255, 255, 255, 0.94);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--line);
+        padding: 16px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 6px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .opt.selected {
+        background: var(--blue2);
+        border-color: var(--blue);
+        color: var(--blue);
+        font-weight: 900;
+      }
+      .logo {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--blue), #6d28d9);
+        color: white;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+      }
+      .brand h1 {
+        font-size: 17px;
+        line-height: 1.15;
+        margin: 0;
+      }
+      .brand small {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .score {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .pill {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 9px 13px;
+        font-weight: 800;
+        background: white;
+        color: var(--ink);
+        font-size: 13px;
+      }
+      .pill.blue {
+        color: var(--blue);
+        background: var(--blue2);
+        border-color: #cbd8ff;
+      }
+      .pill.green {
+        color: var(--green);
+        background: var(--green2);
+        border-color: #b7efc7;
+      }
+      main {
+        max-width: 1100px;
+        margin: auto;
+        padding: 28px 18px 80px;
+      }
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: fade 0.25s ease;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0.2;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 22px;
+        align-items: stretch;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        box-shadow: var(--shadow);
+        padding: 28px;
+        margin-bottom: 20px;
+      }
+      .hero h2 {
+        font-size: 52px;
+        letter-spacing: -1.8px;
+        line-height: 0.95;
+        margin: 10px 0 18px;
+      }
+      .hero h2 span {
+        color: var(--blue);
+      }
+      p {
+        line-height: 1.65;
+        color: var(--muted);
+        font-size: 16px;
+      }
+      .tag {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        border: 1px solid #cbd8ff;
+        background: var(--blue2);
+        color: var(--blue);
+        border-radius: 999px;
+        padding: 8px 13px;
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .mini {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px;
+        background: #fff;
+      }
+      .mini b {
+        display: block;
+        font-size: 15px;
+        margin-bottom: 5px;
+      }
+      .mini span {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .keyline {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 18px 0;
+      }
+      .status {
+        padding: 9px 13px;
+        border-radius: 14px;
+        font-weight: 900;
+        font-size: 13px;
+      }
+      .red {
+        background: var(--red2);
+        color: var(--red);
+      }
+      .yellow {
+        background: var(--yellow2);
+        color: var(--yellow);
+      }
+      .green {
+        background: var(--green2);
+        color: var(--green);
+      }
+      .btn {
+        border: none;
+        background: var(--blue);
+        color: white;
+        font-weight: 900;
+        border-radius: 18px;
+        padding: 14px 20px;
+        cursor: pointer;
+        font-size: 15px;
+        box-shadow: 0 10px 25px rgba(36, 71, 216, 0.2);
+      }
+      .btn:hover {
+        filter: brightness(0.96);
+        transform: translateY(-1px);
+      }
+      .btn.secondary {
+        background: white;
+        color: var(--ink);
+        border: 1px solid var(--line);
+        box-shadow: none;
+      }
+      .btn.warn {
+        background: var(--yellow);
+      }
+      .btn.greenbtn {
+        background: var(--green);
+      }
+      .btn.redbtn {
+        background: var(--red);
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .map {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .module-tile {
+        cursor: pointer;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 18px;
+        background: white;
+        transition: 0.2s;
+      }
+      .module-tile:hover {
+        border-color: var(--blue);
+        transform: translateY(-2px);
+      }
+      .module-tile.done {
+        background: var(--green2);
+        border-color: #b7efc7;
+      }
+      .module-tile .num {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--blue);
+        font-weight: 900;
+      }
+      .module-tile b {
+        display: block;
+        margin: 7px 0 4px;
+      }
+      .module-tile span {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .module-head {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+      .bigicon {
+        font-size: 48px;
+        width: 76px;
+        height: 76px;
+        border-radius: 24px;
+        display: grid;
+        place-items: center;
+        background: var(--blue2);
+      }
+      .overline {
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.09em;
+        color: var(--blue);
+        text-transform: uppercase;
+      }
+      .module-head h2 {
+        font-size: 34px;
+        letter-spacing: -0.7px;
+        margin: 6px 0 10px;
+      }
+      .navgrid {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+      }
+      .crumb {
+        font-family: var(--mono);
+        font-size: 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 11px;
+        cursor: pointer;
+        background: white;
+        color: var(--muted);
+      }
+      .crumb.active {
+        background: var(--blue);
+        color: white;
+        border-color: var(--blue);
+      }
+      .crumb.done {
+        background: var(--green2);
+        color: var(--green);
+        border-color: #b7efc7;
+      }
+      .section-title {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-weight: 1000;
+        color: var(--blue);
+        margin: 0 0 12px;
+      }
+      .facts {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .fact {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px;
+        background: #fff;
+      }
+      .fact strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+      .callout {
+        border-radius: 18px;
+        padding: 15px 17px;
+        margin: 14px 0;
+        border-left: 6px solid;
+      }
+      .callout.red {
+        border-color: var(--red);
+      }
+      .callout.yellow {
+        border-color: var(--yellow);
+      }
+      .callout.green {
+        border-color: var(--green);
+      }
+      svg {
+        max-width: 100%;
+        height: auto;
+      }
+      .visual {
+        background: #fbfdff;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 12px;
+        margin: 14px 0;
+      }
+      .activity h3,
+      .quiz h3 {
+        font-size: 24px;
+        line-height: 1.2;
+        margin: 0 0 18px;
+      }
+      .options {
+        display: grid;
+        gap: 10px;
+      }
+      .opt {
+        width: 100%;
+        text-align: left;
+        background: #fff;
+        border: 1.8px solid var(--line);
+        border-radius: 18px;
+        padding: 15px 17px;
+        cursor: pointer;
+        color: var(--ink);
+        font-size: 16px;
+        line-height: 1.35;
+      }
+      .opt:hover {
+        border-color: var(--blue);
+        background: var(--blue2);
+      }
+      .opt.correct {
+        background: var(--green2);
+        border-color: var(--green);
+        color: var(--green);
+        font-weight: 900;
+      }
+      .opt.wrong {
+        background: var(--red2);
+        border-color: var(--red);
+        color: var(--red);
+        font-weight: 900;
+      }
+      .feedback {
+        display: none;
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-weight: 700;
+        line-height: 1.5;
+      }
+      .feedback.show.ok {
+        display: block;
+        background: var(--green2);
+        color: var(--green);
+      }
+      .feedback.show.bad {
+        display: block;
+        background: var(--red2);
+        color: var(--red);
+      }
+      .feedback.show.info {
+        display: block;
+        background: var(--yellow2);
+        color: var(--yellow);
+      }
+      .match {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .match-col {
+        display: grid;
+        gap: 8px;
+      }
+      .match-item {
+        border: 1.8px solid var(--line);
+        background: white;
+        border-radius: 16px;
+        padding: 12px;
+        cursor: pointer;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        color: var(--ink);
+        line-height: 1.3;
+      }
+      .match-item.selected {
+        border-color: var(--blue);
+        background: var(--blue2);
+        font-weight: 900;
+      }
+      .match-item.good {
+        border-color: var(--green);
+        background: var(--green2);
+        color: var(--green);
+        font-weight: 900;
+      }
+      .match-item.bad {
+        border-color: var(--red);
+        background: var(--red2);
+        color: var(--red);
+      }
+      .sort-list {
+        display: grid;
+        gap: 9px;
+      }
+      .sort-item {
+        border: 1.8px solid var(--line);
+        border-radius: 16px;
+        background: white;
+        padding: 13px;
+        cursor: pointer;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .sort-item.chosen {
+        border-color: var(--blue);
+        background: var(--blue2);
+      }
+      .sort-item.good {
+        background: var(--green2);
+        border-color: var(--green);
+        color: var(--green);
+        font-weight: 900;
+      }
+      .badge {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: #e8eef7;
+        font-family: var(--mono);
+        font-weight: 900;
+        color: var(--muted);
+        flex: 0 0 auto;
+      }
+      .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+      }
+      .table th {
+        text-align: left;
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .table td {
+        background: #fff;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: 12px;
+        vertical-align: top;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .table td:first-child {
+        border-left: 1px solid var(--line);
+        border-radius: 14px 0 0 14px;
+        color: var(--ink);
+        font-weight: 900;
+      }
+      .table td:last-child {
+        border-right: 1px solid var(--line);
+        border-radius: 0 14px 14px 0;
+      }
+      .narration {
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 14px;
+        background: #fbfdff;
+        margin-top: 14px;
+      }
+      .narration b {
+        display: block;
+        margin-bottom: 8px;
+      }
+      .narration .btn {
+        padding: 10px 13px;
+        border-radius: 14px;
+        font-size: 13px;
+      }
+      .bottomnav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 22px;
+        border-top: 1px solid var(--line);
+        padding-top: 18px;
+      }
+      .qbox {
+        margin-bottom: 18px;
+      }
+      .qbox h4 {
+        margin: 0 0 10px;
+        font-size: 18px;
+      }
+      .result {
+        display: none;
+        text-align: center;
+      }
+      .result.show {
+        display: block;
+      }
+      .scorecircle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        margin: 18px auto;
+        border: 8px solid var(--line);
+        font-size: 42px;
+        font-weight: 1000;
+      }
+      .scorecircle.pass {
+        border-color: var(--green);
+        color: var(--green);
+        background: var(--green2);
+      }
+      .scorecircle.fail {
+        border-color: var(--red);
+        color: var(--red);
+        background: var(--red2);
+      }
+      .cert {
+        display: none;
+        border: 3px double var(--blue);
+        border-radius: 24px;
+        padding: 24px;
+        background: linear-gradient(135deg, #fff, #f2f6ff);
+        margin-top: 18px;
+      }
+      .cert.show {
+        display: block;
+      }
+      .small {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      @media (max-width: 820px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .map {
+          grid-template-columns: 1fr 1fr;
+        }
+        .facts {
+          grid-template-columns: 1fr;
+        }
+        .match {
+          grid-template-columns: 1fr;
+        }
+        .hero h2 {
+          font-size: 38px;
+        }
+        nav {
+          align-items: flex-start;
+        }
+        .score {
+          display: none;
+        }
+      }
+      @media (max-width: 520px) {
+        .map,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .card {
+          padding: 20px;
+        }
+        .module-head {
+          grid-template-columns: 1fr;
+        }
+        .bottomnav {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="topbar"><div id="progress"></div></div>
+    <nav>
+      <div class="brand">
+        <div class="logo">PTW</div>
+        <div>
+          <h1>Permit to Work</h1>
+          <small>System, Purpose and Crew Responsibilities</small>
+        </div>
+      </div>
+      <div class="score">
+        <span class="pill blue" id="pct">0% complete</span
+        ><span class="pill" id="xp">0 XP</span
+        ><span class="pill green" id="rank">Trainee</span>
+      </div>
+    </nav>
+    <main>
+      <section class="screen active" id="home">
+        <div class="hero">
+          <div class="card">
+            <span class="tag">P2 Operations · Safety Management</span>
+            <h2>Permit to Work <span>Interactive Course</span></h2>
+            <p>
+              This course trains officers and work party members to use the
+              Permit to Work system as a practical shipboard safety-control
+              process — not as a paper form. Every page includes interaction,
+              feedback and narration.
+            </p>
+            <div class="keyline">
+              <span class="status red">Red: Stop work</span
+              ><span class="status yellow">Yellow: Verify controls</span
+              ><span class="status green">Green: Work may proceed</span>
+            </div>
+            <button class="btn" onclick="go('m1')">Start Course →</button>
+          </div>
+          <div class="card">
+            <div class="section-title">Course map</div>
+            <div class="map" id="moduleMap"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title">Learning outcome</div>
+          <div class="grid">
+            <div class="mini">
+              <b>Purpose</b
+              ><span
+                >Know why PTW exists under the SMS and ISM Code approach to
+                controlled shipboard operations.</span
+              >
+            </div>
+            <div class="mini">
+              <b>Permit types</b
+              ><span
+                >Understand hot work, enclosed-space entry, electrical
+                isolation, working aloft, diving, cold work and related
+                controls.</span
+              >
+            </div>
+            <div class="mini">
+              <b>Crew roles</b
+              ><span
+                >Know the responsibilities of issuer, area officer, supervisor,
+                standby person and work party.</span
+              >
+            </div>
+            <div class="mini">
+              <b>Correct behaviour</b
+              ><span
+                >Stop unsafe work, challenge conflicts, conduct toolbox talks
+                and close permits properly.</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+      <div id="modules"></div>
+      <section class="screen" id="assessment">
+        <div class="navgrid" id="assessCrumbs"></div>
+        <div class="card">
+          <span class="tag">Final Assessment</span>
+          <h2>Permit to Work — Competence Check</h2>
+          <p>
+            Answer all questions. A score of 80% or above is treated as
+            satisfactory completion for this offline course file.
+          </p>
+          <div id="finalQuestions"></div>
+          <button class="btn greenbtn" onclick="submitFinal()">
+            Submit Assessment</button
+          ><button class="btn secondary" onclick="refreshFinal()">
+            ↻ Refresh Assessment
+          </button>
+          <div class="result" id="result">
+            <div class="scorecircle" id="scorecircle">0%</div>
+            <h2 id="verdict"></h2>
+            <p id="resultText"></p>
+            <div class="cert" id="cert">
+              <h2>Certificate of Completion</h2>
+              <p>
+                <b>Course:</b> Permit to Work — System, Purpose and Crew
+                Responsibilities
+              </p>
+              <p><b>Status:</b> Completed in offline interactive mode</p>
+              <p class="small">
+                This screen confirms successful completion of the HTML course.
+                LMS/SCORM records require separate packaging.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const COURSE_KEY = "ptw_course_v1";
+      const modules = [
+        {
+          id: "m1",
+          icon: "📋",
+          title: "Purpose of PTW",
+          desc: "Why permits exist and what they control",
+          narr: "A Permit to Work is not simply a form. It is a temporary safety contract between the people authorising the job, the people controlling the area, and the people doing the work. It makes hazards visible before work starts and keeps the job under control until it is formally closed.",
+          read: [
+            "A Permit to Work, or PTW, is a formal safety management control for work that has higher risk than routine duties. It prevents hidden assumptions by requiring hazards, precautions, authorisation, communication and closure to be recorded before work starts.",
+            "PTW is especially important when the job could affect life, property, environment, ship operations, cargo operations or other teams working nearby.",
+          ],
+          activity: {
+            type: "choice",
+            q: "A fitter says, “This is routine. I have done this many times. I do not need a permit.” What is the safest response?",
+            opts: [
+              "Allow the work because experience replaces paperwork.",
+              "Ask him to start and complete the permit later.",
+              "Stop and check whether the job falls under PTW requirements before work starts.",
+              "Let the rating decide because he is doing the work.",
+            ],
+            correct: 2,
+            why: "Correct. PTW is based on the job hazard, not on personal confidence or previous experience.",
+          },
+          quiz: {
+            q: "What is the main purpose of a PTW system?",
+            opts: [
+              "To create paperwork for audits only.",
+              "To replace supervision.",
+              "To control higher-risk work through authorisation, precautions and communication.",
+              "To allow faster work during port operations.",
+            ],
+            correct: 2,
+          },
+        },
+        {
+          id: "m2",
+          icon: "🔥",
+          title: "Types of Permits",
+          desc: "Which work requires special authorisation",
+          narr: "Different types of permits exist because different jobs create different hazards. Hot work can create ignition. Enclosed space entry can expose crew to toxic or oxygen deficient atmospheres. Electrical isolation prevents unexpected energisation. Correct permit selection is the first control.",
+          read: [
+            "Common shipboard permits include hot work, enclosed-space entry, working aloft or overside, electrical isolation, cold work, diving, and pressure-line breaking. A job may require more than one permit.",
+            "Permit selection must consider the location, the activity, surrounding operations, stored energy, atmosphere, fire risk and personnel involved.",
+          ],
+          activity: {
+            type: "match",
+            q: "Match the permit type to the main hazard it controls.",
+            left: [
+              "Hot work",
+              "Enclosed-space entry",
+              "Electrical isolation",
+              "Working aloft",
+            ],
+            right: [
+              "Falling from height",
+              "Unexpected energisation",
+              "Ignition by heat, flame or sparks",
+              "Toxic gas or oxygen deficiency",
+            ],
+            pairs: {
+              "Hot work": "Ignition by heat, flame or sparks",
+              "Enclosed-space entry": "Toxic gas or oxygen deficiency",
+              "Electrical isolation": "Unexpected energisation",
+              "Working aloft": "Falling from height",
+            },
+          },
+          quiz: {
+            q: "Which job commonly requires more than one permit?",
+            opts: [
+              "Welding inside a ballast tank.",
+              "Painting the accommodation passageway.",
+              "Changing a cabin light bulb.",
+              "Cleaning the messroom floor.",
+            ],
+            correct: 0,
+          },
+        },
+        {
+          id: "m3",
+          icon: "👥",
+          title: "Roles and Responsibilities",
+          desc: "Who signs, who checks, who stops the job",
+          narr: "A permit works only when responsibilities are clear. The issuer verifies the system requirements. The area officer confirms local conditions. The supervisor briefs and controls the work party. Every crew member has the authority to stop unsafe work.",
+          read: [
+            "A strong PTW system defines responsibilities for the permit issuer, approving authority, area officer, performing authority, supervisor, standby person and work party members.",
+            "No person should sign a permit unless they understand what is being authorised and what precautions are required. Signature without understanding is unsafe.",
+          ],
+          activity: {
+            type: "choice",
+            q: "During work, a junior rating notices a new leak near the job site. What should he do?",
+            opts: [
+              "Ignore it because the permit was already signed.",
+              "Stop the job and report the change immediately.",
+              "Wait until the supervisor finishes the job.",
+              "Take a photo only and continue work.",
+            ],
+            correct: 1,
+            why: "Correct. Any change in conditions can invalidate the permit. Stop, report and reassess.",
+          },
+          quiz: {
+            q: "Who has responsibility to stop work when conditions become unsafe?",
+            opts: [
+              "Only the Master.",
+              "Only the Chief Officer.",
+              "Only the permit issuer.",
+              "Every person involved or observing the work.",
+            ],
+            correct: 3,
+          },
+        },
+        {
+          id: "m4",
+          icon: "🧠",
+          title: "Risk Assessment and Toolbox Talk",
+          desc: "Hazards, controls and shared understanding",
+          narr: "A toolbox talk turns the written permit into shared understanding. The team confirms what will be done, who will do it, what can go wrong, what controls are in place, and what will stop the job.",
+          read: [
+            "A risk assessment identifies hazards, evaluates severity and likelihood, and defines control measures. PTW records these controls and links them to the work.",
+            "The toolbox talk is where the work party confirms the method, isolation, atmosphere checks, PPE, communication, emergency plan and stop-work conditions.",
+          ],
+          activity: {
+            type: "sort",
+            q: "Put the PTW preparation sequence in the safest order.",
+            items: [
+              "Conduct toolbox talk with the work party",
+              "Identify job and hazards",
+              "Confirm controls, isolation and precautions",
+              "Authorise the permit",
+              "Start work and monitor conditions",
+            ],
+            order: [
+              "Identify job and hazards",
+              "Confirm controls, isolation and precautions",
+              "Conduct toolbox talk with the work party",
+              "Authorise the permit",
+              "Start work and monitor conditions",
+            ],
+          },
+          quiz: {
+            q: "What should a toolbox talk achieve?",
+            opts: [
+              "It should replace the written permit.",
+              "It should confirm that everyone understands hazards, controls, communication and stop-work conditions.",
+              "It should be done only after work starts.",
+              "It should be attended only by officers.",
+            ],
+            correct: 1,
+          },
+        },
+        {
+          id: "m5",
+          icon: "⚓",
+          title: "Suspension, Cancellation and SIMOPS",
+          desc: "When conditions change, the permit must change",
+          narr: "A valid permit is only valid for the work, place, time and conditions stated on it. If cargo operations start nearby, weather changes, alarms sound, or another team begins conflicting work, the permit may need to be suspended or cancelled.",
+          read: [
+            "Permits are suspended when temporary conditions make the work unsafe or unsuitable. They are cancelled when the job is completed, conditions fundamentally change, or the permit period ends.",
+            "SIMOPS means simultaneous operations. Conflicting jobs can create hazards that neither permit shows alone. Example: hot work near tank cleaning, painting near ventilation intakes, or electrical work while another team tests machinery.",
+          ],
+          activity: {
+            type: "choice",
+            q: "A hot work permit is valid, but tank cleaning starts in an adjacent tank. What is the safest action?",
+            opts: [
+              "Continue because the hot work permit was signed earlier.",
+              "Ask the tank cleaning team to be careful.",
+              "Carry on if no one smells vapour.",
+              "Suspend work and reassess the SIMOPS conflict.",
+            ],
+            correct: 3,
+            why: "Correct. New simultaneous operations can invalidate the existing risk assessment and permit.",
+          },
+          quiz: {
+            q: "When should a permit be suspended?",
+            opts: [
+              "Only at meal breaks.",
+              "When conditions change or controls are no longer assured.",
+              "Never, once it is signed.",
+              "Only when the job is finished.",
+            ],
+            correct: 1,
+          },
+        },
+        {
+          id: "m6",
+          icon: "✅",
+          title: "Permit Quality and Documentation",
+          desc: "Correctly and incorrectly completed permits",
+          narr: "A good permit is complete, specific and understandable. A poor permit has vague locations, blank hazard boxes, missing gas test results, unclear isolation, no emergency plan, or signatures from people who were not present.",
+          read: [
+            "A correctly completed permit states the exact job, location, date, time, permit validity, hazards, precautions, isolations, gas tests, PPE, communication, emergency response and responsible persons.",
+            "A permit with blank sections, vague wording such as “as required”, missing signatures, expired validity or no closure record should not be accepted.",
+          ],
+          activity: {
+            type: "choice",
+            q: "Which permit entry is the strongest?",
+            opts: [
+              "Location: Engine room. Job: maintenance. Precautions: as required.",
+              "Location: No.2 ballast tank port side. Job: weld crack on frame 42. Precautions: gas-free certificate, ventilation, fire watch, boundary cooling, extinguishers, LOTO and continuous atmosphere monitoring.",
+              "Job: quick welding. Officer informed verbally.",
+              "Permit signed yesterday, work continued today without revalidation.",
+            ],
+            correct: 1,
+            why: "Correct. It is specific, controlled and auditable.",
+          },
+          quiz: {
+            q: "Which item is a red flag on a permit?",
+            opts: [
+              "Specific location and exact task.",
+              "Recorded gas readings.",
+              "Blank hazard identification section.",
+              "Named standby person.",
+            ],
+            correct: 2,
+          },
+        },
+      ];
+      let state = JSON.parse(
+        localStorage.getItem(COURSE_KEY) ||
+          '{"xp":0,"done":[],"current":"home"}',
+      );
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function reportAssessment({ score, maxScore, passingScore }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      let selectedMatch = {};
+      let sortClicks = {};
+      function save() {
+        localStorage.setItem(COURSE_KEY, JSON.stringify(state));
+      }
+      function addXP(n) {
+        state.xp = Math.max(0, (state.xp || 0) + n);
+        save();
+        renderTop();
+      }
+      function complete(id) {
+        if (!state.done.includes(id)) {
+          state.done.push(id);
+          addXP(20);
+          const mi = modules.findIndex((m) => m.id === id);
+          reportModuleComplete({ moduleIndex: mi, moduleTitle: modules[mi].title, score: 1, maxScore: 1, passingScore: 80, totalModules: modules.length, completedModules: state.done.length });
+        }
+        save();
+        renderTop();
+        renderMap();
+      }
+      function renderTop() {
+        let pct = Math.round((state.done.length / modules.length) * 100);
+        document.getElementById("progress").style.width = pct + "%";
+        document.getElementById("pct").textContent = pct + "% complete";
+        document.getElementById("xp").textContent = (state.xp || 0) + " XP";
+        document.getElementById("rank").textContent =
+          pct >= 100
+            ? "PTW Ready"
+            : pct >= 50
+              ? "Permit Watchkeeper"
+              : "Trainee";
+      }
+      function go(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document
+          .getElementById(id === "assess" ? "assessment" : id)
+          .classList.add("active");
+        state.current = id;
+        save();
+        window.scrollTo(0, 0);
+        renderTop();
+      }
+      function renderMap() {
+        document.getElementById("moduleMap").innerHTML = modules
+          .map(
+            (m, i) =>
+              `<div class="module-tile ${state.done.includes(m.id) ? "done" : ""}" onclick="go('${m.id}')"><div class="num">MISSION ${i + 1}</div><b>${m.icon} ${m.title}</b><span>${m.desc}</span></div>`,
+          )
+          .join("");
+      }
+      function crumbs(active) {
+        return `<div class="navgrid">${modules.map((m, i) => `<button class="crumb ${active === m.id ? "active" : ""} ${state.done.includes(m.id) ? "done" : ""}" onclick="go('${m.id}')">M${i + 1}</button>`).join("")}<button class="crumb" onclick="go('assess')">Assessment</button></div>`;
+      }
+      function visual(i) {
+        return `<div class="visual"><svg viewBox="0 0 760 230" role="img" aria-label="Permit to work visual"><rect width="760" height="230" rx="22" fill="#f7faff"/><rect x="34" y="38" width="170" height="154" rx="18" fill="#fff" stroke="#dce5f0"/><text x="119" y="72" text-anchor="middle" font-size="18" font-weight="800" fill="#2447d8">PERMIT</text><line x1="60" y1="96" x2="178" y2="96" stroke="#dce5f0" stroke-width="5"/><line x1="60" y1="122" x2="178" y2="122" stroke="#dce5f0" stroke-width="5"/><line x1="60" y1="148" x2="145" y2="148" stroke="#dce5f0" stroke-width="5"/><circle cx="230" cy="115" r="28" fill="#fff1f2" stroke="#dc2626" stroke-width="4"/><text x="230" y="124" text-anchor="middle" font-size="28">✋</text><path d="M260 115 H344" stroke="#ca8a04" stroke-width="8" stroke-linecap="round"/><circle cx="386" cy="115" r="34" fill="#fff8dc" stroke="#ca8a04" stroke-width="4"/><text x="386" y="124" text-anchor="middle" font-size="30">⚠️</text><path d="M422 115 H506" stroke="#14803a" stroke-width="8" stroke-linecap="round"/><circle cx="552" cy="115" r="34" fill="#effdf4" stroke="#14803a" stroke-width="4"/><text x="552" y="124" text-anchor="middle" font-size="30">✓</text><rect x="610" y="54" width="112" height="122" rx="16" fill="#fff" stroke="#dce5f0"/><text x="666" y="87" text-anchor="middle" font-size="13" font-weight="800" fill="#071935">CLOSE OUT</text><text x="666" y="118" text-anchor="middle" font-size="28">📝</text><text x="666" y="150" text-anchor="middle" font-size="12" fill="#596a84">sign off</text><text x="230" y="166" text-anchor="middle" font-size="13" font-weight="800" fill="#dc2626">STOP</text><text x="386" y="166" text-anchor="middle" font-size="13" font-weight="800" fill="#ca8a04">VERIFY</text><text x="552" y="166" text-anchor="middle" font-size="13" font-weight="800" fill="#14803a">PROCEED</text></svg></div>`;
+      }
+      function renderModules() {
+        document.getElementById("modules").innerHTML = modules
+          .map(
+            (m, i) =>
+              `<section class="screen" id="${m.id}">${crumbs(m.id)}<div class="card"><div class="module-head"><div class="bigicon">${m.icon}</div><div><div class="overline">Module ${i + 1} of ${modules.length} · STCW / ISM SMS Practice</div><h2>${m.title}</h2><p>${m.desc}</p></div></div>${visual(i)}<div class="narration"><b>🎧 Narration</b><div class="row"><button class="btn secondary" onclick="speak('${m.id}')">Play</button><button class="btn secondary" onclick="pauseSpeak()">Pause / Resume</button><button class="btn secondary" onclick="stopSpeak()">Stop</button></div><p class="small" id="nar-${m.id}">${m.narr}</p></div></div><div class="card"><div class="section-title">Core briefing</div>${m.read.map((x) => `<p>${x}</p>`).join("")}<div class="facts"><div class="fact"><strong class="red">Stop Work</strong>Work must not start without correct permit, controls and authorisation.</div><div class="fact"><strong class="yellow">Verify</strong>Check permit scope, isolation, gas tests, PPE, communication and emergency plan.</div><div class="fact"><strong class="green">Proceed</strong>Proceed only within the stated permit limits, time and conditions.</div><div class="fact"><strong>Close out</strong>Stop, make safe, remove tools, report status and sign off the permit.</div></div></div><div class="card activity" id="act-${m.id}">${renderActivity(m)}</div><div class="card quiz"><div class="section-title">Module quiz</div><h3>${m.quiz.q}</h3><div class="options">${m.quiz.opts.map((o, j) => `<button class="opt" onclick="answerQuiz('${m.id}',${j})">${o}</button>`).join("")}</div><div class="feedback" id="qfb-${m.id}"></div><button class="btn secondary" onclick="refreshQuiz('${m.id}')">↻ Refresh Quiz</button></div><div class="bottomnav"><button class="btn secondary" onclick="go('${i === 0 ? "home" : modules[i - 1].id}')">← Previous</button><button class="btn" onclick="complete('${m.id}');go('${i === modules.length - 1 ? "assess" : modules[i + 1].id}')">Complete & Continue →</button></div></section>`,
+          )
+          .join("");
+      }
+      function renderActivity(m) {
+        let a = m.activity;
+        if (a.type === "choice")
+          return `<div class="section-title">Interactive activity</div><h3>${a.q}</h3><div class="options">${a.opts.map((o, j) => `<button class="opt" onclick="answerActivity('${m.id}',${j})">${o}</button>`).join("")}</div><div class="feedback" id="afb-${m.id}"></div><button class="btn secondary" onclick="refreshActivity('${m.id}')">↻ Refresh Activity</button>`;
+        if (a.type === "match")
+          return `<div class="section-title">Interactive activity</div><h3>${a.q}</h3><div class="match"><div class="match-col">${a.left.map((x) => `<button class="match-item" data-left="${x}" onclick="matchLeft('${m.id}',this)">${x}</button>`).join("")}</div><div class="match-col">${a.right.map((x) => `<button class="match-item" data-right="${x}" onclick="matchRight('${m.id}',this)">${x}</button>`).join("")}</div></div><div class="feedback" id="afb-${m.id}"></div><button class="btn secondary" onclick="refreshActivity('${m.id}')">↻ Refresh Activity</button>`;
+        if (a.type === "sort")
+          return `<div class="section-title">Interactive activity</div><h3>${a.q}</h3><p class="small">Click the items in the correct sequence.</p><div class="sort-list">${a.items.map((x) => `<button class="sort-item" onclick="sortPick('${m.id}',this,'${x.replace(/'/g, "&#39;")}')"><span class="badge">?</span><span>${x}</span></button>`).join("")}</div><div class="feedback" id="afb-${m.id}"></div><button class="btn secondary" onclick="refreshActivity('${m.id}')">↻ Refresh Activity</button>`;
+      }
+      function answerActivity(id, j) {
+        let m = modules.find((x) => x.id === id),
+          box = document.getElementById("act-" + id);
+        box.querySelectorAll(".opt").forEach((b, k) => {
+          b.classList.remove("correct", "wrong");
+          if (k === m.activity.correct) b.classList.add("correct");
+          else if (k === j) b.classList.add("wrong");
+        });
+        let fb = document.getElementById("afb-" + id);
+        fb.className =
+          "feedback show " + (j === m.activity.correct ? "ok" : "bad");
+        fb.textContent =
+          j === m.activity.correct
+            ? "Correct. " +
+              (m.activity.why || "That is the safest PTW response.")
+            : "Not safe. Choose the action that stops work until risk controls are confirmed.";
+        if (j === m.activity.correct) addXP(5);
+      }
+      function answerQuiz(id, j) {
+        let m = modules.find((x) => x.id === id),
+          sec = document.getElementById(id);
+        sec.querySelectorAll(".quiz .opt").forEach((b, k) => {
+          b.classList.remove("correct", "wrong");
+          if (k === m.quiz.correct) b.classList.add("correct");
+          else if (k === j) b.classList.add("wrong");
+        });
+        let fb = document.getElementById("qfb-" + id);
+        fb.className = "feedback show " + (j === m.quiz.correct ? "ok" : "bad");
+        fb.textContent =
+          j === m.quiz.correct
+            ? "Correct. Module knowledge confirmed."
+            : "Review the briefing and try again.";
+        if (j === m.quiz.correct) {
+          addXP(5);
+          complete(id);
+        }
+      }
+      function refreshQuiz(id) {
+        let sec = document.getElementById(id);
+        sec
+          .querySelectorAll(".quiz .opt")
+          .forEach((b) => b.classList.remove("correct", "wrong"));
+        let fb = document.getElementById("qfb-" + id);
+        fb.className = "feedback";
+        fb.textContent = "";
+      }
+      function refreshActivity(id) {
+        let m = modules.find((x) => x.id === id);
+        document.getElementById("act-" + id).innerHTML = renderActivity(m);
+        selectedMatch[id] = null;
+        sortClicks[id] = [];
+      }
+      function matchLeft(id, el) {
+        document
+          .querySelectorAll("#act-" + id + " [data-left]")
+          .forEach((b) => b.classList.remove("selected"));
+        el.classList.add("selected");
+        selectedMatch[id] = el;
+      }
+      function matchRight(id, el) {
+        let left = selectedMatch[id];
+        if (!left) return;
+        let m = modules.find((x) => x.id === id),
+          ok = m.activity.pairs[left.dataset.left] === el.dataset.right;
+        left.classList.remove("selected");
+        left.classList.add(ok ? "good" : "bad");
+        el.classList.add(ok ? "good" : "bad");
+        let fb = document.getElementById("afb-" + id);
+        if (ok) {
+          fb.className = "feedback show ok";
+          fb.textContent =
+            "Correct match: " + left.dataset.left + " → " + el.dataset.right;
+          addXP(3);
+        } else {
+          fb.className = "feedback show bad";
+          fb.textContent = "Incorrect match. Refresh and try again if needed.";
+        }
+        selectedMatch[id] = null;
+      }
+      function sortPick(id, el, val) {
+        let m = modules.find((x) => x.id === id);
+
+        if (!sortClicks[id]) sortClicks[id] = [];
+
+        // Prevent selecting the same item twice
+        if (el.classList.contains("chosen") || el.classList.contains("good")) {
+          return;
+        }
+
+        let currentStep = sortClicks[id].length;
+        let expected = m.activity.order[currentStep];
+
+        let fb = document.getElementById("afb-" + id);
+
+        if (val !== expected) {
+          el.classList.add("wrong");
+
+          fb.className = "feedback show bad";
+          fb.textContent = "Sequence has gone wrong. Refresh and try again.";
+
+          return;
+        }
+
+        sortClicks[id].push(val);
+
+        el.classList.add("good");
+        el.style.pointerEvents = "none";
+
+        el.querySelector(".badge").textContent = sortClicks[id].length;
+
+        if (sortClicks[id].length === m.activity.order.length) {
+          fb.className = "feedback show ok";
+          fb.textContent =
+            "Correct. That sequence controls the job before work begins.";
+          addXP(8);
+        } else {
+          fb.className = "feedback show info";
+          fb.textContent = "Good. Continue the sequence.";
+        }
+      }
+      function speak(id) {
+        stopSpeak();
+        let t = document.getElementById("nar-" + id).textContent;
+        let u = new SpeechSynthesisUtterance(t);
+        u.rate = 0.92;
+        u.pitch = 1;
+        u.onend = () => addXP(2);
+        speechSynthesis.speak(u);
+      }
+      function pauseSpeak() {
+        if (speechSynthesis.paused) speechSynthesis.resume();
+        else speechSynthesis.pause();
+      }
+      function stopSpeak() {
+        speechSynthesis.cancel();
+      }
+      const finalQs = [
+        [
+          "A PTW should normally be issued when:",
+          [
+            "The job is high risk or non-routine and requires formal controls.",
+            "The job is easy.",
+            "The crew wants extra paperwork.",
+            "The ship is at sea only.",
+          ],
+          0,
+        ],
+        [
+          "Which permit is most relevant for entering a cargo tank?",
+          [
+            "Cold work",
+            "Enclosed-space entry",
+            "Galley maintenance",
+            "Garbage handling",
+          ],
+          1,
+        ],
+        [
+          "A permit is valid for:",
+          [
+            "Any job in the same department.",
+            "Any similar job for the rest of the voyage.",
+            "Work by senior crew only.",
+            "Only the job, location, time and conditions stated on it.",
+          ],
+          3,
+        ],
+        [
+          "Which is a poor permit entry?",
+          [
+            "Exact location and job scope",
+            "Recorded gas readings",
+            "Precautions: as required",
+            "Named supervisor",
+          ],
+          2,
+        ],
+        [
+          "If conditions change during work:",
+          [
+            "Continue if nearly finished.",
+            "Stop and reassess the permit.",
+            "Ignore unless there is an injury.",
+            "Ask the work party to hurry.",
+          ],
+          1,
+        ],
+        [
+          "Who may stop unsafe work?",
+          [
+            "Only the Master",
+            "Only senior officers",
+            "Only the permit issuer",
+            "Every crew member",
+          ],
+          3,
+        ],
+        [
+          "SIMOPS risk means:",
+          [
+            "A computer problem",
+            "Conflicting simultaneous operations may create extra hazards",
+            "Only two ships alongside",
+            "Crew working overtime",
+          ],
+          1,
+        ],
+        [
+          "A toolbox talk is used to:",
+          [
+            "Replace the permit",
+            "Confirm hazards, controls, roles and stop-work triggers",
+            "Avoid risk assessment",
+            "Reduce documentation",
+          ],
+          1,
+        ],
+        [
+          "Hot work permit controls primarily:",
+          [
+            "Ignition and fire risk",
+            "Food hygiene",
+            "Leave records",
+            "Watchkeeping hours",
+          ],
+          0,
+        ],
+        [
+          "Permit close-out should confirm:",
+          [
+            "The form is hidden in a drawer",
+            "Only that the worker is tired",
+            "Only that tools were used",
+            "Work is complete or stopped, area safe, isolations restored where appropriate, and records signed",
+          ],
+          3,
+        ],
+      ];
+      let finalAnswers = {};
+      function renderFinal() {
+        document.getElementById("assessCrumbs").innerHTML =
+          modules
+            .map(
+              (m, i) =>
+                `<button class="crumb ${state.done.includes(m.id) ? "done" : ""}" onclick="go('${m.id}')">M${i + 1}</button>`,
+            )
+            .join("") + '<button class="crumb active">Assessment</button>';
+        document.getElementById("finalQuestions").innerHTML = finalQs
+          .map(
+            (q, i) =>
+              `<div class="qbox"><h4>${i + 1}. ${q[0]}</h4><div class="options">${q[1].map((o, j) => `<button class="opt" onclick="finalPick(${i},${j},this)">${o}</button>`).join("")}</div></div>`,
+          )
+          .join("");
+      }
+      function finalPick(i, j, el) {
+        finalAnswers[i] = j;
+        let box = el.closest(".qbox");
+        box
+          .querySelectorAll(".opt")
+          .forEach((b) => b.classList.remove("correct", "selected", "wrong"));
+        el.classList.add("selected");
+      }
+      function submitFinal() {
+        let correct = 0;
+        document.querySelectorAll("#finalQuestions .qbox").forEach((box, i) => {
+          box.querySelectorAll(".opt").forEach((b, j) => {
+            b.classList.remove("correct", "wrong");
+            if (j === finalQs[i][2]) b.classList.add("correct");
+            if (finalAnswers[i] === j && j !== finalQs[i][2])
+              b.classList.add("wrong");
+          });
+          if (finalAnswers[i] === finalQs[i][2]) correct++;
+        });
+        let pct = Math.round((correct / finalQs.length) * 100),
+          pass = pct >= 80;
+        let r = document.getElementById("result"),
+          sc = document.getElementById("scorecircle");
+        r.classList.add("show");
+        sc.textContent = pct + "%";
+        sc.className = "scorecircle " + (pass ? "pass" : "fail");
+        document.getElementById("verdict").textContent = pass
+          ? "Passed"
+          : "Review Required";
+        document.getElementById("resultText").textContent = pass
+          ? "You have completed the Permit to Work course."
+          : "Review the modules and retake the assessment.";
+        document.getElementById("cert").className =
+          "cert " + (pass ? "show" : "");
+        if (pass) {
+          modules.forEach((m) => {
+            if (!state.done.includes(m.id)) state.done.push(m.id);
+          });
+          addXP(30);
+          save();
+          renderTop();
+          renderMap();
+        }
+        if (!state.assessmentReported) {
+          state.assessmentReported = true;
+          reportAssessment({ score: correct, maxScore: finalQs.length, passingScore: 80 });
+          save();
+        }
+      }
+      function refreshFinal() {
+        finalAnswers = {};
+
+        document.querySelectorAll("#finalQuestions .opt").forEach((b) => {
+          b.classList.remove("correct", "wrong", "selected");
+        });
+
+        document.getElementById("result").classList.remove("show");
+        document.getElementById("cert").classList.remove("show");
+
+        document.getElementById("scorecircle").textContent = "0%";
+        document.getElementById("verdict").textContent = "";
+        document.getElementById("resultText").textContent = "";
+      }
+      renderMap();
+      renderModules();
+      renderFinal();
+      renderTop();
+    </script>
+  </body>
+</html>
