@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SIRE 2.0 Inspection — What Every Crew Member Needs to Know</title>
+    <style>
+      :root {
+        --blue: #2347e8;
+        --navy: #071a3d;
+        --muted: #5d6c87;
+        --line: #dfe6f3;
+        --soft: #f8fbff;
+        --red: #dc2626;
+        --yellow: #eab308;
+        --green: #16a34a;
+        --amber: #fff7d6;
+        --white: #fff;
+        --shadow: 0 12px 35px rgba(7, 26, 61, 0.08);
+        --radius: 24px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        overflow-x: hidden;
+        background: #fff;
+        color: var(--navy);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.55;
+      }
+      .option.selected {
+        background: #dbeafe;
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+      .topbar {
+        position: sticky;
+        top: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
+        z-index: 5;
+        border-bottom: 1px solid var(--line);
+      }
+      .topbar-inner {
+        max-width: 1120px;
+        margin: auto;
+        padding: 14px 20px;
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .brand {
+        font-weight: 900;
+        letter-spacing: 0.04em;
+      }
+      .pill {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-weight: 800;
+        font-size: 13px;
+      }
+      .progress-wrap {
+        height: 8px;
+        background: #edf2fb;
+      }
+      .progress {
+        height: 8px;
+        background: linear-gradient(
+          90deg,
+          var(--red),
+          var(--yellow),
+          var(--green)
+        );
+        width: 0%;
+        transition: 0.4s;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: auto;
+        padding: 28px 20px 70px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+        align-items: center;
+      }
+      .card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 26px;
+        margin: 18px 0;
+      }
+      .tag {
+        color: var(--blue);
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-size: 13px;
+      }
+      h1 {
+        font-size: 46px;
+        line-height: 1.04;
+        margin: 14px 0 16px;
+        letter-spacing: -0.04em;
+      }
+      h2 {
+        font-size: 32px;
+        line-height: 1.1;
+        margin: 6px 0 14px;
+      }
+      h3 {
+        font-size: 22px;
+        margin: 10px 0;
+      }
+      .lead {
+        font-size: 19px;
+        color: var(--muted);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      .module-btn {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px;
+        text-align: left;
+        cursor: pointer;
+        transition: 0.2s;
+        min-height: 128px;
+      }
+      .module-btn:hover,
+      .module-btn.active {
+        transform: translateY(-2px);
+        border-color: var(--blue);
+        box-shadow: var(--shadow);
+      }
+      .module-btn.done {
+        border-color: var(--green);
+        background: #f0fdf4;
+      }
+      .icon {
+        font-size: 32px;
+      }
+      .small {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      button {
+        font: inherit;
+      }
+      .primary,
+      .secondary,
+      .mini {
+        border: 0;
+        border-radius: 16px;
+        padding: 13px 20px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      .primary {
+        background: var(--blue);
+        color: white;
+      }
+      .secondary {
+        background: white;
+        color: var(--navy);
+        border: 1px solid var(--line);
+      }
+      .mini {
+        padding: 9px 13px;
+        border: 1px solid var(--line);
+        background: white;
+        color: var(--navy);
+        border-radius: 12px;
+      }
+      .lesson {
+        display: none;
+      }
+      .lesson.active {
+        display: block;
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .fact {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px;
+        background: var(--soft);
+      }
+      .traffic {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 14px 0;
+      }
+      .traffic div {
+        border-radius: 18px;
+        padding: 15px;
+        font-weight: 800;
+      }
+      .red {
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+      }
+      .yellow {
+        background: #fefce8;
+        color: #854d0e;
+        border: 1px solid #fde68a;
+      }
+      .green {
+        background: #f0fdf4;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+      }
+      .option {
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 15px 18px;
+        margin: 10px 0;
+        cursor: pointer;
+        color: #13264a;
+      }
+      .option:hover {
+        border-color: var(--blue);
+      }
+      .option.correct {
+        background: #f0fdf4;
+        border-color: var(--green);
+        color: #166534;
+      }
+      .option.wrong {
+        background: #fef2f2;
+        border-color: var(--red);
+        color: #991b1b;
+      }
+      .feedback {
+        display: none;
+        border-radius: 14px;
+        padding: 12px 14px;
+        margin-top: 10px;
+        font-weight: 700;
+      }
+      .feedback.show {
+        display: block;
+      }
+      .narration {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 16px 0;
+      }
+      .svgbox {
+        background: #f8fafc;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 12px;
+        overflow: hidden;
+      }
+      .svgbox svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .scenario {
+        background: #fff7ed;
+        border-left: 6px solid #f97316;
+        border-radius: 18px;
+        padding: 17px;
+        margin: 16px 0;
+      }
+      .navrow {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 20px;
+      }
+      .assessment-q {
+        border-top: 1px solid var(--line);
+        padding: 16px 0;
+      }
+      .certificate {
+        display: none;
+        text-align: center;
+        border: 2px solid var(--green);
+        background: #f0fdf4;
+      }
+      .certificate.show {
+        display: block;
+      }
+      .score {
+        font-size: 52px;
+        font-weight: 900;
+      }
+      .hide {
+        display: none;
+      }
+      @media (max-width: 850px) {
+        .hero,
+        .cols,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        h1 {
+          font-size: 36px;
+        }
+        .traffic {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">🚢 SIRE 2.0 — Crew Inspection Readiness</div>
+        <div class="pill" style="display:none;">
+          <span id="pct">0</span>%
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div id="progress" class="progress"></div>
+      </div>
+    </div>
+    <div class="wrap">
+      <section id="home" class="lesson active">
+        <div class="hero">
+          <div class="card">
+            <div class="tag">P2 Operations · Tanker Operations</div>
+            <h1>SIRE 2.0 Inspection — What Every Crew Member Needs to Know</h1>
+            <p class="lead">
+              A practical, crew-facing course on how SIRE 2.0 looks at real
+              onboard behaviour: knowledge, communication, housekeeping,
+              permits, pollution prevention, cargo awareness and honest
+              interviews.
+            </p>
+            <div class="narration">
+              <button class="primary" onclick="startCourse()">
+                Start Course</button
+              ><button
+                class="secondary"
+                onclick="
+                  speakText(
+                    'This course prepares every crew member to understand SIRE two point zero. The aim is not to memorise answers, but to show safe habits, clear communication and continuous readiness every day.',
+                  )
+                "
+              >
+                ▶ Narration</button
+              ><button class="secondary" onclick="stopSpeak()">■ Stop</button>
+            </div>
+            <div class="traffic">
+              <div class="red">Red: Stop unsafe act</div>
+              <div class="yellow">Yellow: Ask / verify</div>
+              <div class="green">Green: Continue safely</div>
+            </div>
+          </div>
+          <div class="card svgbox">
+            <svg
+              viewBox="0 0 640 420"
+              aria-label="SIRE inspection illustration"
+            >
+              <rect width="640" height="420" rx="28" fill="#f8fbff" />
+              <path d="M70 300h500l-50 55H120z" fill="#cbd5e1" />
+              <path d="M125 160h390l55 140H70z" fill="#1e3a8a" />
+              <rect
+                x="160"
+                y="95"
+                width="120"
+                height="70"
+                rx="10"
+                fill="#60a5fa"
+              />
+              <rect
+                x="305"
+                y="105"
+                width="170"
+                height="55"
+                rx="10"
+                fill="#bfdbfe"
+              />
+              <circle cx="185" cy="285" r="22" fill="#16a34a" />
+              <circle cx="255" cy="285" r="22" fill="#eab308" />
+              <circle cx="325" cy="285" r="22" fill="#dc2626" />
+              <rect
+                x="415"
+                y="225"
+                width="75"
+                height="75"
+                rx="12"
+                fill="#fff"
+                stroke="#2347e8"
+                stroke-width="4"
+              />
+              <path
+                d="M430 260l18 18 32-42"
+                fill="none"
+                stroke="#16a34a"
+                stroke-width="8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <text
+                x="320"
+                y="55"
+                text-anchor="middle"
+                font-size="24"
+                font-weight="900"
+                fill="#071a3d"
+              >
+                Inspection is evidence, not rehearsal
+              </text>
+              <text
+                x="320"
+                y="390"
+                text-anchor="middle"
+                font-size="18"
+                fill="#5d6c87"
+              >
+                Crew knowledge · observed behaviour · continuous compliance
+              </text>
+            </svg>
+          </div>
+        </div>
+        <div class="grid" id="moduleGrid"></div>
+      </section>
+
+      <div id="lessons"></div>
+
+      <section id="assessment" class="lesson">
+        <div class="card">
+          <div class="tag">Final Assessment</div>
+          <h2>SIRE 2.0 Crew Readiness Check</h2>
+          <p class="lead">
+            Answer all questions. 80% is required to complete the course.
+          </p>
+          <div id="assessmentBox"></div>
+          <button class="primary" onclick="submitAssessment()">
+            Submit Assessment</button
+          ><button class="secondary" onclick="refreshAssessment()">
+            ↻ Refresh Assessment
+          </button>
+          <div id="result" class="feedback"></div>
+        </div>
+        <div id="cert" class="card certificate">
+          <div class="tag">Completion</div>
+          <h2>Certificate of Completion</h2>
+          <p>
+            This trainee has completed the SIRE 2.0 Inspection — What Every Crew
+            Member Needs to Know interactive course.
+          </p>
+          <div class="score" id="certScore"></div>
+        </div>
+      </section>
+    </div>
+    <script>
+      const modules = [
+        {
+          t: "What SIRE 2.0 Is",
+          i: "🔍",
+          d: "Why the inspection matters commercially and operationally.",
+          n: "SIRE two point zero is not only a paperwork check. It looks at how safely the vessel is operated every day. Inspectors use questions, observations, photographs and objective evidence.",
+        },
+        {
+          t: "Human Element Focus",
+          i: "🧠",
+          d: "How competence, leadership and behaviour are assessed.",
+          n: "SIRE two point zero places strong emphasis on the human element. This means the crew must understand procedures, communicate clearly and apply them in practice.",
+        },
+        {
+          t: "Crew Interviews",
+          i: "🗣️",
+          d: "How to answer honestly, briefly and correctly.",
+          n: "During an interview, answer only what you know. Be honest, specific and calm. Do not guess. It is acceptable to say that you will verify the procedure.",
+        },
+        {
+          t: "Observed Work Practices",
+          i: "👀",
+          d: "What inspectors notice during deck, cargo and engine rounds.",
+          n: "Inspectors observe PPE, permits, isolation, housekeeping, emergency access, drip trays, pollution controls and how watchkeepers manage risk.",
+        },
+        {
+          t: "Common Focus Areas",
+          i: "📋",
+          d: "Cargo, mooring, enclosed spaces, pollution and safety management.",
+          n: "SIRE preparation must cover cargo operations, enclosed spaces, mooring, fire safety, pollution prevention, records, drills, maintenance and defect reporting.",
+        },
+        {
+          t: "Continuous Readiness",
+          i: "✅",
+          d: "Good SIRE performance comes from daily discipline, not last-minute cleaning.",
+          n: "The best SIRE preparation is continuous compliance. Crew should report defects early, close corrective actions and keep the vessel ready every watch.",
+        },
+      ];
+      const quizzes = [
+        {
+          q: "An inspector asks a rating why SIRE 2.0 matters. What is the best response?",
+          o: [
+            "It is only for office records.",
+            "It checks whether the vessel is safely operated and whether crew understand their work.",
+            "It is mainly to punish crew.",
+            "Only the Master needs to know about it.",
+          ],
+          a: 1,
+          exp: "Correct. SIRE 2.0 looks for evidence of safe operation and crew understanding.",
+        },
+        {
+          q: "Which behaviour supports the human element focus of SIRE 2.0?",
+          o: [
+            "Following procedures only when inspected.",
+            "Rushing work to look efficient.",
+            "Communicating risk clearly and stopping unsafe work.",
+            "Hiding defects until the inspection is over.",
+          ],
+          a: 2,
+          exp: "Correct. Human element includes communication, leadership, decision-making and safety culture.",
+        },
+        {
+          q: "During an interview, you are not sure of an answer. What should you do?",
+          o: [
+            "Guess confidently.",
+            "Say what you think the inspector wants to hear.",
+            "Ask another crew member to answer secretly.",
+            "Be honest and explain where you would verify the correct procedure.",
+          ],
+          a: 3,
+          exp: "Correct. Honesty is safer than guessing.",
+        },
+        {
+          q: "Which item is a strong negative observation?",
+          o: [
+            "PPE worn correctly.",
+            "Permit displayed and understood.",
+            "Emergency exit blocked by stores.",
+            "Watchkeeper stops work to clarify a risk.",
+          ],
+          a: 2,
+          exp: "Correct. Blocked emergency access is a serious observation.",
+        },
+        {
+          q: "Which area is commonly reviewed during SIRE 2.0?",
+          o: [
+            "Only paint condition.",
+            "Cargo operations, mooring, enclosed spaces, pollution prevention and records.",
+            "Only certificates in the Master’s office.",
+            "Only the galley menu.",
+          ],
+          a: 1,
+          exp: "Correct. SIRE covers many operational and safety areas.",
+        },
+        {
+          q: "What is the best SIRE preparation?",
+          o: [
+            "Clean the ship the night before.",
+            "Memorise one answer for every question.",
+            "Continuous compliance, good records and safe daily behaviour.",
+            "Avoid speaking to the inspector.",
+          ],
+          a: 2,
+          exp: "Correct. Continuous readiness is the core message.",
+        },
+      ];
+      let current = "home",
+        done = {},
+        xp = 0,
+        assessmentAnswers = {};
+      function save() {
+        try {
+          localStorage.setItem(
+            "sire20_course",
+            JSON.stringify({ done, xp, current }),
+          );
+        } catch (e) {}
+      }
+      function load() {
+        try {
+          let s = JSON.parse(localStorage.getItem("sire20_course") || "{}");
+          done = s.done || {};
+          xp = s.xp || 0;
+        } catch (e) {}
+      }
+      function updateProgress() {
+        let count = Object.keys(done).filter((k) => done[k]).length;
+        let pct = Math.round((count / modules.length) * 100);
+        document.getElementById("pct").textContent = pct;
+                document.getElementById("progress").style.width = pct + "%";
+        modules.forEach((m, idx) => {
+          let b = document.getElementById("mb" + idx);
+          if (b) {
+            b.classList.toggle("done", !!done["m" + idx]);
+            b.classList.toggle("active", current === "m" + idx);
+          }
+        });
+      }
+      function speakText(txt) {
+        stopSpeak();
+        if (!("speechSynthesis" in window)) {
+          alert("Narration is not available in this browser.");
+          return;
+        }
+        const u = new SpeechSynthesisUtterance(txt);
+        u.rate = 0.92;
+        u.pitch = 1;
+        speechSynthesis.speak(u);
+      }
+      function stopSpeak() {
+        if ("speechSynthesis" in window) speechSynthesis.cancel();
+      }
+      function startCourse() {
+        go("m0");
+      }
+      function go(id) {
+        stopSpeak();
+        document
+          .querySelectorAll(".lesson")
+          .forEach((x) => x.classList.remove("active"));
+        let el = document.getElementById(id);
+        if (el) {
+          el.classList.add("active");
+          current = id;
+          window.scrollTo(0, 0);
+          save();
+          updateProgress();
+        }
+      }
+      function build() {
+        let mg = document.getElementById("moduleGrid");
+        mg.innerHTML = modules
+          .map(
+            (m, i) =>
+              `<button id="mb${i}" class="module-btn" onclick="go('m${i}')"><div class="icon">${m.i}</div><h3>Module ${i + 1}: ${m.t}</h3><div class="small">${m.d}</div></button>`,
+          )
+          .join("");
+        let lessons = document.getElementById("lessons");
+        lessons.innerHTML = modules.map((m, i) => lessonHtml(m, i)).join("");
+        buildAssessment();
+      }
+      function lessonHtml(m, i) {
+        let q = quizzes[i];
+        return `<section id="m${i}" class="lesson"><div class="card"><div class="tag">Module ${i + 1} of 6</div><h2>${m.i} ${m.t}</h2><p class="lead">${m.d}</p><div class="narration"><button class="primary" onclick="speakText(modules[${i}].n)">▶ Play Narration</button><button class="secondary" onclick="stopSpeak()">■ Stop</button></div><div class="svgbox">${moduleSvg(i)}</div><div class="cols"><div class="fact"><b>Key point</b><p>${keyPoint(i)}</p></div><div class="fact"><b>Onboard evidence</b><p>${evidence(i)}</p></div></div></div><div class="card"><div class="tag">Interactive Activity</div><h2>${activityQuestion(i)}</h2>${activityOptions(i)}<button class="secondary" onclick="refreshActivity(${i})">↻ Refresh Activity</button><div id="af${i}" class="feedback"></div></div><div class="card"><div class="tag">Module Quiz</div><h2>${q.q}</h2>${q.o.map((o, j) => `<button class="option" onclick="answerQuiz(this,${j === q.a},${i},'${q.exp.replace(/'/g, "&#39;")}')">${o}</button>`).join("")}<button class="secondary" onclick="refreshQuiz(${i})">↻ Refresh Quiz</button><div id="qf${i}" class="feedback"></div></div><div class="navrow"><button class="secondary" onclick="go('${i === 0 ? "home" : "m" + (i - 1)}')">← Previous</button><button class="primary" onclick="go('${i === modules.length - 1 ? "assessment" : "m" + (i + 1)}')">${i === modules.length - 1 ? "Final Assessment" : "Next Module"} →</button></div></section>`;
+      }
+      function keyPoint(i) {
+        return [
+          "SIRE 2.0 tests real readiness: certificates, observations, crew interviews and operating discipline.",
+          "Human element means how people think, communicate and decide under operational pressure.",
+          "A good answer is honest, short and based on actual ship procedure.",
+          "Inspectors believe what they see: housekeeping, PPE, permits and safe access matter.",
+          "The inspection reaches across cargo, mooring, enclosed spaces, pollution prevention, machinery and records.",
+          "Daily compliance beats last-minute preparation. Defects must be reported, tracked and closed.",
+        ][i];
+      }
+      function evidence(i) {
+        return [
+          "Updated SMS, standing orders, familiarisation, defect records and crew who understand their duties.",
+          "Toolbox talks, stop-work culture, closed-loop communication and proper supervision.",
+          "Crew can explain where procedures are found and what they personally do during the task.",
+          "Permit to work, risk assessment, gas test records, PPE, clear escape routes and observed safe behaviour.",
+          "Cargo logs, mooring checks, enclosed space permits, MARPOL records, drills, maintenance and CAP closure.",
+          "Routine inspections, accurate records, clean work areas, honest reporting and continuous improvement.",
+        ][i];
+      }
+      function activityQuestion(i) {
+        return [
+          "A crew member says: “SIRE is only an office inspection.” What should you tell him?",
+          "The team is under pressure to finish a job quickly. What is the safest leadership behaviour?",
+          "An inspector asks about a procedure you have not personally used. What is the best answer?",
+          "During rounds, you see a fire door wedged open and a hose blocking an escape route. What do you do?",
+          "A permit is signed but the crew cannot explain the precautions. What does this indicate?",
+          "The ship starts preparing only after receiving inspection notice. What is the risk?",
+        ][i];
+      }
+      function activityOptions(i) {
+        let opts = [
+          [
+            "Explain that crew knowledge and observed behaviour are also part of the inspection.",
+            "Ignore it because only officers are interviewed.",
+            "Tell him to memorise answers only.",
+          ],
+          [
+            "Continue because the terminal is waiting.",
+            "Stop, reassess, communicate and confirm controls before continuing.",
+            "Let junior crew decide without guidance.",
+          ],
+          [
+            "Pretend you have done it many times.",
+            "Say you are not sure, then show where the approved procedure can be checked.",
+            "Give a long answer to distract the inspector.",
+          ],
+          [
+            "Leave it for the next watch.",
+            "Report and correct the obstruction immediately.",
+            "Take a photo and do nothing.",
+          ],
+          [
+            "The permit exists, so everything is fine.",
+            "The procedure may not be effectively understood or implemented.",
+            "The inspector should not ask crew questions.",
+          ],
+          [
+            "The vessel may look clean but still fail on weak routines, poor knowledge and incomplete evidence.",
+            "Last-minute work is always enough.",
+            "Only the paint condition matters.",
+          ],
+        ];
+        let ans = [0, 1, 1, 1, 1, 0][i];
+        return opts[i]
+          .map(
+            (o, j) =>
+              `<button class="option" onclick="answerActivity(this,${j === ans},${i})">${o}</button>`,
+          )
+          .join("");
+      }
+      function answerActivity(btn, ok, i) {
+        let box = document.getElementById("af" + i);
+        btn.parentElement
+          .querySelectorAll(".option")
+          .forEach((b) => (b.disabled = true));
+        btn.classList.add(ok ? "correct" : "wrong");
+        box.className = "feedback show " + (ok ? "green" : "red");
+        box.textContent = ok
+          ? "Correct. This is the safe SIRE 2.0 mindset."
+          : "Not safe. Think evidence, honesty, procedure and observed behaviour.";
+        if (ok && !done["act" + i]) {
+          xp += 10;
+          done["act" + i] = true;
+          save();
+          updateProgress();
+        }
+      }
+      function answerQuiz(btn, ok, i, exp) {
+        let box = document.getElementById("qf" + i);
+        btn.parentElement
+          .querySelectorAll(".option")
+          .forEach((b) => (b.disabled = true));
+        btn.classList.add(ok ? "correct" : "wrong");
+        box.className = "feedback show " + (ok ? "green" : "red");
+        box.textContent = ok ? exp : "Review the module and try again.";
+        if (ok && !done["m" + i]) {
+          done["m" + i] = true;
+          xp += 20;
+          save();
+          updateProgress();
+        }
+      }
+      function refreshActivity(i) {
+        let sec = document.getElementById("m" + i).children[1];
+        sec.querySelectorAll(".option").forEach((b) => {
+          b.disabled = false;
+          b.classList.remove("correct", "wrong");
+        });
+        let fb = document.getElementById("af" + i);
+        fb.className = "feedback";
+        fb.textContent = "";
+      }
+      function refreshQuiz(i) {
+        let cards = document.getElementById("m" + i).querySelectorAll(".card");
+        let sec = cards[2];
+        sec.querySelectorAll(".option").forEach((b) => {
+          b.disabled = false;
+          b.classList.remove("correct", "wrong");
+        });
+        let fb = document.getElementById("qf" + i);
+        fb.className = "feedback";
+        fb.textContent = "";
+      }
+      function moduleSvg(i) {
+        let colors = [
+          "#dbeafe",
+          "#fef3c7",
+          "#dcfce7",
+          "#fee2e2",
+          "#f3e8ff",
+          "#ecfeff",
+        ];
+        return `<svg viewBox="0 0 760 250"><rect width="760" height="250" rx="24" fill="${colors[i]}"/><circle cx="95" cy="125" r="60" fill="#fff"/><text x="95" y="140" text-anchor="middle" font-size="62">${modules[i].i}</text><rect x="190" y="55" width="500" height="35" rx="10" fill="#fff"/><rect x="190" y="110" width="420" height="26" rx="9" fill="#fff" opacity=".8"/><rect x="190" y="155" width="470" height="26" rx="9" fill="#fff" opacity=".8"/><circle cx="695" cy="72" r="16" fill="#dc2626"/><circle cx="695" cy="125" r="16" fill="#eab308"/><circle cx="695" cy="178" r="16" fill="#16a34a"/><text x="440" y="85" text-anchor="middle" font-size="22" font-weight="900" fill="#071a3d">${modules[i].t}</text><text x="400" y="132" text-anchor="middle" font-size="15" fill="#334155">Crew understanding + evidence + safe behaviour</text><text x="415" y="177" text-anchor="middle" font-size="15" fill="#334155">Do not guess. Verify, report, and communicate.</text></svg>`;
+      }
+      function buildAssessment() {
+        let qs = [
+          ...quizzes,
+          {
+            q: "What should crew avoid during a SIRE 2.0 interview?",
+            o: [
+              "Honest answers",
+              "Showing where a procedure is found",
+              "Guessing or inventing answers",
+              "Explaining their own task",
+            ],
+            a: 2,
+          },
+          {
+            q: "Which is the best evidence of continuous readiness?",
+            o: [
+              "Cleaned decks only on inspection day",
+              "Routine checks, accurate records and closed defects",
+              "Crew hiding problems",
+              "One person preparing all answers",
+            ],
+            a: 1,
+          },
+          {
+            q: "A blocked escape route should be treated as:",
+            o: [
+              "A minor housekeeping issue",
+              "A stop-and-correct safety issue",
+              "Acceptable if temporary",
+              "Only a port state matter",
+            ],
+            a: 1,
+          },
+          {
+            q: "Why is SIRE 2.0 important commercially?",
+            o: [
+              "Charterers use the inspection to assess vessel suitability and operational risk.",
+              "It has no effect on commercial operations.",
+              "It is only a training exercise.",
+              "It replaces all company audits.",
+            ],
+            a: 0,
+          },
+        ];
+        let box = document.getElementById("assessmentBox");
+        box.innerHTML = qs
+          .map(
+            (q, i) =>
+              `<div class="assessment-q"><h3>Q${i + 1}. ${q.q}</h3>${q.o.map((o, j) => `<button class="option" onclick="setAssess(${i},${j},this)">${o}</button>`).join("")}</div>`,
+          )
+          .join("");
+        window.assessQs = qs;
+      }
+      function setAssess(i, j, btn) {
+        assessmentAnswers[i] = j;
+        let p = btn.parentElement;
+        p.querySelectorAll(".option").forEach((b) =>
+          b.classList.remove("selected"),
+        );
+        btn.classList.add("selected");
+      }
+      function submitAssessment() {
+        let total = assessQs.length;
+        let score = assessQs.reduce(
+          (s, q, i) => s + (assessmentAnswers[i] === q.a ? 1 : 0),
+          0,
+        );
+        let pct = Math.round((score / total) * 100);
+        let r = document.getElementById("result");
+        r.className = "feedback show " + (pct >= 80 ? "green" : "red");
+        r.textContent = `Score: ${pct}%. ${pct >= 80 ? "Passed. Course complete." : "Not yet passed. Review the modules and retry."}`;
+        if (pct >= 80) {
+          document.getElementById("cert").classList.add("show");
+          document.getElementById("certScore").textContent = pct + "%";
+          xp += 50;
+          modules.forEach((m, i) => (done["m" + i] = true));
+          save();
+          updateProgress();
+        }
+      }
+      function refreshAssessment() {
+  // Clear all saved answers
+  assessmentAnswers = {};
+
+  // Remove all selected states
+  document.querySelectorAll("#assessment .option").forEach((btn) => {
+    btn.classList.remove("selected", "correct", "wrong");
+    btn.disabled = false;
+  });
+
+  // Clear result message
+  const result = document.getElementById("result");
+  result.className = "feedback";
+  result.textContent = "";
+
+  // Hide certificate
+  document.getElementById("cert").classList.remove("show");
+
+  // Clear certificate score
+  document.getElementById("certScore").textContent = "";
+}
+      load();
+      build();
+      updateProgress();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,2236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Engine Room Watchkeeping — Standards and UMS Operation</title>
+    <style>
+      :root {
+        --blue: #2563eb;
+        --navy: #071633;
+        --muted: #5d6b86;
+        --line: #dfe7f3;
+        --bg: #f7fbff;
+        --white: #fff;
+        --red: #dc2626;
+        --redbg: #fff1f2;
+        --yellow: #ca8a04;
+        --yellowbg: #fff8db;
+        --green: #16a34a;
+        --greenbg: #effdf4;
+        --shadow: 0 16px 45px rgba(15, 23, 42, 0.08);
+        --radius: 26px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, #ffffff, #f6fbff);
+        color: var(--navy);
+        min-height: 100vh;
+      }
+      .progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 7px;
+        background: #eaf1fb;
+        z-index: 10;
+      }
+      .bar {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, var(--blue), #22c55e);
+        transition: 0.3s;
+      }
+      header {
+        position: sticky;
+        top: 7px;
+        z-index: 9;
+        background: rgba(255, 255, 255, 0.94);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line);
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .brand {
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--blue);
+        font-size: 15px;
+      }
+      .status {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .pill {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 14px;
+        background: #fff;
+      }
+      main {
+        max-width: 1050px;
+        margin: 0 auto;
+        padding: 34px 22px 80px;
+      }
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: fade 0.25s ease;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+        align-items: stretch;
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 32px;
+      }
+      .kicker {
+        font-weight: 900;
+        color: var(--blue);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 13px;
+      }
+      .h1 {
+        font-size: 48px;
+        line-height: 1.02;
+        margin: 14px 0;
+        font-weight: 900;
+      }
+      .lead {
+        font-size: 18px;
+        line-height: 1.65;
+        color: var(--muted);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-top: 18px;
+      }
+      .tile {
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: #fff;
+        padding: 18px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .tile:hover {
+        transform: translateY(-2px);
+        border-color: var(--blue);
+        box-shadow: var(--shadow);
+      }
+      .tile.done {
+        background: var(--greenbg);
+        border-color: #86efac;
+      }
+      .tile .ic {
+        font-size: 30px;
+      }
+      .tile b {
+        display: block;
+        margin: 8px 0 4px;
+      }
+      .tile span {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .btn {
+        border: 0;
+        border-radius: 18px;
+        padding: 14px 20px;
+        font-weight: 900;
+        cursor: pointer;
+        background: var(--blue);
+        color: #fff;
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.22);
+        font-size: 15px;
+      }
+      .btn:hover {
+        filter: brightness(0.97);
+        transform: translateY(-1px);
+      }
+      .btn.secondary {
+        background: #fff;
+        color: var(--navy);
+        border: 1px solid var(--line);
+        box-shadow: none;
+      }
+      .btn.red {
+        background: var(--red);
+      }
+      .btn.green {
+        background: var(--green);
+      }
+      .module-head {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 18px;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+      .bigic {
+        font-size: 48px;
+        background: #eef6ff;
+        border-radius: 24px;
+        padding: 18px;
+      }
+      .module-title {
+        font-size: 36px;
+        font-weight: 900;
+        margin: 0;
+      }
+      .subtitle {
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.5;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 28px;
+        margin: 18px 0;
+      }
+      .label {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--blue);
+        font-weight: 900;
+        margin-bottom: 14px;
+      }
+      .readgrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      .readitem {
+        background: #f8fbff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px;
+        line-height: 1.55;
+        color: var(--muted);
+      }
+      .readitem b {
+        display: block;
+        color: var(--navy);
+        margin-bottom: 8px;
+      }
+      .question {
+        font-size: 26px;
+        font-weight: 900;
+        line-height: 1.35;
+        margin: 6px 0 18px;
+      }
+      .options {
+        display: grid;
+        gap: 12px;
+      }
+      .opt {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 18px;
+        padding: 16px 18px;
+        cursor: pointer;
+        font-size: 17px;
+        text-align: left;
+        color: #14213d;
+      }
+      .opt:hover {
+        border-color: var(--blue);
+        background: #f7fbff;
+      }
+      .opt.correct {
+        border-color: var(--green);
+        background: var(--greenbg);
+        color: #064e3b;
+      }
+      .opt.wrong {
+        border-color: var(--red);
+        background: var(--redbg);
+        color: #7f1d1d;
+      }
+      .opt:disabled {
+        cursor: default;
+      }
+      .feedback {
+        display: none;
+        margin-top: 14px;
+        border-radius: 18px;
+        padding: 14px 16px;
+        font-weight: 800;
+        line-height: 1.5;
+      }
+      .feedback.show.good {
+        display: block;
+        background: var(--greenbg);
+        color: #166534;
+      }
+      .feedback.show.bad {
+        display: block;
+        background: var(--redbg);
+        color: #991b1b;
+      }
+      .navrow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 24px;
+        gap: 10px;
+      }
+      .safety {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .sbox {
+        border-radius: 18px;
+        padding: 16px;
+        border: 1px solid;
+      }
+      .sbox.red {
+        background: var(--redbg);
+        border-color: #fecdd3;
+        color: #991b1b;
+      }
+      .sbox.yellow {
+        background: var(--yellowbg);
+        border-color: #fde68a;
+        color: #854d0e;
+      }
+      .sbox.green {
+        background: var(--greenbg);
+        border-color: #bbf7d0;
+        color: #166534;
+      }
+      .sbox b {
+        display: block;
+        margin-bottom: 6px;
+      }
+      .visual {
+        width: 100%;
+        max-width: 780px;
+        margin: 0 auto;
+        display: block;
+      }
+      .assessment .card {
+        margin-bottom: 14px;
+      }
+      .certificate {
+        display: none;
+        text-align: center;
+        background: linear-gradient(135deg, #eff6ff, #fff, #effdf4);
+        border: 2px solid #bfdbfe;
+      }
+      .certificate.show {
+        display: block;
+      }
+      .score {
+        font-size: 56px;
+        font-weight: 900;
+        color: var(--blue);
+      }
+      .small {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .narration {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+      }
+      @media (max-width: 820px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .readgrid,
+        .safety {
+          grid-template-columns: 1fr;
+        }
+        .h1 {
+          font-size: 36px;
+        }
+        .module-title {
+          font-size: 30px;
+        }
+        header {
+          padding: 12px;
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .status {
+          flex-wrap: wrap;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <header>
+      <div class="brand">
+        ⚙️ Engine Room Watchkeeping — Standards and UMS Operation
+      </div>
+      <div class="status">
+        <span class="pill" id="progressText">0% Complete</span
+        ><span class="pill" id="pointsText">0 XP</span>
+      </div>
+    </header>
+    <main>
+      <section class="screen active" id="home">
+        <div class="hero">
+          <div class="panel">
+            <div class="kicker">
+              P2 Operations · Engine Department · Interactive Course
+            </div>
+            <div class="h1">
+              Engine Room Watchkeeping<br />Standards and UMS Operation
+            </div>
+            <p class="lead">
+              A practical course for engineer officers and TMEs/Motormen on
+              watchkeeping discipline, UMS alarms, monitoring, log entries,
+              standing orders and safe handover. The course is offline-ready and
+              runs as a single HTML file.
+            </p>
+            <div class="safety">
+              <div class="sbox red">
+                <b>RED — STOP</b>Unsafe condition, alarm, unknown fault or
+                critical deviation.
+              </div>
+              <div class="sbox yellow">
+                <b>YELLOW — VERIFY</b>Check trend, compare normal values,
+                inspect safely and ask.
+              </div>
+              <div class="sbox green">
+                <b>GREEN — PROCEED</b>Condition controlled, recorded,
+                communicated and monitored.
+              </div>
+            </div>
+            <div style="margin-top: 24px">
+              <button class="btn" onclick="go('m1')">Start Course →</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="kicker">Course Modules</div>
+            <div class="grid">
+              <div class="tile" id="tile-m1" onclick="go('m1')">
+                <div class="ic">🕒</div>
+                <b>Watchkeeping Mindset and Legal Duty</b
+                ><span
+                  >Why the engineer watch exists: safe, continuous and recorded
+                  machinery operation.</span
+                >
+              </div>
+              <div class="tile" id="tile-m2" onclick="go('m2')">
+                <div class="ic">📊</div>
+                <b>Monitoring Parameters and Trend Awareness</b
+                ><span
+                  >Temperatures, pressures, levels, amps, vibration, leakages
+                  and smell — read the engine room like a pattern.</span
+                >
+              </div>
+              <div class="tile" id="tile-m3" onclick="go('m3')">
+                <div class="ic">🚨</div>
+                <b>Alarm Response and UMS Operation</b
+                ><span
+                  >Acknowledge, assess, act and inform — never simply silence
+                  alarms.</span
+                >
+              </div>
+              <div class="tile" id="tile-m4" onclick="go('m4')">
+                <div class="ic">📝</div>
+                <b>Log Keeping and Watch Records</b
+                ><span
+                  >The log is evidence of control, not a decoration after the
+                  event.</span
+                >
+              </div>
+              <div class="tile" id="tile-m5" onclick="go('m5')">
+                <div class="ic">🤝</div>
+                <b>Watch Handover and Communication</b
+                ><span
+                  >A safe handover transfers the true condition of the plant,
+                  not just the time.</span
+                >
+              </div>
+              <div class="tile" id="tile-m6" onclick="go('m6')">
+                <div class="ic">🛠️</div>
+                <b>Standing Orders, Call Criteria and Practical Rounds</b
+                ><span
+                  >Know when to continue monitoring, when to intervene, and when
+                  to call help.</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="screen" id="m1">
+        <div class="module-head">
+          <div class="bigic">🕒</div>
+          <div>
+            <div class="kicker">
+              Module 1 of 6 · Engine Department · STCW A-III/1
+            </div>
+            <h2 class="module-title">Watchkeeping Mindset and Legal Duty</h2>
+            <div class="subtitle">
+              Why the engineer watch exists: safe, continuous and recorded
+              machinery operation.
+            </div>
+            <div class="narration">
+              <button class="btn secondary" onclick="speakModule('m1')">
+                ▶ Narration</button
+              ><button class="btn secondary" onclick="pauseSpeech()">
+                ⏸ Pause</button
+              ><button class="btn secondary" onclick="stopSpeech()">
+                ■ Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 250"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Watchkeeping Mindset and Legal Duty visual"
+          >
+            <rect
+              width="760"
+              height="250"
+              rx="24"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="40"
+              y="45"
+              width="680"
+              height="150"
+              rx="18"
+              fill="#ffffff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="75"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#dbeafe"
+              stroke="#2563eb"
+            />
+            <text
+              x="142"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#1e40af"
+            >
+              MONITOR
+            </text>
+            <path
+              d="M220 120H300"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="310"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="377"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#854d0e"
+            >
+              ASSESS
+            </text>
+            <path
+              d="M455 120H535"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="545"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#effdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="612"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#166534"
+            >
+              ACT / REPORT
+            </text>
+            <text
+              x="380"
+              y="220"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#071633"
+            >
+              Watchkeeping Mindset and Legal Duty
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="readitem">
+              <b>Watchkeeping is active supervision</b>A safe engine-room watch
+              is not a walk-through. It is a continuous cycle of checking,
+              comparing, trending, recording and reporting. A junior engineer
+              must know normal values, abnormal trends and the point at which
+              the senior engineer must be called.
+            </div>
+            <div class="readitem">
+              <b>Standing orders are not optional</b>Engine room standing
+              orders, Chief Engineer’s orders and company SMS procedures define
+              how the watch is to be kept. They cover log intervals, call-out
+              conditions, UMS rounds, alarm handling, handover, restricted
+              manoeuvring and emergency response.
+            </div>
+            <div class="readitem">
+              <b>The watchkeeper protects propulsion</b>The engineering watch
+              supports navigational safety. Loss of propulsion, steering,
+              electrical power, cooling water or compressed air can create
+              immediate risk to the vessel, people and environment.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="question">
+            During a night UMS round, you notice a new rattling sound near an
+            auxiliary engine but all gauges are still normal. What is the best
+            watchkeeping action?
+          </div>
+          <div class="options" id="m1-activity">
+            <button class="opt" onclick="answerActivity('m1', false, this)">
+              Ignore it because readings are normal.
+            </button>
+            <button class="opt" onclick="answerActivity('m1', true, this)">
+              Record the abnormal sound, inspect safely, compare with previous
+              condition, and inform the duty engineer/2nd engineer as required.
+            </button>
+            <button class="opt" onclick="answerActivity('m1', false, this)">
+              Stop the generator immediately without checking load conditions.
+            </button>
+            <button class="opt" onclick="answerActivity('m1', false, this)">
+              Leave it for the next watch because the alarm has not activated.
+            </button>
+          </div>
+          <div class="feedback" id="m1-activity-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshActivity('m1')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="question">
+            What best describes the purpose of an engineering watch?
+          </div>
+          <div class="options" id="m1-quiz">
+            <button class="opt" onclick="answerQuiz('m1', true, this)">
+              To maintain continuous safety of machinery operation through
+              monitoring, response, communication and recording.
+            </button>
+            <button class="opt" onclick="answerQuiz('m1', false, this)">
+              To wait for alarms before taking any action.
+            </button>
+            <button class="opt" onclick="answerQuiz('m1', false, this)">
+              To complete logbook entries only at the end of the watch.
+            </button>
+            <button class="opt" onclick="answerQuiz('m1', false, this)">
+              To avoid disturbing senior engineers unless there is a blackout.
+            </button>
+          </div>
+          <div class="feedback" id="m1-quiz-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshQuiz('m1')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="navrow">
+          <button class="btn secondary" onclick="go('home')">← Back</button
+          ><button class="btn" onclick="go('m2')">Next Module →</button>
+        </div>
+      </section>
+      <section class="screen" id="m2">
+        <div class="module-head">
+          <div class="bigic">📊</div>
+          <div>
+            <div class="kicker">
+              Module 2 of 6 · Engine Department · STCW A-III/1
+            </div>
+            <h2 class="module-title">
+              Monitoring Parameters and Trend Awareness
+            </h2>
+            <div class="subtitle">
+              Temperatures, pressures, levels, amps, vibration, leakages and
+              smell — read the engine room like a pattern.
+            </div>
+            <div class="narration">
+              <button class="btn secondary" onclick="speakModule('m2')">
+                ▶ Narration</button
+              ><button class="btn secondary" onclick="pauseSpeech()">
+                ⏸ Pause</button
+              ><button class="btn secondary" onclick="stopSpeech()">
+                ■ Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 250"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Monitoring Parameters and Trend Awareness visual"
+          >
+            <rect
+              width="760"
+              height="250"
+              rx="24"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="40"
+              y="45"
+              width="680"
+              height="150"
+              rx="18"
+              fill="#ffffff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="75"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#dbeafe"
+              stroke="#2563eb"
+            />
+            <text
+              x="142"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#1e40af"
+            >
+              MONITOR
+            </text>
+            <path
+              d="M220 120H300"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="310"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="377"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#854d0e"
+            >
+              ASSESS
+            </text>
+            <path
+              d="M455 120H535"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="545"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#effdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="612"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#166534"
+            >
+              ACT / REPORT
+            </text>
+            <text
+              x="380"
+              y="220"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#071633"
+            >
+              Monitoring Parameters and Trend Awareness
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="readitem">
+              <b>Normal values matter</b>A parameter is useful only when
+              compared against normal running values. Cooling water temperature,
+              lube oil pressure, exhaust temperature, scavenge pressure,
+              purifier back pressure, pump current and tank levels must be
+              understood as trends, not isolated numbers.
+            </div>
+            <div class="readitem">
+              <b>Trend beats snapshot</b>A temperature slowly rising for two
+              hours may be more important than a single value just below the
+              alarm set point. Watchkeepers must look for direction, rate of
+              change and associated symptoms.
+            </div>
+            <div class="readitem">
+              <b>Use all senses safely</b>Smell, sound, vibration and visible
+              leaks often appear before alarms. A burning smell, unusual bearing
+              noise, steam leak or vibrating pump must be treated as an early
+              warning.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="question">
+            A jacket cooling water temperature is still within limit but has
+            risen steadily from 72°C to 84°C over two rounds. What is the safest
+            interpretation?
+          </div>
+          <div class="options" id="m2-activity">
+            <button class="opt" onclick="answerActivity('m2', false, this)">
+              No action is needed because the alarm has not sounded.
+            </button>
+            <button class="opt" onclick="answerActivity('m2', true, this)">
+              It is a developing trend requiring investigation, comparison with
+              load/cooling conditions, and reporting if not quickly explained.
+            </button>
+            <button class="opt" onclick="answerActivity('m2', false, this)">
+              Reduce the logbook value so it does not create concern.
+            </button>
+            <button class="opt" onclick="answerActivity('m2', false, this)">
+              Shut down the main engine immediately in all cases.
+            </button>
+          </div>
+          <div class="feedback" id="m2-activity-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshActivity('m2')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="question">
+            Which watchkeeping habit best helps early fault detection?
+          </div>
+          <div class="options" id="m2-quiz">
+            <button class="opt" onclick="answerQuiz('m2', false, this)">
+              Only checking values that are already in alarm.
+            </button>
+            <button class="opt" onclick="answerQuiz('m2', true, this)">
+              Comparing present readings with previous rounds and known normal
+              operating patterns.
+            </button>
+            <button class="opt" onclick="answerQuiz('m2', false, this)">
+              Recording rounded numbers without looking at the machinery.
+            </button>
+            <button class="opt" onclick="answerQuiz('m2', false, this)">
+              Waiting for the next scheduled maintenance date.
+            </button>
+          </div>
+          <div class="feedback" id="m2-quiz-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshQuiz('m2')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="navrow">
+          <button class="btn secondary" onclick="go('m1')">← Back</button
+          ><button class="btn" onclick="go('m3')">Next Module →</button>
+        </div>
+      </section>
+      <section class="screen" id="m3">
+        <div class="module-head">
+          <div class="bigic">🚨</div>
+          <div>
+            <div class="kicker">
+              Module 3 of 6 · Engine Department · STCW A-III/1
+            </div>
+            <h2 class="module-title">Alarm Response and UMS Operation</h2>
+            <div class="subtitle">
+              Acknowledge, assess, act and inform — never simply silence alarms.
+            </div>
+            <div class="narration">
+              <button class="btn secondary" onclick="speakModule('m3')">
+                ▶ Narration</button
+              ><button class="btn secondary" onclick="pauseSpeech()">
+                ⏸ Pause</button
+              ><button class="btn secondary" onclick="stopSpeech()">
+                ■ Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 250"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Alarm Response and UMS Operation visual"
+          >
+            <rect
+              width="760"
+              height="250"
+              rx="24"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="40"
+              y="45"
+              width="680"
+              height="150"
+              rx="18"
+              fill="#ffffff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="75"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#dbeafe"
+              stroke="#2563eb"
+            />
+            <text
+              x="142"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#1e40af"
+            >
+              MONITOR
+            </text>
+            <path
+              d="M220 120H300"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="310"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="377"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#854d0e"
+            >
+              ASSESS
+            </text>
+            <path
+              d="M455 120H535"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="545"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#effdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="612"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#166534"
+            >
+              ACT / REPORT
+            </text>
+            <text
+              x="380"
+              y="220"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#071633"
+            >
+              Alarm Response and UMS Operation
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="readitem">
+              <b>UMS does not mean unattended responsibility</b>Unattended
+              Machinery Space operation allows the engine room to be
+              periodically unattended only when alarms, safety systems and duty
+              arrangements are effective. The duty engineer remains responsible
+              for prompt response.
+            </div>
+            <div class="readitem">
+              <b>Alarm handling sequence</b>On receiving an alarm, acknowledge
+              it, identify the system, assess severity, go to the machinery
+              space if required, take safe corrective action and inform the
+              senior engineer or bridge when the situation affects propulsion,
+              power, steering or safety.
+            </div>
+            <div class="readitem">
+              <b>Never normalise nuisance alarms</b>Repeated alarms must not be
+              ignored. A nuisance alarm may indicate poor sensor condition,
+              wrong set point or an actual intermittent fault. All repeated
+              alarms must be reported and investigated.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="question">
+            A UMS alarm sounds for low starting air pressure. The vessel is in
+            congested waters. What is the correct priority?
+          </div>
+          <div class="options" id="m3-activity">
+            <button class="opt" onclick="answerActivity('m3', true, this)">
+              Respond immediately, verify compressors/air bottles, inform the
+              duty/senior engineer and bridge because manoeuvring readiness may
+              be affected.
+            </button>
+            <button class="opt" onclick="answerActivity('m3', false, this)">
+              Acknowledge and silence it, then wait to see if it returns.
+            </button>
+            <button class="opt" onclick="answerActivity('m3', false, this)">
+              Disable the alarm temporarily to avoid disturbing rest hours.
+            </button>
+            <button class="opt" onclick="answerActivity('m3', false, this)">
+              Record it at the end of the watch only.
+            </button>
+          </div>
+          <div class="feedback" id="m3-activity-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshActivity('m3')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="question">
+            What is the correct principle when acknowledging an alarm?
+          </div>
+          <div class="options" id="m3-quiz">
+            <button class="opt" onclick="answerQuiz('m3', false, this)">
+              Acknowledgement means the fault is cleared.
+            </button>
+            <button class="opt" onclick="answerQuiz('m3', true, this)">
+              Acknowledgement only confirms receipt; the cause still has to be
+              assessed and corrected.
+            </button>
+            <button class="opt" onclick="answerQuiz('m3', false, this)">
+              Acknowledgement should be delayed until the next round.
+            </button>
+            <button class="opt" onclick="answerQuiz('m3', false, this)">
+              Acknowledgement is only required for main engine alarms.
+            </button>
+          </div>
+          <div class="feedback" id="m3-quiz-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshQuiz('m3')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="navrow">
+          <button class="btn secondary" onclick="go('m2')">← Back</button
+          ><button class="btn" onclick="go('m4')">Next Module →</button>
+        </div>
+      </section>
+      <section class="screen" id="m4">
+        <div class="module-head">
+          <div class="bigic">📝</div>
+          <div>
+            <div class="kicker">
+              Module 4 of 6 · Engine Department · STCW A-III/1
+            </div>
+            <h2 class="module-title">Log Keeping and Watch Records</h2>
+            <div class="subtitle">
+              The log is evidence of control, not a decoration after the event.
+            </div>
+            <div class="narration">
+              <button class="btn secondary" onclick="speakModule('m4')">
+                ▶ Narration</button
+              ><button class="btn secondary" onclick="pauseSpeech()">
+                ⏸ Pause</button
+              ><button class="btn secondary" onclick="stopSpeech()">
+                ■ Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 250"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Log Keeping and Watch Records visual"
+          >
+            <rect
+              width="760"
+              height="250"
+              rx="24"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="40"
+              y="45"
+              width="680"
+              height="150"
+              rx="18"
+              fill="#ffffff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="75"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#dbeafe"
+              stroke="#2563eb"
+            />
+            <text
+              x="142"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#1e40af"
+            >
+              MONITOR
+            </text>
+            <path
+              d="M220 120H300"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="310"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="377"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#854d0e"
+            >
+              ASSESS
+            </text>
+            <path
+              d="M455 120H535"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="545"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#effdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="612"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#166534"
+            >
+              ACT / REPORT
+            </text>
+            <text
+              x="380"
+              y="220"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#071633"
+            >
+              Log Keeping and Watch Records
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="readitem">
+              <b>Records must be timely and truthful</b>Engine-room logbooks,
+              checklists, sounding records, alarm logs and UMS rounds must
+              reflect actual observations. Falsified or copied readings defeat
+              safety management and can damage incident defence.
+            </div>
+            <div class="readitem">
+              <b>Record what matters</b>Record operating mode, machinery in use,
+              load, temperatures, pressures, tank levels, abnormal findings,
+              actions taken, persons informed and follow-up required. Do not
+              hide temporary deviations.
+            </div>
+            <div class="readitem">
+              <b>Events need narrative</b>When an abnormal condition occurs, the
+              log should show time, observation, action, communication and
+              result. This creates continuity for the next watch and management
+              visibility.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="question">
+            You found a small fuel leak, tightened a gland, cleaned the area,
+            and informed the 2nd Engineer. What should the record show?
+          </div>
+          <div class="options" id="m4-activity">
+            <button class="opt" onclick="answerActivity('m4', false, this)">
+              Nothing, since it has been corrected.
+            </button>
+            <button class="opt" onclick="answerActivity('m4', true, this)">
+              A clear note of the leak, time found, corrective action, area
+              cleaned, person informed and whether follow-up inspection is
+              required.
+            </button>
+            <button class="opt" onclick="answerActivity('m4', false, this)">
+              Only write all normal to avoid paperwork.
+            </button>
+            <button class="opt" onclick="answerActivity('m4', false, this)">
+              Ask the next watch to decide whether to write it.
+            </button>
+          </div>
+          <div class="feedback" id="m4-activity-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshActivity('m4')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="question">Why are accurate watch records important?</div>
+          <div class="options" id="m4-quiz">
+            <button class="opt" onclick="answerQuiz('m4', false, this)">
+              They replace the need for machinery inspection.
+            </button>
+
+            <button class="opt" onclick="answerQuiz('m4', false, this)">
+              They are only for port state inspectors.
+            </button>
+            <button class="opt" onclick="answerQuiz('m4', false, this)">
+              They should contain only alarm events, not normal trends.
+            </button>
+            <button class="opt" onclick="answerQuiz('m4', true, this)">
+              They provide continuity, evidence of monitoring and a basis for
+              maintenance or incident review.
+            </button>
+          </div>
+          <div class="feedback" id="m4-quiz-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshQuiz('m4')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="navrow">
+          <button class="btn secondary" onclick="go('m3')">← Back</button
+          ><button class="btn" onclick="go('m5')">Next Module →</button>
+        </div>
+      </section>
+      <section class="screen" id="m5">
+        <div class="module-head">
+          <div class="bigic">🤝</div>
+          <div>
+            <div class="kicker">
+              Module 5 of 6 · Engine Department · STCW A-III/1
+            </div>
+            <h2 class="module-title">Watch Handover and Communication</h2>
+            <div class="subtitle">
+              A safe handover transfers the true condition of the plant, not
+              just the time.
+            </div>
+            <div class="narration">
+              <button class="btn secondary" onclick="speakModule('m5')">
+                ▶ Narration</button
+              ><button class="btn secondary" onclick="pauseSpeech()">
+                ⏸ Pause</button
+              ><button class="btn secondary" onclick="stopSpeech()">
+                ■ Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 250"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Watch Handover and Communication visual"
+          >
+            <rect
+              width="760"
+              height="250"
+              rx="24"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="40"
+              y="45"
+              width="680"
+              height="150"
+              rx="18"
+              fill="#ffffff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="75"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#dbeafe"
+              stroke="#2563eb"
+            />
+            <text
+              x="142"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#1e40af"
+            >
+              MONITOR
+            </text>
+            <path
+              d="M220 120H300"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="310"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="377"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#854d0e"
+            >
+              ASSESS
+            </text>
+            <path
+              d="M455 120H535"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="545"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#effdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="612"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#166534"
+            >
+              ACT / REPORT
+            </text>
+            <text
+              x="380"
+              y="220"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#071633"
+            >
+              Watch Handover and Communication
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="readitem">
+              <b>Handover is a risk control</b>Poor handover causes repeated
+              mistakes, missed trends and delayed response. The outgoing
+              watchkeeper must brief the incoming watchkeeper on machinery
+              condition, abnormal trends, ongoing permits, isolated equipment,
+              alarms, standby machinery and expected manoeuvring.
+            </div>
+            <div class="readitem">
+              <b>Use closed-loop communication</b>Critical instructions should
+              be repeated back. The receiver must confirm understanding. This is
+              especially important for bridge-engine communication, change of
+              operating mode, fuel changeover and emergency actions.
+            </div>
+            <div class="readitem">
+              <b>Do not take over blindly</b>If the engine room condition is
+              unclear, the incoming watchkeeper must ask questions before
+              accepting the watch. Taking over does not remove the outgoing
+              watchkeeper’s duty to explain abnormal conditions.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="question">
+            At handover, the outgoing engineer says, all okay, but you see one
+            purifier is bypassed and a bilge alarm was active earlier. What
+            should you do?
+          </div>
+          <div class="options" id="m5-activity">
+            <button class="opt" onclick="answerActivity('m5', false, this)">
+              Accept the watch quickly because the outgoing engineer is senior.
+            </button>
+            <button class="opt" onclick="answerActivity('m5', true, this)">
+              Ask for a proper handover of purifier status, bilge alarm cause,
+              actions taken and any required follow-up before accepting the
+              watch.
+            </button>
+            <button class="opt" onclick="answerActivity('m5', false, this)">
+              Ignore the bypass because the ship is still running.
+            </button>
+            <button class="opt" onclick="answerActivity('m5', false, this)">
+              Wait until after handover to read the alarm history.
+            </button>
+          </div>
+          <div class="feedback" id="m5-activity-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshActivity('m5')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="question">
+            What must a good engineering watch handover include?
+          </div>
+          <div class="options" id="m5-quiz">
+            <button class="opt" onclick="answerQuiz('m5', false, this)">
+              Only the current time and which generator is running.
+            </button>
+            <button class="opt" onclick="answerQuiz('m5', true, this)">
+              Plant status, abnormal trends, alarms, isolations, permits,
+              pending jobs and expected operations.
+            </button>
+            <button class="opt" onclick="answerQuiz('m5', false, this)">
+              Only information that has already been entered in the noon report.
+            </button>
+            <button class="opt" onclick="answerQuiz('m5', false, this)">
+              Nothing if UMS alarms are available.
+            </button>
+          </div>
+          <div class="feedback" id="m5-quiz-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshQuiz('m5')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="navrow">
+          <button class="btn secondary" onclick="go('m4')">← Back</button
+          ><button class="btn" onclick="go('m6')">Next Module →</button>
+        </div>
+      </section>
+      <section class="screen" id="m6">
+        <div class="module-head">
+          <div class="bigic">🛠️</div>
+          <div>
+            <div class="kicker">
+              Module 6 of 6 · Engine Department · STCW A-III/1
+            </div>
+            <h2 class="module-title">
+              Standing Orders, Call Criteria and Practical Rounds
+            </h2>
+            <div class="subtitle">
+              Know when to continue monitoring, when to intervene, and when to
+              call help.
+            </div>
+            <div class="narration">
+              <button class="btn secondary" onclick="speakModule('m6')">
+                ▶ Narration</button
+              ><button class="btn secondary" onclick="pauseSpeech()">
+                ⏸ Pause</button
+              ><button class="btn secondary" onclick="stopSpeech()">
+                ■ Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 250"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Standing Orders, Call Criteria and Practical Rounds visual"
+          >
+            <rect
+              width="760"
+              height="250"
+              rx="24"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="40"
+              y="45"
+              width="680"
+              height="150"
+              rx="18"
+              fill="#ffffff"
+              stroke="#dfe7f3"
+            />
+            <rect
+              x="75"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#dbeafe"
+              stroke="#2563eb"
+            />
+            <text
+              x="142"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#1e40af"
+            >
+              MONITOR
+            </text>
+            <path
+              d="M220 120H300"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="310"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="377"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#854d0e"
+            >
+              ASSESS
+            </text>
+            <path
+              d="M455 120H535"
+              stroke="#94a3b8"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="545"
+              y="90"
+              width="135"
+              height="60"
+              rx="12"
+              fill="#effdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="612"
+              y="124"
+              text-anchor="middle"
+              font-size="14"
+              font-weight="800"
+              fill="#166534"
+            >
+              ACT / REPORT
+            </text>
+            <text
+              x="380"
+              y="220"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#071633"
+            >
+              Standing Orders, Call Criteria and Practical Rounds
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="readitem">
+              <b>Call early, not late</b>A junior watchkeeper must call the 2nd
+              Engineer, Chief Engineer or bridge when machinery safety,
+              propulsion, electrical power, steering, fire risk, flooding risk
+              or pollution risk may be affected. Calling early is professional;
+              hiding doubt is dangerous.
+            </div>
+            <div class="readitem">
+              <b>Rounds must be systematic</b>A watchkeeping round should follow
+              a consistent route: main engine, generators, boilers, compressors,
+              purifiers, pumps, steering gear, shafting, bilges, tanks,
+              workshops and remote panels. Each round should look for parameters
+              and physical condition.
+            </div>
+            <div class="readitem">
+              <b>UMS checks are deliberate</b>Before leaving an engine room
+              unattended, verify operating machinery, alarms, fuel/lube/cooling
+              systems, bilge condition, fire safety, compressed air, steering
+              gear availability and no unsafe work left in progress.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="question">
+            Before switching to UMS at night, which action is safest?
+          </div>
+          <div class="options" id="m6-activity">
+            <button class="opt" onclick="answerActivity('m6', false, this)">
+              Leave quickly after checking only the control room screen.
+            </button>
+            <button class="opt" onclick="answerActivity('m6', true, this)">
+              Complete a physical round, verify critical machinery, bilges,
+              alarms, standby equipment and ongoing work status before leaving
+              the space unattended.
+            </button>
+            <button class="opt" onclick="answerActivity('m6', false, this)">
+              Rely on the previous watch statement that everything was fine.
+            </button>
+            <button class="opt" onclick="answerActivity('m6', false, this)">
+              Disable repeated alarms until morning.
+            </button>
+          </div>
+          <div class="feedback" id="m6-activity-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshActivity('m6')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="question">
+            When should a junior engineer call the senior engineer?
+          </div>
+          <div class="options" id="m6-quiz">
+            <button class="opt" onclick="answerQuiz('m6', false, this)">
+              Only after trying several unapproved adjustments.
+            </button>
+
+            <button class="opt" onclick="answerQuiz('m6', false, this)">
+              Only during daytime watches.
+            </button>
+            <button class="opt" onclick="answerQuiz('m6', true, this)">
+              Whenever an abnormal condition may affect safety, propulsion,
+              power, steering, pollution control or when unsure of the correct
+              action.
+            </button>
+            <button class="opt" onclick="answerQuiz('m6', false, this)">
+              Only when instructed by the bridge.
+            </button>
+          </div>
+          <div class="feedback" id="m6-quiz-fb"></div>
+          <button
+            class="btn secondary"
+            onclick="refreshQuiz('m6')"
+            style="margin-top: 14px"
+          >
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="navrow">
+          <button class="btn secondary" onclick="go('m5')">← Back</button
+          ><button class="btn" onclick="go('assessment')">
+            Final Assessment →
+          </button>
+        </div>
+      </section>
+      <section class="screen assessment" id="assessment">
+        <div class="module-head">
+          <div class="bigic">✅</div>
+          <div>
+            <div class="kicker">Final Assessment</div>
+            <h2 class="module-title">
+              Engine Room Watchkeeping Competence Check
+            </h2>
+            <div class="subtitle">
+              Answer all questions. A score of 80% or higher unlocks the
+              completion certificate.
+            </div>
+          </div>
+        </div>
+        <div class="card final-q" data-correct="0" id="final-card-0">
+          <div class="label">Question 1</div>
+          <div class="question">
+            A slow rise in bearing temperature over several rounds should be
+            treated as:
+          </div>
+          <div class="options">
+            <button class="opt" onclick="answerFinal(0, 0, this)">
+              A trend requiring investigation and possible reporting
+            </button>
+            <button class="opt" onclick="answerFinal(0, 1, this)">
+              Normal if below alarm point
+            </button>
+            <button class="opt" onclick="answerFinal(0, 2, this)">
+              A reason to change the logbook entry
+            </button>
+            <button class="opt" onclick="answerFinal(0, 3, this)">
+              Something for next week’s PMS only
+            </button>
+          </div>
+          <div class="feedback" id="final-fb-0"></div>
+        </div>
+        <div class="card final-q" data-correct="1" id="final-card-1">
+          <div class="label">Question 2</div>
+          <div class="question">In UMS operation, the duty engineer is:</div>
+          <div class="options">
+            <button class="opt" onclick="answerFinal(1, 0, this)">
+              No longer responsible once the engine room is unmanned
+            </button>
+            <button class="opt" onclick="answerFinal(1, 1, this)">
+              Responsible for prompt alarm response and safe follow-up
+            </button>
+            <button class="opt" onclick="answerFinal(1, 2, this)">
+              Required only for main engine alarms
+            </button>
+            <button class="opt" onclick="answerFinal(1, 3, this)">
+              Allowed to disable nuisance alarms
+            </button>
+          </div>
+          <div class="feedback" id="final-fb-1"></div>
+        </div>
+        <div class="card final-q" data-correct="0" id="final-card-2">
+          <div class="label">Question 3</div>
+          <div class="question">A correct alarm response starts with:</div>
+          <div class="options">
+            <button class="opt" onclick="answerFinal(2, 0, this)">
+              Acknowledgement, assessment and safe action
+            </button>
+            <button class="opt" onclick="answerFinal(2, 1, this)">
+              Silencing the alarm and returning to rest
+            </button>
+            <button class="opt" onclick="answerFinal(2, 2, this)">
+              Waiting for it to repeat three times
+            </button>
+            <button class="opt" onclick="answerFinal(2, 3, this)">
+              Calling the bridge before identifying the alarm
+            </button>
+          </div>
+          <div class="feedback" id="final-fb-2"></div>
+        </div>
+        <div class="card final-q" data-correct="0" id="final-card-3">
+          <div class="label">Question 4</div>
+          <div class="question">The engine-room logbook should:</div>
+          <div class="options">
+            <button class="opt" onclick="answerFinal(3, 1, this)">
+              Contain neat values even if not observed
+            </button>
+            <button class="opt" onclick="answerFinal(3, 2, this)">
+              Avoid mentioning corrected defects
+            </button>
+            <button class="opt" onclick="answerFinal(3, 0, this)">
+              Reflect actual readings, observations, actions and communications
+            </button>
+            <button class="opt" onclick="answerFinal(3, 3, this)">
+              Be completed only at the end of the voyage
+            </button>
+          </div>
+          <div class="feedback" id="final-fb-3"></div>
+        </div>
+        <div class="card final-q" data-correct="0" id="final-card-4">
+          <div class="label">Question 5</div>
+          <div class="question">Good handover includes:</div>
+          <div class="options">
+            <button class="opt" onclick="answerFinal(4, 1, this)">
+              Only the running hours
+            </button>
+            <button class="opt" onclick="answerFinal(4, 2, this)">
+              Only the weather and next port
+            </button>
+            <button class="opt" onclick="answerFinal(4, 3, this)">
+              Nothing if the next engineer is experienced
+            </button>
+            <button class="opt" onclick="answerFinal(4, 0, this)">
+              Plant status, abnormal trends, alarms, isolations, permits and
+              pending actions
+            </button>
+          </div>
+          <div class="feedback" id="final-fb-4"></div>
+        </div>
+        <div class="card final-q" data-correct="0" id="final-card-5">
+          <div class="label">Question 6</div>
+          <div class="question">Closed-loop communication means:</div>
+          <div class="options">
+            <button class="opt" onclick="answerFinal(5, 1, this)">
+              The sender gives the instruction only once
+            </button>
+            <button class="opt" onclick="answerFinal(5, 0, this)">
+              The receiver repeats/acknowledges the instruction so understanding
+              is confirmed
+            </button>
+            <button class="opt" onclick="answerFinal(5, 2, this)">
+              Only written communication is allowed
+            </button>
+            <button class="opt" onclick="answerFinal(5, 3, this)">
+              Communication is avoided during emergencies
+            </button>
+          </div>
+          <div class="feedback" id="final-fb-5"></div>
+        </div>
+        <div class="card final-q" data-correct="0" id="final-card-6">
+          <div class="label">Question 7</div>
+          <div class="question">
+            A new abnormal sound near machinery should be:
+          </div>
+          <div class="options">
+            <button class="opt" onclick="answerFinal(6, 1, this)">
+              Ignored unless the alarm sounds
+            </button>
+            <button class="opt" onclick="answerFinal(6, 2, this)">
+              Hidden if the gauge readings are normal
+            </button>
+            <button class="opt" onclick="answerFinal(6, 3, this)">
+              Corrected by striking the machinery casing
+            </button>
+            <button class="opt" onclick="answerFinal(6, 0, this)">
+              Investigated safely, compared with normal condition, recorded and
+              reported if needed
+            </button>
+          </div>
+          <div class="feedback" id="final-fb-6"></div>
+        </div>
+        <div class="card final-q" data-correct="0" id="final-card-7">
+          <div class="label">Question 8</div>
+          <div class="question">
+            Before leaving the engine room in UMS condition, the engineer
+            should:
+          </div>
+          <div class="options">
+            <button class="opt" onclick="answerFinal(7, 0, this)">
+              Verify machinery status, alarms, bilges, standby equipment and
+              unsafe work conditions
+            </button>
+            <button class="opt" onclick="answerFinal(7, 1, this)">
+              Check only the clock
+            </button>
+            <button class="opt" onclick="answerFinal(7, 2, this)">
+              Trust the previous round and leave
+            </button>
+            <button class="opt" onclick="answerFinal(7, 3, this)">
+              Turn off selected alarms
+            </button>
+          </div>
+          <div class="feedback" id="final-fb-7"></div>
+        </div>
+        <div class="card final-q" data-correct="0" id="final-card-8">
+          <div class="label">Question 9</div>
+          <div class="question">
+            If a repeated nuisance alarm occurs, it should be:
+          </div>
+          <div class="options">
+            <button class="opt" onclick="answerFinal(8, 1, this)">
+              Permanently silenced
+            </button>
+            <button class="opt" onclick="answerFinal(8, 0, this)">
+              Investigated and reported, not normalised
+            </button>
+            <button class="opt" onclick="answerFinal(8, 2, this)">
+              Ignored because it is known
+            </button>
+            <button class="opt" onclick="answerFinal(8, 3, this)">
+              Deleted from the log
+            </button>
+          </div>
+          <div class="feedback" id="final-fb-8"></div>
+        </div>
+        <div class="card final-q" data-correct="0" id="final-card-9">
+          <div class="label">Question 10</div>
+          <div class="question">
+            Calling a senior engineer early when unsure is:
+          </div>
+          <div class="options">
+            <button class="opt" onclick="answerFinal(9, 0, this)">
+              A safe and professional action
+            </button>
+            <button class="opt" onclick="answerFinal(9, 1, this)">
+              A sign of incompetence
+            </button>
+            <button class="opt" onclick="answerFinal(9, 2, this)">
+              Required only during drills
+            </button>
+            <button class="opt" onclick="answerFinal(9, 3, this)">
+              Unnecessary if no alarm is active
+            </button>
+          </div>
+          <div class="feedback" id="final-fb-9"></div>
+        </div>
+        <div class="navrow">
+          <button class="btn secondary" onclick="go('m6')">
+            ← Back to Module 6</button
+          ><button class="btn" onclick="submitFinal()">Submit Assessment</button
+          ><button class="btn secondary" onclick="refreshAssessment()">
+            ↻ Refresh Assessment
+          </button>
+        </div>
+        <div class="card certificate" id="certificate">
+          <div class="kicker">Course Completed</div>
+          <div class="score" id="scoreText">0%</div>
+          <h2>Engine Room Watchkeeping — Standards and UMS Operation</h2>
+          <p class="lead">
+            The trainee has completed the interactive learning path and achieved
+            the required assessment score.
+          </p>
+          <p class="small">
+            Training focus: watchkeeping standards, UMS alarms, monitoring, log
+            keeping, communication, standing orders and handover procedure.
+          </p>
+        </div>
+      </section>
+    </main>
+    <script>
+      const modules = ["m1", "m2", "m3", "m4", "m5", "m6"];
+      const moduleText = {
+        m1: "Watchkeeping Mindset and Legal Duty. Why the engineer watch exists: safe, continuous and recorded machinery operation. Watchkeeping is active supervision. A safe engine-room watch is not a walk-through. It is a continuous cycle of checking, comparing, trending, recording and reporting. A junior engineer must know normal values, abnormal trends and the point at which the senior engineer must be called. Standing orders are not optional. Engine room standing orders, Chief Engineer\u2019s orders and company SMS procedures define how the watch is to be kept. They cover log intervals, call-out conditions, UMS rounds, alarm handling, handover, restricted manoeuvring and emergency response. The watchkeeper protects propulsion. The engineering watch supports navigational safety. Loss of propulsion, steering, electrical power, cooling water or compressed air can create immediate risk to the vessel, people and environment.",
+        m2: "Monitoring Parameters and Trend Awareness. Temperatures, pressures, levels, amps, vibration, leakages and smell \u2014 read the engine room like a pattern. Normal values matter. A parameter is useful only when compared against normal running values. Cooling water temperature, lube oil pressure, exhaust temperature, scavenge pressure, purifier back pressure, pump current and tank levels must be understood as trends, not isolated numbers. Trend beats snapshot. A temperature slowly rising for two hours may be more important than a single value just below the alarm set point. Watchkeepers must look for direction, rate of change and associated symptoms. Use all senses safely. Smell, sound, vibration and visible leaks often appear before alarms. A burning smell, unusual bearing noise, steam leak or vibrating pump must be treated as an early warning.",
+        m3: "Alarm Response and UMS Operation. Acknowledge, assess, act and inform \u2014 never simply silence alarms. UMS does not mean unattended responsibility. Unattended Machinery Space operation allows the engine room to be periodically unattended only when alarms, safety systems and duty arrangements are effective. The duty engineer remains responsible for prompt response. Alarm handling sequence. On receiving an alarm, acknowledge it, identify the system, assess severity, go to the machinery space if required, take safe corrective action and inform the senior engineer or bridge when the situation affects propulsion, power, steering or safety. Never normalise nuisance alarms. Repeated alarms must not be ignored. A nuisance alarm may indicate poor sensor condition, wrong set point or an actual intermittent fault. All repeated alarms must be reported and investigated.",
+        m4: "Log Keeping and Watch Records. The log is evidence of control, not a decoration after the event. Records must be timely and truthful. Engine-room logbooks, checklists, sounding records, alarm logs and UMS rounds must reflect actual observations. Falsified or copied readings defeat safety management and can damage incident defence. Record what matters. Record operating mode, machinery in use, load, temperatures, pressures, tank levels, abnormal findings, actions taken, persons informed and follow-up required. Do not hide temporary deviations. Events need narrative. When an abnormal condition occurs, the log should show time, observation, action, communication and result. This creates continuity for the next watch and management visibility.",
+        m5: "Watch Handover and Communication. A safe handover transfers the true condition of the plant, not just the time. Handover is a risk control. Poor handover causes repeated mistakes, missed trends and delayed response. The outgoing watchkeeper must brief the incoming watchkeeper on machinery condition, abnormal trends, ongoing permits, isolated equipment, alarms, standby machinery and expected manoeuvring. Use closed-loop communication. Critical instructions should be repeated back. The receiver must confirm understanding. This is especially important for bridge-engine communication, change of operating mode, fuel changeover and emergency actions. Do not take over blindly. If the engine room condition is unclear, the incoming watchkeeper must ask questions before accepting the watch. Taking over does not remove the outgoing watchkeeper\u2019s duty to explain abnormal conditions.",
+        m6: "Standing Orders, Call Criteria and Practical Rounds. Know when to continue monitoring, when to intervene, and when to call help. Call early, not late. A junior watchkeeper must call the 2nd Engineer, Chief Engineer or bridge when machinery safety, propulsion, electrical power, steering, fire risk, flooding risk or pollution risk may be affected. Calling early is professional; hiding doubt is dangerous. Rounds must be systematic. A watchkeeping round should follow a consistent route: main engine, generators, boilers, compressors, purifiers, pumps, steering gear, shafting, bilges, tanks, workshops and remote panels. Each round should look for parameters and physical condition. UMS checks are deliberate. Before leaving an engine room unattended, verify operating machinery, alarms, fuel/lube/cooling systems, bilge condition, fire safety, compressed air, steering gear availability and no unsafe work left in progress.",
+      };
+      let state = JSON.parse(
+        localStorage.getItem(
+          "engine_room_watchkeeping_standards_ums_operation_state",
+        ) || '{"done":{},"xp":0,"final":{}}',
+      );
+      function save() {
+        localStorage.setItem(
+          "engine_room_watchkeeping_standards_ums_operation_state",
+          JSON.stringify(state),
+        );
+        updateProgress();
+      }
+      function go(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+        window.scrollTo(0, 0);
+        updateProgress();
+      }
+      function updateProgress() {
+        const doneCount = modules.filter((m) => state.done[m]).length;
+        const pct = Math.round((doneCount / modules.length) * 100);
+        document.getElementById("bar").style.width = pct + "%";
+        document.getElementById("progressText").textContent =
+          pct + "% Complete";
+        document.getElementById("pointsText").textContent =
+          (state.xp || 0) + " XP";
+        modules.forEach((m) => {
+          const t = document.getElementById("tile-" + m);
+          if (t) t.classList.toggle("done", !!state.done[m]);
+        });
+      }
+      function markDone(mid) {
+        if (!state.done[mid]) {
+          state.done[mid] = true;
+          state.xp = (state.xp || 0) + 20;
+          save();
+        }
+      }
+      function answerActivity(mid, ok, btn) {
+        const box = document.getElementById(mid + "-activity");
+        box.querySelectorAll(".opt").forEach((b) => {
+          b.disabled = true;
+          b.classList.remove("correct", "wrong");
+        });
+        btn.classList.add(ok ? "correct" : "wrong");
+        const fb = document.getElementById(mid + "-activity-fb");
+        fb.className = "feedback show " + (ok ? "good" : "bad");
+        fb.textContent = ok
+          ? "Correct. This is the safe watchkeeping response."
+          : "Not safe. Reassess using STOP — VERIFY — PROCEED.";
+        if (ok) markDone(mid);
+      }
+      function answerQuiz(mid, ok, btn) {
+        const box = document.getElementById(mid + "-quiz");
+        box.querySelectorAll(".opt").forEach((b) => {
+          b.disabled = true;
+          b.classList.remove("correct", "wrong");
+        });
+        btn.classList.add(ok ? "correct" : "wrong");
+        const fb = document.getElementById(mid + "-quiz-fb");
+        fb.className = "feedback show " + (ok ? "good" : "bad");
+        fb.textContent = ok
+          ? "Correct. You may continue."
+          : "Review the module before moving on.";
+        if (ok) {
+          state.xp = (state.xp || 0) + 10;
+          save();
+        }
+      }
+      function refreshActivity(mid) {
+        const box = document.getElementById(mid + "-activity");
+        box.querySelectorAll(".opt").forEach((b) => {
+          b.disabled = false;
+          b.classList.remove("correct", "wrong");
+        });
+        const fb = document.getElementById(mid + "-activity-fb");
+        fb.className = "feedback";
+        fb.textContent = "";
+      }
+      function refreshQuiz(mid) {
+        const box = document.getElementById(mid + "-quiz");
+        box.querySelectorAll(".opt").forEach((b) => {
+          b.disabled = false;
+          b.classList.remove("correct", "wrong");
+        });
+        const fb = document.getElementById(mid + "-quiz-fb");
+        fb.className = "feedback";
+        fb.textContent = "";
+      }
+      function answerFinal(qi, oi, btn) {
+        const card = document.getElementById("final-card-" + qi);
+        const correct = Number(card.dataset.correct);
+        card.querySelectorAll(".opt").forEach((b) => {
+          b.disabled = true;
+          b.classList.remove("correct", "wrong");
+        });
+        btn.classList.add(oi === correct ? "correct" : "wrong");
+        state.final[qi] = oi === correct;
+        const fb = document.getElementById("final-fb-" + qi);
+        fb.className = "feedback show " + (oi === correct ? "good" : "bad");
+        fb.textContent =
+          oi === correct ? "Correct." : "Incorrect. Review the related module.";
+        save();
+      }
+      function submitFinal() {
+        const answered = Object.keys(state.final).length;
+        if (answered < 10) {
+          alert("Please answer all final assessment questions.");
+          return;
+        }
+        const correct = Object.values(state.final).filter(Boolean).length;
+        const pct = Math.round((correct / 10) * 100);
+        document.getElementById("scoreText").textContent = pct + "%";
+        const cert = document.getElementById("certificate");
+        cert.classList.add("show");
+        if (pct >= 80) {
+          modules.forEach((m) => (state.done[m] = true));
+          state.xp = (state.xp || 0) + 50;
+          save();
+        }
+        cert.scrollIntoView({ behavior: "smooth" });
+      }
+      function refreshAssessment() {
+        state.final = {};
+        save();
+        document.querySelectorAll(".final-q").forEach((card, qi) => {
+          card.querySelectorAll(".opt").forEach((b) => {
+            b.disabled = false;
+            b.classList.remove("correct", "wrong");
+          });
+          const fb = document.getElementById("final-fb-" + qi);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+        document.getElementById("certificate").classList.remove("show");
+      }
+      function speakModule(mid) {
+        stopSpeech();
+        if (!("speechSynthesis" in window)) {
+          alert("Narration is not supported in this browser.");
+          return;
+        }
+        const u = new SpeechSynthesisUtterance(moduleText[mid]);
+        u.rate = 0.92;
+        u.pitch = 1;
+        window.speechSynthesis.speak(u);
+      }
+      function pauseSpeech() {
+        if (!("speechSynthesis" in window)) return;
+        if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+        else window.speechSynthesis.pause();
+      }
+      function stopSpeech() {
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      }
+      updateProgress();
+    </script>
+  </body>
+</html>

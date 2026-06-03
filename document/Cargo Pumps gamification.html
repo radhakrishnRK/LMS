@@ -1,0 +1,1385 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cargo Pumps — Operation, Performance and Safety</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      .option.sel {
+        background: #dbeafe !important;
+        border-color: #2563eb !important;
+        color: #1e3a8a !important;
+        transform: scale(1.02);
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #fff;
+        color: #142033;
+        min-height: 100vh;
+        overflow-x: hidden;
+        line-height: 1.55;
+      }
+      :root {
+        --blue: #1d4ed8;
+        --navy: #0f172a;
+        --slate: #475569;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --soft: #f8fafc;
+        --red: #dc2626;
+        --redbg: #fef2f2;
+        --yellow: #d97706;
+        --yellowbg: #fffbeb;
+        --green: #15803d;
+        --greenbg: #f0fdf4;
+        --purple: #6d28d9;
+        --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        --radius: 16px;
+      }
+      #progressWrap {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: var(--line);
+        z-index: 50;
+      }
+      #progressBar {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--red),
+          var(--yellow),
+          var(--green)
+        );
+        width: 0%;
+        transition: 0.4s;
+      }
+      nav {
+        position: fixed;
+        top: 5px;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.96);
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        z-index: 49;
+        backdrop-filter: blur(10px);
+      }
+      .brand {
+        font-weight: 800;
+        color: var(--navy);
+        letter-spacing: 0.02em;
+      }
+      .brand span {
+        color: var(--blue);
+      }
+      .navmeta {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .points {
+        background: #eff6ff;
+        color: var(--blue);
+        border: 1px solid #bfdbfe;
+        border-radius: 999px;
+        padding: 6px 13px;
+        font-weight: 800;
+        font-size: 13px;
+      }
+      main {
+        padding-top: 65px;
+      }
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: fade 0.25s ease;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .wrap {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 28px 22px 70px;
+      }
+      .hero {
+        min-height: calc(100vh - 65px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #fff, #f8fafc);
+      }
+      .heroBox {
+        max-width: 820px;
+        text-align: center;
+        padding: 36px;
+      }
+      .badge {
+        display: inline-block;
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 999px;
+        padding: 8px 16px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .hero h1 {
+        font-size: clamp(36px, 6vw, 70px);
+        line-height: 0.98;
+        margin: 18px 0 12px;
+        color: var(--navy);
+        letter-spacing: -0.04em;
+      }
+      .hero h1 span {
+        color: var(--blue);
+      }
+      .hero p {
+        color: var(--slate);
+        font-size: 17px;
+        max-width: 680px;
+        margin: 0 auto 22px;
+      }
+      .missionGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin: 28px 0;
+      }
+      .mission {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px;
+        text-align: left;
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: 0.16s;
+      }
+      .mission:hover {
+        transform: translateY(-2px);
+        border-color: #93c5fd;
+      }
+      .mission.done {
+        background: var(--greenbg);
+        border-color: #86efac;
+      }
+      .mi {
+        font-size: 28px;
+      }
+      .mission b {
+        display: block;
+        margin-top: 8px;
+        color: var(--navy);
+      }
+      .mission small {
+        color: var(--muted);
+      }
+      button {
+        font-family: inherit;
+      }
+      .btn {
+        border: 0;
+        border-radius: 12px;
+        background: var(--blue);
+        color: #fff;
+        font-weight: 800;
+        padding: 12px 20px;
+        cursor: pointer;
+        box-shadow: 0 8px 16px rgba(29, 78, 216, 0.18);
+        transition: 0.15s;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .btn.secondary {
+        background: #fff;
+        color: var(--slate);
+        border: 1px solid var(--line);
+        box-shadow: none;
+      }
+      .btn.red {
+        background: var(--red);
+      }
+      .btn.yellow {
+        background: var(--yellow);
+      }
+      .btn.green {
+        background: var(--green);
+      }
+      .btn.purple {
+        background: var(--purple);
+      }
+      .btn.small {
+        padding: 8px 12px;
+        font-size: 12px;
+        border-radius: 10px;
+      }
+      .navBtns {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 22px;
+        border-top: 1px solid var(--line);
+        padding-top: 20px;
+      }
+      .crumbs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+      }
+      .crumb {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 999px;
+        padding: 7px 11px;
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .crumb.active {
+        background: var(--blue);
+        color: #fff;
+        border-color: var(--blue);
+      }
+      .crumb.done {
+        background: var(--greenbg);
+        color: var(--green);
+        border-color: #86efac;
+      }
+      .head {
+        display: grid;
+        grid-template-columns: 70px 1fr;
+        gap: 18px;
+        align-items: center;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-left: 6px solid var(--blue);
+        box-shadow: var(--shadow);
+        border-radius: 0 var(--radius) var(--radius) 0;
+        padding: 22px;
+        margin-bottom: 18px;
+      }
+      .head .icon {
+        font-size: 46px;
+      }
+      .head h2 {
+        font-size: 30px;
+        color: var(--navy);
+        line-height: 1.1;
+      }
+      .head p {
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 22px;
+        margin-bottom: 18px;
+        box-shadow: var(--shadow);
+      }
+      .label {
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--blue);
+        margin-bottom: 10px;
+      }
+      .q {
+        font-weight: 800;
+        color: var(--navy);
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      .fact {
+        background: var(--soft);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      .fact b {
+        display: block;
+        color: var(--navy);
+        margin-bottom: 5px;
+      }
+      .call {
+        border-left: 5px solid;
+        padding: 14px 16px;
+        border-radius: 0 12px 12px 0;
+        margin: 12px 0;
+      }
+      .call.red {
+        background: var(--redbg);
+        border-color: var(--red);
+        color: #7f1d1d;
+      }
+      .call.yellow {
+        background: var(--yellowbg);
+        border-color: var(--yellow);
+        color: #78350f;
+      }
+      .call.green {
+        background: var(--greenbg);
+        border-color: var(--green);
+        color: #14532d;
+      }
+      .svgBox {
+        background: var(--soft);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 10px;
+        margin: 14px 0;
+        text-align: center;
+        overflow: hidden;
+      }
+      .svgBox svg {
+        max-width: 100%;
+        height: auto;
+      }
+      .mcq {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .option {
+        background: var(--soft);
+        border: 2px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        text-align: left;
+        cursor: pointer;
+        color: var(--slate);
+      }
+      .option:hover:not(:disabled) {
+        border-color: #93c5fd;
+        background: #eff6ff;
+      }
+      .option.correct {
+        background: var(--greenbg) !important;
+        border-color: #22c55e !important;
+        color: var(--green) !important;
+      }
+      .option.wrong {
+        background: var(--redbg) !important;
+        border-color: #ef4444 !important;
+        color: var(--red) !important;
+      }
+      .feedback {
+        display: none;
+        margin-top: 10px;
+        padding: 11px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+      }
+      .feedback.show.ok {
+        display: block;
+        background: var(--greenbg);
+        color: var(--green);
+      }
+      .feedback.show.bad {
+        display: block;
+        background: var(--redbg);
+        color: var(--red);
+      }
+      .refreshRow {
+        margin-top: 10px;
+      }
+      .match {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .matchCol {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .matchItem {
+        border: 2px solid var(--line);
+        background: var(--soft);
+        border-radius: 12px;
+        padding: 12px;
+        cursor: pointer;
+        color: var(--slate);
+      }
+      .matchItem.sel {
+        background: #eff6ff;
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+      .matchItem.ok {
+        background: var(--greenbg);
+        border-color: #22c55e;
+        color: var(--green);
+        cursor: default;
+      }
+      .matchItem.bad {
+        background: var(--redbg);
+        border-color: #ef4444;
+        color: var(--red);
+      }
+      .stepList {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .step {
+        border: 2px solid var(--line);
+        background: var(--soft);
+        border-radius: 12px;
+        padding: 12px;
+        cursor: grab;
+      }
+      .step.drag {
+        opacity: 0.4;
+      }
+      .step.ok {
+        background: var(--greenbg);
+        border-color: #22c55e;
+        color: var(--green);
+      }
+      .decisionGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .decision {
+        border: 2px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+        cursor: pointer;
+        background: #fff;
+      }
+      .decision.red:hover,
+      .decision.red.sel {
+        background: var(--redbg);
+        border-color: var(--red);
+      }
+      .decision.yellow:hover,
+      .decision.yellow.sel {
+        background: var(--yellowbg);
+        border-color: var(--yellow);
+      }
+      .decision.green:hover,
+      .decision.green.sel {
+        background: var(--greenbg);
+        border-color: var(--green);
+      }
+      .meter {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .rangeRow label {
+        font-weight: 800;
+        color: var(--navy);
+      }
+      .rangeRow input {
+        width: 100%;
+        margin-top: 8px;
+      }
+      .hotDots button {
+        position: absolute;
+        border: 3px solid var(--red);
+        background: rgba(220, 38, 38, 0.12);
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        cursor: pointer;
+      }
+      .hotDots button.found {
+        border-color: var(--green);
+        background: rgba(21, 128, 61, 0.18);
+      }
+      .hotspot {
+        position: relative;
+        max-width: 760px;
+        margin: 0 auto;
+      }
+      .toast {
+        display: none;
+        margin-top: 10px;
+        padding: 12px;
+        border-radius: 12px;
+        background: #eff6ff;
+        color: #1e3a8a;
+      }
+      .toast.show {
+        display: block;
+      }
+      .narration {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+      .scorePanel {
+        text-align: center;
+      }
+      .score {
+        font-size: 72px;
+        font-weight: 900;
+        line-height: 1;
+        color: var(--blue);
+      }
+      .cert {
+        display: none;
+        background: linear-gradient(135deg, #fff, #eff6ff);
+        border: 2px solid #bfdbfe;
+        border-radius: 20px;
+        padding: 28px;
+        text-align: center;
+        margin-top: 20px;
+      }
+      .cert.show {
+        display: block;
+      }
+      .cert h3 {
+        font-size: 28px;
+        color: var(--navy);
+      }
+      .pill {
+        display: inline-block;
+        padding: 4px 9px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .pill.red {
+        background: var(--redbg);
+        color: var(--red);
+      }
+      .pill.yellow {
+        background: var(--yellowbg);
+        color: var(--yellow);
+      }
+      .pill.green {
+        background: var(--greenbg);
+        color: var(--green);
+      }
+      @media (max-width: 760px) {
+        .missionGrid,
+        .grid2,
+        .decisionGrid,
+        .match {
+          grid-template-columns: 1fr;
+        }
+        .head {
+          grid-template-columns: 1fr;
+          text-align: left;
+        }
+        nav {
+          padding: 0 12px;
+        }
+        .navmeta {
+          display: none;
+        }
+        .heroBox {
+          padding: 22px;
+        }
+        .wrap {
+          padding: 18px 14px 60px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="progressWrap"><div id="progressBar"></div></div>
+    <nav>
+      <div class="brand">⚙️ Cargo Pumps <span>Operations</span></div>
+      <div class="navmeta" id="navMeta">STCW P2 · Tanker Operations</div>
+      <div class="points" id="points">0 pts</div>
+    </nav>
+    <main>
+      <section class="screen hero active" id="screen-home">
+        <div class="heroBox">
+          <div class="badge">P2 Operations · Tanker Operations</div>
+          <h1>
+            Cargo Pumps<br /><span>Operation, Performance and Safety</span>
+          </h1>
+          <p>
+            An interactive course for officers and engineers involved in tanker
+            cargo operations. You will practise pump start-up, monitoring,
+            abnormal condition response, pump-room safety, stripping and
+            emergency shutdown.
+          </p>
+          <div class="missionGrid" id="missionGrid"></div>
+          <button class="btn" onclick="goTo(0)">Start Course →</button>
+        </div>
+      </section>
+      <section class="screen" id="screen-module">
+        <div class="wrap">
+          <div class="crumbs" id="crumbs"></div>
+          <div class="head">
+            <div class="icon" id="mIcon"></div>
+            <div>
+              <p id="mMeta"></p>
+              <h2 id="mTitle"></h2>
+              <p id="mDesc"></p>
+              <div class="narration">
+                <button class="btn small green" onclick="speakModule()">
+                  ▶ Play narration</button
+                ><button class="btn small secondary" onclick="pauseNarration()">
+                  ⏸ Pause / Resume</button
+                ><button class="btn small red" onclick="stopNarration()">
+                  ■ Stop
+                </button>
+              </div>
+            </div>
+          </div>
+          <div id="moduleContent"></div>
+          <div class="navBtns">
+            <button class="btn secondary" onclick="prevScreen()">
+              ← Previous</button
+            ><button class="btn" onclick="nextScreen()">Next →</button>
+          </div>
+        </div>
+      </section>
+      <section class="screen" id="screen-assess">
+        <div class="wrap">
+          <div class="head">
+            <div class="icon">🎯</div>
+            <div>
+              <p>Final Assessment · Cargo Pump Operation</p>
+              <h2>Operational Readiness Check</h2>
+              <p>Pass mark: 80%. You may refresh and try again.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="label">Final quiz</div>
+            <div id="assessment"></div>
+            <div class="refreshRow">
+              <button
+                class="btn small secondary"
+                onclick="renderAssessment(true)"
+              >
+                ↻ Refresh assessment
+              </button>
+            </div>
+            <button
+              class="btn green"
+              style="margin-top: 16px; width: 100%"
+              onclick="submitAssessment()"
+            >
+              Submit final assessment
+            </button>
+          </div>
+          <div class="card scorePanel" id="resultPanel" style="display: none">
+            <div class="score" id="scorePct">0%</div>
+            <h2 id="verdict">Result</h2>
+            <p id="verdictText"></p>
+            <div class="cert" id="cert">
+              <div style="font-size: 52px">🏆</div>
+              <h3>Course Completed</h3>
+              <p>Cargo Pumps — Operation, Performance and Safety</p>
+              <p>
+                This screen indicates successful completion of the interactive
+                course assessment.
+              </p>
+            </div>
+          </div>
+          <div class="navBtns">
+            <button class="btn secondary" onclick="goTo(modules.length - 1)">
+              ← Back to Module 6</button
+            ><button class="btn" onclick="goHome()">Course Home</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const modules = [
+        {
+          icon: "⚙️",
+          title: "Pump System Anatomy",
+          meta: "Module 1 of 6 · Cargo pump foundations",
+          desc: "Know the pump, pipeline and valve system before operating it.",
+          narr: "Cargo pumps are not just machinery. They are part of a complete cargo transfer system. Before starting any pump, the officer and engineer must understand the cargo line-up, suction path, discharge path, manifold valves, stripping line, pressure limits and communication chain. A wrong valve or blocked discharge can damage the pump, rupture a line, contaminate cargo or create pollution.",
+          content: "m1",
+        },
+        {
+          icon: "▶️",
+          title: "Start-up and Line-up Sequence",
+          meta: "Module 2 of 6 · Safe pump starting",
+          desc: "Practise the correct pre-start checks and pump start-up sequence.",
+          narr: "A cargo pump must never be started blindly. The safe sequence begins with the cargo plan, ship shore agreement and confirmation of communication. Next, verify the correct line-up, open the suction and discharge path, confirm venting and priming where required, check lubrication, cooling and power supply, and then start slowly. Increase discharge pressure in a controlled manner only after shore confirms readiness.",
+          content: "m2",
+        },
+        {
+          icon: "📈",
+          title: "Performance Monitoring",
+          meta: "Module 3 of 6 · Flow, pressure and efficiency",
+          desc: "Read the signs: pressure, ampere load, vibration, temperature and flow.",
+          narr: "A good operator watches trends, not just alarms. Pump discharge pressure, suction pressure, motor current, temperature, vibration and cargo flow must make sense together. Falling pressure with rising current may indicate a blockage. Noise and vibration may indicate cavitation. Sudden pressure spikes may mean a valve has been closed against the pump.",
+          content: "m3",
+        },
+        {
+          icon: "🌊",
+          title: "Cavitation, Surge and Abnormal Conditions",
+          meta: "Module 4 of 6 · Pump protection",
+          desc: "Recognise pump distress before it becomes equipment failure.",
+          narr: "Cavitation happens when the pump suction pressure falls and vapour bubbles form inside the pump. These bubbles collapse violently and damage impellers and casings. Surge and hammer can occur from sudden valve movement or rapid changes in flow. The operator must reduce speed, verify suction, check tank level, avoid throttling on suction and communicate immediately with shore.",
+          content: "m4",
+        },
+        {
+          icon: "☠️",
+          title: "Pump Room and Enclosed Space Safety",
+          meta: "Module 5 of 6 · Highest-risk tanker space",
+          desc: "Control gas, ventilation, alarms, entry and rescue risk.",
+          narr: "The pump room is among the most dangerous spaces on a tanker. It contains cargo piping, valves, drains and possible vapour leaks. Hydrocarbon vapour and hydrogen sulphide may accumulate at low levels. Entry requires ventilation, atmosphere testing, permit control, communication and standby arrangements. No one enters alone, and no rescue attempt is made without proper breathing apparatus.",
+          content: "m5",
+        },
+        {
+          icon: "🛑",
+          title: "Shutdown, Stripping and Emergencies",
+          meta: "Module 6 of 6 · Safe completion and emergency response",
+          desc: "Finish safely and respond correctly to leaks, trips, alarms and fire.",
+          narr: "A safe cargo operation ends with controlled shutdown, stripping, draining, record keeping and checks for leakage or pressure trapped in lines. Emergency situations demand clear priorities: stop cargo transfer, raise the alarm, shut valves as directed, activate emergency shutdown and protect people first. Do not restart a tripped pump until the cause is understood and corrected.",
+          content: "m6",
+        },
+      ];
+      let current = 0,
+        points = 0;
+      const done = new Set();
+      let selected = null,
+        utter = null;
+      const qs = {
+        m1: {
+          q: "Which statement best describes a cargo pump system?",
+          a: 1,
+          o: [
+            "Only the pump and motor",
+            "A complete arrangement of pump, suction, discharge, valves, lines, manifold, controls and safety devices",
+            "Only the manifold valves",
+            "Only the hydraulic power pack",
+          ],
+          why: "A pump is only one part of the cargo transfer system. Safe operation depends on the complete line-up and controls.",
+        },
+        m2: {
+          q: "Before starting a cargo pump, what must be confirmed first?",
+          a: 2,
+          o: [
+            "The final cargo documents are printed",
+            "The pump room door is open",
+            "Cargo plan, ship-shore communication and correct line-up are confirmed",
+            "The pump is started at maximum speed",
+          ],
+          why: "Safe start-up begins with planning, communication and line-up confirmation.",
+        },
+        m3: {
+          q: "A rising motor current with poor flow may indicate:",
+          a: 0,
+          o: [
+            "Restriction, overload or blocked discharge",
+            "Perfect pump efficiency",
+            "Empty tank only",
+            "Normal stripping completion",
+          ],
+          why: "High current with poor flow is an abnormal condition and needs immediate investigation.",
+        },
+        m4: {
+          q: "Cavitation is most likely when:",
+          a: 3,
+          o: [
+            "Discharge pressure is high and steady",
+            "The cargo plan is signed",
+            "The manifold watch is relieved",
+            "Suction pressure is too low and vapour bubbles form in the pump",
+          ],
+          why: "Cavitation is caused by inadequate suction conditions and can damage the pump quickly.",
+        },
+        m5: {
+          q: "The safest rule for pump-room entry is:",
+          a: 1,
+          o: [
+            "Enter quickly if the alarm is silent",
+            "Ventilate, test atmosphere, use permit control and maintain communication",
+            "Enter alone but carry a torch",
+            "Trust the smell of the space",
+          ],
+          why: "Pump-room entry requires strict enclosed space controls and continuous awareness.",
+        },
+        m6: {
+          q: "After a cargo pump trips unexpectedly, the correct first action is:",
+          a: 2,
+          o: [
+            "Restart immediately",
+            "Open every valve",
+            "Stop and investigate cause before restart",
+            "Ignore it if shore wants faster discharge",
+          ],
+          why: "A trip is a protective action. Restarting without investigation can escalate equipment damage or cargo incident.",
+        },
+      };
+      const assessQs = [
+        [
+          "What is the main purpose of pre-start line-up checks?",
+          1,
+          [
+            "To reduce paperwork",
+            "To confirm the intended cargo path is open and safe",
+            "To increase cargo temperature",
+            "To avoid using radios",
+          ],
+        ],
+        [
+          "Which condition suggests possible cavitation?",
+          0,
+          [
+            "Rattling noise, vibration and unstable discharge pressure",
+            "Smooth running and stable suction",
+            "Low motor current with normal flow",
+            "Fresh paint in pump room",
+          ],
+        ],
+        [
+          "Where should flow normally be controlled on a centrifugal cargo pump?",
+          2,
+          [
+            "By closing suction valve",
+            "By opening drain valves",
+            "By discharge control / pump speed as applicable",
+            "By removing gauges",
+          ],
+        ],
+        [
+          "What is the correct response to a hydrocarbon gas alarm in pump room?",
+          1,
+          [
+            "Silence alarm and continue",
+            "Stop affected operations, inform bridge/control room and follow emergency procedure",
+            "Send the youngest rating to check",
+            "Increase pump speed",
+          ],
+        ],
+        [
+          "Why is communication with shore important during pump operations?",
+          3,
+          [
+            "For courtesy only",
+            "Only for final paperwork",
+            "It is not required",
+            "Shore valve changes can create surge, pressure spikes or no-flow conditions",
+          ],
+        ],
+        [
+          "Which reading is especially important for electric motor driven pumps?",
+          0,
+          [
+            "Motor current / ampere load",
+            "Paint colour",
+            "Cabin temperature",
+            "Clock time only",
+          ],
+        ],
+        [
+          "A blocked discharge line can cause:",
+          2,
+          [
+            "Better efficiency",
+            "Lower risk",
+            "Pressure rise, overload and possible line or pump damage",
+            "Automatic cargo heating",
+          ],
+        ],
+        [
+          "Before entering a pump room during cargo operations, the crew must:",
+          1,
+          [
+            "Enter fast and come out fast",
+            "Follow permit, ventilation, gas testing and communication requirements",
+            "Rely on nose smell only",
+            "Carry a mobile phone instead of detector",
+          ],
+        ],
+        [
+          "During stripping, the operator must be careful because:",
+          3,
+          [
+            "No monitoring is needed",
+            "The pump becomes stronger",
+            "Cargo cannot vapourise",
+            "Low tank level can lead to suction loss and pump damage",
+          ],
+        ],
+        [
+          "What is the safest restart philosophy after any abnormal pump stop?",
+          0,
+          [
+            "Find and correct the cause before restart",
+            "Restart repeatedly until it works",
+            "Ask shore to increase backpressure",
+            "Bypass alarms permanently",
+          ],
+        ],
+      ];
+      function $(id) {
+        return document.getElementById(id);
+      }
+      function show(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        $(id).classList.add("active");
+        window.scrollTo(0, 0);
+        updateProgress();
+      }
+      function goHome() {
+        stopNarration();
+        show("screen-home");
+        renderHome();
+      }
+      function goTo(i) {
+        stopNarration();
+        current = i;
+        renderModule();
+        show("screen-module");
+      }
+      function nextScreen() {
+        if (current < modules.length - 1) goTo(current + 1);
+        else {
+          renderAssessment(false);
+          show("screen-assess");
+        }
+      }
+      function prevScreen() {
+        if (current > 0) goTo(current - 1);
+        else goHome();
+      }
+      function markDone(i) {
+        done.add(i);
+        points += 10;
+        updateProgress();
+        renderHome();
+      }
+      function updateProgress() {
+        let pct = Math.round((done.size / modules.length) * 100);
+        $("progressBar").style.width = pct + "%";
+        $("points").textContent = points + " pts";
+      }
+      function renderHome() {
+        $("missionGrid").innerHTML = modules
+          .map(
+            (m, i) =>
+              `<div class="mission ${done.has(i) ? "done" : ""}" onclick="goTo(${i})"><div class="mi">${m.icon}</div><b>${i + 1}. ${m.title}</b><small>${m.desc}</small></div>`,
+          )
+          .join("");
+      }
+      function crumbs() {
+        return (
+          modules
+            .map(
+              (m, i) =>
+                `<span class="crumb ${i === current ? "active" : ""} ${done.has(i) ? "done" : ""}" onclick="goTo(${i})">M${i + 1}</span>`,
+            )
+            .join("") +
+          `<span class="crumb" onclick="renderAssessment(false);show('screen-assess')">ASSESS</span>`
+        );
+      }
+      function renderModule() {
+        let m = modules[current];
+        $("crumbs").innerHTML = crumbs();
+        $("mIcon").textContent = m.icon;
+        $("mMeta").textContent = m.meta;
+        $("mTitle").textContent = m.title;
+        $("mDesc").textContent = m.desc;
+        $("moduleContent").innerHTML =
+          contentFor(m.content) + quizBlock(m.content);
+        initInteractions(m.content);
+      }
+      function svgPump() {
+        return `<div class="svgBox"><svg viewBox="0 0 760 260"><rect width="760" height="260" rx="20" fill="#f8fafc"/><rect x="30" y="58" width="150" height="105" rx="12" fill="#dbeafe" stroke="#60a5fa"/><text x="105" y="102" text-anchor="middle" font-weight="800" fill="#1e3a8a">CARGO TANK</text><path d="M180 112 H292" stroke="#334155" stroke-width="16"/><circle cx="340" cy="112" r="48" fill="#fff" stroke="#1d4ed8" stroke-width="7"/><path d="M325 92 L367 112 L325 132 Z" fill="#1d4ed8"/><text x="340" y="184" text-anchor="middle" font-weight="800" fill="#0f172a">CARGO PUMP</text><path d="M388 112 H570" stroke="#334155" stroke-width="16"/><rect x="570" y="74" width="130" height="76" rx="12" fill="#fffbeb" stroke="#f59e0b"/><text x="635" y="106" text-anchor="middle" font-weight="800" fill="#78350f">MANIFOLD</text><text x="635" y="124" text-anchor="middle" font-size="12" fill="#78350f">to shore</text><circle cx="228" cy="112" r="20" fill="#fff" stroke="#dc2626" stroke-width="5"/><text x="228" y="117" text-anchor="middle" font-weight="800" fill="#dc2626">S</text><circle cx="508" cy="112" r="20" fill="#fff" stroke="#15803d" stroke-width="5"/><text x="508" y="117" text-anchor="middle" font-weight="800" fill="#15803d">D</text><text x="228" y="150" text-anchor="middle" font-size="12" fill="#64748b">Suction valve</text><text x="508" y="150" text-anchor="middle" font-size="12" fill="#64748b">Discharge valve</text><text x="380" y="230" text-anchor="middle" fill="#475569">Safe operation depends on the full path — tank → suction → pump → discharge → manifold → shore.</text></svg></div>`;
+      }
+      function contentFor(key) {
+        if (key === "m1")
+          return `<div class="card"><div class="label">Read</div>${svgPump()}<div class="grid2"><div class="fact"><b>Centrifugal cargo pump</b>Common on oil tankers. It develops flow by rotating an impeller. It must not be run against a closed discharge and must not be starved on suction.</div><div class="fact"><b>Deepwell pump</b>Used commonly on product and chemical tankers. The pump is located in or near the tank, with drive arrangement above. Each tank may have its own pump.</div><div class="fact"><b>Stripping system</b>Used to remove remaining cargo at low tank level. It requires special care because suction loss and vapour entrainment can damage pumps.</div><div class="fact"><b>Safety devices</b>Pressure gauges, temperature monitoring, trips, alarms, relief arrangements, emergency stop and communication are part of the safety system.</div></div><div class="call yellow"><b>Yellow caution:</b> Before touching any pump control, first understand the valve line-up and cargo path.</div></div><div class="card"><div class="label">Activity — match the component</div><div class="q">Match each component to its purpose.</div><div class="match" id="match-m1"></div><div class="toast" id="toast-m1"></div><div class="refreshRow"><button class="btn small secondary" onclick="resetMatch('m1')">↻ Refresh activity</button></div></div>`;
+        if (key === "m2")
+          return `<div class="card"><div class="label">Read</div><div class="grid2"><div class="fact"><b>1. Confirm plan</b>Grade, tank, line, pump, manifold and rate must match the agreed cargo plan.</div><div class="fact"><b>2. Confirm communication</b>Bridge, cargo control room, pump room/engine room and shore must have working communication.</div><div class="fact"><b>3. Confirm line-up</b>Suction, discharge, crossover and manifold valves must be set correctly. Unused lines must be isolated.</div><div class="fact"><b>4. Start slowly</b>Start at low speed or controlled opening. Increase only after pressure and flow are stable.</div></div><div class="call red"><b>Red stop:</b> Never start if the discharge path is blocked or shore has not confirmed readiness.</div></div><div class="card"><div class="label">Activity — sequence drill</div><div class="q">Drag the start-up steps into the safest order.</div><div class="stepList" id="steps-m2"></div><button class="btn small purple" onclick="checkSteps('m2')">✓ Check sequence</button><button class="btn small secondary" onclick="resetSteps('m2')">↻ Refresh activity</button><div class="toast" id="toast-m2"></div></div>`;
+        if (key === "m3")
+          return `<div class="card"><div class="label">Read</div><div class="svgBox"><svg viewBox="0 0 760 150"><rect width="760" height="150" rx="18" fill="#f8fafc"/><line x1="70" y1="112" x2="690" y2="112" stroke="#cbd5e1" stroke-width="3"/><polyline points="70,100 180,92 300,75 420,60 540,55 690,50" fill="none" stroke="#1d4ed8" stroke-width="6"/><polyline points="70,108 180,98 300,90 420,105 540,122 690,132" fill="none" stroke="#dc2626" stroke-width="5" stroke-dasharray="10,8"/><text x="160" y="38" fill="#1d4ed8" font-weight="900">Normal pressure trend</text><text x="510" y="38" fill="#dc2626" font-weight="900">Abnormal vibration trend</text><text x="380" y="138" text-anchor="middle" fill="#475569">Watch the trend — the first warning often appears before the alarm.</text></svg></div><div class="grid2"><div class="fact"><b>Discharge pressure</b>Shows resistance and backpressure. Sudden increase may indicate shore valve movement or restriction.</div><div class="fact"><b>Suction pressure</b>Low suction pressure can lead to cavitation, loss of flow and pump damage.</div><div class="fact"><b>Motor current</b>Rising amps can show overload, heavy cargo, restriction or mechanical distress.</div><div class="fact"><b>Temperature and vibration</b>Heat, vibration or abnormal sound are early warnings. Do not wait for failure.</div></div><div class="call green"><b>Green proceed:</b> Stable pressure, stable current, normal sound, normal vibration and agreed flow rate.</div></div><div class="card"><div class="label">Activity — operating status</div><div class="q">Set the readings and classify the pump condition.</div><div class="meter"><div class="rangeRow"><label>Discharge pressure: <span id="pVal">5</span> bar</label><input id="pRange" type="range" min="0" max="12" value="5" oninput="updateMeter()"></div><div class="rangeRow"><label>Motor current: <span id="aVal">60</span>% load</label><input id="aRange" type="range" min="0" max="120" value="60" oninput="updateMeter()"></div><div class="rangeRow"><label>Vibration: <span id="vVal">30</span>%</label><input id="vRange" type="range" min="0" max="100" value="30" oninput="updateMeter()"></div></div><div id="meterStatus" class="call green">Normal operating trend.</div><button class="btn small secondary" onclick="resetMeter()">↻ Refresh activity</button></div>`;
+        if (key === "m4")
+          return `<div class="card"><div class="label">Read</div><div class="grid2"><div class="fact"><b>Cavitation signs</b>Rattling sound, vibration, fluctuating pressure, falling flow and possible pump damage.</div><div class="fact"><b>Surge / hammer</b>May result from rapid valve closure, sudden pump stop or shore valve movement.</div><div class="fact"><b>No-flow operation</b>Running without flow overheats cargo and pump internals. It is dangerous and must be corrected.</div><div class="fact"><b>Operator response</b>Reduce rate, verify suction, check tank level, communicate, and stop if condition remains abnormal.</div></div></div><div class="card"><div class="label">Activity — choose the decision level</div><div class="q">A pump develops loud rattling noise, vibration increases and discharge pressure fluctuates. What is your decision?</div><div class="decisionGrid"><div class="decision green" onclick="chooseDecision(this,'wrong')"><b>Green</b><br>Continue at same speed</div><div class="decision yellow" onclick="chooseDecision(this,'partial')"><b>Yellow</b><br>Monitor for 30 minutes</div><div class="decision red" onclick="chooseDecision(this,'right')"><b>Red</b><br>Reduce/stop as required, investigate suction and inform cargo control</div></div><div class="toast" id="decisionToast"></div><button class="btn small secondary" onclick="resetDecision()">↻ Refresh activity</button></div>`;
+        if (key === "m5")
+          return `<div class="card"><div class="label">Read</div><div class="grid2"><div class="fact"><b>Ventilation</b>Mechanical ventilation must be operating before entry and during work.</div><div class="fact"><b>Atmosphere testing</b>Check oxygen, LEL, H₂S and toxic gases. Test low points because vapours collect there.</div><div class="fact"><b>Permit and standby</b>Entry requires authorization, communication and a standby person. No lone entry.</div><div class="fact"><b>Rescue discipline</b>Do not rush in to rescue. Use breathing apparatus and follow rescue plan.</div></div><div class="call red"><b>Red stop:</b> A silent alarm is not proof of safety. Use instruments and procedure.</div></div><div class="card"><div class="label">Activity — pump room hotspot</div><div class="q">Find the five danger points in the pump-room diagram.</div><div class="hotspot"><div class="svgBox"><svg viewBox="0 0 760 360"><rect width="760" height="360" rx="18" fill="#f8fafc"/><rect x="80" y="40" width="600" height="280" rx="18" fill="#e2e8f0" stroke="#94a3b8"/><text x="380" y="70" text-anchor="middle" font-weight="900" fill="#334155">PUMP ROOM</text><rect x="130" y="110" width="140" height="70" rx="12" fill="#fff" stroke="#1d4ed8" stroke-width="4"/><text x="200" y="150" text-anchor="middle" fill="#1d4ed8" font-weight="900">PUMP</text><path d="M270 145 H500" stroke="#334155" stroke-width="14"/><rect x="500" y="112" width="90" height="70" rx="10" fill="#fff" stroke="#334155"/><text x="545" y="150" text-anchor="middle" fill="#334155" font-weight="900">VALVES</text><rect x="155" y="235" width="460" height="34" rx="8" fill="#cbd5e1"/><text x="385" y="258" text-anchor="middle" fill="#64748b">LOW BILGE / VAPOUR COLLECTION AREA</text><text x="380" y="335" text-anchor="middle" fill="#475569">Tap: gas, leak, hot surface, low bilge, unsafe entry</text></svg></div><div class="hotDots"><button style="left:13%;top:62%" onclick="hot(this,'Hydrocarbon vapour collects in low bilge areas.')"></button><button style="left:66%;top:35%" onclick="hot(this,'Valve gland or flange leaks can release cargo vapour.')"></button><button style="left:25%;top:30%" onclick="hot(this,'Pump casing or bearing area may become hot or vibrate.')"></button><button style="left:80%;top:20%" onclick="hot(this,'Ventilation failure quickly increases enclosed-space risk.')"></button><button style="left:45%;top:12%" onclick="hot(this,'No entry without permit, testing, communication and standby.')"></button></div></div><div class="toast" id="hotToast">Found 0 / 5</div><button class="btn small secondary" onclick="resetHotspots()">↻ Refresh activity</button></div>`;
+        return `<div class="card"><div class="label">Read</div><div class="grid2"><div class="fact"><b>Controlled shutdown</b>Reduce rate, coordinate with shore, stop pump, close valves in correct order and drain/strip lines safely.</div><div class="fact"><b>Stripping</b>Low liquid level increases suction loss risk. Avoid running pumps dry.</div><div class="fact"><b>Emergency stop</b>Use ESD for fire, major leak, hose failure, loss of control, or immediate danger to life or environment.</div><div class="fact"><b>Records</b>Record timings, rates, stoppages, abnormal readings and actions taken.</div></div><div class="call yellow"><b>Yellow caution:</b> A rushed finish is where many errors happen — wrong valves, trapped pressure and unrecorded stoppages.</div></div><div class="card"><div class="label">Activity — emergency actions</div><div class="q">A manifold hose starts leaking during discharge. Put the first actions in order.</div><div class="stepList" id="steps-m6"></div><button class="btn small purple" onclick="checkSteps('m6')">✓ Check sequence</button><button class="btn small secondary" onclick="resetSteps('m6')">↻ Refresh activity</button><div class="toast" id="toast-m6"></div></div>`;
+      }
+      function quizBlock(key) {
+        let q = qs[key];
+        return `<div class="card"><div class="label">Module quiz</div><div class="q">${q.q}</div><div class="mcq" id="quiz-${key}">${q.o.map((o, i) => `<button class="option" onclick="answerQuiz('${key}',${i},this)">${String.fromCharCode(65 + i)}. ${o}</button>`).join("")}</div><div class="feedback" id="fb-${key}"></div><div class="refreshRow"><button class="btn small secondary" onclick="refreshQuiz('${key}')">↻ Refresh quiz</button></div></div>`;
+      }
+      function answerQuiz(key, i, btn) {
+        let q = qs[key],
+          fb = $("fb-" + key);
+        document
+          .querySelectorAll("#quiz-" + key + " .option")
+          .forEach((b, idx) => {
+            b.disabled = true;
+            if (idx === q.a) b.classList.add("correct");
+          });
+        if (i === q.a) {
+          fb.className = "feedback show ok";
+          fb.textContent = "Correct. " + q.why;
+          markDone(current);
+        } else {
+          btn.classList.add("wrong");
+          fb.className = "feedback show bad";
+          fb.textContent = "Not correct. " + q.why;
+        }
+      }
+      function refreshQuiz(key) {
+        let box = $("quiz-" + key),
+          q = qs[key];
+        box.innerHTML = q.o
+          .map(
+            (o, i) =>
+              `<button class="option" onclick="answerQuiz('${key}',${i},this)">${String.fromCharCode(65 + i)}. ${o}</button>`,
+          )
+          .join("");
+        let fb = $("fb-" + key);
+        fb.className = "feedback";
+        fb.textContent = "";
+      }
+      const matchData = {
+        m1: [
+          ["Suction valve", "Controls cargo flow from tank to pump"],
+          ["Discharge valve", "Controls output from pump to line/manifold"],
+          ["Manifold", "Ship-shore transfer connection"],
+          ["Stripping system", "Removes remaining cargo at low level"],
+        ],
+      };
+      let leftSel = null;
+      function initInteractions(key) {
+        if (key === "m1") resetMatch("m1");
+        if (key === "m2") resetSteps("m2");
+        if (key === "m3") updateMeter();
+        if (key === "m5") resetHotspots();
+        if (key === "m6") resetSteps("m6");
+      }
+      function resetMatch(id) {
+        let d = matchData[id],
+          left = d.map((x) => x[0]),
+          right = d.map((x) => x[1]).sort(() => Math.random() - 0.5);
+        $("match-" + id).innerHTML =
+          `<div class="matchCol">${left.map((x) => `<div class="matchItem" data-left="${x}" onclick="selLeft(this)">${x}</div>`).join("")}</div><div class="matchCol">${right.map((x) => `<div class="matchItem" data-right="${x}" onclick="selRight('${id}',this)">${x}</div>`).join("")}</div>`;
+        $("toast-" + id).className = "toast";
+        $("toast-" + id).textContent = "";
+        leftSel = null;
+      }
+      function selLeft(el) {
+        if (el.classList.contains("ok")) return;
+        document
+          .querySelectorAll("[data-left]")
+          .forEach((e) => e.classList.remove("sel"));
+        el.classList.add("sel");
+        leftSel = el;
+      }
+      function selRight(id, el) {
+        if (!leftSel || el.classList.contains("ok")) return;
+        let pair = matchData[id].find((x) => x[0] === leftSel.dataset.left);
+        if (pair && pair[1] === el.dataset.right) {
+          leftSel.className = "matchItem ok";
+          el.className = "matchItem ok";
+          leftSel = null;
+          let ok = document.querySelectorAll("#match-" + id + " .ok").length;
+          if (ok === matchData[id].length * 2) {
+            $("toast-" + id).className = "toast show";
+            $("toast-" + id).textContent = "All matched correctly. +10 pts";
+            markDone(current);
+          }
+        } else {
+          el.classList.add("bad");
+          setTimeout(() => el.classList.remove("bad"), 650);
+        }
+      }
+      const steps = {
+        m2: [
+          "Confirm cargo plan, grade, tank and agreed transfer rate",
+          "Confirm communication with bridge, engine room/pump room and shore",
+          "Verify suction, discharge, crossover and manifold line-up",
+          "Confirm pump readiness: lubrication, cooling, power, gauges and alarms",
+          "Start at low speed / controlled opening and monitor pressure/flow",
+          "Increase rate only after shore confirms stable receipt",
+        ],
+        m6: [
+          "Alert cargo control/bridge and shore: manifold leak",
+          "Stop or reduce cargo transfer using agreed emergency procedure",
+          "Close relevant valves / activate ESD as directed",
+          "Muster response team with PPE and contain spill",
+          "Investigate cause, record incident and do not restart until authorised",
+        ],
+      };
+      function resetSteps(id) {
+        let arr = [...steps[id]].sort(() => Math.random() - 0.5);
+        $("steps-" + id).innerHTML = arr
+          .map((s) => `<div class="step" draggable="true">${s}</div>`)
+          .join("");
+        addDrag(id);
+        $("toast-" + id).className = "toast";
+        $("toast-" + id).textContent = "";
+      }
+      function addDrag(id) {
+        let drag = null;
+        document.querySelectorAll("#steps-" + id + " .step").forEach((st) => {
+          st.ondragstart = (e) => {
+            drag = st;
+            st.classList.add("drag");
+          };
+          st.ondragend = (e) => {
+            st.classList.remove("drag");
+          };
+          st.ondragover = (e) => {
+            e.preventDefault();
+            let box = $("steps-" + id);
+            let after = [...box.querySelectorAll(".step:not(.drag)")].find(
+              (el) =>
+                e.clientY <=
+                el.getBoundingClientRect().top + el.offsetHeight / 2,
+            );
+            if (after) box.insertBefore(drag, after);
+            else box.appendChild(drag);
+          };
+        });
+      }
+      function checkSteps(id) {
+        let arr = [...document.querySelectorAll("#steps-" + id + " .step")].map(
+          (e) => e.textContent,
+        );
+        let correct = steps[id].every((s, i) => s === arr[i]);
+        if (correct) {
+          document
+            .querySelectorAll("#steps-" + id + " .step")
+            .forEach((e) => e.classList.add("ok"));
+          $("toast-" + id).className = "toast show";
+          $("toast-" + id).textContent = "Correct sequence. +10 pts";
+          markDone(current);
+        } else {
+          $("toast-" + id).className = "toast show";
+          $("toast-" + id).textContent =
+            "Not yet. Refresh or drag the steps until the safest order is shown.";
+        }
+      }
+      function updateMeter() {
+        let p = +$("pRange").value,
+          a = +$("aRange").value,
+          v = +$("vRange").value;
+        $("pVal").textContent = p;
+        $("aVal").textContent = a;
+        $("vVal").textContent = v;
+        let s = $("meterStatus");
+        if (p > 10 || a > 100 || v > 75) {
+          s.className = "call red";
+          s.innerHTML =
+            "<b>Red stop:</b> Abnormal readings. Reduce/stop as required and investigate before damage or unsafe pressure develops.";
+        } else if (p < 2 || a > 85 || v > 50) {
+          s.className = "call yellow";
+          s.innerHTML =
+            "<b>Yellow caution:</b> Trend is outside normal comfort zone. Inform control room and verify suction/discharge conditions.";
+        } else {
+          s.className = "call green";
+          s.innerHTML =
+            "<b>Green proceed:</b> Readings are stable and compatible with normal operation.";
+        }
+      }
+      function resetMeter() {
+        $("pRange").value = 5;
+        $("aRange").value = 60;
+        $("vRange").value = 30;
+        updateMeter();
+      }
+      function chooseDecision(el, res) {
+        document
+          .querySelectorAll(".decision")
+          .forEach((d) => d.classList.remove("sel"));
+        el.classList.add("sel");
+        let t = $("decisionToast");
+        t.className = "toast show";
+        if (res === "right") {
+          t.textContent =
+            "Correct. Treat this as red: probable cavitation or mechanical distress. Reduce/stop and investigate. +10 pts";
+          markDone(current);
+        } else if (res === "partial") {
+          t.textContent =
+            "Too weak. This is not just a watch item; damage can happen quickly.";
+        } else
+          t.textContent =
+            "Unsafe. Continuing at the same speed can destroy the pump.";
+      }
+      function resetDecision() {
+        document
+          .querySelectorAll(".decision")
+          .forEach((d) => d.classList.remove("sel"));
+        $("decisionToast").className = "toast";
+        $("decisionToast").textContent = "";
+      }
+      let hotCount = 0;
+      function hot(btn, msg) {
+        if (btn.classList.contains("found")) return;
+        btn.classList.add("found");
+        hotCount++;
+        $("hotToast").className = "toast show";
+        $("hotToast").textContent = `${msg} Found ${hotCount} / 5`;
+        if (hotCount === 5) {
+          $("hotToast").textContent = "All pump-room hazards found. +10 pts";
+          markDone(current);
+        }
+      }
+      function resetHotspots() {
+        hotCount = 0;
+        document
+          .querySelectorAll(".hotDots button")
+          .forEach((b) => b.classList.remove("found"));
+        $("hotToast").className = "toast";
+        $("hotToast").textContent = "Found 0 / 5";
+      }
+      function renderAssessment(shuffle) {
+        let arr = shuffle
+          ? [...assessQs].sort(() => Math.random() - 0.5)
+          : [...assessQs];
+
+        let html = "";
+
+        arr.forEach((x, i) => {
+          html += `
+      <div class="aQ" data-correct="${x[1]}">
+        <div class="q">${i + 1}. ${x[0]}</div>
+
+        <div class="mcq">
+    `;
+
+          x[2].forEach((o, j) => {
+            html += `
+        <button
+          type="button"
+          class="option"
+          data-idx="${j}"
+        >
+          ${String.fromCharCode(65 + j)}. ${o}
+        </button>
+      `;
+          });
+
+          html += `
+        </div>
+      </div>
+    `;
+        });
+
+        $("assessment").innerHTML = html;
+
+        // OPTION SELECTION
+        document.querySelectorAll("#assessment .mcq").forEach((mcq) => {
+          const options = mcq.querySelectorAll(".option");
+
+          options.forEach((btn) => {
+            btn.addEventListener("click", function () {
+              // remove previous selection
+              options.forEach((b) => {
+                b.classList.remove("sel");
+              });
+
+              // select current
+              this.classList.add("sel");
+            });
+          });
+        });
+
+        // RESET RESULT PANEL
+        $("resultPanel").style.display = "none";
+
+        // RESET OPTION STATES
+        document.querySelectorAll("#assessment .option").forEach((b) => {
+          b.disabled = false;
+          b.classList.remove("correct");
+          b.classList.remove("wrong");
+        });
+      }
+      function submitAssessment() {
+        let total = 0,
+          correct = 0;
+        document.querySelectorAll(".aQ").forEach((q) => {
+          total++;
+          let sel = q.querySelector(".sel");
+          let c = +q.dataset.correct;
+          q.querySelectorAll(".option").forEach((b) => {
+            let idx = +b.dataset.idx;
+            b.disabled = true;
+            if (idx === c) b.classList.add("correct");
+          });
+          if (sel && +sel.dataset.idx === c) correct++;
+          else if (sel) sel.classList.add("wrong");
+        });
+        let pct = Math.round((correct / total) * 100);
+        $("resultPanel").style.display = "block";
+        $("scorePct").textContent = pct + "%";
+        if (pct >= 80) {
+          $("verdict").textContent = "Passed";
+          $("verdictText").textContent =
+            "You have demonstrated the required operational understanding for this interactive course.";
+          $("cert").classList.add("show");
+          done.add(...modules.map((_, i) => i));
+          points += 20;
+          updateProgress();
+        } else {
+          $("verdict").textContent = "Try Again";
+          $("verdictText").textContent =
+            "Review the modules and refresh the assessment.";
+          $("cert").classList.remove("show");
+        }
+      }
+      function speakModule() {
+        stopNarration();
+        utter = new SpeechSynthesisUtterance(modules[current].narr);
+        utter.rate = 0.95;
+        utter.pitch = 1;
+        speechSynthesis.speak(utter);
+      }
+      function pauseNarration() {
+        if (speechSynthesis.speaking) {
+          if (speechSynthesis.paused) speechSynthesis.resume();
+          else speechSynthesis.pause();
+        }
+      }
+      function stopNarration() {
+        if ("speechSynthesis" in window) speechSynthesis.cancel();
+      }
+      renderHome();
+      updateProgress();
+    </script>
+  </body>
+</html>

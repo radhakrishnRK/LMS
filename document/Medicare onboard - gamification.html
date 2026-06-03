@@ -1,0 +1,4254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medical Care Onboard — STCW A-VI/4-2</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: #fafaf8;
+        color: #1c1c1e;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      :root {
+        --teal: #0d7377;
+        --teal-lt: #e8f5f5;
+        --teal-mid: #14a6a6;
+        --red: #c0392b;
+        --red-lt: #fdf0ee;
+        --red-mid: #e74c3c;
+        --amber: #c07d10;
+        --amber-lt: #fef9ee;
+        --amber-mid: #f39c12;
+        --green: #1a6b3c;
+        --green-lt: #edf7f2;
+        --green-mid: #27ae60;
+        --navy: #1a2332;
+        --steel: #4a5568;
+        --muted: #8896a5;
+        --white: #ffffff;
+        --bg: #fafaf8;
+        --bg2: #f5f5f2;
+        --border: #e5e5e0;
+        --border2: #d4d4cc;
+        --shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+        --radius: 10px;
+        --radius-sm: 7px;
+      }
+
+      /* ── PROGRESS ── */
+      #prog-wrap {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--border);
+        z-index: 300;
+      }
+      #prog-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--teal), var(--teal-mid));
+        width: 0%;
+        transition: width 0.5s ease;
+      }
+
+      /* ── NAV ── */
+      nav {
+        position: fixed;
+        top: 3px;
+        left: 0;
+        right: 0;
+        height: 52px;
+        background: rgba(255, 255, 255, 0.97);
+        border-bottom: 1px solid var(--border);
+        z-index: 299;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        backdrop-filter: blur(10px);
+      }
+      .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .nav-logo {
+        font-family: "Instrument Serif", serif;
+        font-size: 1.05rem;
+        color: var(--navy);
+      }
+      .nav-logo em {
+        font-style: italic;
+        color: var(--teal);
+      }
+      .nav-stcw {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        color: var(--muted);
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        padding: 2px 8px;
+        border-radius: 3px;
+      }
+      #nav-mod {
+        font-size: 11px;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+        letter-spacing: 0.04em;
+      }
+      #nav-pts {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--teal);
+        background: var(--teal-lt);
+        border: 1px solid rgba(13, 115, 119, 0.2);
+        padding: 3px 12px;
+        border-radius: 20px;
+        font-family: "DM Mono", monospace;
+      }
+
+      main {
+        padding-top: 55px;
+        min-height: 100vh;
+      }
+
+      /* ── SCREENS ── */
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: slideIn 0.35s ease;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── HERO ── */
+      #screen-hero {
+        background: var(--white);
+        min-height: calc(100vh - 55px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      #screen-hero.active {
+        display: flex;
+      }
+      .hero-inner {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+      }
+      .hero-label {
+        display: inline-block;
+        background: var(--teal-lt);
+        color: var(--teal);
+        border: 1px solid rgba(13, 115, 119, 0.2);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 5px 16px;
+        border-radius: 20px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+        font-family: "DM Mono", monospace;
+      }
+      .hero-icon {
+        font-size: 72px;
+        display: block;
+        margin-bottom: 1rem;
+      }
+      .hero-inner h1 {
+        font-family: "Instrument Serif", serif;
+        font-size: clamp(2rem, 5vw, 3rem);
+        color: var(--navy);
+        line-height: 1.1;
+        margin-bottom: 0.5rem;
+      }
+      .hero-inner h1 em {
+        font-style: italic;
+        color: var(--teal);
+      }
+      .hero-desc {
+        font-size: 14px;
+        color: var(--steel);
+        line-height: 1.75;
+        margin-bottom: 2rem;
+        font-weight: 300;
+        max-width: 460px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        max-width: 460px;
+        margin: 0 auto 2rem;
+      }
+      .hg-item {
+        background: var(--bg2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 8px;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-align: center;
+      }
+      .hg-item:hover {
+        border-color: var(--teal);
+        background: var(--teal-lt);
+      }
+      .hg-item.done {
+        border-color: var(--green-mid);
+        background: var(--green-lt);
+      }
+      .hg-item.done .hg-num {
+        color: var(--green);
+      }
+      .hg-icon {
+        font-size: 22px;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .hg-num {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        color: var(--teal);
+        letter-spacing: 0.1em;
+        margin-bottom: 2px;
+        font-weight: 500;
+      }
+      .hg-label {
+        font-size: 10px;
+        color: var(--muted);
+        line-height: 1.3;
+      }
+      .btn-hero {
+        background: var(--teal);
+        color: var(--white);
+        border: none;
+        padding: 13px 42px;
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        letter-spacing: 0.02em;
+      }
+      .btn-hero:hover {
+        background: var(--teal-mid);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(13, 115, 119, 0.3);
+      }
+
+      /* ── MODULE LAYOUT ── */
+      .mod-wrap {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 1.5rem 1.5rem 5rem;
+      }
+
+      /* ── BREADCRUMBS ── */
+      .bcrumbs {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+        align-items: center;
+      }
+      .bc {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        padding: 4px 10px;
+        border-radius: 3px;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        cursor: pointer;
+        background: var(--white);
+        transition: all 0.12s;
+        white-space: nowrap;
+      }
+      .bc:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+      .bc.active {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: var(--white);
+      }
+      .bc.done {
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+      }
+
+      /* ── MODULE HEADER ── */
+      .mod-hdr {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--teal);
+        border-radius: 0 var(--radius) var(--radius) 0;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.25rem;
+        box-shadow: var(--shadow);
+      }
+      .mod-icon-big {
+        font-size: 40px;
+        flex-shrink: 0;
+      }
+      .mh-num {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        color: var(--teal);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+      }
+      .mh-title {
+        font-family: "Instrument Serif", serif;
+        font-size: 1.4rem;
+        color: var(--navy);
+        line-height: 1.2;
+      }
+      .mh-desc {
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 4px;
+        font-weight: 300;
+      }
+
+      /* ── CARDS ── */
+      .card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+        margin-bottom: 1.1rem;
+        box-shadow: var(--shadow);
+      }
+      .card-label {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .card-label.read {
+        color: var(--teal);
+      }
+      .card-label.do {
+        color: var(--red);
+      }
+      .card-label.check {
+        color: #6d28d9;
+      }
+      .card-q {
+        font-family: "Instrument Serif", serif;
+        font-size: 1.1rem;
+        color: var(--navy);
+        margin-bottom: 0.9rem;
+        line-height: 1.5;
+      }
+
+      /* ── FACT GRID ── */
+      .fact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 0.75rem 0;
+      }
+      .fact-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.9rem;
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .fi {
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+      .ft {
+        font-size: 13px;
+        color: var(--steel);
+        line-height: 1.6;
+        font-weight: 300;
+      }
+      .ft strong {
+        color: var(--navy);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .callout {
+        border-radius: var(--radius-sm);
+        padding: 0.85rem 1.1rem;
+        margin: 0.75rem 0;
+        font-size: 13px;
+        line-height: 1.7;
+        border-left: 3px solid;
+        font-weight: 300;
+      }
+      .callout.danger {
+        background: var(--red-lt);
+        border-color: var(--red);
+        color: #7a1a12;
+      }
+      .callout.tip {
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+      }
+      .callout.info {
+        background: var(--teal-lt);
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+      .callout.warn {
+        background: var(--amber-lt);
+        border-color: var(--amber-mid);
+        color: var(--amber);
+      }
+      .callout strong {
+        font-weight: 600;
+      }
+
+      /* ── CLINICAL DATA TABLE ── */
+      .clin-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        margin: 0.75rem 0;
+      }
+      .clin-table th {
+        background: var(--bg2);
+        color: var(--steel);
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 2px solid var(--border2);
+        font-weight: 500;
+      }
+      .clin-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+        color: var(--steel);
+        line-height: 1.5;
+        vertical-align: top;
+        font-weight: 300;
+      }
+      .clin-table td:first-child {
+        color: var(--navy);
+        font-weight: 500;
+      }
+      .clin-table tr:hover td {
+        background: var(--bg2);
+      }
+      .tag {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 3px;
+        font-size: 10px;
+        font-weight: 600;
+        font-family: "DM Mono", monospace;
+      }
+      .tag-r {
+        background: var(--red-lt);
+        color: var(--red);
+        border: 1px solid rgba(192, 57, 43, 0.2);
+      }
+      .tag-g {
+        background: var(--green-lt);
+        color: var(--green);
+        border: 1px solid rgba(39, 174, 96, 0.2);
+      }
+      .tag-a {
+        background: var(--amber-lt);
+        color: var(--amber);
+        border: 1px solid rgba(243, 156, 18, 0.2);
+      }
+      .tag-t {
+        background: var(--teal-lt);
+        color: var(--teal);
+        border: 1px solid rgba(13, 115, 119, 0.2);
+      }
+
+      /* ── SORT ── */
+      .sort-list {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        width: 100%;
+      }
+      .sort-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--bg2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        cursor: grab;
+        user-select: none;
+        transition: all 0.12s;
+        width: 100%;
+        color: var(--steel) !important;
+        font-size: 13px;
+        font-weight: 400;
+      }
+      .sort-item:hover {
+        border-color: rgba(13, 115, 119, 0.4);
+        background: var(--teal-lt);
+      }
+      .sort-item.over {
+        border-color: var(--teal);
+        background: rgba(13, 115, 119, 0.08);
+        transform: scale(1.01);
+      }
+      .sort-item.dragging {
+        opacity: 0.3;
+        border: 1.5px dashed var(--teal);
+      }
+      .sort-item.correct-item {
+        background: var(--green-lt) !important;
+        border-color: var(--green-mid) !important;
+        color: var(--green) !important;
+        cursor: default;
+      }
+      .sort-handle {
+        color: var(--border2);
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .sort-badge {
+        min-width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        flex-shrink: 0;
+        font-family: "DM Mono", monospace;
+      }
+      .correct-item .sort-badge {
+        background: var(--green-mid);
+        color: #fff;
+      }
+      .sort-text {
+        flex: 1;
+        line-height: 1.45;
+        color: var(--steel) !important;
+        min-width: 0;
+        word-break: break-word;
+        font-weight: 400;
+      }
+      .correct-item .sort-text {
+        color: var(--green) !important;
+      }
+      .sort-feedback {
+        margin-top: 0.7rem;
+        font-size: 13px;
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        display: none;
+        line-height: 1.65;
+        word-wrap: break-word;
+        border-left: 3px solid;
+        font-weight: 300;
+      }
+      .sort-feedback.pass {
+        display: block;
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+        font-weight: 500;
+      }
+      .sort-feedback.fail {
+        display: block;
+        background: var(--red-lt);
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      /* ── MCQ ── */
+      .mcq-opts {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .mcq-opt {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        background: var(--bg2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        cursor: pointer;
+        transition: all 0.12s;
+        text-align: left;
+        font-size: 13px;
+        color: var(--steel) !important;
+        line-height: 1.5;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 400;
+        width: 100%;
+      }
+      .mcq-opt:hover:not([disabled]) {
+        border-color: rgba(13, 115, 119, 0.4);
+        background: var(--teal-lt);
+      }
+      .mcq-letter {
+        min-width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+        flex-shrink: 0;
+        margin-top: 1px;
+        font-family: "DM Mono", monospace;
+        transition: all 0.12s;
+      }
+      .mcq-opt.correct-ans {
+        background: var(--green-lt) !important;
+        border-color: var(--green-mid) !important;
+        color: var(--green) !important;
+      }
+      .mcq-opt.correct-ans .mcq-letter {
+        background: var(--green-mid) !important;
+        color: #fff !important;
+      }
+      .mcq-opt.wrong-ans {
+        background: var(--red-lt) !important;
+        border-color: var(--red) !important;
+        color: var(--red) !important;
+      }
+      .mcq-opt.wrong-ans .mcq-letter {
+        background: var(--red) !important;
+        color: #fff !important;
+      }
+      .mcq-opt[disabled] {
+        cursor: default;
+      }
+      .mcq-fb {
+        font-size: 12px;
+        margin-top: 0.6rem;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        display: none;
+        line-height: 1.6;
+        border-left: 3px solid;
+        font-weight: 300;
+      }
+      .mcq-fb.ok {
+        display: block;
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+      }
+      .mcq-fb.err {
+        display: block;
+        background: var(--red-lt);
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .mcq-fb.err::before {
+        content: "⚠ Flagged — ";
+        font-weight: 600;
+      }
+
+      /* ── MATCH ── */
+      .match-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .match-col-hdr {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .match-col {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .match-item {
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 9px 12px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: var(--white);
+        line-height: 1.5;
+        min-height: 46px;
+        display: flex;
+        align-items: center;
+        color: var(--steel) !important;
+        font-weight: 400;
+      }
+      .match-item:hover:not(.matched-ok):not(.matched-err) {
+        border-color: rgba(13, 115, 119, 0.4);
+        background: var(--teal-lt);
+      }
+      .match-item.selected {
+        border-color: var(--teal);
+        background: var(--teal-lt);
+        font-weight: 500;
+        color: var(--teal) !important;
+      }
+      .match-item.matched-ok {
+        background: var(--green-lt) !important;
+        border-color: var(--green-mid) !important;
+        color: var(--green) !important;
+        cursor: default;
+        font-weight: 500;
+      }
+      .match-item.matched-err {
+        background: var(--red-lt) !important;
+        border-color: var(--red) !important;
+        color: var(--red) !important;
+        cursor: default;
+      }
+      .match-hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 0.5rem;
+        font-style: italic;
+        font-family: "DM Mono", monospace;
+      }
+      .match-score {
+        font-size: 13px;
+        margin-top: 0.75rem;
+        display: none;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        font-weight: 500;
+        border-left: 3px solid;
+      }
+      .match-score.show-ok {
+        display: block;
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+      }
+
+      /* ── CLINICAL SCENARIO ── */
+      .scenario {
+        background: #fffdf5;
+        border: 1px solid #fde68a;
+        border-left: 4px solid var(--amber-mid);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        padding: 1rem 1.2rem;
+        margin: 0.75rem 0;
+      }
+      .scenario-lbl {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--amber);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .scenario p {
+        font-size: 13px;
+        line-height: 1.75;
+        color: var(--navy);
+      }
+      .scenario p strong {
+        color: #92400e;
+        font-weight: 600;
+      }
+      .scenario .vitals {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin-top: 0.75rem;
+      }
+      .vital {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 6px 8px;
+        text-align: center;
+      }
+      .vital-val {
+        font-family: "DM Mono", monospace;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--navy);
+      }
+      .vital-val.alert {
+        color: var(--red);
+      }
+      .vital-val.warn {
+        color: var(--amber);
+      }
+      .vital-lbl {
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 2px;
+        font-family: "DM Mono", monospace;
+      }
+
+      /* ── DRUG CARD ── */
+      .drug-card {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.9rem 1rem;
+        margin: 0.5rem 0;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .drug-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .drug-name {
+        font-weight: 600;
+        color: var(--navy);
+        font-size: 13px;
+        margin-bottom: 2px;
+      }
+      .drug-detail {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+        font-weight: 300;
+        font-family: "DM Mono", monospace;
+      }
+      .drug-warn {
+        font-size: 11px;
+        color: var(--red);
+        margin-top: 3px;
+        font-weight: 500;
+      }
+
+      /* ── TELEMEDICINE FORM ── */
+      .tele-form {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+        margin: 0.75rem 0;
+      }
+      .tele-section {
+        margin-bottom: 1.1rem;
+      }
+      .tele-section:last-child {
+        margin-bottom: 0;
+      }
+      .tele-lbl {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--teal);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .tele-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 5px;
+      }
+      .tele-field {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 7px 10px;
+        font-size: 12px;
+        flex: 1;
+        color: var(--navy);
+        font-family: "DM Sans", sans-serif;
+      }
+      .tele-field:focus {
+        outline: none;
+        border-color: var(--teal);
+      }
+      select.tele-field {
+        cursor: pointer;
+      }
+      .tele-check {
+        font-size: 12px;
+        color: var(--steel);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 0;
+        font-weight: 300;
+      }
+      .tele-check input {
+        accent-color: var(--teal);
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+      }
+      .btn-tele {
+        background: var(--teal);
+        color: var(--white);
+        border: none;
+        padding: 9px 20px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 0.75rem;
+      }
+      .btn-tele:hover {
+        background: var(--teal-mid);
+      }
+      .tele-feedback {
+        margin-top: 0.75rem;
+        font-size: 13px;
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        display: none;
+        line-height: 1.6;
+        border-left: 3px solid;
+      }
+      .tele-feedback.show-ok {
+        display: block;
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+        font-weight: 500;
+      }
+      .tele-feedback.show-err {
+        display: block;
+        background: var(--red-lt);
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      /* ── REFERENCE PANEL ── */
+      .ref-panel {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.9rem 1rem;
+        margin: 0.75rem 0;
+        font-size: 12px;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+        line-height: 1.7;
+      }
+      .ref-panel strong {
+        color: var(--steel);
+        font-weight: 500;
+      }
+
+      /* ── BUTTONS ── */
+      .btn-check {
+        background: #6d28d9;
+        color: #fff;
+        border: none;
+        padding: 8px 20px;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.12s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 0.75rem;
+        font-family: "DM Mono", monospace;
+        letter-spacing: 0.04em;
+      }
+      .btn-check:hover {
+        background: #5b21b6;
+      }
+      .btn-reset {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        padding: 8px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.12s;
+        margin-left: 6px;
+        font-family: "DM Mono", monospace;
+      }
+      .btn-reset:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+      .btn-next {
+        background: var(--teal);
+        color: #fff;
+        border: none;
+        padding: 10px 24px;
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .btn-next:hover {
+        background: var(--teal-mid);
+        transform: translateY(-1px);
+      }
+      .btn-prev {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        padding: 10px 20px;
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.12s;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .btn-prev:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+      .mod-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+
+      /* ── IMSG REFERENCE BLOCK ── */
+      .imsg-ref {
+        display: inline-block;
+        background: var(--bg2);
+        border: 1px solid var(--border2);
+        border-radius: 3px;
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        color: var(--muted);
+        padding: 2px 7px;
+        margin-left: 4px;
+        vertical-align: middle;
+        letter-spacing: 0.04em;
+      }
+
+      /* ── ASSESSMENT ── */
+      .assess-hdr {
+        background: var(--white);
+        border: 1px solid rgba(13, 115, 119, 0.2);
+        border-top: 4px solid var(--teal);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+      .assess-hdr h2 {
+        font-family: "Instrument Serif", serif;
+        font-size: 1.5rem;
+        color: var(--navy);
+        margin-bottom: 4px;
+      }
+      .assess-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 0.6rem;
+      }
+      .a-chip {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        padding: 3px 9px;
+        color: var(--muted);
+      }
+      .timer-strip {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 8px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.2rem;
+        position: sticky;
+        top: 55px;
+        z-index: 10;
+        box-shadow: var(--shadow);
+      }
+      #a-timer {
+        font-family: "DM Mono", monospace;
+        font-size: 1.3rem;
+        font-weight: 500;
+        color: var(--navy);
+      }
+      #a-timer.warn {
+        color: var(--amber);
+      }
+      #a-timer.danger {
+        color: var(--red);
+        animation: pulse 0.6s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      #a-qcount {
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .a-q {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+        margin-bottom: 0.9rem;
+        box-shadow: var(--shadow);
+      }
+      .a-qnum {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        color: #6d28d9;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+      .a-qtext {
+        font-family: "Instrument Serif", serif;
+        font-size: 1rem;
+        color: var(--navy);
+        margin-bottom: 0.75rem;
+        line-height: 1.5;
+      }
+      .btn-submit-a {
+        width: 100%;
+        background: var(--teal);
+        color: #fff;
+        border: none;
+        padding: 13px;
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        margin-top: 0.5rem;
+      }
+      .btn-submit-a:hover:not(:disabled) {
+        background: var(--teal-mid);
+      }
+      .btn-submit-a:disabled {
+        background: rgba(13, 115, 119, 0.25);
+        cursor: not-allowed;
+        color: var(--muted);
+      }
+
+      /* ── RESULTS ── */
+      .results-panel {
+        display: none;
+        text-align: center;
+        padding: 2.5rem 1rem;
+        animation: slideIn 0.5s ease;
+      }
+      .score-ring {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid;
+      }
+      .score-ring.pass {
+        border-color: var(--green-mid);
+        background: var(--green-lt);
+      }
+      .score-ring.fail {
+        border-color: var(--red);
+        background: var(--red-lt);
+      }
+      .score-pct {
+        font-family: "Instrument Serif", serif;
+        font-size: 3rem;
+        line-height: 1;
+      }
+      .score-ring.pass .score-pct {
+        color: var(--green);
+      }
+      .score-ring.fail .score-pct {
+        color: var(--red);
+      }
+      .score-lbl {
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .verdict {
+        font-family: "Instrument Serif", serif;
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+      }
+      .verdict-msg {
+        font-size: 13px;
+        color: var(--muted);
+        max-width: 480px;
+        margin: 0 auto 1.5rem;
+        line-height: 1.75;
+        font-weight: 300;
+      }
+      .breakdown {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin: 1.2rem 0;
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .bd {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem;
+        text-align: center;
+      }
+      .bd-score {
+        font-family: "Instrument Serif", serif;
+        font-size: 1.8rem;
+      }
+      .bd.good .bd-score {
+        color: var(--green);
+      }
+      .bd.bad .bd-score {
+        color: var(--red);
+      }
+      .bd-lbl {
+        font-family: "DM Mono", monospace;
+        font-size: 9px;
+        color: var(--muted);
+        margin-top: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .cert {
+        background: linear-gradient(135deg, var(--teal-lt), var(--white));
+        border: 1px solid rgba(13, 115, 119, 0.2);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin: 1.5rem auto;
+        max-width: 480px;
+        text-align: center;
+        display: none;
+      }
+      .cert.show {
+        display: block;
+        animation: slideIn 0.6s ease;
+      }
+      .cert-icon {
+        font-size: 48px;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      .cert h3 {
+        font-family: "Instrument Serif", serif;
+        font-size: 1.3rem;
+        color: var(--navy);
+        margin-bottom: 5px;
+      }
+      .cert p,
+      .cert-note {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.6;
+        font-weight: 300;
+      }
+      .cert-note {
+        font-family: "DM Mono", monospace;
+        color: var(--teal);
+        margin-top: 0.5rem;
+        border-top: 1px solid var(--border);
+        padding-top: 0.5rem;
+      }
+      .res-btns {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+      }
+
+      @media (max-width: 560px) {
+        .match-wrap {
+          grid-template-columns: 1fr;
+        }
+        .fact-grid {
+          grid-template-columns: 1fr;
+        }
+        .breakdown {
+          grid-template-columns: 1fr 1fr;
+        }
+        .hero-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .scenario .vitals {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="prog-wrap"><div id="prog-bar"></div></div>
+    <nav>
+      <div class="nav-brand">
+        <div class="nav-logo"><em>Medical Care</em> Onboard</div>
+        <div class="nav-stcw">STCW A-VI/4-2</div>
+      </div>
+      <div id="nav-mod"></div>
+      <div id="nav-pts">0 pts</div>
+    </nav>
+    <main>
+      <!-- ══ HERO ══ -->
+      <div class="screen" id="screen-hero">
+        <div class="hero-inner">
+          <div class="hero-label">
+            Master &amp; Officers — Medical Designate
+          </div>
+          <span class="hero-icon">🏥</span>
+          <h1>Medical Care<br /><em>Onboard</em></h1>
+          <p class="hero-desc">
+            Advanced medical management for Masters and designated officers.
+            Patient assessment, major trauma, acute conditions, surgical
+            emergencies, telemedicine, and outbreak management. Referenced to
+            the International Medical Guide for Ships.
+          </p>
+          <div class="hero-grid">
+            <div class="hg-item" id="mgpill-m1" onclick="goTo('m1')">
+              <span class="hg-icon">🩺</span>
+              <div class="hg-num">MOD 1</div>
+              <div class="hg-label">Assessment &amp; Priorities</div>
+            </div>
+            <div class="hg-item" id="mgpill-m2" onclick="goTo('m2')">
+              <span class="hg-icon">🚨</span>
+              <div class="hg-num">MOD 2</div>
+              <div class="hg-label">Trauma &amp; Emergencies</div>
+            </div>
+            <div class="hg-item" id="mgpill-m3" onclick="goTo('m3')">
+              <span class="hg-icon">💊</span>
+              <div class="hg-num">MOD 3</div>
+              <div class="hg-label">Medications &amp; Procedures</div>
+            </div>
+            <div class="hg-item" id="mgpill-m4" onclick="goTo('m4')">
+              <span class="hg-icon">📡</span>
+              <div class="hg-num">MOD 4</div>
+              <div class="hg-label">Telemedicine &amp; Consultation</div>
+            </div>
+            <div class="hg-item" id="mgpill-m5" onclick="goTo('m5')">
+              <span class="hg-icon">🦠</span>
+              <div class="hg-num">MOD 5</div>
+              <div class="hg-label">Infectious Disease</div>
+            </div>
+            <div class="hg-item" id="mgpill-m6" onclick="goTo('m6')">
+              <span class="hg-icon">📋</span>
+              <div class="hg-num">MOD 6</div>
+              <div class="hg-label">Documentation &amp; SMS</div>
+            </div>
+          </div>
+          <button class="btn-hero" onclick="goTo('m1')">
+            Begin training →
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ MODULE 1: ASSESSMENT ══ -->
+      <div class="screen" id="screen-m1">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc active" onclick="goTo('m1')">M1 ASSESS</span>
+            <span class="bc" onclick="goTo('m2')">M2 TRAUMA</span>
+            <span class="bc" onclick="goTo('m3')">M3 MEDICATIONS</span>
+            <span class="bc" onclick="goTo('m4')">M4 TELEMEDICINE</span>
+            <span class="bc" onclick="goTo('m5')">M5 INFECTION</span>
+            <span class="bc" onclick="goTo('m6')">M6 DOCS</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--teal);
+                color: var(--teal);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mod-icon-big">🩺</div>
+            <div>
+              <div class="mh-num">
+                Module 1 of 6 · STCW A-VI/4-2 · IMGS Ch.1
+              </div>
+              <div class="mh-title">
+                Patient Assessment and Clinical Priorities
+              </div>
+              <div class="mh-desc">
+                Systematic assessment is the foundation of every medical
+                decision at sea
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+            <div
+              class="illus-wrap"
+              style="text-align: center; margin: 0.5rem 0 1rem"
+            >
+              <svg
+                viewBox="0 0 520 130"
+                width="520"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="520" height="130" rx="10" fill="#f5f5f2" />
+                <!-- ABCDE steps -->
+                <g>
+                  <rect
+                    x="10"
+                    y="20"
+                    width="88"
+                    height="90"
+                    rx="8"
+                    fill="#0d7377"
+                    opacity="0.9"
+                  />
+                  <text
+                    x="54"
+                    y="50"
+                    text-anchor="middle"
+                    font-size="22"
+                    fill="white"
+                  >
+                    🌬️
+                  </text>
+                  <text
+                    x="54"
+                    y="70"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="white"
+                    font-weight="bold"
+                  >
+                    A
+                  </text>
+                  <text
+                    x="54"
+                    y="84"
+                    text-anchor="middle"
+                    font-size="9"
+                    fill="rgba(255,255,255,0.8)"
+                  >
+                    Airway
+                  </text>
+                  <text
+                    x="54"
+                    y="96"
+                    text-anchor="middle"
+                    font-size="8"
+                    fill="rgba(255,255,255,0.7)"
+                  >
+                    Open &amp; patent?
+                  </text>
+                  <text
+                    x="54"
+                    y="108"
+                    text-anchor="middle"
+                    font-size="8"
+                    fill="rgba(255,255,255,0.7)"
+                  >
+                    C-spine control
+                  </text>
+                </g>
+                <path d="M102,65 L108,65" stroke="#cbd5e1" stroke-width="2" />
+                <g>
+                  <rect
+                    x="110"
+                    y="20"
+                    width="88"
+                    height="90"
+                    rx="8"
+                    fill="#14a6a6"
+                    opacity="0.85"
+                  />
+                  <text
+                    x="154"
+                    y="50"
+                    text-anchor="middle"
+                    font-size="22"
+                    fill="white"
+                  >
+                    🫁
+                  </text>
+                  <text
+                    x="154"
+                    y="70"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="white"
+                    font-weight="bold"
+                  >
+                    B
+                  </text>
+                  <text
+                    x="154"
+                    y="84"
+                    text-anchor="middle"
+                    font-size="9"
+                    fill="rgba(255,255,255,0.8)"
+                  >
+                    Breathing
+                  </text>
+                  <text
+                    x="154"
+                    y="96"
+                    text-anchor="middle"
+                    font-size="8"
+                    fill="rgba(255,255,255,0.7)"
+                  >
+                    Rate, depth, SpO₂
+                  </text>
+                  <text
+                    x="154"
+                    y="108"
+                    text-anchor="middle"
+                    font-size="8"
+                    fill="rgba(255,255,255,0.7)"
+                  >
+                    Chest movement
+                  </text>
+                </g>
+                <path d="M202,65 L208,65" stroke="#cbd5e1" stroke-width="2" />
+                <g>
+                  <rect
+                    x="210"
+                    y="20"
+                    width="88"
+                    height="90"
+                    rx="8"
+                    fill="#e74c3c"
+                    opacity="0.85"
+                  />
+                  <text
+                    x="254"
+                    y="50"
+                    text-anchor="middle"
+                    font-size="22"
+                    fill="white"
+                  >
+                    ❤️
+                  </text>
+                  <text
+                    x="254"
+                    y="70"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="white"
+                    font-weight="bold"
+                  >
+                    C
+                  </text>
+                  <text
+                    x="254"
+                    y="84"
+                    text-anchor="middle"
+                    font-size="9"
+                    fill="rgba(255,255,255,0.8)"
+                  >
+                    Circulation
+                  </text>
+                  <text
+                    x="254"
+                    y="96"
+                    text-anchor="middle"
+                    font-size="8"
+                    fill="rgba(255,255,255,0.7)"
+                  >
+                    Pulse, BP, bleeding
+                  </text>
+                  <text
+                    x="254"
+                    y="108"
+                    text-anchor="middle"
+                    font-size="8"
+                    fill="rgba(255,255,255,0.7)"
+                  >
+                    Skin colour/temp
+                  </text>
+                </g>
+                <path d="M302,65 L308,65" stroke="#cbd5e1" stroke-width="2" />
+                <g>
+                  <rect
+                    x="310"
+                    y="20"
+                    width="88"
+                    height="90"
+                    rx="8"
+                    fill="#6d28d9"
+                    opacity="0.85"
+                  />
+                  <text
+                    x="354"
+                    y="50"
+                    text-anchor="middle"
+                    font-size="22"
+                    fill="white"
+                  >
+                    🧠
+                  </text>
+                  <text
+                    x="354"
+                    y="70"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="white"
+                    font-weight="bold"
+                  >
+                    D
+                  </text>
+                  <text
+                    x="354"
+                    y="84"
+                    text-anchor="middle"
+                    font-size="9"
+                    fill="rgba(255,255,255,0.8)"
+                  >
+                    Disability
+                  </text>
+                  <text
+                    x="354"
+                    y="96"
+                    text-anchor="middle"
+                    font-size="8"
+                    fill="rgba(255,255,255,0.7)"
+                  >
+                    AVPU / GCS
+                  </text>
+                  <text
+                    x="354"
+                    y="108"
+                    text-anchor="middle"
+                    font-size="8"
+                    fill="rgba(255,255,255,0.7)"
+                  >
+                    Pupils, movement
+                  </text>
+                </g>
+                <path d="M402,65 L408,65" stroke="#cbd5e1" stroke-width="2" />
+                <g>
+                  <rect
+                    x="410"
+                    y="20"
+                    width="100"
+                    height="90"
+                    rx="8"
+                    fill="#1a6b3c"
+                    opacity="0.85"
+                  />
+                  <text
+                    x="460"
+                    y="50"
+                    text-anchor="middle"
+                    font-size="22"
+                    fill="white"
+                  >
+                    🔍
+                  </text>
+                  <text
+                    x="460"
+                    y="70"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="white"
+                    font-weight="bold"
+                  >
+                    E
+                  </text>
+                  <text
+                    x="460"
+                    y="84"
+                    text-anchor="middle"
+                    font-size="9"
+                    fill="rgba(255,255,255,0.8)"
+                  >
+                    Exposure
+                  </text>
+                  <text
+                    x="460"
+                    y="96"
+                    text-anchor="middle"
+                    font-size="8"
+                    fill="rgba(255,255,255,0.7)"
+                  >
+                    Expose &amp; examine
+                  </text>
+                  <text
+                    x="460"
+                    y="108"
+                    text-anchor="middle"
+                    font-size="8"
+                    fill="rgba(255,255,255,0.7)"
+                  >
+                    Then keep warm
+                  </text>
+                </g>
+              </svg>
+            </div>
+
+            <div class="fact-grid">
+              <div class="fact-card">
+                <div class="fi">🅰️</div>
+                <div class="ft">
+                  <strong>A — Airway</strong>Is the airway open and maintained?
+                  Look for obstruction, stridor, or gurgling. Apply jaw thrust
+                  if unconscious — avoid head tilt if spinal injury suspected.
+                  Consider airway adjuncts.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🅱️</div>
+                <div class="ft">
+                  <strong>B — Breathing</strong>Rate, depth, effort, symmetry of
+                  chest movement. Measure SpO₂. Listen for abnormal sounds.
+                  Normal adult rate: 12–20/min. Below 8 or above 30 = critical.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🩸</div>
+                <div class="ft">
+                  <strong>C — Circulation</strong>Pulse rate and quality. Blood
+                  pressure. Stop catastrophic haemorrhage. Assess skin colour,
+                  temperature and capillary refill (normal &lt;2 seconds). Signs
+                  of shock?
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🧠</div>
+                <div class="ft">
+                  <strong>D — Disability (Neurology)</strong>Level of
+                  consciousness using AVPU: Alert / Voice response / Pain
+                  response / Unresponsive. Pupils: equal, reactive to light?
+                  Limb movement symmetrical?
+                </div>
+              </div>
+            </div>
+
+            <div class="callout info">
+              <strong>AVPU scale — use for every patient:</strong> A = Alert
+              (eyes open, responds normally). V = responds to Voice. P =
+              responds to Pain only. U = Unresponsive. Any level below A
+              requires urgent attention and TMAS consultation.
+            </div>
+
+            <table class="clin-table">
+              <thead>
+                <tr>
+                  <th>Vital sign</th>
+                  <th>Normal adult range</th>
+                  <th>Action threshold</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Respiratory rate</td>
+                  <td>12–20 /min</td>
+                  <td>&lt;8 or &gt;30 → immediate action</td>
+                </tr>
+                <tr>
+                  <td>Heart rate</td>
+                  <td>60–100 bpm</td>
+                  <td>&lt;40 or &gt;150 → assess urgently</td>
+                </tr>
+                <tr>
+                  <td>Blood pressure (systolic)</td>
+                  <td>90–140 mmHg</td>
+                  <td>&lt;90 → shock; &gt;180 → hypertensive crisis</td>
+                </tr>
+                <tr>
+                  <td>SpO₂ (oxygen saturation)</td>
+                  <td>95–100%</td>
+                  <td>&lt;92% → administer O₂; &lt;85% → critical</td>
+                </tr>
+                <tr>
+                  <td>Temperature</td>
+                  <td>36.5–37.5°C</td>
+                  <td>&lt;35°C → hypothermia; &gt;38.5°C → fever</td>
+                </tr>
+                <tr>
+                  <td>GCS (Glasgow Coma Scale)</td>
+                  <td>15 (max)</td>
+                  <td>≤8 → unable to protect airway; &lt;15 → deterioration</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- SORT: ABCDE sequence -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — sequence the assessment
+            </div>
+            <div class="card-q">
+              A crew member is found collapsed on deck. You approach safely.
+              What is the correct systematic assessment sequence? Drag into
+              order.
+            </div>
+            <div class="sort-list" id="m1-sort"></div>
+            <div style="margin-top: 0.75rem">
+              <button
+                class="btn-check"
+                onclick="checkSort('m1-sort', 'm1-correct', 'm1-sort-fb')"
+              >
+                ✓ Check order
+              </button>
+              <button
+                class="btn-reset"
+                onclick="resetSort('m1-sort', 'm1-data')"
+              >
+                Reset
+              </button>
+            </div>
+            <div class="sort-feedback" id="m1-sort-fb"></div>
+          </div>
+
+          <!-- MCQ quiz -->
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m1-quiz"></div>
+          </div>
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('hero')">← Overview</button>
+            <button class="btn-next" onclick="goTo('m2')">Module 2 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ MODULE 2: TRAUMA & EMERGENCIES ══ -->
+      <div class="screen" id="screen-m2">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc done" onclick="goTo('m1')">M1 ASSESS</span>
+            <span class="bc active">M2 TRAUMA</span>
+            <span class="bc" onclick="goTo('m3')">M3 MEDICATIONS</span>
+            <span class="bc" onclick="goTo('m4')">M4 TELEMEDICINE</span>
+            <span class="bc" onclick="goTo('m5')">M5 INFECTION</span>
+            <span class="bc" onclick="goTo('m6')">M6 DOCS</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--teal);
+                color: var(--teal);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mod-icon-big">🚨</div>
+            <div>
+              <div class="mh-num">
+                Module 2 of 6 · STCW A-VI/4-2 · IMGS Ch.2–5
+              </div>
+              <div class="mh-title">
+                Major Trauma, Internal Injuries &amp; Acute Conditions
+              </div>
+              <div class="mh-desc">
+                Recognition, priorities, and management of life-threatening
+                conditions at sea
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+            <div class="fact-grid">
+              <div class="fact-card">
+                <div class="fi">💥</div>
+                <div class="ft">
+                  <strong>Major trauma — primary survey first</strong
+                  >Immediately life-threatening: airway obstruction, tension
+                  pneumothorax, massive haemorrhage, open chest wound, cardiac
+                  tamponade. These kill in minutes. Find and fix before anything
+                  else.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🩸</div>
+                <div class="ft">
+                  <strong>Haemorrhagic shock — 4 classes</strong>Class I: up to
+                  750ml loss — minimal signs. Class II: 750–1500ml —
+                  tachycardia. Class III: 1500–2000ml — hypotension + confusion.
+                  Class IV: &gt;2000ml — life-threatening, immediate action.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🫀</div>
+                <div class="ft">
+                  <strong>Acute MI — recognition</strong>Central crushing chest
+                  pain, radiation to jaw/arm, sweating, nausea, dyspnoea.
+                  12-lead ECG if available. Aspirin 300mg immediately if no
+                  contraindication. Arrange urgent TMAS consultation.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🧠</div>
+                <div class="ft">
+                  <strong>Stroke — FAST assessment</strong>Face drooping (ask to
+                  smile). Arms — one drifts down? Speech — slurred or wrong
+                  words? Time — record exact onset time. Do not give aspirin if
+                  stroke suspected (may be haemorrhagic).
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🤰</div>
+                <div class="ft">
+                  <strong>Obstetric emergencies</strong>Pre-eclampsia:
+                  hypertension (&gt;140/90) + headache + visual disturbance.
+                  Eclampsia: convulsions in pregnancy. Postpartum haemorrhage:
+                  &gt;500ml blood loss after delivery. All require immediate
+                  TMAS.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🦷</div>
+                <div class="ft">
+                  <strong>Dental emergencies</strong>Dry socket: painful empty
+                  socket 3–5 days post-extraction — pack with zinc oxide
+                  eugenol. Periapical abscess: severe localised pain, swelling,
+                  fever. Antibiotics per IMGS. Refer to TMAS.
+                </div>
+              </div>
+            </div>
+            <div class="callout danger">
+              <strong>When in doubt — call TMAS.</strong> The Telemedical
+              Assistance Service exists precisely for situations where you are
+              unsure. Early consultation is always better than delayed
+              consultation. It is never wrong to call.
+            </div>
+          </div>
+
+          <!-- CLINICAL SCENARIO: Trauma -->
+          <div class="card">
+            <div class="card-label do">⚡ Activity — major trauma decision</div>
+            <div class="scenario">
+              <div class="scenario-lbl">
+                Clinical scenario — Engine room crush injury
+              </div>
+              <p>
+                A 38-year-old oiler has been crushed between two pieces of
+                machinery. He is conscious but agitated. He has a large wound on
+                his left thigh with active bleeding. He complains of chest pain.
+                You arrive as first responder.
+              </p>
+              <div class="vitals">
+                <div class="vital">
+                  <div class="vital-val alert">122</div>
+                  <div class="vital-lbl">Pulse/min</div>
+                </div>
+                <div class="vital">
+                  <div class="vital-val alert">88/60</div>
+                  <div class="vital-lbl">BP mmHg</div>
+                </div>
+                <div class="vital">
+                  <div class="vital-val warn">94%</div>
+                  <div class="vital-lbl">SpO₂</div>
+                </div>
+                <div class="vital">
+                  <div class="vital-val">22</div>
+                  <div class="vital-lbl">RR/min</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-q">What is your first clinical priority?</div>
+            <div class="mcq-opts" id="m2-scen1"></div>
+            <div class="mcq-fb" id="m2-scen1-fb"></div>
+            <div id="m2-scen2-wrap" style="display: none; margin-top: 1rem">
+              <div class="card-q" style="margin-top: 0.5rem">
+                Bleeding is controlled. BP 90/62, pulse 118, SpO₂ 93% on O₂. His
+                breathing is laboured on the right side and he has no air entry
+                right lower zone. Chest is hyper-resonant on that side. What do
+                you suspect?
+              </div>
+              <div class="mcq-opts" id="m2-scen2"></div>
+              <div class="mcq-fb" id="m2-scen2-fb"></div>
+            </div>
+          </div>
+
+          <!-- MATCH: condition to priority action -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — match condition to first action
+            </div>
+            <div class="card-q">
+              Match each acute condition to the correct first-line clinical
+              action.
+            </div>
+            <div class="match-wrap" id="m2-match">
+              <div>
+                <div class="match-col-hdr">Condition</div>
+                <div class="match-col" id="m2-left"></div>
+              </div>
+              <div>
+                <div class="match-col-hdr">First action</div>
+                <div class="match-col" id="m2-right"></div>
+              </div>
+            </div>
+            <div class="match-hint">Tap left → tap right to match</div>
+            <div class="match-score" id="m2-score"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m2-quiz"></div>
+          </div>
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('m1')">← Module 1</button>
+            <button class="btn-next" onclick="goTo('m3')">Module 3 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ MODULE 3: MEDICATIONS & PROCEDURES ══ -->
+      <div class="screen" id="screen-m3">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc done" onclick="goTo('m1')">M1 ASSESS</span>
+            <span class="bc done" onclick="goTo('m2')">M2 TRAUMA</span>
+            <span class="bc active">M3 MEDICATIONS</span>
+            <span class="bc" onclick="goTo('m4')">M4 TELEMEDICINE</span>
+            <span class="bc" onclick="goTo('m5')">M5 INFECTION</span>
+            <span class="bc" onclick="goTo('m6')">M6 DOCS</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--teal);
+                color: var(--teal);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mod-icon-big">💊</div>
+            <div>
+              <div class="mh-num">
+                Module 3 of 6 · STCW A-VI/4-2 · IMGS Appendix
+              </div>
+              <div class="mh-title">
+                Medications, Anaesthesia and Procedures In Extremis
+              </div>
+              <div class="mh-desc">
+                Using the ship's medical chest correctly — always in
+                consultation with TMAS
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+            <div class="callout warn">
+              <strong>Fundamental principle:</strong> All medications
+              administered at sea should be done with TMAS consultation wherever
+              possible. The medications below are those an officer may need to
+              administer before or during a TMAS call in a life-threatening
+              situation. Always refer to the IMGS and ship's formulary for
+              current dosages.
+            </div>
+
+            <div class="drug-card">
+              <div class="drug-icon">💊</div>
+              <div>
+                <div class="drug-name">Aspirin 300mg (Antiplatelet)</div>
+                <div class="drug-detail">
+                  Route: Oral (chewed, not swallowed whole) · Indication:
+                  Suspected acute MI · Contraindications: Active bleeding, known
+                  allergy, age &lt;16, anticoagulant therapy
+                </div>
+                <div class="drug-warn">
+                  ⚠ Do NOT give if stroke suspected — may worsen haemorrhagic
+                  stroke
+                </div>
+              </div>
+            </div>
+            <div class="drug-card">
+              <div class="drug-icon">💉</div>
+              <div>
+                <div class="drug-name">Morphine / Opioid analgesia</div>
+                <div class="drug-detail">
+                  Route: IM or IV (IV only with TMAS guidance) · Indication:
+                  Severe pain — fractures, trauma, MI · Titrate to effect ·
+                  Start with low dose
+                </div>
+                <div class="drug-warn">
+                  ⚠ Respiratory depression risk — have naloxone available. Never
+                  in head injury unless airway managed.
+                </div>
+              </div>
+            </div>
+            <div class="drug-card">
+              <div class="drug-icon">🩹</div>
+              <div>
+                <div class="drug-name">Adrenaline (Epinephrine) 1:1000</div>
+                <div class="drug-detail">
+                  Route: IM (anterolateral thigh) · Indication: Anaphylaxis —
+                  0.5mg IM adult dose · Can repeat after 5 minutes if no
+                  response
+                </div>
+                <div class="drug-warn">
+                  ⚠ For anaphylaxis — this is a life-saving drug. Do not delay
+                  while waiting for TMAS if airway is compromised.
+                </div>
+              </div>
+            </div>
+            <div class="drug-card">
+              <div class="drug-icon">🦠</div>
+              <div>
+                <div class="drug-name">
+                  Antibiotics (Amoxicillin / Co-amoxiclav / Ciprofloxacin)
+                </div>
+                <div class="drug-detail">
+                  Route: Oral or IM/IV · Indication: Bacterial infections per
+                  IMGS tables · Choice depends on suspected source — refer to
+                  IMGS antibiotic guide
+                </div>
+                <div class="drug-warn">
+                  ⚠ Always check for penicillin allergy before amoxicillin.
+                  Consider resistance patterns.
+                </div>
+              </div>
+            </div>
+            <div class="drug-card">
+              <div class="drug-icon">🫀</div>
+              <div>
+                <div class="drug-name">GTN (Glyceryl trinitrate) spray</div>
+                <div class="drug-detail">
+                  Route: Sublingual spray · Indication: Chest pain consistent
+                  with cardiac origin · 1–2 sprays — do not use if BP &lt;90
+                  systolic
+                </div>
+                <div class="drug-warn">
+                  ⚠ Contraindicated with recent phosphodiesterase inhibitor use
+                  (sildenafil etc)
+                </div>
+              </div>
+            </div>
+
+            <div class="callout info">
+              <strong>Anaesthesia in extremis:</strong> Surgical procedures at
+              sea — such as wound closure, drainage, or emergency procedures —
+              may require local anaesthesia or sedation. Ketamine is the agent
+              most commonly referenced in the IMGS for procedural sedation.
+              Never attempt without TMAS guidance and documented consent where
+              possible.
+            </div>
+          </div>
+
+          <!-- MCQ: Drug selection -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — drug selection decisions
+            </div>
+            <div class="card-q">
+              A 55-year-old officer presents with sudden severe central chest
+              pain, 8/10 intensity, radiation to the left arm, sweating. BP
+              138/88. SpO₂ 96%. No known allergies. He takes no regular
+              medications. What is your first pharmacological action?
+            </div>
+            <div class="mcq-opts" id="m3-drug1"></div>
+            <div class="mcq-fb" id="m3-drug1-fb"></div>
+            <div id="m3-drug2-wrap" style="display: none; margin-top: 1.2rem">
+              <div class="card-q" style="margin-top: 0.5rem">
+                Twenty minutes later he develops a widespread urticarial rash,
+                wheeze, and BP drops to 78/50. He received IV contrast dye
+                during a previous port medical. What is the priority drug now?
+              </div>
+              <div class="mcq-opts" id="m3-drug2"></div>
+              <div class="mcq-fb" id="m3-drug2-fb"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m3-quiz"></div>
+          </div>
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('m2')">← Module 2</button>
+            <button class="btn-next" onclick="goTo('m4')">Module 4 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ MODULE 4: TELEMEDICINE ══ -->
+      <div class="screen" id="screen-m4">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc done" onclick="goTo('m1')">M1 ASSESS</span>
+            <span class="bc done" onclick="goTo('m2')">M2 TRAUMA</span>
+            <span class="bc done" onclick="goTo('m3')">M3 MEDICATIONS</span>
+            <span class="bc active">M4 TELEMEDICINE</span>
+            <span class="bc" onclick="goTo('m5')">M5 INFECTION</span>
+            <span class="bc" onclick="goTo('m6')">M6 DOCS</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--teal);
+                color: var(--teal);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mod-icon-big">📡</div>
+            <div>
+              <div class="mh-num">
+                Module 4 of 6 · STCW A-VI/4-2 · IMGS Ch.1 §1.3
+              </div>
+              <div class="mh-title">
+                Telemedicine and Radio Medical Consultation
+              </div>
+              <div class="mh-desc">
+                Effective TMAS communication can be the difference between
+                correct and incorrect treatment at sea
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+            <div class="fact-grid">
+              <div class="fact-card">
+                <div class="fi">📡</div>
+                <div class="ft">
+                  <strong>What is TMAS?</strong>Telemedical Assistance Service.
+                  Free to all SOLAS vessels. Available 24/7. Staffed by
+                  physicians with maritime emergency experience. Contact via
+                  Inmarsat, HF radio, or satellite phone. Your flag state
+                  designates the TMAS for your vessel.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">📋</div>
+                <div class="ft">
+                  <strong>What to prepare before calling</strong>Patient name,
+                  age, nationality. History and onset. Vital signs (all).
+                  Medications given. Ship's position, speed, ETA nearest port.
+                  Weather and sea state for evacuation assessment. What you need
+                  from them.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🚁</div>
+                <div class="ft">
+                  <strong>MEDEVAC decision criteria</strong>TMAS recommends.
+                  Master decides. Factors: nature of illness, deterioration
+                  trend, distance from port, helicopter range (~200nm for SAR),
+                  sea state, availability of resources. Document the decision
+                  and reasoning.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">📝</div>
+                <div class="ft">
+                  <strong>During and after the call</strong>One person speaks —
+                  another records. Read back all instructions. Log the TMAS
+                  reference number. Record all advice received. Follow up calls
+                  as agreed — typically every 4–6 hours for serious cases. Keep
+                  a written log.
+                </div>
+              </div>
+            </div>
+            <div class="ref-panel">
+              <strong>TMAS contact information</strong> should be posted in the
+              medical room and on the bridge. For Indian-flagged vessels: MRCC
+              Mumbai (+91-22-2150-4444). For UK-flagged: CIRM Rome or local
+              MRCC. Check your ship's medical emergency card for the correct
+              number for your flag state.
+            </div>
+          </div>
+
+          <!-- INTERACTIVE: TMAS structured call form -->
+          <div class="card">
+            <div class="card-label do">⚡ Activity — build a TMAS call</div>
+            <div class="card-q">
+              Complete a structured TMAS consultation for the patient below.
+              Fill in all required fields, then submit to check your report is
+              complete.
+            </div>
+            <div class="scenario" style="margin-bottom: 1rem">
+              <div class="scenario-lbl">Patient — for TMAS call</div>
+              <p>
+                Male, 42, Chief Engineer. Sudden onset severe abdominal pain,
+                right lower quadrant, 6 hours duration. Nausea and vomiting.
+                Fever 38.8°C. Rebound tenderness on examination. No previous
+                surgery. Vessel: 840nm from nearest port.
+              </p>
+              <div class="vitals">
+                <div class="vital">
+                  <div class="vital-val warn">102</div>
+                  <div class="vital-lbl">Pulse/min</div>
+                </div>
+                <div class="vital">
+                  <div class="vital-val">122/78</div>
+                  <div class="vital-lbl">BP mmHg</div>
+                </div>
+                <div class="vital">
+                  <div class="vital-val">98%</div>
+                  <div class="vital-lbl">SpO₂</div>
+                </div>
+                <div class="vital">
+                  <div class="vital-val warn">38.8°C</div>
+                  <div class="vital-lbl">Temp</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tele-form" id="tele-form">
+              <div class="tele-section">
+                <div class="tele-lbl">🚢 Vessel information</div>
+                <div class="tele-row">
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-vessel"
+                    placeholder="Vessel name"
+                  />
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-flag"
+                    placeholder="Flag state"
+                  />
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-pos"
+                    placeholder="Current position"
+                  />
+                </div>
+              </div>
+              <div class="tele-section">
+                <div class="tele-lbl">👤 Patient details</div>
+                <div class="tele-row">
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-age"
+                    placeholder="Age"
+                  />
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-sex"
+                    placeholder="Sex"
+                  />
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-role"
+                    placeholder="Rank/role"
+                  />
+                </div>
+              </div>
+              <div class="tele-section">
+                <div class="tele-lbl">📋 Complaint and history</div>
+                <div class="tele-row">
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-complaint"
+                    placeholder="Chief complaint and onset"
+                  />
+                </div>
+                <div class="tele-row">
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-hx"
+                    placeholder="Relevant medical history and medications"
+                  />
+                </div>
+              </div>
+              <div class="tele-section">
+                <div class="tele-lbl">🩺 Vital signs</div>
+                <div class="tele-row">
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-hr"
+                    placeholder="Heart rate"
+                  />
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-bp"
+                    placeholder="Blood pressure"
+                  />
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-temp"
+                    placeholder="Temperature"
+                  />
+                  <input
+                    type="text"
+                    class="tele-field"
+                    id="tf-spo2"
+                    placeholder="SpO₂"
+                  />
+                </div>
+              </div>
+              <div class="tele-section">
+                <div class="tele-lbl">
+                  ✅ Checklist — have you covered these?
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 4px;
+                  "
+                >
+                  <label class="tele-check"
+                    ><input type="checkbox" id="tc1" /> Treatment given so
+                    far</label
+                  >
+                  <label class="tele-check"
+                    ><input type="checkbox" id="tc2" /> Distance from port /
+                    ETA</label
+                  >
+                  <label class="tele-check"
+                    ><input type="checkbox" id="tc3" /> Sea state and
+                    weather</label
+                  >
+                  <label class="tele-check"
+                    ><input type="checkbox" id="tc4" /> Patient allergies
+                    confirmed</label
+                  >
+                </div>
+              </div>
+              <button class="btn-tele" onclick="checkTelecall()">
+                📤 Submit TMAS report
+              </button>
+              <div class="tele-feedback" id="tele-fb"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m4-quiz"></div>
+          </div>
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('m3')">← Module 3</button>
+            <button class="btn-next" onclick="goTo('m5')">Module 5 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ MODULE 5: INFECTIOUS DISEASE ══ -->
+      <div class="screen" id="screen-m5">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc done" onclick="goTo('m1')">M1 ASSESS</span>
+            <span class="bc done" onclick="goTo('m2')">M2 TRAUMA</span>
+            <span class="bc done" onclick="goTo('m3')">M3 MEDICATIONS</span>
+            <span class="bc done" onclick="goTo('m4')">M4 TELEMEDICINE</span>
+            <span class="bc active">M5 INFECTION</span>
+            <span class="bc" onclick="goTo('m6')">M6 DOCS</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--teal);
+                color: var(--teal);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mod-icon-big">🦠</div>
+            <div>
+              <div class="mh-num">
+                Module 5 of 6 · STCW A-VI/4-2 · IMGS Ch.7 · IHR 2005
+              </div>
+              <div class="mh-title">
+                Infectious Disease Management and Outbreak Control
+              </div>
+              <div class="mh-desc">
+                Ships are enclosed environments — a single case can become an
+                outbreak within hours
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+            <div class="fact-grid">
+              <div class="fact-card">
+                <div class="fi">🔒</div>
+                <div class="ft">
+                  <strong>Isolation and containment</strong>Suspect case:
+                  confine to cabin with dedicated toilet. Stop sharing food
+                  utensils and surfaces. Designate a single carer. PPE: gloves
+                  and mask minimum. Notify Master and document all contacts.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🧼</div>
+                <div class="ft">
+                  <strong>Outbreak threshold</strong>Two or more cases with
+                  similar symptoms within 72 hours = outbreak. Initiate contact
+                  tracing immediately. Common causes at sea: norovirus (GI),
+                  respiratory viruses, food poisoning, legionella (AC systems).
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🌍</div>
+                <div class="ft">
+                  <strong>International Health Regulations (IHR 2005)</strong
+                  >Certain diseases must be reported to the port health
+                  authority before arrival: cholera, plague, yellow fever, SARS,
+                  Ebola, and any unknown illness causing severe disease or
+                  death. Maritime Declaration of Health mandatory.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">📢</div>
+                <div class="ft">
+                  <strong>Port health authority notification</strong>Master must
+                  notify port health authority in advance if there is illness on
+                  board: as soon as reasonably practicable and no later than on
+                  approach. Failure to notify is an offence under IHR 2005.
+                </div>
+              </div>
+            </div>
+            <div class="callout danger">
+              <strong
+                >Never attempt to conceal illness from port health
+                authorities.</strong
+              >
+              Under IHR 2005, ships must submit a Maritime Declaration of
+              Health. Concealing illness exposes the Master to criminal
+              liability and endangers port workers and the public.
+            </div>
+          </div>
+
+          <!-- SORT: Outbreak response sequence -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — outbreak response sequence
+            </div>
+            <div class="card-q">
+              Three crew members report vomiting and diarrhoea within 4 hours of
+              each other. As Master, what is the correct sequence of actions?
+              Drag into order.
+            </div>
+            <div class="sort-list" id="m5-sort"></div>
+            <div style="margin-top: 0.75rem">
+              <button
+                class="btn-check"
+                onclick="checkSort('m5-sort', 'm5-correct', 'm5-sort-fb')"
+              >
+                ✓ Check order
+              </button>
+              <button
+                class="btn-reset"
+                onclick="resetSort('m5-sort', 'm5-data')"
+              >
+                Reset
+              </button>
+            </div>
+            <div class="sort-feedback" id="m5-sort-fb"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m5-quiz"></div>
+          </div>
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('m4')">← Module 4</button>
+            <button class="btn-next" onclick="goTo('m6')">Module 6 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ MODULE 6: DOCUMENTATION & SMS ══ -->
+      <div class="screen" id="screen-m6">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc done" onclick="goTo('m1')">M1 ASSESS</span>
+            <span class="bc done" onclick="goTo('m2')">M2 TRAUMA</span>
+            <span class="bc done" onclick="goTo('m3')">M3 MEDICATIONS</span>
+            <span class="bc done" onclick="goTo('m4')">M4 TELEMEDICINE</span>
+            <span class="bc done" onclick="goTo('m5')">M5 INFECTION</span>
+            <span class="bc active">M6 DOCS</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--teal);
+                color: var(--teal);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mod-icon-big">📋</div>
+            <div>
+              <div class="mh-num">
+                Module 6 of 6 · STCW A-VI/4-2 · MLC 2006 · IHR 2005
+              </div>
+              <div class="mh-title">
+                Medical Documentation, Reporting and SMS Integration
+              </div>
+              <div class="mh-desc">
+                Records protect the patient, protect the officer, and meet legal
+                obligations
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+            <div class="fact-grid">
+              <div class="fact-card">
+                <div class="fi">📓</div>
+                <div class="ft">
+                  <strong>Medical log book</strong>Every medical event must be
+                  recorded: date, time, patient name and rank, presenting
+                  complaint, assessment findings, treatment given, medications
+                  and doses, TMAS consultation reference. Write
+                  contemporaneously — not from memory later.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🏥</div>
+                <div class="ft">
+                  <strong>Medical repatriation</strong>MLC 2006 requires the
+                  shipowner to repatriate a sick or injured seafarer at no cost
+                  to the seafarer. Documentation required: medical report (in
+                  sealed envelope for receiving doctor), treatment record, next
+                  of kin notification.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">💊</div>
+                <div class="ft">
+                  <strong>Controlled drugs register</strong>All controlled drugs
+                  must be recorded in a separate controlled drugs register:
+                  quantity received, quantity used per patient, quantity
+                  remaining. Two signatories. Discrepancies must be reported.
+                  Register subject to flag state inspection.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">⚖️</div>
+                <div class="ft">
+                  <strong>Legal obligations</strong>Death at sea: inform flag
+                  state, flag state may require MCA/coast guard investigation.
+                  Notify port health on arrival. Do not disturb the body until
+                  instructed. Log all events with times and actions taken.
+                </div>
+              </div>
+            </div>
+            <div class="callout tip">
+              <strong>IMGS reference:</strong> The International Medical Guide
+              for Ships (3rd edition) is the authoritative reference for all
+              aspects of maritime medical care. It should be on every SOLAS
+              vessel and every designated medical officer should be familiar
+              with its structure.
+            </div>
+          </div>
+
+          <!-- MATCH: Document to obligation -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — match document to legal obligation
+            </div>
+            <div class="card-q">
+              Match each medical document to the regulation or authority that
+              requires it.
+            </div>
+            <div class="match-wrap" id="m6-match">
+              <div>
+                <div class="match-col-hdr">Document / Record</div>
+                <div class="match-col" id="m6-left"></div>
+              </div>
+              <div>
+                <div class="match-col-hdr">Required by</div>
+                <div class="match-col" id="m6-right"></div>
+              </div>
+            </div>
+            <div class="match-hint">Tap left → tap right to match</div>
+            <div class="match-score" id="m6-score"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m6-quiz"></div>
+          </div>
+
+          <div class="callout tip" style="margin-top: 1rem">
+            <strong>All 6 modules complete.</strong> The final assessment is 18
+            questions. Pass mark 75%. Medical care designation under STCW
+            A-VI/4-2 requires both knowledge assessment and practical training.
+            Record completion in the SMS training matrix.
+          </div>
+
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('m5')">← Module 5</button>
+            <button
+              class="btn-next"
+              style="background: var(--teal)"
+              onclick="goTo('assess')"
+            >
+              ★ Final Assessment →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ASSESSMENT ══ -->
+      <div class="screen" id="screen-assess">
+        <div class="mod-wrap">
+          <div class="assess-hdr">
+            <div style="font-size: 32px; margin-bottom: 6px">🏥</div>
+            <h2>Final Assessment — Medical Care Onboard</h2>
+            <p
+              style="
+                font-size: 13px;
+                color: var(--muted);
+                margin-top: 3px;
+                font-weight: 300;
+              "
+            >
+              STCW Table A-VI/4-2 — Master and Officers Designated for Medical
+              Care
+            </p>
+            <div class="assess-meta">
+              <span class="a-chip">18 QUESTIONS</span>
+              <span class="a-chip">PASS: 75% (14/18)</span>
+              <span class="a-chip">TIME: 20 MIN</span>
+              <span class="a-chip">ONE ATTEMPT</span>
+            </div>
+          </div>
+          <div class="timer-strip">
+            <span
+              style="
+                font-family: &quot;DM Mono&quot;, monospace;
+                font-size: 11px;
+                color: var(--muted);
+                letter-spacing: 0.05em;
+              "
+              >TIME REMAINING</span
+            >
+            <span id="a-timer">20:00</span>
+            <span
+              id="a-qcount"
+              style="
+                font-family: &quot;DM Mono&quot;, monospace;
+                font-size: 11px;
+                color: var(--muted);
+              "
+              >0 / 18 answered</span
+            >
+          </div>
+          <div id="assess-qs"></div>
+          <button
+            class="btn-submit-a"
+            id="btn-sub"
+            onclick="submitAssessment()"
+            disabled
+          >
+            Submit Assessment
+          </button>
+          <div class="results-panel" id="results">
+            <div class="score-ring" id="score-ring">
+              <div class="score-pct" id="score-pct">—</div>
+              <div class="score-lbl" id="score-lbl">—</div>
+            </div>
+            <div class="verdict" id="verdict">—</div>
+            <div class="verdict-msg" id="verdict-msg"></div>
+            <div class="breakdown" id="breakdown"></div>
+            <div class="cert" id="cert">
+              <span class="cert-icon">🏅</span>
+              <h3>Assessment Passed</h3>
+              <p>STCW Medical Care Onboard — A-VI/4-2</p>
+              <div class="cert-note">
+                Record in SMS training matrix. Practical training required for
+                full designation. Always consult TMAS and the International
+                Medical Guide for Ships.
+              </div>
+            </div>
+            <div class="res-btns">
+              <button
+                class="btn-hero"
+                style="background: var(--teal)"
+                onclick="goTo('hero')"
+              >
+                ← Back to modules
+              </button>
+              <button class="btn-prev" onclick="location.reload()">
+                Retake
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      // ═══════════════════════════════════════════════
+      // SORT DATA
+      // ═══════════════════════════════════════════════
+      var sortData = {
+        "m1-data": [
+          {
+            id: 1,
+            text: "Ensure scene safety and use PPE before approaching the casualty",
+          },
+          {
+            id: 2,
+            text: "Airway: open and maintain — jaw thrust if spinal injury suspected",
+          },
+          {
+            id: 3,
+            text: "Breathing: rate, depth, SpO₂, chest movement — administer O₂ if needed",
+          },
+          {
+            id: 4,
+            text: "Circulation: control haemorrhage, assess pulse and BP, signs of shock",
+          },
+          {
+            id: 5,
+            text: "Disability: AVPU level of consciousness, pupils, movement",
+          },
+          {
+            id: 6,
+            text: "Exposure: expose and examine fully, then keep warm — call TMAS",
+          },
+        ],
+        "m5-data": [
+          {
+            id: 1,
+            text: "Isolate all affected crew to individual cabins with dedicated facilities",
+          },
+          {
+            id: 2,
+            text: "Identify and interview all affected crew — record symptom onset times and shared contacts",
+          },
+          {
+            id: 3,
+            text: "Contact TMAS for clinical guidance and outbreak management advice",
+          },
+          {
+            id: 4,
+            text: "Initiate enhanced hygiene: frequent handwashing, food handling review, galley inspection",
+          },
+          {
+            id: 5,
+            text: "Notify the port health authority before arrival as required under IHR 2005",
+          },
+          {
+            id: 6,
+            text: "Complete Maritime Declaration of Health and document all cases in the medical log",
+          },
+        ],
+      };
+      var sortCorrect = {
+        "m1-correct": [1, 2, 3, 4, 5, 6],
+        "m5-correct": [1, 2, 3, 4, 5, 6],
+      };
+      var sortCurrent = {};
+      var dragSrc = null;
+
+      // ═══════════════════════════════════════════════
+      // MATCH DATA
+      // ═══════════════════════════════════════════════
+      var matchData = {
+        m2: {
+          left: [
+            "Suspected acute MI — chest pain, radiation, sweating",
+            "Anaphylaxis — widespread rash, wheeze, BP falling",
+            "Stroke — FAST positive, right arm weakness, slurred speech",
+            "Tension pneumothorax — no air entry, tracheal deviation",
+          ],
+          right: [
+            "Aspirin 300mg chewed + GTN spray + O₂ + TMAS immediately",
+            "Adrenaline 0.5mg IM anterolateral thigh immediately",
+            "Do NOT give aspirin — O₂, position, TMAS urgently, record onset time",
+            "Needle decompression 2nd intercostal space midclavicular line — TMAS now",
+          ],
+          pairs: [0, 1, 2, 3],
+        },
+        m6: {
+          left: [
+            "Medical log book entry for every case",
+            "Controlled drugs register",
+            "Maritime Declaration of Health",
+            "Medical repatriation documentation",
+          ],
+          right: [
+            "IMGS and national medical regulations — flag state inspection",
+            "IHR 2005 — submitted before arrival at every port",
+            "MLC 2006 — shipowner obligation, seafarer right",
+            "IMGS Ch.1 — good practice and TMAS record requirement",
+          ],
+          pairs: [3, 0, 1, 2],
+        },
+      };
+      var matchState = {};
+
+      // ═══════════════════════════════════════════════
+      // MCQ DATA
+      // ═══════════════════════════════════════════════
+      var mcqData = {
+        "m1-q1": {
+          q: 'In the ABCDE assessment, what does "D — Disability" primarily assess?',
+          opts: [
+            "Drug allergies and current medications",
+            "Level of consciousness, pupils, and neurological status using AVPU or GCS",
+            "Degree of pain on a 0–10 scale",
+            "Disability insurance status of the crew member",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Drug history is part of the patient history — not the D in ABCDE.",
+            "Correct. D — Disability assesses neurological status: level of consciousness (AVPU or GCS), pupil size and reactivity, and limb movement. Any reduction from A (Alert) is clinically significant.",
+            "Incorrect. Pain assessment is important but is part of the history — not D in ABCDE.",
+            "Incorrect. ABCDE is a clinical assessment tool — D refers to neurological Disability.",
+          ],
+        },
+        "m1-q2": {
+          q: "An adult patient has a SpO₂ of 88% on room air. What is the correct action?",
+          opts: [
+            "Reassess in 30 minutes and record the reading",
+            "Administer supplemental oxygen immediately and prepare for TMAS consultation",
+            "Ask the patient to take deep breaths and re-measure",
+            "Only act if the reading falls below 80%",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. SpO₂ of 88% is critically low. Waiting 30 minutes could be fatal.",
+            "Correct. Normal SpO₂ is 95–100%. At 88%, supplemental oxygen must be given immediately. TMAS consultation is required for any SpO₂ below 92% that does not correct with O₂.",
+            "Incorrect. SpO₂ 88% is a medical emergency requiring immediate oxygen — not breathing exercises.",
+            "Incorrect. Waiting until 80% is dangerously late. Action threshold is below 92%.",
+          ],
+        },
+        "m1-q3": {
+          q: "A casualty responds only to painful stimuli. What is their AVPU level?",
+          opts: ["A — Alert", "V — Voice", "P — Pain", "U — Unresponsive"],
+          a: 2,
+          fb: [
+            "Incorrect. A (Alert) means eyes open spontaneously and the patient responds normally.",
+            "Incorrect. V (Voice) means the patient responds when you speak to them.",
+            "Correct. P — responds to Pain only. This indicates significant neurological compromise. Any level below A requires urgent concern and TMAS consultation.",
+            "Incorrect. U (Unresponsive) means no response to any stimulus including pain.",
+          ],
+        },
+        "m2-q1": {
+          q: "What is the correct sequence for managing a Class III haemorrhagic shock patient?",
+          opts: [
+            "Oral fluids, analgesia, monitoring",
+            "Control haemorrhage, IV access, IV fluids, O₂, TMAS consultation",
+            "Wait for spontaneous improvement — most shock resolves without treatment",
+            "Administer morphine and reduce stimulation",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Oral fluids are inappropriate in shock — absorption is impaired and aspiration risk is high.",
+            "Correct. Stop the bleeding first, then IV access for fluid resuscitation, oxygen, and immediate TMAS guidance on fluid management and further treatment.",
+            "Incorrect. Class III shock (1500–2000ml blood loss) is life-threatening and will not resolve spontaneously.",
+            "Incorrect. Morphine in haemorrhagic shock can cause dangerous vasodilation and worsening hypotension.",
+          ],
+        },
+        "m2-q2": {
+          q: 'In the FAST stroke assessment, what does "T" stand for and what should you do?',
+          opts: [
+            "Temperature — measure the patient's temperature immediately",
+            "Treatment — begin aspirin and thrombolysis",
+            "Time — record the exact time of symptom onset and seek TMAS urgently",
+            "Tremor — assess for involuntary movements",
+          ],
+          a: 2,
+          fb: [
+            "Incorrect. Temperature is not part of FAST — FAST is a rapid bedside neurological screen.",
+            "Incorrect. Aspirin must NOT be given if stroke is suspected (may be haemorrhagic). Thrombolysis is not available at sea. Never give aspirin in suspected stroke.",
+            "Correct. T = Time. Record the exact onset time — this is critical for the receiving hospital's treatment decisions. Seek TMAS immediately and prepare for possible MEDEVAC.",
+            "Incorrect. Tremor is not part of the FAST assessment.",
+          ],
+        },
+        "m2-q3": {
+          q: "Signs of pre-eclampsia in a pregnant crew member include:",
+          opts: [
+            "Low blood pressure, fatigue, and morning sickness",
+            "Blood pressure above 140/90, severe headache, and visual disturbance",
+            "Mild ankle swelling only with normal blood pressure",
+            "Rapid weight loss and fever",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Low blood pressure, fatigue and morning sickness are common in normal pregnancy — not specific to pre-eclampsia.",
+            "Correct. Pre-eclampsia: BP &gt;140/90 on two readings, with severe headache, visual disturbance, and/or epigastric pain. This is a medical emergency — MEDEVAC and TMAS urgently. Risk of seizures (eclampsia).",
+            "Incorrect. Mild ankle oedema alone is common in normal pregnancy. Pre-eclampsia requires hypertension plus other features.",
+            "Incorrect. Weight loss and fever are not the criteria for pre-eclampsia.",
+          ],
+        },
+        "m3-q1": {
+          q: "Which of the following is a contraindication to giving aspirin in suspected chest pain?",
+          opts: [
+            "Heart rate above 100",
+            "Blood pressure above 130/80",
+            "Suspected stroke or active gastrointestinal bleeding",
+            "Patient is over 60 years old",
+          ],
+          a: 2,
+          fb: [
+            "Incorrect. Tachycardia is not a contraindication to aspirin.",
+            "Incorrect. Blood pressure of 130/80 is not a contraindication to aspirin.",
+            "Correct. Aspirin is contraindicated in suspected stroke (haemorrhagic stroke risk), active GI bleeding, known allergy, and in patients taking anticoagulants. In any of these situations, withhold aspirin and seek TMAS guidance.",
+            "Incorrect. Age alone is not a contraindication to aspirin in suspected acute MI.",
+          ],
+        },
+        "m3-q2": {
+          q: "Adrenaline (epinephrine) for anaphylaxis is given by which route and at what adult dose?",
+          opts: [
+            "Intramuscular, 0.5mg (1:1,000) into the anterolateral thigh",
+            "Intravenous, 0.1mg (1:10,000)",
+            "Oral, 1mg tablet",
+            "Sublingual, 0.5mg under the tongue",
+          ],
+          a: 0,
+          fb: [
+            "Correct. Adrenaline 0.5mg IM (1:1,000 concentration) into the anterolateral thigh. This is the correct first-line treatment for anaphylaxis. Can be repeated after 5 minutes if no improvement.",
+            "Incorrect. IV adrenaline for anaphylaxis carries significant cardiac risk and is only given in a critical care setting by experienced personnel with monitoring. The IM route is standard.",
+            "Incorrect. Oral adrenaline is not absorbed rapidly enough to treat anaphylaxis.",
+            "Incorrect. Sublingual administration of adrenaline is not a recognised route for anaphylaxis treatment.",
+          ],
+        },
+        "m3-q3": {
+          q: "What is the correct initial action when administering GTN (glyceryl trinitrate) spray for chest pain?",
+          opts: [
+            "Give 5 sprays immediately for faster effect",
+            "Check blood pressure first — do not give if systolic BP is below 90 mmHg",
+            "Give GTN before aspirin in all suspected cardiac chest pain",
+            "GTN can be given regardless of blood pressure in an emergency",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. One to two sprays is the standard dose. Five sprays risks severe hypotension.",
+            "Correct. GTN causes vasodilation and reduces blood pressure. If the patient is already hypotensive (systolic &lt;90 mmHg), GTN can cause cardiovascular collapse. Always measure BP first.",
+            "Incorrect. Aspirin should generally be given first or simultaneously — GTN is not always given before aspirin.",
+            "Incorrect. Blood pressure must be checked. GTN in hypotension can be fatal.",
+          ],
+        },
+        "m4-q1": {
+          q: "Which information must always be provided at the start of a TMAS consultation?",
+          opts: [
+            "The Master's personal certification number",
+            "Vessel name and position, patient name, age, and chief complaint with vital signs",
+            "Only the diagnosis — TMAS will ask for other details later",
+            "The ship's commercial operator and charterer details",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. The Master's certification number is not required for TMAS.",
+            "Correct. TMAS needs: vessel identification, position, patient demographics (age, sex, role), chief complaint, onset, vital signs, and what treatment has been given. Prepare all this before calling.",
+            "Incorrect. TMAS needs the information — they cannot advise without knowing the patient's condition.",
+            "Incorrect. Commercial details are not clinically relevant to TMAS.",
+          ],
+        },
+        "m4-q2": {
+          q: "After receiving instructions from TMAS, what must you always do?",
+          opts: [
+            "Follow them exactly without reading back — delay costs time",
+            "Read back all instructions to confirm understanding, then log the TMAS reference number",
+            "Implement only the instructions you agree with clinically",
+            "Call back only if the patient deteriorates",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Read-back is essential — communications errors in medical care can be fatal, especially with drug names and dosages.",
+            "Correct. Always read back all instructions — especially drug names, doses and routes — to confirm accuracy. Log the TMAS reference number and follow-up schedule. Keep a written record of all advice.",
+            "Incorrect. You must follow TMAS guidance or clearly communicate disagreement for clinical discussion — not selectively implement instructions.",
+            "Incorrect. Follow-up calls are typically agreed at set intervals — not only on deterioration.",
+          ],
+        },
+        "m4-q3": {
+          q: "Under what circumstances should MEDEVAC be considered?",
+          opts: [
+            "When TMAS recommends it, balanced against distance from port, sea state, and clinical deterioration trend",
+            "For any crew member requesting evacuation regardless of clinical status",
+            "Only when the patient is unconscious",
+            "When the Master decides — TMAS opinion is advisory only",
+          ],
+          a: 0,
+          fb: [
+            "Correct. MEDEVAC requires balancing: TMAS clinical recommendation, distance from port (vs helicopter range ~200nm), sea state, rate of deterioration, and available resources. All factors must be documented.",
+            "Incorrect. Crew preferences alone do not determine MEDEVAC — clinical need is the criterion.",
+            "Incorrect. Many serious conditions (MI, obstetric emergency, suspected appendicitis) require MEDEVAC in conscious patients.",
+            "Incorrect. While the Master decides, this is a clinical decision requiring TMAS input. The Master is responsible for the decision, not acting unilaterally without medical guidance.",
+          ],
+        },
+        "m5-q1": {
+          q: "Under IHR 2005, which diseases MUST be reported to the port health authority before arrival?",
+          opts: [
+            "Common cold, influenza, and norovirus",
+            "Cholera, plague, yellow fever, and any unknown severe illness including SARS-type syndromes",
+            "Food poisoning only if more than 5 crew are affected",
+            "Any illness where a crew member has a fever above 38°C",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Common cold and influenza are not notifiable under IHR 2005 (unless part of an unusual cluster suggesting a novel pathogen).",
+            "Correct. IHR 2005 requires reporting of cholera, plague, yellow fever, smallpox, poliomyelitis, SARS, and any other severe illness of unknown origin that may constitute a Public Health Emergency of International Concern.",
+            "Incorrect. Food poisoning notification depends on the nature of the illness, not simply case numbers.",
+            "Incorrect. Fever alone does not trigger IHR notification — the specific disease type or severity of unknown illness determines notification requirements.",
+          ],
+        },
+        "m5-q2": {
+          q: "Two or more crew members develop vomiting and diarrhoea within 72 hours of each other. This is classified as:",
+          opts: [
+            "An outbreak — initiate outbreak management immediately",
+            "A coincidence — treat each case individually",
+            "A food intolerance — review the menu",
+            "Minor seasonal illness — no special action needed",
+          ],
+          a: 0,
+          fb: [
+            "Correct. This is an outbreak by definition. Initiate: isolation of cases, contact tracing, hygiene enhancement, galley inspection, TMAS consultation, and port health notification as required.",
+            "Incorrect. Two or more cases with similar symptoms within 72 hours meets the definition of an outbreak on a vessel.",
+            "Incorrect. Food intolerance does not cause simultaneous cases with vomiting and diarrhoea across multiple crew members — this is an infectious outbreak until proven otherwise.",
+            "Incorrect. Simultaneous onset in multiple crew is not seasonal — it indicates a common source that must be identified and contained.",
+          ],
+        },
+        "m5-q3": {
+          q: "The Master's obligation under IHR 2005 regarding port health notification is:",
+          opts: [
+            "Notify only if specifically requested by the port agent",
+            "Notify as soon as reasonably practicable and no later than on approach if illness is on board",
+            "Notify within 48 hours of arriving in port",
+            "There is no legal obligation — it is a professional courtesy only",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Notification is a legal obligation under IHR 2005 — it does not depend on the port agent requesting it.",
+            "Correct. The Master must notify the port health authority of any illness on board as soon as reasonably practicable. IHR 2005 requires this on approach — not after arrival. Failure to notify is an offence.",
+            "Incorrect. Notifying after arrival is too late. Notification must be made on approach.",
+            "Incorrect. Notification is a legal obligation under international law (IHR 2005) — failure to notify is a criminal offence in most jurisdictions.",
+          ],
+        },
+        "m6-q1": {
+          q: "What must be recorded in the medical log for every patient encounter?",
+          opts: [
+            "Only the diagnosis and outcome",
+            "Only if the patient was given prescription medication",
+            "A brief narrative — formal documentation is only required for serious cases",
+            "Date, time, patient details, presenting complaint, assessment findings, treatment given with doses, and TMAS reference",
+          ],
+          a: 3,
+          fb: [
+            "Incorrect. Diagnosis and outcome alone are insufficient — the full clinical record must be documented.",
+            "Incorrect. All medical encounters must be documented — not only prescription medication administration.",
+            "Incorrect. All cases require formal documentation — there is no threshold below which records are not required.",
+            "Correct. Every medical encounter requires a complete contemporaneous record: date, time, patient identity, complaint, assessment findings (including vitals), all treatment given with doses, and any TMAS reference number. \"If it's not written down, it didn't happen.\"",
+          ],
+        },
+        "m6-q2": {
+          q: "Under MLC 2006, who bears the cost of medical repatriation of a sick or injured seafarer?",
+          opts: [
+            "The seafarer pays and is reimbursed by their home government",
+            "The shipowner — seafarers have a right to repatriation at no personal cost",
+            "The seafarer pays from their wages with no right of reimbursement",
+            "The P&I club — the seafarer must claim directly from insurers",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. MLC 2006 places the obligation on the shipowner — not the seafarer's government.",
+            "Correct. MLC 2006 Title 4 requires the shipowner to provide medical repatriation at no cost to the seafarer. The P&I club typically covers this cost on behalf of the shipowner, but the obligation rests with the shipowner.",
+            "Incorrect. Seafarers cannot be required to pay for repatriation arising from sickness or injury — this is a fundamental seafarer right under MLC 2006.",
+            "Incorrect. The seafarer deals with the shipowner — not directly with P&I insurers.",
+          ],
+        },
+        "m6-q3": {
+          q: "A seafarer dies on board. What is the Master's immediate obligation?",
+          opts: [
+            "Bury the seafarer at sea immediately to avoid complications",
+            "Notify the flag state, preserve the body undisturbed until instructed, log all events with times, notify next of kin, and notify port health on arrival",
+            "Contact only the company — the flag state is notified later",
+            "Take a DNA sample and continue the voyage normally",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Burial at sea requires specific legal authority — it cannot be done without flag state permission and is rarely appropriate.",
+            "Correct. Death at sea requires: immediate flag state notification, preservation of the body undisturbed, comprehensive event log, notification of next of kin through the company, and port health notification on arrival. The flag state will advise on further requirements.",
+            "Incorrect. Flag state notification is immediate — not deferred. The flag state may direct further action including investigation.",
+            "Incorrect. DNA sampling is not a Master's independent obligation and body preservation pending flag state instructions is required.",
+          ],
+        },
+      };
+
+      // ═══════════════════════════════════════════════
+      // SCENARIO MCQ DATA
+      // ═══════════════════════════════════════════════
+      var scenarioMCQ = {
+        "m2-scen1": {
+          opts: [
+            "Examine the chest carefully for signs of pneumothorax first",
+            "Apply direct pressure to the thigh wound to control haemorrhage — this is catastrophic bleeding",
+            "Administer morphine for pain control",
+            "Take the patient to the medical room for a thorough examination",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. The systematic approach requires C — Circulation first, and this patient has catastrophic haemorrhage (Class III shock signs: tachycardia, hypotension). Stop the bleeding before anything else.",
+            "Correct. Catastrophic haemorrhage control is the immediate priority. BP 88/60 and HR 122 = haemorrhagic shock. Apply firm direct pressure and elevation. Two large-bore IV lines and call TMAS. This comes before chest assessment.",
+            "Incorrect. Opioids in haemorrhagic shock worsen hypotension. Pain management follows haemorrhage control.",
+            "Incorrect. This patient needs immediate intervention. Moving them to the medical room without controlling the haemorrhage wastes critical time.",
+          ],
+        },
+        "m2-scen2": {
+          opts: [
+            "Reassure the patient and wait for improvement with O₂",
+            "Give 10mg IV morphine for pain relief",
+            "Tension pneumothorax — prepare for needle decompression and call TMAS urgently",
+            "Perform a 12-lead ECG to rule out cardiac cause",
+          ],
+          a: 2,
+          fb: [
+            "Incorrect. No air entry plus hyper-resonance plus haemodynamic instability = tension pneumothorax. This will kill within minutes without intervention. Waiting is not an option.",
+            "Incorrect. Morphine will cause vasodilation and worsen the haemodynamic collapse. This diagnosis requires mechanical intervention — not analgesia.",
+            "Correct. Absent air entry + hyper-resonance + tracheal deviation + haemodynamic instability = tension pneumothorax. Needle decompression: 2nd intercostal space, midclavicular line. Call TMAS before and during. This is a life-saving manoeuvre.",
+            "Incorrect. ECG is not the priority — you have a clinical diagnosis of tension pneumothorax. This requires immediate needle decompression, not further investigation.",
+          ],
+        },
+        "m3-drug1": {
+          opts: [
+            "Morphine 10mg IM for pain relief",
+            "Aspirin 300mg chewed — then GTN 1 spray sublingual — then O₂ — then TMAS immediately",
+            "GTN spray only — do not give aspirin until TMAS confirms",
+            "Observe and reassess in 30 minutes",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Opioids may mask symptoms. The priority is aspirin (antiplatelet) and GTN (vasodilator) with oxygen, then immediate TMAS. Morphine may be prescribed by TMAS later for pain.",
+            "Correct. Suspected acute MI: aspirin 300mg chewed (not swallowed whole) for immediate antiplatelet effect. Check BP before GTN — BP is 138/88, so GTN is safe. Oxygen. TMAS immediately. Do not delay aspirin.",
+            "Incorrect. Aspirin should not wait for TMAS confirmation in suspected acute MI with no contraindications — it is the most time-critical intervention.",
+            "Incorrect. Central crushing chest pain with radiation and sweating at 55 years old requires immediate intervention — not observation.",
+          ],
+        },
+        "m3-drug2": {
+          opts: [
+            "Give oral antihistamine and wait for TMAS advice",
+            "Adrenaline (epinephrine) 0.5mg IM into the anterolateral thigh — immediately",
+            "Give a second dose of aspirin",
+            "Apply ice packs to the rash and administer IV fluids only",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Oral antihistamine alone will not reverse anaphylaxis. This patient has BP 78/50 — anaphylactic shock requires immediate adrenaline.",
+            "Correct. Anaphylaxis with cardiovascular collapse: adrenaline 0.5mg (1:1,000) IM into the anterolateral thigh is the priority drug. Do not delay. Lay flat, elevate legs, call TMAS, IV access for fluids.",
+            "Incorrect. Aspirin is irrelevant to anaphylaxis and has antiplatelet effects — not the treatment for this condition.",
+            "Incorrect. IV fluids and ice packs are not adequate for anaphylactic shock. Adrenaline is the life-saving drug and must not be delayed.",
+          ],
+        },
+      };
+
+      // ═══════════════════════════════════════════════
+      // ASSESSMENT DATA
+      // ═══════════════════════════════════════════════
+      var aData = [
+        {
+          q: "In the ABCDE assessment framework, what does D (Disability) primarily evaluate?",
+          opts: [
+            "Drug history and current medications",
+            "Degree of pain on a numeric scale",
+            "Level of consciousness via AVPU or GCS, pupils, and neurological function",
+            "Disability insurance and next of kin details",
+          ],
+          a: 2,
+          cat: "m1",
+          fb: [
+            "Incorrect. Drug history is part of the medical history, not D in ABCDE.",
+            "Incorrect. Pain scoring is important but is not D in ABCDE.",
+            "Correct. D assesses neurological disability: AVPU level, GCS, pupil reactivity, and limb movement.",
+            "Incorrect. ABCDE is a clinical tool — D means neurological Disability.",
+          ],
+        },
+        {
+          q: "A patient has SpO₂ 89% on room air. What is the correct immediate action?",
+          opts: [
+            "Reassess in 30 minutes",
+            "Administer supplemental oxygen immediately",
+            "Ask the patient to take deep breaths",
+            "Only act if SpO₂ falls below 80%",
+          ],
+          a: 1,
+          cat: "m1",
+          fb: [
+            "Incorrect. SpO₂ 89% is critically low — delay risks fatal hypoxia.",
+            "Correct. SpO₂ below 92% requires immediate supplemental oxygen and TMAS consultation.",
+            "Incorrect. Deep breathing exercises do not correct significant hypoxia from clinical causes.",
+            "Incorrect. Action threshold is below 92% — not 80%.",
+          ],
+        },
+        {
+          q: "A patient responds only to painful stimuli. Their AVPU level is:",
+          opts: ["A — Alert", "V — Voice", "P — Pain", "U — Unresponsive"],
+          a: 2,
+          cat: "m1",
+          fb: [
+            "Incorrect. Alert means the patient responds normally with eyes open spontaneously.",
+            "Incorrect. Voice means the patient responds when spoken to.",
+            "Correct. P — responds to Pain only. This indicates serious neurological compromise requiring urgent TMAS consultation.",
+            "Incorrect. Unresponsive means no response to any stimulus including pain.",
+          ],
+        },
+        {
+          q: "What is the correct management priority for a patient in Class III haemorrhagic shock?",
+          opts: [
+            "Control haemorrhage — IV access — IV fluids — O₂ — TMAS",
+            "Oral fluids and analgesia",
+            "Wait for spontaneous improvement",
+            "Morphine and sedation",
+          ],
+          a: 0,
+          cat: "m2",
+          fb: [
+            "Correct. Haemorrhage control first, then IV resuscitation, oxygen, immediate TMAS guidance.",
+            "Incorrect. Oral fluids are inadequate and absorbed poorly in shock.",
+            "Incorrect. Class III shock (1500–2000ml loss) is life-threatening and will not self-resolve.",
+            "Incorrect. Morphine in haemorrhagic shock causes vasodilation and worsens hypotension.",
+          ],
+        },
+        {
+          q: "In suspected stroke, why must aspirin NOT be given?",
+          opts: [
+            "Stroke may be haemorrhagic — aspirin would worsen intracranial bleeding",
+            "Aspirin causes nausea which worsens stroke outcomes",
+            "Aspirin is only effective if given intravenously for stroke",
+            "Aspirin is not in the ship's medical chest",
+          ],
+          a: 0,
+          cat: "m2",
+          fb: [
+            "Correct. Stroke may be haemorrhagic (bleeding in the brain). Aspirin — an antiplatelet — worsens intracranial haemorrhage. Do not give until haemorrhagic stroke is excluded by CT scan in hospital.",
+            "Incorrect. Nausea is not the reason.",
+            "Incorrect. The reason is not route — it is haemorrhagic risk.",
+            "Incorrect. Aspirin availability is not the reason.",
+          ],
+        },
+        {
+          q: "Signs of pre-eclampsia in a pregnant crew member include:",
+          opts: [
+            "Mild ankle swelling with normal blood pressure",
+            "BP above 140/90, severe headache, and visual disturbance",
+            "Morning sickness and fatigue",
+            "Rapid weight loss and fever",
+          ],
+          a: 1,
+          cat: "m2",
+          fb: [
+            "Incorrect. Mild oedema is common in normal pregnancy.",
+            "Correct. Pre-eclampsia: hypertension (BP &gt;140/90) plus severe headache, visual disturbance, and/or epigastric pain. This is an emergency requiring urgent MEDEVAC and TMAS consultation.",
+            "Incorrect. Morning sickness is normal in early pregnancy — not pre-eclampsia.",
+            "Incorrect. Weight loss and fever are not pre-eclampsia criteria.",
+          ],
+        },
+        {
+          q: "Which is a contraindication to administering aspirin for chest pain?",
+          opts: [
+            "Heart rate above 100 bpm",
+            "Active gastrointestinal bleeding or suspected stroke",
+            "Blood pressure above 130/80",
+            "Patient age over 60",
+          ],
+          a: 1,
+          cat: "m3",
+          fb: [
+            "Incorrect. Tachycardia is not a contraindication to aspirin.",
+            "Correct. Active bleeding, suspected stroke, known allergy, and anticoagulant therapy are all contraindications to aspirin. In suspected stroke, aspirin worsens haemorrhagic stroke.",
+            "Incorrect. BP 130/80 is not a contraindication.",
+            "Incorrect. Age 60+ is not a contraindication to aspirin in suspected MI.",
+          ],
+        },
+        {
+          q: "The correct route and dose for adrenaline in adult anaphylaxis is:",
+          opts: [
+            "IV 0.1mg (1:10,000)",
+            "Oral 1mg tablet",
+            "IM 0.5mg (1:1,000) into the anterolateral thigh",
+            "Sublingual 0.5mg",
+          ],
+          a: 2,
+          cat: "m3",
+          fb: [
+            "Incorrect. IV adrenaline for anaphylaxis requires critical care monitoring and is not the standard route.",
+            "Incorrect. Oral absorption is too slow for anaphylaxis treatment.",
+            "Correct. IM adrenaline 0.5mg (1:1,000) into the anterolateral thigh is the first-line treatment for anaphylaxis. Can be repeated after 5 minutes if no improvement.",
+            "Incorrect. Sublingual adrenaline is not a recognised route for anaphylaxis.",
+          ],
+        },
+        {
+          q: "GTN spray must NOT be given if the systolic blood pressure is below:",
+          opts: ["120 mmHg", "140 mmHg", "90 mmHg", "60 mmHg"],
+          a: 2,
+          cat: "m3",
+          fb: [
+            "Incorrect. BP of 120 systolic allows GTN — 90 is the threshold.",
+            "Incorrect. BP 140 systolic is normal-high and not a contraindication to GTN.",
+            "Correct. GTN causes vasodilation. Systolic BP below 90 mmHg indicates the patient is already hypotensive — GTN will cause cardiovascular collapse.",
+            "Incorrect. The threshold is 90 — waiting until 60 is dangerously late.",
+          ],
+        },
+        {
+          q: "What information must be prepared before contacting TMAS?",
+          opts: [
+            "The Master's personal certification number",
+            "Vessel name and position, patient details, chief complaint, vital signs, and treatment given",
+            "Only the tentative diagnosis",
+            "Commercial operator and P&I club details",
+          ],
+          a: 1,
+          cat: "m4",
+          fb: [
+            "Incorrect. Certification numbers are not clinically relevant to TMAS.",
+            "Correct. TMAS needs complete clinical information to give useful advice. Prepare everything before calling — not during.",
+            "Incorrect. Diagnosis alone is insufficient. TMAS needs the full clinical picture.",
+            "Incorrect. Commercial details are not required for TMAS.",
+          ],
+        },
+        {
+          q: "After receiving TMAS instructions, what must you always do?",
+          opts: [
+            "Implement immediately without read-back",
+            "Read back all instructions and log the TMAS reference number",
+            "Follow only instructions you agree with",
+            "Call back only if the patient worsens",
+          ],
+          a: 1,
+          cat: "m4",
+          fb: [
+            "Incorrect. Read-back is essential to verify accuracy — especially for drug names and doses.",
+            "Correct. Read back all instructions. Record the TMAS reference number. Log all advice in the medical log. Confirm the follow-up schedule.",
+            "Incorrect. Selective implementation is not appropriate. Discuss disagreement with TMAS for clinical resolution.",
+            "Incorrect. Follow-up is at agreed intervals — not only on deterioration.",
+          ],
+        },
+        {
+          q: "MEDEVAC should be considered when:",
+          opts: [
+            "Any crew member requests it",
+            "Only when the patient is unconscious",
+            "The Master decides alone without clinical input",
+            "TMAS recommends it, balanced against distance, sea state, and clinical deterioration",
+          ],
+          a: 3,
+          cat: "m4",
+          fb: [
+            "Incorrect. Clinical need — not crew preference — determines MEDEVAC.",
+            "Incorrect. Many MEDEVAC cases (MI, obstetric emergency, appendicitis) involve conscious patients.",
+            "Incorrect. TMAS clinical input is essential. The Master decides but must have and document medical guidance.",
+            "Correct. MEDEVAC balances TMAS recommendation, helicopter range (~200nm), sea state, rate of deterioration, and resources. Document all factors and the decision made.",
+          ],
+        },
+        {
+          q: "Under IHR 2005, which condition must be reported to port health authorities before arrival?",
+          opts: [
+            "Influenza with fever",
+            "Food poisoning affecting only one crew member",
+            "Seasickness affecting multiple crew",
+            "Cholera or plague or any unknown severe illness",
+          ],
+          a: 3,
+          cat: "m5",
+          fb: [
+            "Incorrect. Influenza alone is not listed as a notifiable condition under IHR 2005 unless of novel type.",
+            "Incorrect. A single food poisoning case does not trigger IHR notification.",
+            "Incorrect. Seasickness is not an infectious disease — no IHR notification required.",
+            "Correct. IHR 2005 requires notification of cholera, plague, yellow fever, smallpox, poliomyelitis, SARS, and any severe illness of unknown origin that may be an international public health concern.",
+          ],
+        },
+        {
+          q: "Two or more crew with similar symptoms within 72 hours is classified as:",
+          opts: [
+            "A coincidence — treat each case separately",
+            "An outbreak requiring outbreak management immediately",
+            "A food intolerance issue",
+            "Normal variation — no action required",
+          ],
+          a: 1,
+          cat: "m5",
+          fb: [
+            "Incorrect. Two or more cases within 72 hours meets the outbreak definition on a vessel.",
+            "Correct. Outbreak management must be initiated: isolation, contact tracing, enhanced hygiene, TMAS, and port health notification as required.",
+            "Incorrect. Simultaneous GI illness in multiple crew is an infectious outbreak until proven otherwise.",
+            "Incorrect. Simultaneous onset requires active investigation and management.",
+          ],
+        },
+        {
+          q: "The Master's obligation for port health notification under IHR 2005 is:",
+          opts: [
+            "Notify only if the port agent requests it",
+            "Notify as soon as reasonably practicable — no later than on approach",
+            "Notify within 48 hours of arrival",
+            "No obligation — notification is voluntary",
+          ],
+          a: 1,
+          cat: "m5",
+          fb: [
+            "Incorrect. It is a legal obligation — independent of port agent requests.",
+            "Correct. IHR 2005 requires the Master to notify port health on approach — not after arrival. Failure to notify is a legal offence.",
+            "Incorrect. Notification must occur before arrival — on approach.",
+            "Incorrect. IHR 2005 notification is a mandatory legal obligation for Masters.",
+          ],
+        },
+        {
+          q: "What must be documented in the medical log for every patient encounter?",
+          opts: [
+            "Diagnosis and outcome only",
+            "Date, time, patient details, complaint, assessment, treatment with doses, and TMAS reference",
+            "Only if prescription medication is given",
+            "Brief notes — formal records are for serious cases only",
+          ],
+          a: 1,
+          cat: "m6",
+          fb: [
+            "Incorrect. Diagnosis and outcome alone are insufficient.",
+            'Correct. A complete contemporaneous record is required for every encounter. "If it is not written down, it did not happen."',
+            "Incorrect. All encounters require documentation — not only prescription medication.",
+            "Incorrect. All medical encounters require formal documentation — there is no seriousness threshold.",
+          ],
+        },
+        {
+          q: "Under MLC 2006, who bears the cost of medical repatriation?",
+          opts: [
+            "The seafarer — to be reimbursed by their government",
+            "The shipowner — seafarers have a right to repatriation at no personal cost",
+            "The seafarer directly from wages",
+            "The seafarer must claim from the P&I club",
+          ],
+          a: 1,
+          cat: "m6",
+          fb: [
+            "Incorrect. The government does not pay — this is the shipowner's obligation.",
+            "Correct. MLC 2006 Title 4: the shipowner bears all costs of medical repatriation. This is a fundamental seafarer right.",
+            "Incorrect. Seafarers cannot be charged for illness-related repatriation.",
+            "Incorrect. The obligation is the shipowner's — P&I covers the shipowner, not the seafarer directly.",
+          ],
+        },
+        {
+          q: "A seafarer dies on board. What is the Master's immediate legal obligation?",
+          opts: [
+            "Bury at sea immediately",
+            "Notify only the company",
+            "Take a DNA sample immediately",
+            "Notify flag state, preserve body undisturbed until instructed, log all events, notify next of kin, notify port health on arrival",
+          ],
+          a: 3,
+          cat: "m6",
+          fb: [
+            "Incorrect. Burial at sea requires specific flag state authority — it cannot be done unilaterally.",
+            "Incorrect. Flag state notification is immediate and mandatory — not only the company.",
+            "Incorrect. DNA sampling is not the Master's independent obligation — preserve the body and await instructions.",
+            "Correct. Immediate flag state notification. Preserve the body. Comprehensive event log with times. Next of kin through the company. Port health on arrival. Await flag state direction on further steps.",
+          ],
+        },
+      ];
+
+      // ═══════════════════════════════════════════════
+      // STATE
+      // ═══════════════════════════════════════════════
+      var points = 0;
+      var assessAnswers = {};
+      var assessTimer = null;
+      var assessTimeLeft = 1200;
+
+      // ═══════════════════════════════════════════════
+      // NAVIGATION
+      // ═══════════════════════════════════════════════
+      function goTo(dest) {
+        document.querySelectorAll(".screen").forEach(function (s) {
+          s.classList.remove("active");
+        });
+        var el = document.getElementById("screen-" + dest);
+        if (el) {
+          el.classList.add("active");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+        var pm = {
+          hero: 0,
+          m1: 12,
+          m2: 26,
+          m3: 42,
+          m4: 58,
+          m5: 74,
+          m6: 88,
+          assess: 100,
+        };
+        document.getElementById("prog-bar").style.width = (pm[dest] || 0) + "%";
+        var lm = {
+          hero: "Overview",
+          m1: "M1 — Assessment",
+          m2: "M2 — Trauma",
+          m3: "M3 — Medications",
+          m4: "M4 — Telemedicine",
+          m5: "M5 — Infection",
+          m6: "M6 — Documentation",
+          assess: "Final Assessment",
+        };
+        document.getElementById("nav-mod").textContent = lm[dest] || "";
+        if (dest === "assess" && !assessTimer) startAssessTimer();
+        var mp = document.getElementById("mgpill-" + dest);
+        if (mp) mp.classList.add("done");
+      }
+      function addPoints(n) {
+        points += n;
+        document.getElementById("nav-pts").textContent = points + " pts";
+      }
+
+      // ═══════════════════════════════════════════════
+      // SORT
+      // ═══════════════════════════════════════════════
+      function initSort(listId, dataKey) {
+        var data = sortData[dataKey].slice();
+        shuffle(data);
+        sortCurrent[listId] = data.map(function (d) {
+          return d.id;
+        });
+        renderSort(listId, data);
+      }
+      function shuffle(a) {
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = a[i];
+          a[i] = a[j];
+          a[j] = t;
+        }
+      }
+      function renderSort(listId, data) {
+        var list = document.getElementById(listId);
+        if (!list) return;
+        list.innerHTML = "";
+        data.forEach(function (item, i) {
+          var div = document.createElement("div");
+          div.className = "sort-item";
+          div.draggable = true;
+          div.dataset.id = item.id;
+          div.innerHTML =
+            '<span class="sort-handle">&#8942;</span><span class="sort-badge">' +
+            (i + 1) +
+            '</span><span class="sort-text">' +
+            item.text +
+            "</span>";
+          div.addEventListener("dragstart", function (e) {
+            dragSrc = this;
+            this.classList.add("dragging");
+            e.dataTransfer.effectAllowed = "move";
+          });
+          div.addEventListener("dragend", function () {
+            this.classList.remove("dragging");
+            list.querySelectorAll(".sort-item").forEach(function (el) {
+              el.classList.remove("over");
+            });
+          });
+          div.addEventListener("dragover", function (e) {
+            e.preventDefault();
+            if (this !== dragSrc) {
+              list.querySelectorAll(".sort-item").forEach(function (el) {
+                el.classList.remove("over");
+              });
+              this.classList.add("over");
+            }
+          });
+          div.addEventListener("drop", function (e) {
+            e.stopPropagation();
+            if (this !== dragSrc) {
+              var items = Array.from(list.querySelectorAll(".sort-item"));
+              var si = items.indexOf(dragSrc),
+                ti = items.indexOf(this);
+              var cur = sortCurrent[listId];
+              var tmp = cur[si];
+              cur[si] = cur[ti];
+              cur[ti] = tmp;
+              var allData = sortData[listId.replace("-sort", "-data")];
+              var reordered = cur.map(function (id) {
+                return allData.find(function (d) {
+                  return d.id === id;
+                });
+              });
+              renderSort(listId, reordered);
+            }
+          });
+          list.appendChild(div);
+        });
+      }
+      function resetSort(listId, dataKey) {
+        initSort(listId, dataKey);
+        var fb = document.getElementById(listId.replace("-sort", "-sort-fb"));
+        if (fb) fb.className = "sort-feedback";
+      }
+      function checkSort(listId, correctKey, fbId) {
+        var cur = sortCurrent[listId],
+          cor = sortCorrect[correctKey];
+        var fb = document.getElementById(fbId);
+        if (!fb) return;
+        if (JSON.stringify(cur) === JSON.stringify(cor)) {
+          fb.className = "sort-feedback pass";
+          fb.textContent =
+            "✓ Correct sequence. This systematic approach is the clinical standard.";
+          document
+            .getElementById(listId)
+            .querySelectorAll(".sort-item")
+            .forEach(function (el) {
+              el.classList.add("correct-item");
+            });
+          addPoints(8);
+        } else {
+          var allData = sortData[listId.replace("-sort", "-data")];
+          var names = cor.map(function (id) {
+            return allData.find(function (d) {
+              return d.id === id;
+            }).text;
+          });
+          fb.className = "sort-feedback fail";
+          fb.innerHTML =
+            'Not quite. Correct sequence:<ol style="margin:8px 0 0 18px;line-height:2;font-size:12px">' +
+            names
+              .map(function (n) {
+                return "<li>" + n + "</li>";
+              })
+              .join("") +
+            "</ol>";
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      // MATCH
+      // ═══════════════════════════════════════════════
+      function initMatch(mid) {
+        var data = matchData[mid];
+        matchState[mid] = { selected: null, matched: [] };
+        var leftEl = document.getElementById(mid + "-left"),
+          rightEl = document.getElementById(mid + "-right");
+        if (!leftEl || !rightEl) return;
+        leftEl.innerHTML = "";
+        rightEl.innerHTML = "";
+        var rightShuffled = data.right.slice();
+        shuffle(rightShuffled);
+        data.left.forEach(function (txt, i) {
+          var el = document.createElement("div");
+          el.className = "match-item";
+          el.textContent = txt;
+          el.addEventListener("click", function () {
+            matchClick(mid, "left", i, this);
+          });
+          leftEl.appendChild(el);
+        });
+        rightShuffled.forEach(function (txt) {
+          var origIdx = data.right.indexOf(txt);
+          var el = document.createElement("div");
+          el.className = "match-item";
+          el.textContent = txt;
+          el.addEventListener("click", function () {
+            matchClick(mid, "right", origIdx, this);
+          });
+          rightEl.appendChild(el);
+        });
+      }
+      function matchClick(mid, side, idx, el) {
+        var state = matchState[mid];
+        if (
+          el.classList.contains("matched-ok") ||
+          el.classList.contains("matched-err")
+        )
+          return;
+        var data = matchData[mid];
+        if (!state.selected) {
+          if (side === "left") {
+            state.selected = { side, idx, el };
+            el.classList.add("selected");
+          } else {
+            el.style.outline = "2px solid var(--amber-mid)";
+            setTimeout(function () {
+              el.style.outline = "";
+            }, 600);
+          }
+          return;
+        }
+        if (state.selected.side === side) {
+          state.selected.el.classList.remove("selected");
+          if (side === "left") {
+            state.selected = { side, idx, el };
+            el.classList.add("selected");
+          } else state.selected = null;
+          return;
+        }
+        var lEl = state.selected.el,
+          rEl = el,
+          lIdx = state.selected.idx,
+          rIdx = idx;
+        lEl.classList.remove("selected");
+        var isMatch = data.pairs[lIdx] === rIdx;
+        if (isMatch) {
+          lEl.classList.add("matched-ok");
+          rEl.classList.add("matched-ok");
+          state.matched.push(lIdx);
+          addPoints(3);
+          if (state.matched.length === data.left.length) {
+            var sc = document.getElementById(mid + "-score");
+            if (sc) {
+              sc.className = "match-score show-ok";
+              sc.textContent = "✓ All matched correctly.";
+            }
+          }
+        } else {
+          lEl.classList.add("matched-err");
+          rEl.classList.add("matched-err");
+          setTimeout(function () {
+            lEl.classList.remove("matched-err");
+            rEl.classList.remove("matched-err");
+          }, 900);
+        }
+        state.selected = null;
+      }
+
+      // ═══════════════════════════════════════════════
+      // MCQ
+      // ═══════════════════════════════════════════════
+      function renderModuleQuiz(modId, qKeys) {
+        var container = document.getElementById(modId + "-quiz");
+        if (!container) return;
+        container.innerHTML = "";
+        qKeys.forEach(function (key, i) {
+          var data = mcqData[key];
+          if (!data) return;
+          var div = document.createElement("div");
+          div.style.cssText =
+            "margin-bottom:1rem" +
+            (i > 0
+              ? ";border-top:1px solid var(--border);padding-top:1rem;margin-top:0.5rem"
+              : "");
+          var opts = '<div class="mcq-opts" id="opts-' + key + '">';
+          data.opts.forEach(function (opt, j) {
+            opts +=
+              '<button class="mcq-opt" onclick="selectMCQ(\'' +
+              key +
+              "'," +
+              j +
+              ',this,3)"><span class="mcq-letter">' +
+              ["A", "B", "C", "D"][j] +
+              "</span>" +
+              opt +
+              "</button>";
+          });
+          opts += '</div><div class="mcq-fb" id="fb-' + key + '"></div>';
+          div.innerHTML =
+            '<div style="font-family:DM Mono,monospace;font-size:10px;color:#6d28d9;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px">Q' +
+            (i + 1) +
+            '</div><div style="font-family:Instrument Serif,serif;font-size:1rem;color:var(--navy);margin-bottom:0.7rem;line-height:1.5">' +
+            data.q +
+            "</div>" +
+            opts;
+          container.appendChild(div);
+        });
+      }
+      function selectMCQ(key, idx, btn, pts) {
+        var data = mcqData[key];
+        if (!data) return;
+        var container = document.getElementById("opts-" + key);
+        var fb = document.getElementById("fb-" + key);
+        container.querySelectorAll(".mcq-opt").forEach(function (b) {
+          b.disabled = true;
+        });
+        if (idx === data.a) {
+          btn.classList.add("correct-ans");
+          if (fb) {
+            fb.className = "mcq-fb ok";
+            fb.textContent = data.fb[idx];
+          }
+          addPoints(pts || 3);
+        } else {
+          btn.classList.add("wrong-ans");
+          container
+            .querySelectorAll(".mcq-opt")
+            [data.a].classList.add("correct-ans");
+          if (fb) {
+            fb.className = "mcq-fb err";
+            fb.textContent = data.fb[idx];
+          }
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      // SCENARIO MCQ
+      // ═══════════════════════════════════════════════
+      function renderScenMCQ(containerId, dataKey, onCorrect) {
+        var data = scenarioMCQ[dataKey];
+        if (!data) return;
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = "";
+        data.opts.forEach(function (opt, i) {
+          var btn = document.createElement("button");
+          btn.className = "mcq-opt";
+          btn.innerHTML =
+            '<span class="mcq-letter">' +
+            ["A", "B", "C", "D"][i] +
+            "</span>" +
+            opt;
+          btn.addEventListener(
+            "click",
+            (function (idx, b) {
+              return function () {
+                container.querySelectorAll(".mcq-opt").forEach(function (x) {
+                  x.disabled = true;
+                });
+                var fb = document.getElementById(dataKey + "-fb");
+                if (idx === data.a) {
+                  b.classList.add("correct-ans");
+                  if (fb) {
+                    fb.className = "mcq-fb ok";
+                    fb.textContent = data.fb[idx];
+                  }
+                  addPoints(4);
+                  if (onCorrect) setTimeout(onCorrect, 900);
+                } else {
+                  b.classList.add("wrong-ans");
+                  container
+                    .querySelectorAll(".mcq-opt")
+                    [data.a].classList.add("correct-ans");
+                  if (fb) {
+                    fb.className = "mcq-fb err";
+                    fb.textContent = data.fb[idx];
+                  }
+                }
+              };
+            })(i, btn),
+          );
+          container.appendChild(btn);
+        });
+      }
+
+      // ═══════════════════════════════════════════════
+      // TELEMEDICINE FORM
+      // ═══════════════════════════════════════════════
+      function checkTelecall() {
+        var vessel = document.getElementById("tf-vessel").value.trim();
+        var pos = document.getElementById("tf-pos").value.trim();
+        var complaint = document.getElementById("tf-complaint").value.trim();
+        var hr = document.getElementById("tf-hr").value.trim();
+        var bp = document.getElementById("tf-bp").value.trim();
+        var temp = document.getElementById("tf-temp").value.trim();
+        var spo2 = document.getElementById("tf-spo2").value.trim();
+        var checks = [
+          document.getElementById("tc1").checked,
+          document.getElementById("tc2").checked,
+          document.getElementById("tc3").checked,
+          document.getElementById("tc4").checked,
+        ];
+        var fb = document.getElementById("tele-fb");
+        var missing = [];
+        if (!vessel) missing.push("vessel name");
+        if (!pos) missing.push("ship position");
+        if (!complaint) missing.push("chief complaint");
+        if (!hr) missing.push("heart rate");
+        if (!bp) missing.push("blood pressure");
+        if (!temp) missing.push("temperature");
+        if (!spo2) missing.push("SpO₂");
+        var unchecked = 0;
+        checks.forEach(function (c) {
+          if (!c) unchecked++;
+        });
+
+        if (missing.length === 0 && unchecked === 0) {
+          fb.className = "tele-feedback show-ok";
+          fb.innerHTML =
+            "✓ TMAS report complete. All essential fields present. Reference the presentation as: male, 42, right lower quadrant pain 6 hours, fever 38.8°C, rebound tenderness — suspected appendicitis. TMAS will likely advise: IV antibiotics, analgesia, nil by mouth, and urgent MEDEVAC assessment given 840nm from port.";
+          addPoints(10);
+        } else {
+          var msg = "Report incomplete. ";
+          if (missing.length > 0)
+            msg += "Missing: " + missing.join(", ") + ". ";
+          if (unchecked > 0)
+            msg += unchecked + " checklist item(s) not confirmed.";
+          fb.className = "tele-feedback show-err";
+          fb.textContent = msg;
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      // ASSESSMENT
+      // ═══════════════════════════════════════════════
+      function renderAssessment() {
+        var container = document.getElementById("assess-qs");
+        container.innerHTML = "";
+        aData.forEach(function (q, qi) {
+          var div = document.createElement("div");
+          div.className = "a-q";
+          div.id = "aq" + qi;
+          var html =
+            '<div class="a-qnum">Question ' +
+            (qi + 1) +
+            ' of 18</div><div class="a-qtext">' +
+            q.q +
+            '</div><div class="mcq-opts" id="aopts' +
+            qi +
+            '">';
+          q.opts.forEach(function (opt, oi) {
+            html +=
+              '<button class="mcq-opt" onclick="pickA(' +
+              qi +
+              "," +
+              oi +
+              ',this)"><span class="mcq-letter">' +
+              ["A", "B", "C", "D"][oi] +
+              "</span>" +
+              opt +
+              "</button>";
+          });
+          html += "</div>";
+          div.innerHTML = html;
+          container.appendChild(div);
+        });
+      }
+      function pickA(qi, oi, btn) {
+        var parent = document.getElementById("aq" + qi);
+        parent.querySelectorAll(".mcq-opt").forEach(function (b) {
+          b.style.borderColor = "";
+          b.style.background = "";
+        });
+        btn.style.borderColor = "var(--teal)";
+        btn.style.background = "var(--teal-lt)";
+        assessAnswers[qi] = oi;
+        var answered = Object.keys(assessAnswers).length;
+        document.getElementById("a-qcount").textContent =
+          answered + " / 18 answered";
+        document.getElementById("btn-sub").disabled = answered < 18;
+      }
+      function startAssessTimer() {
+        assessTimer = setInterval(function () {
+          assessTimeLeft--;
+          var m = Math.floor(assessTimeLeft / 60),
+            s = assessTimeLeft % 60;
+          var el = document.getElementById("a-timer");
+          if (el) {
+            el.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+            if (assessTimeLeft <= 300) el.className = "warn";
+            if (assessTimeLeft <= 60) el.className = "danger";
+          }
+          if (assessTimeLeft <= 0) {
+            clearInterval(assessTimer);
+            submitAssessment();
+          }
+        }, 1000);
+      }
+      function submitAssessment() {
+        clearInterval(assessTimer);
+        document.getElementById("btn-sub").style.display = "none";
+        document.querySelector(".timer-strip").style.display = "none";
+        var correct = 0,
+          cats = { m1: 0, m2: 0, m3: 0, m4: 0, m5: 0, m6: 0 },
+          catTot = { m1: 0, m2: 0, m3: 0, m4: 0, m5: 0, m6: 0 };
+        aData.forEach(function (q, qi) {
+          var sel = assessAnswers[qi];
+          catTot[q.cat]++;
+          var parent = document.getElementById("aq" + qi);
+          var opts = parent.querySelectorAll(".mcq-opt");
+          opts.forEach(function (b) {
+            b.disabled = true;
+            b.style.borderColor = "";
+            b.style.background = "";
+          });
+          if (sel === q.a) {
+            correct++;
+            cats[q.cat]++;
+            if (opts[sel]) opts[sel].classList.add("correct-ans");
+          } else {
+            if (sel !== undefined && opts[sel])
+              opts[sel].classList.add("wrong-ans");
+            if (opts[q.a]) opts[q.a].classList.add("correct-ans");
+          }
+          var fb = document.createElement("div");
+          fb.className = "mcq-fb " + (sel === q.a ? "ok" : "err");
+          fb.textContent =
+            sel === undefined
+              ? "Not answered — correct answer shown above."
+              : q.fb[sel];
+          parent.appendChild(fb);
+        });
+        var pct = Math.round((correct / 18) * 100),
+          passed = pct >= 75;
+        var panel = document.getElementById("results");
+        panel.style.display = "block";
+        var ring = document.getElementById("score-ring");
+        ring.className = "score-ring " + (passed ? "pass" : "fail");
+        document.getElementById("score-pct").textContent = pct + "%";
+        document.getElementById("score-lbl").textContent =
+          correct + " / 18 correct";
+        var verdict = document.getElementById("verdict");
+        verdict.textContent = passed
+          ? "Assessment passed"
+          : "Below pass threshold";
+        verdict.style.color = passed ? "var(--green)" : "var(--red)";
+        document.getElementById("verdict-msg").textContent = passed
+          ? "You have met the STCW A-VI/4-2 knowledge standard for Medical Care Onboard. Record completion in the SMS training matrix. Always consult TMAS and the International Medical Guide for Ships in real emergencies."
+          : "Score below 75%. Review the flagged modules. STCW designation as medical designate requires both knowledge assessment and practical training.";
+        var bd = document.getElementById("breakdown"),
+          labels = {
+            m1: "Assessment",
+            m2: "Trauma",
+            m3: "Medications",
+            m4: "Telemedicine",
+            m5: "Infection",
+            m6: "Documentation",
+          };
+        bd.innerHTML = "";
+        ["m1", "m2", "m3", "m4", "m5", "m6"].forEach(function (cat) {
+          var r = cats[cat],
+            t = catTot[cat];
+          var div = document.createElement("div");
+          div.className = "bd " + (r >= Math.ceil(t * 0.67) ? "good" : "bad");
+          div.innerHTML =
+            '<div class="bd-score">' +
+            r +
+            "/" +
+            t +
+            '</div><div class="bd-lbl">' +
+            labels[cat] +
+            "</div>";
+          bd.appendChild(div);
+        });
+        if (passed) {
+          document.getElementById("cert").className = "cert show";
+        }
+        panel.scrollIntoView({ behavior: "smooth" });
+      }
+
+      // ═══════════════════════════════════════════════
+      // INIT
+      // ═══════════════════════════════════════════════
+      document.addEventListener("DOMContentLoaded", function () {
+        goTo("hero");
+        initSort("m1-sort", "m1-data");
+        initSort("m5-sort", "m5-data");
+        initMatch("m2");
+        initMatch("m6");
+        renderModuleQuiz("m1", ["m1-q1", "m1-q2", "m1-q3"]);
+        renderModuleQuiz("m2", ["m2-q1", "m2-q2", "m2-q3"]);
+        renderModuleQuiz("m3", ["m3-q1", "m3-q2", "m3-q3"]);
+        renderModuleQuiz("m4", ["m4-q1", "m4-q2", "m4-q3"]);
+        renderModuleQuiz("m5", ["m5-q1", "m5-q2", "m5-q3"]);
+        renderModuleQuiz("m6", ["m6-q1", "m6-q2", "m6-q3"]);
+        renderScenMCQ("m2-scen1", "m2-scen1", function () {
+          document.getElementById("m2-scen2-wrap").style.display = "block";
+          renderScenMCQ("m2-scen2", "m2-scen2", null);
+        });
+        renderScenMCQ("m3-drug1", "m3-drug1", function () {
+          document.getElementById("m3-drug2-wrap").style.display = "block";
+          renderScenMCQ("m3-drug2", "m3-drug2", null);
+        });
+        renderAssessment();
+      });
+    </script>
+  </body>
+</html>

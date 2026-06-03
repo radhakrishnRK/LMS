@@ -1,0 +1,2132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ship-Shore Safety Checklist — Interactive Course</title>
+    <style>
+      :root {
+        --blue: #1d4ed8;
+        --navy: #0f172a;
+        --slate: #475569;
+        --muted: #64748b;
+        --bg: #f8fafc;
+        --card: #fff;
+        --line: #e2e8f0;
+        --red: #dc2626;
+        --redbg: #fef2f2;
+        --yellow: #ca8a04;
+        --yellowbg: #fefce8;
+        --green: #16a34a;
+        --greenbg: #f0fdf4;
+        --purple: #7c3aed;
+        --purplebg: #f5f3ff;
+        --orange: #ea580c;
+        --orangebg: #fff7ed;
+        --shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+        --radius: 18px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #fff 0%, var(--bg) 100%);
+        color: var(--navy);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.55;
+      }
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(255, 255, 255, 0.96);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(10px);
+      }
+      .progress-track {
+        height: 5px;
+        background: #e5e7eb;
+      }
+      .progress-bar {
+        height: 5px;
+        width: 0;
+        background: linear-gradient(
+          90deg,
+          var(--green),
+          var(--blue),
+          var(--purple)
+        );
+        transition: 0.35s;
+      }
+      .nav {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1180px;
+        margin: auto;
+        padding: 12px 18px;
+      }
+      .brand {
+        font-weight: 900;
+        letter-spacing: 0.02em;
+      }
+      .brand small {
+        display: block;
+        font-weight: 700;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .status {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .pill {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-weight: 800;
+        color: #334155;
+        font-size: 13px;
+      }
+      .container {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 24px 18px 70px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 20px;
+        align-items: stretch;
+      }
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 24px;
+      }
+      .kicker {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        color: var(--blue);
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-weight: 900;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      h1 {
+        font-size: clamp(30px, 5vw, 56px);
+        line-height: 1.02;
+        margin: 18px 0 12px;
+        letter-spacing: -0.04em;
+      }
+      h2 {
+        margin: 0 0 12px;
+        font-size: 28px;
+      }
+      h3 {
+        margin: 0 0 10px;
+      }
+      .lead {
+        font-size: 18px;
+        color: #334155;
+        max-width: 850px;
+      }
+      .cta-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+      button {
+        font: inherit;
+      }
+      .btn {
+        border: 0;
+        border-radius: 14px;
+        padding: 12px 18px;
+        font-weight: 900;
+        cursor: pointer;
+        transition: 0.18s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn-primary {
+        background: var(--blue);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(29, 78, 216, 0.2);
+      }
+      .btn-light {
+        background: #fff;
+        border: 1px solid var(--line);
+        color: #334155;
+      }
+      .btn-light:hover {
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+      .btn-green {
+        background: var(--green);
+        color: #fff;
+      }
+      .btn-red {
+        background: var(--red);
+        color: #fff;
+      }
+      .btn-yellow {
+        background: var(--yellow);
+        color: #fff;
+      }
+      .map {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .map button {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .map button:hover {
+        border-color: var(--blue);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07);
+      }
+      .map .done {
+        border-color: #86efac;
+        background: var(--greenbg);
+      }
+      .map b {
+        display: block;
+      }
+      .map span {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: rise 0.25s ease;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .module-head {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 18px;
+        align-items: start;
+        border-left: 7px solid var(--blue);
+      }
+      .icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 20px;
+        background: #eff6ff;
+        display: grid;
+        place-items: center;
+        font-size: 34px;
+      }
+      .module-meta {
+        font-size: 12px;
+        font-weight: 900;
+        color: var(--blue);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .fact {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        background: #fff;
+      }
+      .fact b {
+        display: block;
+        margin-bottom: 6px;
+      }
+      .safety-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .safety {
+        border-radius: 16px;
+        padding: 14px;
+        border: 1px solid;
+      }
+      .safety.red {
+        background: var(--redbg);
+        border-color: #fecaca;
+        color: #7f1d1d;
+      }
+      .safety.yellow {
+        background: var(--yellowbg);
+        border-color: #fde68a;
+        color: #713f12;
+      }
+      .safety.green {
+        background: var(--greenbg);
+        border-color: #bbf7d0;
+        color: #14532d;
+      }
+      .svgbox {
+        background: #f8fafc;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 10px;
+        overflow: hidden;
+      }
+      .svgbox svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .narration {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+      }
+      .activity,
+      .quiz {
+        margin-top: 18px;
+      }
+      .activity {
+        border: 1px solid #ddd6fe;
+        background: #faf5ff;
+        border-radius: 18px;
+        padding: 18px;
+      }
+      .quiz {
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+        border-radius: 18px;
+        padding: 18px;
+      }
+      .label {
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        color: var(--purple);
+        margin-bottom: 8px;
+      }
+      .quiz .label {
+        color: var(--blue);
+      }
+      .options {
+        display: grid;
+        gap: 9px;
+      }
+      .opt {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 14px;
+        padding: 12px;
+        cursor: pointer;
+        text-align: left;
+      }
+      .opt:hover {
+        border-color: var(--blue);
+      }
+      .opt.correct {
+        background: var(--greenbg);
+        border-color: #86efac;
+        color: #14532d;
+      }
+      .opt.wrong {
+        background: var(--redbg);
+        border-color: #fca5a5;
+        color: #7f1d1d;
+      }
+      .feedback {
+        margin-top: 10px;
+        font-weight: 800;
+        min-height: 24px;
+      }
+      .feedback.good {
+        color: var(--green);
+      }
+      .feedback.bad {
+        color: var(--red);
+      }
+      .drag-list {
+        display: grid;
+        gap: 9px;
+      }
+      .drag-item {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 11px;
+        cursor: grab;
+      }
+      .dropgrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .dropzone {
+        min-height: 86px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 16px;
+        background: #fff;
+        padding: 10px;
+      }
+      .dropzone.over {
+        background: #eff6ff;
+        border-color: var(--blue);
+      }
+      .chip {
+        display: inline-flex;
+        background: #e0f2fe;
+        border: 1px solid #7dd3fc;
+        border-radius: 999px;
+        padding: 5px 9px;
+        margin: 4px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .seq {
+        display: grid;
+        gap: 8px;
+      }
+      .seq button {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 14px;
+        padding: 12px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .seq button.selected {
+        background: #eff6ff;
+        border-color: var(--blue);
+      }
+      .seq button.ok {
+        background: var(--greenbg);
+        border-color: #86efac;
+      }
+      .seq button.bad {
+        background: var(--redbg);
+        border-color: #fca5a5;
+      }
+      .checklist label {
+        display: block;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 11px;
+        margin: 8px 0;
+        cursor: pointer;
+      }
+      .checklist input {
+        transform: scale(1.2);
+        margin-right: 10px;
+      }
+      .slider-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+      }
+      .range {
+        width: 100%;
+      }
+      .footer-nav {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 22px;
+        border-top: 1px solid var(--line);
+        padding-top: 18px;
+      }
+      .assessment-card {
+        margin-top: 18px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px;
+        background: #fff;
+      }
+      .result {
+        display: none;
+        text-align: center;
+      }
+      .score {
+        font-size: 64px;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .certificate {
+        display: none;
+        margin-top: 18px;
+        padding: 24px;
+        border: 2px solid #f59e0b;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #fffbeb, #fff);
+      }
+      .certificate.show {
+        display: block;
+      }
+      .small {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .hidden {
+        display: none !important;
+      }
+      @media (max-width: 850px) {
+        .hero,
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+        .safety-grid,
+        .dropgrid {
+          grid-template-columns: 1fr;
+        }
+        .map {
+          grid-template-columns: 1fr;
+        }
+        .nav {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .status {
+          width: 100%;
+        }
+        .container {
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="progress-track">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+      <div class="nav">
+        <div class="brand">
+          Ship-Shore Safety Checklist
+          <small>P2 Operations · Tanker Operations · Interactive Course</small>
+        </div>
+        <div class="status">
+          <span class="pill">Progress: <b id="progressText">0%</b></span
+          ><span class="pill">XP: <b id="xpText">0</b></span
+          ><span class="pill">Rank: <b id="rankText">Trainee</b></span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <section id="home" class="screen active">
+        <div class="hero">
+          <div class="panel">
+            <span class="kicker"
+              >STCW A-V/1-1 · ISGOTT Ship/Shore Interface</span
+            >
+            <h1>Ship-Shore Safety Checklist<br />Every Item Explained</h1>
+            <p class="lead">
+              A practical, offline course on the Ship/Shore Safety Checklist for
+              oil tanker operations. The trainee learns what must be agreed,
+              checked, monitored, recorded and stopped before a safe cargo
+              operation can begin and continue.
+            </p>
+            <div class="safety-grid" style="margin-top: 18px">
+              <div class="safety red">
+                <b>Red = Stop</b>Missing agreement, unsafe access, loss of
+                communication, cargo leak, gas alarm or uncontrolled pressure.
+              </div>
+              <div class="safety yellow">
+                <b>Yellow = Verify</b>Any uncertainty on rates, signals,
+                moorings, terminal rules, ESD, venting or checklist entries.
+              </div>
+              <div class="safety green">
+                <b>Green = Proceed</b>Confirmed checklist, clear communication,
+                monitored transfer, documented agreement and agreed emergency
+                stop.
+              </div>
+            </div>
+            <div class="cta-row">
+              <button class="btn btn-primary" onclick="showScreen('m1')">
+                Start Course →</button
+              ><button class="btn btn-light" onclick="showScreen('assess')">
+                Final Assessment
+              </button>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Course Map</h2>
+            <div class="map" id="courseMap"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="m1" class="screen module">
+        <div class="panel module-head">
+          <div class="icon">🤝</div>
+          <div>
+            <div class="module-meta">Module 1 of 6</div>
+            <h2>Purpose, Authority and Joint Responsibility</h2>
+            <p class="lead">
+              The checklist is not paperwork. It is the signed safety agreement
+              between the ship and the terminal before and during cargo,
+              ballast, bunkering and tank-cleaning related operations.
+            </p>
+            <div class="narration">
+              <button class="btn btn-light" onclick="speakModule(1)">
+                ▶ Narration</button
+              ><button class="btn btn-light" onclick="pauseSpeech()">
+                Pause</button
+              ><button class="btn btn-light" onclick="stopSpeech()">
+                Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>What the checklist controls</h3>
+            <div class="fact">
+              <b>Joint declaration</b>The responsible ship officer and terminal
+              representative confirm that the ship/shore interface is safe.
+            </div>
+            <div class="fact">
+              <b>Named responsibility</b>Every item has an owner, not an
+              assumption. If a point is not understood, cargo must not start.
+            </div>
+            <div class="fact">
+              <b>Repeated verification</b>Many items are not one-time checks.
+              They must be rechecked at agreed intervals during operations.
+            </div>
+          </div>
+          <div class="panel svgbox">
+            <svg
+              viewBox="0 0 720 360"
+              role="img"
+              aria-label="Ship shore interface checklist"
+            >
+              <rect width="720" height="360" rx="22" fill="#f8fafc" />
+              <rect
+                x="60"
+                y="190"
+                width="250"
+                height="65"
+                rx="16"
+                fill="#1d4ed8"
+              />
+              <text
+                x="185"
+                y="230"
+                fill="white"
+                font-size="25"
+                text-anchor="middle"
+                font-weight="700"
+              >
+                SHIP
+              </text>
+              <rect
+                x="420"
+                y="190"
+                width="240"
+                height="65"
+                rx="16"
+                fill="#16a34a"
+              />
+              <text
+                x="540"
+                y="230"
+                fill="white"
+                font-size="25"
+                text-anchor="middle"
+                font-weight="700"
+              >
+                TERMINAL
+              </text>
+              <path
+                d="M310 220 C360 145 380 145 420 220"
+                fill="none"
+                stroke="#f59e0b"
+                stroke-width="16"
+                stroke-linecap="round"
+              />
+              <rect
+                x="254"
+                y="80"
+                width="212"
+                height="95"
+                rx="16"
+                fill="white"
+                stroke="#cbd5e1"
+              />
+              <text
+                x="360"
+                y="118"
+                text-anchor="middle"
+                font-size="17"
+                fill="#0f172a"
+                font-weight="700"
+              >
+                SAFETY CHECKLIST
+              </text>
+              <text
+                x="360"
+                y="146"
+                text-anchor="middle"
+                font-size="13"
+                fill="#64748b"
+              >
+                one agreed interface
+              </text>
+              <circle cx="330" cy="272" r="19" fill="#dc2626" />
+              <text
+                x="330"
+                y="279"
+                text-anchor="middle"
+                fill="white"
+                font-size="19"
+              >
+                !
+              </text>
+              <text
+                x="360"
+                y="309"
+                text-anchor="middle"
+                font-size="15"
+                fill="#475569"
+              >
+                If one side is unsure — STOP and agree again.
+              </text>
+            </svg>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="label">Activity · classify the checklist item</div>
+          <p>Drag each item to the correct action category.</p>
+          <div id="drag1" class="drag-list"></div>
+          <div class="dropgrid" id="drop1">
+            <div class="dropzone" data-zone="Ship">
+              <b>Ship responsibility</b>
+            </div>
+            <div class="dropzone" data-zone="Shore">
+              <b>Terminal responsibility</b>
+            </div>
+            <div class="dropzone" data-zone="Both">
+              <b>Joint responsibility</b>
+            </div>
+          </div>
+          <button class="btn btn-light" onclick="resetDrag('1')">
+            ↻ Refresh Activity</button
+          ><button class="btn btn-primary" onclick="checkDrag('1')">
+            Check
+          </button>
+          <div id="fbDrag1" class="feedback"></div>
+        </div>
+        <div class="quiz">
+          <div class="label">Module Quiz</div>
+          <div id="quiz1"></div>
+          <button class="btn btn-light" onclick="resetQuiz(1)">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="footer-nav">
+          <button class="btn btn-light" onclick="showScreen('home')">
+            ← Home</button
+          ><button
+            class="btn btn-primary"
+            onclick="
+              completeModule(1);
+              showScreen('m2');
+            "
+          >
+            Next →
+          </button>
+        </div>
+      </section>
+
+      <section id="m2" class="screen module">
+        <div class="panel module-head">
+          <div class="icon">📡</div>
+          <div>
+            <div class="module-meta">Module 2 of 6</div>
+            <h2>Pre-Arrival Exchange and Terminal Interface</h2>
+            <p class="lead">
+              Good ship-shore safety starts before first line ashore. Cargo
+              plan, rates, manifold details, safety rules, emergency shutdown
+              and communication channels must be agreed early.
+            </p>
+            <div class="narration">
+              <button class="btn btn-light" onclick="speakModule(2)">
+                ▶ Narration</button
+              ><button class="btn btn-light" onclick="pauseSpeech()">
+                Pause</button
+              ><button class="btn btn-light" onclick="stopSpeech()">
+                Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Information to exchange</h3>
+            <div class="fact">
+              <b>Ship to terminal</b>Cargo plan, arrival condition, manifold
+              size, pressure limits, loading/discharge sequence, segregations,
+              slop status and special cargo hazards.
+            </div>
+            <div class="fact">
+              <b>Terminal to ship</b>Berth data, shore arms/hoses, rates, max
+              pressure, vapour return requirements, emergency contacts, terminal
+              safety rules and alarms.
+            </div>
+            <div class="fact">
+              <b>Both sides</b>Agree start rate, maximum rate, topping-off rate,
+              emergency signal, stop sequence and who has authority to stop
+              operations.
+            </div>
+          </div>
+          <div class="panel svgbox">
+            <svg viewBox="0 0 720 350">
+              <rect width="720" height="350" rx="22" fill="#eff6ff" />
+              <rect
+                x="70"
+                y="90"
+                width="220"
+                height="150"
+                rx="18"
+                fill="white"
+                stroke="#bfdbfe"
+              />
+              <text
+                x="180"
+                y="122"
+                font-size="19"
+                font-weight="700"
+                text-anchor="middle"
+                fill="#1d4ed8"
+              >
+                SHIP DATA
+              </text>
+              <text
+                x="180"
+                y="158"
+                font-size="14"
+                text-anchor="middle"
+                fill="#475569"
+              >
+                Cargo plan · Manifold
+              </text>
+              <text
+                x="180"
+                y="184"
+                font-size="14"
+                text-anchor="middle"
+                fill="#475569"
+              >
+                Pressure · Rates
+              </text>
+              <text
+                x="180"
+                y="210"
+                font-size="14"
+                text-anchor="middle"
+                fill="#475569"
+              >
+                Hazards · Slops
+              </text>
+              <rect
+                x="430"
+                y="90"
+                width="220"
+                height="150"
+                rx="18"
+                fill="white"
+                stroke="#bbf7d0"
+              />
+              <text
+                x="540"
+                y="122"
+                font-size="19"
+                font-weight="700"
+                text-anchor="middle"
+                fill="#16a34a"
+              >
+                SHORE DATA
+              </text>
+              <text
+                x="540"
+                y="158"
+                font-size="14"
+                text-anchor="middle"
+                fill="#475569"
+              >
+                Berth · Arms/Hoses
+              </text>
+              <text
+                x="540"
+                y="184"
+                font-size="14"
+                text-anchor="middle"
+                fill="#475569"
+              >
+                Max pressure · ESD
+              </text>
+              <text
+                x="540"
+                y="210"
+                font-size="14"
+                text-anchor="middle"
+                fill="#475569"
+              >
+                Terminal rules
+              </text>
+              <path
+                d="M290 165 H430"
+                stroke="#f59e0b"
+                stroke-width="12"
+                stroke-linecap="round"
+              />
+              <path
+                d="M320 135 L290 165 L320 195"
+                fill="none"
+                stroke="#f59e0b"
+                stroke-width="9"
+                stroke-linecap="round"
+              />
+              <path
+                d="M400 135 L430 165 L400 195"
+                fill="none"
+                stroke="#f59e0b"
+                stroke-width="9"
+                stroke-linecap="round"
+              />
+              <text
+                x="360"
+                y="285"
+                text-anchor="middle"
+                font-size="17"
+                fill="#0f172a"
+                font-weight="700"
+              >
+                Exchange before arrival. Confirm again at the safety meeting.
+              </text>
+            </svg>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="label">Activity · build the pre-transfer sequence</div>
+          <p>Select the actions in the correct order.</p>
+          <div id="seq2" class="seq"></div>
+          <button class="btn btn-light" onclick="resetSeq(2)">
+            ↻ Refresh Activity</button
+          ><button class="btn btn-primary" onclick="checkSeq(2)">
+            Check sequence
+          </button>
+          <div id="fbSeq2" class="feedback"></div>
+        </div>
+        <div class="quiz">
+          <div class="label">Module Quiz</div>
+          <div id="quiz2"></div>
+          <button class="btn btn-light" onclick="resetQuiz(2)">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="footer-nav">
+          <button class="btn btn-light" onclick="showScreen('m1')">
+            ← Previous</button
+          ><button
+            class="btn btn-primary"
+            onclick="
+              completeModule(2);
+              showScreen('m3');
+            "
+          >
+            Next →
+          </button>
+        </div>
+      </section>
+
+      <section id="m3" class="screen module">
+        <div class="panel module-head">
+          <div class="icon">🚫</div>
+          <div>
+            <div class="module-meta">Module 3 of 6</div>
+            <h2>Access, Moorings, Smoking and Naked Lights</h2>
+            <p class="lead">
+              The checklist protects the physical interface: safe gangway,
+              emergency escape, tending moorings, controlled access, and strict
+              ignition control in hazardous areas.
+            </p>
+            <div class="narration">
+              <button class="btn btn-light" onclick="speakModule(3)">
+                ▶ Narration</button
+              ><button class="btn btn-light" onclick="pauseSpeech()">
+                Pause</button
+              ><button class="btn btn-light" onclick="stopSpeech()">
+                Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="safety-grid">
+          <div class="safety red">
+            <b>STOP</b>Gangway unsafe, mooring lines too slack/tight,
+            unauthorised smoking, non-Ex equipment on deck, or uncontrolled
+            visitors.
+          </div>
+          <div class="safety yellow">
+            <b>VERIFY</b>Weather, tide, surge, passing traffic, shore gangway
+            load, security plan and emergency towing wires where required.
+          </div>
+          <div class="safety green">
+            <b>PROCEED</b>Access safe, watch posted, moorings tended, fire
+            wires/ETOPS as applicable, and no smoking/naked-light rules
+            confirmed.
+          </div>
+        </div>
+        <div class="panel svgbox" style="margin-top: 16px">
+          <svg viewBox="0 0 720 330">
+            <rect width="720" height="330" rx="22" fill="#fff7ed" />
+            <rect
+              x="65"
+              y="140"
+              width="340"
+              height="95"
+              rx="18"
+              fill="#0f172a"
+            />
+            <rect
+              x="415"
+              y="128"
+              width="240"
+              height="110"
+              rx="18"
+              fill="#475569"
+            />
+            <text
+              x="235"
+              y="194"
+              text-anchor="middle"
+              fill="white"
+              font-size="24"
+              font-weight="700"
+            >
+              TANKER
+            </text>
+            <text
+              x="535"
+              y="194"
+              text-anchor="middle"
+              fill="white"
+              font-size="24"
+              font-weight="700"
+            >
+              JETTY
+            </text>
+            <path
+              d="M370 125 L465 105"
+              stroke="#1d4ed8"
+              stroke-width="14"
+              stroke-linecap="round"
+            />
+            <text
+              x="415"
+              y="92"
+              text-anchor="middle"
+              fill="#1d4ed8"
+              font-size="15"
+              font-weight="700"
+            >
+              SAFE GANGWAY
+            </text>
+            <path
+              d="M82 145 C120 95 185 95 230 145"
+              fill="none"
+              stroke="#ca8a04"
+              stroke-width="7"
+            />
+            <path
+              d="M240 145 C290 95 350 95 392 145"
+              fill="none"
+              stroke="#ca8a04"
+              stroke-width="7"
+            />
+            <text
+              x="280"
+              y="273"
+              text-anchor="middle"
+              font-size="16"
+              fill="#713f12"
+              font-weight="700"
+            >
+              Moorings must be monitored through tide, draft change and surge.
+            </text>
+            <circle
+              cx="620"
+              cy="75"
+              r="35"
+              fill="#fef2f2"
+              stroke="#dc2626"
+              stroke-width="5"
+            />
+            <text x="620" y="85" text-anchor="middle" font-size="34">🚬</text>
+            <line
+              x1="595"
+              y1="50"
+              x2="645"
+              y2="100"
+              stroke="#dc2626"
+              stroke-width="7"
+            />
+          </svg>
+        </div>
+        <div class="activity">
+          <div class="label">Activity · immediate decision</div>
+          <p>
+            A shore visitor walks up the gangway holding a normal mobile phone
+            while cargo transfer is about to start. What is the correct action?
+          </p>
+          <div class="options">
+            <button class="opt" onclick="scenario(3, true, this)">
+              Stop the person before deck entry and apply terminal/ship
+              hazardous-area rules.</button
+            ><button class="opt" onclick="scenario(3, false, this)">
+              Allow entry because the phone is not being used.</button
+            ><button class="opt" onclick="scenario(3, false, this)">
+              Allow entry only if the visitor promises not to take photos.
+            </button>
+          </div>
+          <button
+            class="btn btn-light"
+            style="margin-top: 10px"
+            onclick="resetScenario(3)"
+          >
+            ↻ Refresh Activity
+          </button>
+          <div id="fbScenario3" class="feedback"></div>
+        </div>
+        <div class="quiz">
+          <div class="label">Module Quiz</div>
+          <div id="quiz3"></div>
+          <button class="btn btn-light" onclick="resetQuiz(3)">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="footer-nav">
+          <button class="btn btn-light" onclick="showScreen('m2')">
+            ← Previous</button
+          ><button
+            class="btn btn-primary"
+            onclick="
+              completeModule(3);
+              showScreen('m4');
+            "
+          >
+            Next →
+          </button>
+        </div>
+      </section>
+
+      <section id="m4" class="screen module">
+        <div class="panel module-head">
+          <div class="icon">⛽</div>
+          <div>
+            <div class="module-meta">Module 4 of 6</div>
+            <h2>Cargo Transfer: Rates, Pressure, ESD and Communications</h2>
+            <p class="lead">
+              Most ship-shore incidents are not caused by lack of effort. They
+              are caused by unclear agreement, wrong line-up, poor
+              communication, or a pressure/rate change that was not managed.
+            </p>
+            <div class="narration">
+              <button class="btn btn-light" onclick="speakModule(4)">
+                ▶ Narration</button
+              ><button class="btn btn-light" onclick="pauseSpeech()">
+                Pause</button
+              ><button class="btn btn-light" onclick="stopSpeech()">
+                Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Critical transfer controls</h3>
+            <div class="fact">
+              <b>Start slow</b>Begin at the agreed start rate. Check lines,
+              manifold, valves, shore arm movement and tank response.
+            </div>
+            <div class="fact">
+              <b>Pressure discipline</b>Never exceed agreed maximum manifold
+              pressure. Any unexpected pressure rise must be treated as a
+              warning.
+            </div>
+            <div class="fact">
+              <b>Emergency shutdown</b>Ship and shore must agree the ESD signal
+              and test communication before transfer starts.
+            </div>
+            <div class="fact">
+              <b>Communication interval</b>Agree routine call intervals and
+              mandatory calls for rate changes, topping-off, stripping, stoppage
+              and emergency.
+            </div>
+          </div>
+          <div class="panel svgbox">
+            <svg viewBox="0 0 720 350">
+              <rect width="720" height="350" rx="22" fill="#f0fdf4" />
+              <path
+                d="M80 220 H310 Q355 220 355 175 Q355 130 400 130 H640"
+                fill="none"
+                stroke="#16a34a"
+                stroke-width="34"
+                stroke-linecap="round"
+              />
+              <path
+                d="M80 220 H310 Q355 220 355 175 Q355 130 400 130 H640"
+                fill="none"
+                stroke="#14532d"
+                stroke-width="5"
+                stroke-dasharray="18 18"
+              />
+              <circle
+                cx="150"
+                cy="220"
+                r="42"
+                fill="white"
+                stroke="#86efac"
+                stroke-width="5"
+              />
+              <text x="150" y="228" text-anchor="middle" font-size="22">P</text>
+              <text
+                x="150"
+                y="282"
+                text-anchor="middle"
+                font-size="14"
+                fill="#14532d"
+                font-weight="700"
+              >
+                PRESSURE
+              </text>
+              <rect
+                x="300"
+                y="130"
+                width="110"
+                height="90"
+                rx="16"
+                fill="white"
+                stroke="#86efac"
+                stroke-width="4"
+              />
+              <text x="355" y="182" text-anchor="middle" font-size="22">
+                ESD
+              </text>
+              <text
+                x="355"
+                y="105"
+                text-anchor="middle"
+                font-size="14"
+                fill="#14532d"
+                font-weight="700"
+              >
+                emergency stop agreed
+              </text>
+              <circle
+                cx="555"
+                cy="130"
+                r="42"
+                fill="white"
+                stroke="#86efac"
+                stroke-width="5"
+              />
+              <text x="555" y="138" text-anchor="middle" font-size="22">R</text>
+              <text
+                x="555"
+                y="75"
+                text-anchor="middle"
+                font-size="14"
+                fill="#14532d"
+                font-weight="700"
+              >
+                RATE CONTROL
+              </text>
+              <text
+                x="360"
+                y="302"
+                text-anchor="middle"
+                font-size="16"
+                fill="#0f172a"
+                font-weight="700"
+              >
+                No rate or pressure change without ship-shore confirmation.
+              </text>
+            </svg>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="label">Activity · rate and pressure judgement</div>
+          <p>
+            Move the slider. At what level should the watch officer escalate
+            before the agreed maximum pressure is reached?
+          </p>
+          <div class="slider-row">
+            <input
+              class="range"
+              id="pressure4"
+              type="range"
+              min="0"
+              max="100"
+              value="30"
+              oninput="
+                document.getElementById('pval4').textContent = this.value + '%'
+              "
+            /><b id="pval4">30%</b>
+          </div>
+          <button class="btn btn-light" onclick="resetSlider(4)">
+            ↻ Refresh Activity</button
+          ><button class="btn btn-primary" onclick="checkSlider(4)">
+            Check
+          </button>
+          <div id="fbSlider4" class="feedback"></div>
+        </div>
+        <div class="quiz">
+          <div class="label">Module Quiz</div>
+          <div id="quiz4"></div>
+          <button class="btn btn-light" onclick="resetQuiz(4)">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="footer-nav">
+          <button class="btn btn-light" onclick="showScreen('m3')">
+            ← Previous</button
+          ><button
+            class="btn btn-primary"
+            onclick="
+              completeModule(4);
+              showScreen('m5');
+            "
+          >
+            Next →
+          </button>
+        </div>
+      </section>
+
+      <section id="m5" class="screen module">
+        <div class="panel module-head">
+          <div class="icon">👀</div>
+          <div>
+            <div class="module-meta">Module 5 of 6</div>
+            <h2>Monitoring During Operations and Repeat Checks</h2>
+            <p class="lead">
+              Signing the checklist does not make the operation safe. The
+              operation remains safe only if the checklist conditions are
+              maintained and rechecked until completion.
+            </p>
+            <div class="narration">
+              <button class="btn btn-light" onclick="speakModule(5)">
+                ▶ Narration</button
+              ><button class="btn btn-light" onclick="pauseSpeech()">
+                Pause</button
+              ><button class="btn btn-light" onclick="stopSpeech()">
+                Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Watchkeeper monitoring loop</h3>
+            <div class="fact">
+              <b>Deck rounds</b>Check manifolds, hoses/arms, scuppers, drip
+              trays, ullages, tank vents, moorings and overboard discharges.
+            </div>
+            <div class="fact">
+              <b>Log and compare</b>Compare ship and shore figures. Unexplained
+              difference means stop, investigate and reconcile.
+            </div>
+            <div class="fact">
+              <b>Weather and movement</b>Wind, squall, tide, swell, surge and
+              passing traffic may change a safe berth into an unsafe berth.
+            </div>
+            <div class="fact">
+              <b>Repeat checks</b>Items marked for repeat check must be verified
+              at agreed intervals, not only at the safety meeting.
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Repeat-check checklist</h3>
+            <div class="checklist" id="check5">
+              <label
+                ><input type="checkbox" value="1" /> Moorings remain properly
+                tended.</label
+              ><label
+                ><input type="checkbox" value="1" /> Manifold and hose/arm area
+                remains leak-free.</label
+              ><label
+                ><input type="checkbox" value="1" /> Communications remain
+                tested and effective.</label
+              ><label
+                ><input type="checkbox" value="1" /> Scuppers/drip trays remain
+                ready and monitored.</label
+              ><label
+                ><input type="checkbox" value="1" /> Tank levels and rates
+                remain within agreed plan.</label
+              >
+            </div>
+            <button class="btn btn-light" onclick="resetChecklist(5)">
+              ↻ Refresh Activity</button
+            ><button class="btn btn-primary" onclick="checkChecklist(5)">
+              Confirm checks
+            </button>
+            <div id="fbChecklist5" class="feedback"></div>
+          </div>
+        </div>
+        <div class="quiz">
+          <div class="label">Module Quiz</div>
+          <div id="quiz5"></div>
+          <button class="btn btn-light" onclick="resetQuiz(5)">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="footer-nav">
+          <button class="btn btn-light" onclick="showScreen('m4')">
+            ← Previous</button
+          ><button
+            class="btn btn-primary"
+            onclick="
+              completeModule(5);
+              showScreen('m6');
+            "
+          >
+            Next →
+          </button>
+        </div>
+      </section>
+
+      <section id="m6" class="screen module">
+        <div class="panel module-head">
+          <div class="icon">🧾</div>
+          <div>
+            <div class="module-meta">Module 6 of 6</div>
+            <h2>Records, Close-Out, Inspections and Non-Conformities</h2>
+            <p class="lead">
+              The checklist becomes evidence. It must show that safety was
+              verified, intervals were followed, changes were agreed, and any
+              deviation was stopped, corrected and recorded.
+            </p>
+            <div class="narration">
+              <button class="btn btn-light" onclick="speakModule(6)">
+                ▶ Narration</button
+              ><button class="btn btn-light" onclick="pauseSpeech()">
+                Pause</button
+              ><button class="btn btn-light" onclick="stopSpeech()">
+                Stop
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="safety-grid">
+          <div class="safety red">
+            <b>STOP and record</b>Leak, failed communications, unsafe access,
+            pressure breach, gas alarm, unauthorised hot work, or checklist item
+            no longer true.
+          </div>
+          <div class="safety yellow">
+            <b>Amend and countersign</b>Any change to plan, rate, sequence,
+            berth condition, venting, personnel, watch arrangement or terminal
+            requirement.
+          </div>
+          <div class="safety green">
+            <b>Close out</b>Complete final figures, drain lines safely, close
+            valves, disconnect correctly, confirm no pollution and file records.
+          </div>
+        </div>
+        <div class="activity">
+          <div class="label">Activity · choose the correct record action</div>
+          <p>
+            Cargo loading is paused because the terminal requests a new maximum
+            loading rate. What must happen before restart?
+          </p>
+          <div class="options">
+            <button class="opt" onclick="scenario(6, false, this)">
+              Restart because the request came from the terminal.</button
+            ><button class="opt" onclick="scenario(6, true, this)">
+              Review risk, agree the new rate, amend/countersign records and
+              brief the watch.</button
+            ><button class="opt" onclick="scenario(6, false, this)">
+              Continue and note the change after completion.
+            </button>
+          </div>
+          <button class="btn btn-light" onclick="resetScenario(6)">
+            ↻ Refresh Activity
+          </button>
+          <div id="fbScenario6" class="feedback"></div>
+        </div>
+        <div class="quiz">
+          <div class="label">Module Quiz</div>
+          <div id="quiz6"></div>
+          <button class="btn btn-light" onclick="resetQuiz(6)">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="footer-nav">
+          <button class="btn btn-light" onclick="showScreen('m5')">
+            ← Previous</button
+          ><button
+            class="btn btn-green"
+            onclick="
+              completeModule(6);
+              showScreen('assess');
+            "
+          >
+            Final Assessment →
+          </button>
+        </div>
+      </section>
+
+      <section id="assess" class="screen">
+        <div class="panel">
+          <span class="kicker">Final Assessment</span>
+          <h1>Ship-Shore Safety Checklist Assessment</h1>
+          <p class="lead">
+            Answer all questions. A score of 80% or more unlocks the completion
+            certificate screen.
+          </p>
+          <div id="assessment"></div>
+          <button class="btn btn-light" onclick="buildAssessment()">
+            ↻ Refresh Assessment</button
+          ><button class="btn btn-primary" onclick="submitAssessment()">
+            Submit Assessment
+          </button>
+          <div id="result" class="result">
+            <div class="score" id="scorePct">0%</div>
+            <h2 id="verdict">Result</h2>
+            <p id="resultText" class="lead"></p>
+            <div id="certificate" class="certificate">
+              <h2>Certificate of Completion</h2>
+              <p><b>Ship-Shore Safety Checklist — Every Item Explained</b></p>
+              <p>P2 Operations · Tanker Operations Interactive Course</p>
+              <p class="small">
+                This confirms successful completion of the course activities and
+                final assessment in this offline HTML training package.
+              </p>
+            </div>
+          </div>
+          <div class="footer-nav">
+            <button class="btn btn-light" onclick="showScreen('home')">
+              ← Course Map</button
+            ><button class="btn btn-light" onclick="showScreen('m1')">
+              Review Course
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script>
+      "use strict";
+      const modules = [
+        ["m1", "Purpose and responsibility"],
+        ["m2", "Pre-arrival exchange"],
+        ["m3", "Access and ignition control"],
+        ["m4", "Cargo transfer controls"],
+        ["m5", "Monitoring and repeat checks"],
+        ["m6", "Records and close-out"],
+      ];
+      const storageKey = "ssscl_course_progress_v1";
+      let state = { xp: 0, done: {}, quiz: {}, current: "home" };
+      try {
+        const saved = localStorage.getItem(storageKey);
+        if (saved) {
+          state = JSON.parse(saved);
+        }
+      } catch (e) {}
+      function save() {
+        localStorage.setItem(storageKey, JSON.stringify(state));
+      }
+      function pct() {
+        return Math.round(
+          (Object.keys(state.done).length / modules.length) * 100,
+        );
+      }
+      function rank() {
+        const p = pct();
+        if (p >= 100) return "Checklist Lead";
+        if (p >= 66) return "Interface Watchkeeper";
+        if (p >= 33) return "Cargo Safety Cadet";
+        return "Trainee";
+      }
+      function update() {
+        document.getElementById("progressText").textContent = pct() + "%";
+        document.getElementById("progressBar").style.width = pct() + "%";
+        document.getElementById("xpText").textContent = state.xp;
+        document.getElementById("rankText").textContent = rank();
+        buildMap();
+      }
+      function showScreen(id) {
+        stopSpeech();
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+        state.current = id;
+        save();
+        update();
+        window.scrollTo(0, 0);
+      }
+      function buildMap() {
+        const box = document.getElementById("courseMap");
+        if (!box) return;
+        box.innerHTML = "";
+        modules.forEach((m, i) => {
+          const b = document.createElement("button");
+          b.className = state.done[i + 1] ? "done" : "";
+          b.innerHTML =
+            "<b>Module " + (i + 1) + "</b><span>" + m[1] + "</span>";
+          b.onclick = () => showScreen(m[0]);
+          box.appendChild(b);
+        });
+        const a = document.createElement("button");
+        a.innerHTML =
+          "<b>Final Assessment</b><span>10 questions · certificate screen</span>";
+        a.onclick = () => showScreen("assess");
+        box.appendChild(a);
+      }
+      function addXP(n) {
+        state.xp += n;
+        save();
+        update();
+      }
+      function completeModule(n) {
+        if (!state.done[n]) {
+          state.done[n] = true;
+          addXP(50);
+        }
+        save();
+        update();
+      }
+      const narration = {
+        1: "The Ship Shore Safety Checklist is a joint safety agreement. It is not a paperwork ritual. The ship and terminal must understand every item before operations begin, and any unsafe item means operations must not start.",
+        2: "Pre arrival exchange prevents confusion at the berth. Cargo plans, pressure limits, rates, emergency signals, manifold details and terminal rules must be known before the safety meeting.",
+        3: "Safe access, moorings, controlled visitors and ignition control protect the tanker during the most exposed period. Smoking, non explosion proof equipment and unsafe gangways are stop conditions.",
+        4: "Cargo transfer requires agreed rates, pressure limits, communication intervals and emergency shutdown procedure. Any unexpected pressure or rate change must be escalated before the limit is reached.",
+        5: "The checklist remains alive throughout the transfer. The watchkeeper must repeat critical checks, compare ship and shore figures, monitor moorings, leaks, scuppers, hoses and changing weather.",
+        6: "Records prove that the operation remained controlled. Changes must be agreed, amended and countersigned. Any non-conformity must be stopped, corrected and documented before restarting.",
+      };
+      function speakModule(n) {
+        stopSpeech();
+        const u = new SpeechSynthesisUtterance(narration[n]);
+        u.rate = 0.95;
+        u.pitch = 1;
+        speechSynthesis.speak(u);
+        addXP(5);
+      }
+      function pauseSpeech() {
+        if (speechSynthesis.speaking)
+          speechSynthesis.paused
+            ? speechSynthesis.resume()
+            : speechSynthesis.pause();
+      }
+      function stopSpeech() {
+        try {
+          speechSynthesis.cancel();
+        } catch (e) {}
+      }
+      const quizzes = {
+        1: {
+          q: "What is the main purpose of the Ship-Shore Safety Checklist?",
+          opts: [
+            "To replace the cargo plan",
+            "To create a joint safety agreement before and during operations",
+            "To satisfy only the terminal paperwork file",
+          ],
+          a: 1,
+          exp: "Correct. It is a live joint safety agreement.",
+        },
+        2: {
+          q: "Which item must be agreed before cargo transfer starts?",
+          opts: [
+            "Emergency stop signal and communication method",
+            "Crew meal timings only",
+            "Final cargo outturn only",
+          ],
+          a: 0,
+          exp: "Correct. Emergency communication and stop procedure are critical.",
+        },
+        3: {
+          q: "A visitor tries to enter the tanker deck with a normal mobile phone during cargo operations. What should happen?",
+          opts: [
+            "Allow entry if the phone is switched off",
+            "Stop entry and apply hazardous-area rules",
+            "Allow entry if the visitor is from terminal management",
+          ],
+          a: 1,
+          exp: "Correct. Hazardous-area equipment restrictions apply to everyone.",
+        },
+        4: {
+          q: "If manifold pressure rises unexpectedly during loading, the watch officer should:",
+          opts: [
+            "Wait until the maximum pressure is exceeded",
+            "Escalate, communicate and reduce/stop as agreed before limits are breached",
+            "Ignore it if the terminal is pumping",
+          ],
+          a: 1,
+          exp: "Correct. Pressure trends must be acted on early.",
+        },
+        5: {
+          q: "Which checklist items should be repeated during the operation?",
+          opts: [
+            "Only the signatures",
+            "Only the cargo grade names",
+            "Critical safety conditions such as moorings, communications, leaks and scuppers",
+          ],
+          a: 2,
+          exp: "Correct. Repeat checks keep the checklist alive.",
+        },
+        6: {
+          q: "A change in agreed loading rate should be:",
+          opts: [
+            "Done verbally and recorded later if convenient",
+            "Ignored because the terminal controls the pump",
+            "Reviewed, agreed, documented and briefed before restart",
+          ],
+          a: 2,
+          exp: "Correct. Changes must be controlled and recorded.",
+        },
+      };
+      function buildQuiz(n) {
+        const q = quizzes[n],
+          root = document.getElementById("quiz" + n);
+        root.innerHTML =
+          "<p><b>" +
+          q.q +
+          '</b></p><div class="options">' +
+          q.opts
+            .map(
+              (o, i) =>
+                '<button class="opt" onclick="answerQuiz(' +
+                n +
+                "," +
+                i +
+                ',this)">' +
+                o +
+                "</button>",
+            )
+            .join("") +
+          '</div><div id="fbQuiz' +
+          n +
+          '" class="feedback"></div>';
+      }
+      function answerQuiz(n, i, btn) {
+        const q = quizzes[n],
+          root = document.getElementById("quiz" + n);
+        root.querySelectorAll(".opt").forEach((b, idx) => {
+          b.disabled = true;
+          if (idx === q.a) b.classList.add("correct");
+        });
+        const fb = document.getElementById("fbQuiz" + n);
+        if (i === q.a) {
+          fb.textContent = q.exp;
+          fb.className = "feedback good";
+          if (!state.quiz[n]) {
+            state.quiz[n] = true;
+            addXP(20);
+          }
+        } else {
+          btn.classList.add("wrong");
+          fb.textContent = "Not quite. " + q.exp;
+          fb.className = "feedback bad";
+        }
+        save();
+      }
+      function resetQuiz(n) {
+        state.quiz[n] = false;
+        save();
+        buildQuiz(n);
+      }
+      const dragData = {
+        1: [
+          ["Ship", "Cargo plan and manifold readiness"],
+          ["Shore", "Berth arms/hoses and terminal max pressure"],
+          ["Both", "Emergency shutdown signal and communication method"],
+          ["Both", "Smoking and naked light restrictions"],
+          ["Ship", "Deck watch and cargo control room watch"],
+        ],
+      };
+      function initDrag(n) {
+        const source = document.getElementById("drag" + n);
+        if (!source) return;
+        source.innerHTML = "";
+        document
+          .querySelectorAll("#drop" + n + " .chip")
+          .forEach((c) => c.remove());
+        const arr = [...dragData[n]].sort(() => Math.random() - 0.5);
+        arr.forEach(([zone, text]) => {
+          const d = document.createElement("div");
+          d.className = "drag-item";
+          d.draggable = true;
+          d.dataset.zone = zone;
+          d.textContent = text;
+          d.ondragstart = (e) => {
+            e.dataTransfer.setData(
+              "text/plain",
+              JSON.stringify({ zone, text }),
+            );
+            setTimeout(() => d.classList.add("hidden"), 0);
+          };
+          d.ondragend = () => d.classList.remove("hidden");
+          source.appendChild(d);
+        });
+      }
+      document.addEventListener("dragover", (e) => {
+        if (e.target.closest(".dropzone")) {
+          e.preventDefault();
+          e.target.closest(".dropzone").classList.add("over");
+        }
+      });
+      document.addEventListener("dragleave", (e) => {
+        if (e.target.closest(".dropzone"))
+          e.target.closest(".dropzone").classList.remove("over");
+      });
+      document.addEventListener("drop", (e) => {
+        const z = e.target.closest(".dropzone");
+        if (!z) return;
+        e.preventDefault();
+        z.classList.remove("over");
+        let data;
+        try {
+          data = JSON.parse(e.dataTransfer.getData("text/plain"));
+        } catch (err) {
+          return;
+        }
+        const chip = document.createElement("span");
+        chip.className = "chip";
+        chip.textContent = data.text;
+        chip.dataset.zone = data.zone;
+        z.appendChild(chip);
+        document.querySelectorAll(".drag-item").forEach((x) => {
+          if (x.textContent === data.text) x.remove();
+        });
+      });
+      function checkDrag(n) {
+        let ok = true,
+          total = 0;
+        document.querySelectorAll("#drop" + n + " .chip").forEach((c) => {
+          total++;
+          if (c.dataset.zone !== c.parentElement.dataset.zone) ok = false;
+        });
+        const fb = document.getElementById("fbDrag" + n);
+        if (ok && total === dragData[n].length) {
+          fb.textContent =
+            "Correct. The checklist works only when responsibilities are clear.";
+          fb.className = "feedback good";
+          addXP(25);
+        } else {
+          fb.textContent =
+            "Review the responsibility. Some checklist items are ship, some shore, and many are joint.";
+          fb.className = "feedback bad";
+        }
+      }
+      function resetDrag(n) {
+        initDrag(n);
+        document.getElementById("fbDrag" + n).textContent = "";
+      }
+      const seqAns = {
+        2: [
+          "Exchange cargo and berth information before arrival",
+          "Hold ship-shore safety meeting",
+          "Agree communication and ESD procedure",
+          "Confirm checklist items and sign",
+          "Start at agreed slow initial rate",
+        ],
+      };
+      function initSeq(n) {
+        const root = document.getElementById("seq" + n);
+        if (!root) return;
+        root.innerHTML = "";
+        seqAns[n]
+          .slice()
+          .sort(() => Math.random() - 0.5)
+          .forEach((t) => {
+            const b = document.createElement("button");
+            b.textContent = t;
+            b.onclick = () => b.classList.toggle("selected");
+            root.appendChild(b);
+          });
+        document.getElementById("fbSeq" + n).textContent = "";
+      }
+      function checkSeq(n) {
+        const selected = [
+          ...document.querySelectorAll("#seq" + n + " button.selected"),
+        ].map((b) => b.textContent);
+        const fb = document.getElementById("fbSeq" + n);
+        if (selected.join("|") === seqAns[n].join("|")) {
+          fb.textContent = "Correct sequence. Agreement comes before transfer.";
+          fb.className = "feedback good";
+          addXP(25);
+          document
+            .querySelectorAll("#seq" + n + " button")
+            .forEach((b) => b.classList.add("ok"));
+        } else {
+          fb.textContent =
+            "Select the actions in the real operational order. Information exchange and agreement come before start-up.";
+          fb.className = "feedback bad";
+        }
+      }
+      function resetSeq(n) {
+        initSeq(n);
+      }
+      function scenario(n, correct, btn) {
+        const fb = document.getElementById("fbScenario" + n);
+        btn.parentElement
+          .querySelectorAll(".opt")
+          .forEach((b) => (b.disabled = true));
+        if (correct) {
+          btn.classList.add("correct");
+          fb.textContent = "Correct. This is a controlled stop/verify action.";
+          fb.className = "feedback good";
+          addXP(20);
+        } else {
+          btn.classList.add("wrong");
+          fb.textContent =
+            "Unsafe choice. The ship-shore interface must be controlled before continuing.";
+          fb.className = "feedback bad";
+        }
+      }
+      function resetScenario(n) {
+        const fb = document.getElementById("fbScenario" + n);
+        if (fb) {
+          fb.textContent = "";
+          fb.className = "feedback";
+        }
+        document.querySelectorAll("#m" + n + " .activity .opt").forEach((b) => {
+          b.disabled = false;
+          b.classList.remove("correct", "wrong");
+        });
+      }
+      function checkSlider(n) {
+        const v = +document.getElementById("pressure4").value,
+          fb = document.getElementById("fbSlider4");
+        if (v >= 70 && v <= 90) {
+          fb.textContent =
+            "Correct. Escalate before the maximum is reached, not after a breach.";
+          fb.className = "feedback good";
+          addXP(20);
+        } else {
+          fb.textContent =
+            "The safe answer is to escalate early, around the warning band before the agreed limit.";
+          fb.className = "feedback bad";
+        }
+      }
+      function resetSlider(n) {
+        document.getElementById("pressure4").value = 30;
+        document.getElementById("pval4").textContent = "30%";
+        document.getElementById("fbSlider4").textContent = "";
+      }
+      function checkChecklist(n) {
+        const boxes = [...document.querySelectorAll("#check5 input")];
+        const fb = document.getElementById("fbChecklist5");
+        if (boxes.every((b) => b.checked)) {
+          fb.textContent =
+            "Good. These are the repeat checks that keep the operation under control.";
+          fb.className = "feedback good";
+          addXP(20);
+        } else {
+          fb.textContent =
+            "Tick all repeat checks. The checklist remains alive through the cargo operation.";
+          fb.className = "feedback bad";
+        }
+      }
+      function resetChecklist(n) {
+        document
+          .querySelectorAll("#check5 input")
+          .forEach((b) => (b.checked = false));
+        document.getElementById("fbChecklist5").textContent = "";
+      }
+      const assessQ = [
+        [
+          "The Ship-Shore Safety Checklist is best described as:",
+          [
+            "A customs document",
+            "A live joint safety agreement",
+            "A private terminal checklist",
+          ],
+          1,
+        ],
+        [
+          "Who may stop operations for safety?",
+          [
+            "Only the terminal manager",
+            "Only the Master",
+            "Either ship or shore when unsafe conditions exist",
+          ],
+          2,
+        ],
+        [
+          "Before cargo transfer, ship and shore must agree:",
+          [
+            "Emergency signal and communication channel",
+            "Crew nationality list",
+            "Paint maintenance plan",
+          ],
+          0,
+        ],
+        [
+          "Normal mobile phones on tanker deck during cargo operations are:",
+          [
+            "Allowed if no camera is used",
+            "Subject to hazardous-area restrictions and normally prohibited",
+            "Allowed for visitors only",
+          ],
+          1,
+        ],
+        [
+          "If a checklist item becomes invalid during transfer:",
+          [
+            "Continue until completion",
+            "Stop or verify, correct and record before continuing",
+            "Erase the checklist entry",
+          ],
+          1,
+        ],
+        [
+          "A sudden unexplained rise in manifold pressure means:",
+          [
+            "Wait for relief valve operation",
+            "Ignore if shore pumps are running",
+            "Trend is a warning and must be communicated immediately",
+          ],
+          2,
+        ],
+        [
+          "Repeat checks are needed because:",
+          [
+            "Safety conditions can change during operation",
+            "The first signature is not valid",
+            "The terminal asks for more paperwork",
+          ],
+          0,
+        ],
+        [
+          "A rate change requested by shore should be:",
+          [
+            "Done immediately without informing deck watch",
+            "Agreed and recorded before implementation",
+            "Logged only after sailing",
+          ],
+          1,
+        ],
+        [
+          "Safe access includes:",
+          [
+            "Gangway condition, lighting, net, watch and security control",
+            "Only a nice looking gangway",
+            "Only terminal security",
+          ],
+          0,
+        ],
+        [
+          "Final close-out should include:",
+          [
+            "Only disconnecting quickly",
+            "Only signing the bill of lading",
+            "Safe line draining/disconnection, no spill confirmation, records and figures",
+          ],
+          3,
+        ],
+      ];
+      function buildAssessment() {
+        const root = document.getElementById("assessment");
+        root.innerHTML = "";
+        assessQ.forEach((q, i) => {
+          const card = document.createElement("div");
+          card.className = "assessment-card";
+          card.innerHTML =
+            "<p><b>Q" +
+            (i + 1) +
+            ". " +
+            q[0] +
+            '</b></p><div class="options">' +
+            q[1]
+              .map(
+                (o, j) =>
+                  '<label class="opt"><input type="radio" name="aq' +
+                  i +
+                  '" value="' +
+                  j +
+                  '"> ' +
+                  o +
+                  "</label>",
+              )
+              .join("") +
+            "</div>";
+          root.appendChild(card);
+        });
+        document.getElementById("result").style.display = "none";
+        document.getElementById("certificate").classList.remove("show");
+      }
+      function submitAssessment() {
+        let score = 0;
+        assessQ.forEach((q, i) => {
+          const c = document.querySelector('input[name="aq' + i + '"]:checked');
+          if (c && +c.value === q[2]) score++;
+        });
+        const pctScore = Math.round((score / assessQ.length) * 100);
+        document.getElementById("result").style.display = "block";
+        document.getElementById("scorePct").textContent = pctScore + "%";
+        if (pctScore >= 80) {
+          document.getElementById("verdict").textContent = "Passed";
+          document.getElementById("resultText").textContent =
+            "You have demonstrated working knowledge of ship-shore checklist controls.";
+          document.getElementById("certificate").classList.add("show");
+          addXP(100);
+        } else {
+          document.getElementById("verdict").textContent = "Review Required";
+          document.getElementById("resultText").textContent =
+            "Review the course modules and repeat the assessment.";
+        }
+      }
+      window.addEventListener("load", () => {
+        modules.forEach((_, i) => buildQuiz(i + 1));
+        initDrag("1");
+        initSeq(2);
+        buildAssessment();
+        update();
+        document.getElementById("progressText").textContent = pct() + "%";
+      });
+    </script>
+  </body>
+</html>

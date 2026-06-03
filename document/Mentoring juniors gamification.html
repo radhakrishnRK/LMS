@@ -1,0 +1,1814 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mentoring Junior Crew — A Practical Guide for Senior Officers</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #ffffff;
+        color: #333;
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .screen {
+        display: none;
+        min-height: 100vh;
+        padding: 40px 20px;
+      }
+      .screen.active {
+        display: block;
+        animation: fadeIn 0.3s;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Header */
+      .header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+      .header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+      .header p {
+        font-size: 16px;
+        opacity: 0.9;
+      }
+
+      /* Dashboard */
+      .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      .stat-box {
+        background: #f5f5f5;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        border-left: 4px solid #2a5298;
+      }
+      .stat-box h3 {
+        color: #2a5298;
+        font-size: 24px;
+        margin-bottom: 5px;
+      }
+      .stat-box p {
+        color: #666;
+        font-size: 14px;
+      }
+
+      /* Progress Bar */
+      .progress-container {
+        background: #e0e0e0;
+        height: 8px;
+        border-radius: 4px;
+        margin: 20px 0;
+        overflow: hidden;
+      }
+      #progressBar {
+        height: 100%;
+        background: linear-gradient(90deg, #2a5298, #1e3c72);
+        width: 0%;
+        transition: width 0.3s;
+      }
+
+      /* Buttons */
+      .btn {
+        background: #2a5298;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s;
+        margin: 5px;
+      }
+      .btn:hover {
+        background: #1e3c72;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+      .btn-secondary {
+        background: #666;
+      }
+      .btn-secondary:hover {
+        background: #444;
+      }
+      .btn-success {
+        background: #27ae60;
+      }
+      .btn-success:hover {
+        background: #229954;
+      }
+
+      /* Content */
+      .content {
+        background: #f9f9f9;
+        padding: 30px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .content h2 {
+        color: #2a5298;
+        margin-bottom: 15px;
+        font-size: 24px;
+      }
+      .content h3 {
+        color: #1e3c72;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+      .content p {
+        margin-bottom: 15px;
+        color: #555;
+      }
+      .content ul {
+        margin-left: 20px;
+        margin-bottom: 15px;
+      }
+      .content li {
+        margin-bottom: 8px;
+      }
+
+      /* Activity */
+      .activity {
+        background: white;
+        border: 2px dashed #2a5298;
+        padding: 25px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+      .activity h3 {
+        color: #2a5298;
+        margin-bottom: 15px;
+      }
+      .activity-item {
+        background: #f5f5f5;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 6px;
+        border-left: 4px solid #2a5298;
+      }
+      .activity-item input[type="radio"],
+      .activity-item input[type="checkbox"] {
+        margin-right: 10px;
+        cursor: pointer;
+      }
+      .activity-item label {
+        cursor: pointer;
+      }
+
+      /* Feedback */
+      .feedback {
+        margin-top: 20px;
+        padding: 20px;
+        border-radius: 8px;
+        display: none;
+      }
+      .feedback.show {
+        display: block;
+        animation: slideIn 0.3s;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .feedback-correct {
+        background: #d4edda;
+        border-left: 4px solid #28a745;
+      }
+      .feedback-incorrect {
+        background: #f8d7da;
+        border-left: 4px solid #dc3545;
+      }
+      .feedback h4 {
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+      .feedback p {
+        margin: 5px 0;
+      }
+      .correct-answer {
+        color: #28a745;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+      .explanation {
+        color: #666;
+        font-size: 14px;
+        margin-top: 8px;
+        font-style: italic;
+      }
+
+      /* Quiz */
+      .quiz-question {
+        background: #f5f5f5;
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 8px;
+        border-left: 4px solid #2a5298;
+      }
+      .quiz-question h4 {
+        margin-bottom: 15px;
+        color: #1e3c72;
+      }
+      .quiz-option {
+        padding: 10px;
+        margin: 8px 0;
+        background: white;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .quiz-option:hover {
+        background: #e8f0f7;
+      }
+      .quiz-option input {
+        margin-right: 10px;
+      }
+
+      /* Assessment */
+      .assessment-question {
+        background: #f5f5f5;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 8px;
+      }
+      .assessment-question h4 {
+        margin-bottom: 15px;
+        color: #1e3c72;
+      }
+
+      /* Results */
+      .results-box {
+        background: #d4edda;
+        border: 2px solid #28a745;
+        padding: 30px;
+        border-radius: 8px;
+        text-align: center;
+        margin: 20px 0;
+      }
+      .results-box.failed {
+        background: #f8d7da;
+        border-color: #dc3545;
+      }
+      .results-box h2 {
+        color: #28a745;
+        font-size: 32px;
+        margin-bottom: 10px;
+      }
+      .results-box.failed h2 {
+        color: #dc3545;
+      }
+      .results-box p {
+        font-size: 18px;
+        margin: 10px 0;
+      }
+
+      /* Certificate */
+      .certificate {
+        background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
+        border: 3px solid #d4af37;
+        padding: 40px;
+        border-radius: 8px;
+        text-align: center;
+        margin: 20px 0;
+      }
+      .certificate h2 {
+        color: #d4af37;
+        font-size: 32px;
+        margin-bottom: 20px;
+      }
+      .certificate p {
+        font-size: 16px;
+        margin: 10px 0;
+        color: #333;
+      }
+
+      /* Breadcrumbs */
+      .breadcrumbs {
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #666;
+      }
+      .breadcrumbs a {
+        color: #2a5298;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .breadcrumbs a:hover {
+        text-decoration: underline;
+      }
+
+      /* Module Grid */
+      .module-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+      .module-card {
+        background: white;
+        border: 2px solid #2a5298;
+        padding: 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+      }
+      .module-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+      .module-card h3 {
+        color: #2a5298;
+        margin-bottom: 10px;
+      }
+      .module-card p {
+        color: #666;
+        font-size: 14px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 20px;
+        }
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+        .module-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Hero Screen -->
+      <div id="hero" class="screen active">
+        <div class="header">
+          <h1>🎓 Mentoring Junior Crew</h1>
+          <p>A Practical Guide for Senior Officers</p>
+        </div>
+        <div class="content">
+          <h2>Welcome to Your Mentoring Leadership Course</h2>
+          <p>
+            This comprehensive course equips senior officers with practical
+            mentoring skills to develop junior crew and cadets. Learn how to
+            structure effective mentoring conversations, provide constructive
+            feedback, and support crew development.
+          </p>
+          <h3>What You'll Learn:</h3>
+          <ul>
+            <li>The difference between directing, coaching, and mentoring</li>
+            <li>What junior officers and cadets need from a mentor</li>
+            <li>How to structure effective mentoring conversations</li>
+            <li>Techniques for giving and receiving feedback</li>
+            <li>Supporting crew in difficulty</li>
+            <li>TRB task sign-off as a mentoring moment</li>
+            <li>Your role in developing the next generation of officers</li>
+          </ul>
+          <p style="margin-top: 30px; text-align: center">
+            <button class="btn btn-success" onclick="go('modules')">
+              Start Course
+            </button>
+          </p>
+        </div>
+      </div>
+
+      <!-- Modules Screen -->
+      <div id="modules" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('hero')">Home</a> / Modules
+        </div>
+        <div class="header">
+          <h1>📚 Course Modules</h1>
+          <p>Select a module to begin learning</p>
+        </div>
+        <div class="dashboard">
+          <div class="stat-box">
+            <h3 id="xpDisplay">0</h3>
+            <p>Experience Points</p>
+          </div>
+          <div class="stat-box">
+            <h3 id="badgeDisplay">0</h3>
+            <p>Badges Earned</p>
+          </div>
+          <div class="stat-box">
+            <h3 id="progressDisplay">0%</h3>
+            <p>Course Progress</p>
+          </div>
+        </div>
+        <div id="progressBar"></div>
+        <div class="module-grid">
+          <div class="module-card" onclick="go('m1')">
+            <h3>Module 1</h3>
+            <p>Mentoring Fundamentals: Directing, Coaching & Mentoring</p>
+          </div>
+          <div class="module-card" onclick="go('m2')">
+            <h3>Module 2</h3>
+            <p>What Junior Crew Need: Support, Challenge & Advocacy</p>
+          </div>
+          <div class="module-card" onclick="go('m3')">
+            <h3>Module 3</h3>
+            <p>Structuring Mentoring Conversations</p>
+          </div>
+          <div class="module-card" onclick="go('m4')">
+            <h3>Module 4</h3>
+            <p>Feedback Skills: Giving & Receiving</p>
+          </div>
+          <div class="module-card" onclick="go('m5')">
+            <h3>Module 5</h3>
+            <p>Supporting Crew in Difficulty & Development</p>
+          </div>
+        </div>
+        <p style="text-align: center; margin-top: 30px">
+          <button class="btn" onclick="go('assess')">Take Assessment</button>
+        </p>
+      </div>
+
+      <!-- Module 1 -->
+      <div id="m1" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('hero')">Home</a> /
+          <a onclick="go('modules')">Modules</a> / Module 1
+        </div>
+        <div class="header">
+          <h1>📌 Module 1: Mentoring Fundamentals</h1>
+          <p>Directing, Coaching & Mentoring</p>
+        </div>
+        <div class="content">
+          <h2>Understanding the Three Approaches</h2>
+          <h3>Directing</h3>
+          <p>
+            Telling someone what to do and how to do it. Appropriate for urgent
+            situations or when the person lacks basic knowledge. Example: "Stop!
+            The valve is leaking. Close it immediately using the red handle."
+          </p>
+
+          <h3>Coaching</h3>
+          <p>
+            Guiding someone through a task by asking questions and providing
+            guidance. Appropriate when they have some knowledge but need
+            development. Example: "What do you think caused the valve to leak?
+            What would you do to fix it?"
+          </p>
+
+          <h3>Mentoring</h3>
+          <p>
+            Supporting someone's long-term development through regular
+            conversations, feedback, and advocacy. Appropriate for developing
+            future leaders. Example: "Over the next month, I want you to lead
+            the maintenance checks. I'll observe and we'll discuss your
+            approach."
+          </p>
+        </div>
+
+        <div class="activity">
+          <h3>🎮 Interactive Activity: Mentoring Approach Matching</h3>
+          <p>
+            Match each scenario to the appropriate approach (Directing,
+            Coaching, or Mentoring):
+          </p>
+          <div id="m1Activity"></div>
+          <button class="btn btn-success" onclick="checkM1Activity()">
+            Submit Answer
+          </button>
+        </div>
+
+        <div id="m1Feedback" class="feedback"></div>
+
+        <div id="m1Quiz"></div>
+
+        <p style="text-align: center; margin-top: 30px">
+          <button class="btn" onclick="completeAndGo('m1', 'm2')">
+            Next Module →
+          </button>
+        </p>
+      </div>
+
+      <!-- Module 2 -->
+      <div id="m2" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('hero')">Home</a> /
+          <a onclick="go('modules')">Modules</a> / Module 2
+        </div>
+        <div class="header">
+          <h1>🤝 Module 2: What Junior Crew Need</h1>
+          <p>Support, Challenge & Advocacy</p>
+        </div>
+        <div class="content">
+          <h2>The Four Pillars of Mentoring</h2>
+          <h3>1. Feedback</h3>
+          <p>
+            Regular, specific, and balanced feedback on performance. Junior crew
+            need to know what they're doing well and where they can improve.
+            Feedback should be timely and focused on behaviour, not personality.
+          </p>
+
+          <h3>2. Challenge</h3>
+          <p>
+            Stretching assignments that develop new skills and confidence.
+            Junior crew need opportunities to try new things with your support.
+            Challenge without support creates anxiety; support without challenge
+            creates complacency.
+          </p>
+
+          <h3>3. Support</h3>
+          <p>
+            Being available when they struggle, believing in their potential,
+            and helping them navigate difficulties. Support means listening
+            without judgment and providing guidance when needed.
+          </p>
+
+          <h3>4. Advocacy</h3>
+          <p>
+            Speaking on their behalf, recognizing their achievements, and
+            opening doors for their development. Advocacy means ensuring they
+            get fair opportunities and that their contributions are recognized.
+          </p>
+        </div>
+
+        <div class="activity">
+          <h3>🎮 Interactive Activity: Identifying Mentoring Needs</h3>
+          <p>
+            Identify which pillar (Feedback, Challenge, Support, Advocacy) is
+            missing in each scenario:
+          </p>
+          <div id="m2Activity"></div>
+          <button class="btn btn-success" onclick="checkM2Activity()">
+            Submit Answer
+          </button>
+        </div>
+
+        <div id="m2Feedback" class="feedback"></div>
+
+        <div id="m2Quiz"></div>
+
+        <p style="text-align: center; margin-top: 30px">
+          <button class="btn" onclick="completeAndGo('m2', 'm3')">
+            Next Module →
+          </button>
+        </p>
+      </div>
+
+      <!-- Module 3 -->
+      <div id="m3" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('hero')">Home</a> /
+          <a onclick="go('modules')">Modules</a> / Module 3
+        </div>
+        <div class="header">
+          <h1>💬 Module 3: Structuring Mentoring Conversations</h1>
+          <p>Goal, Observation, Feedback, Action</p>
+        </div>
+        <div class="content">
+          <h2>The GOFA Framework</h2>
+          <h3>G - Goal</h3>
+          <p>
+            Start by clarifying the purpose of the conversation. "I want to
+            discuss your approach to the engine room watch handover." This sets
+            expectations and helps the junior officer understand why you're
+            having the conversation.
+          </p>
+
+          <h3>O - Observation</h3>
+          <p>
+            Share specific observations of their behaviour or performance. "I
+            noticed you didn't check the fuel tank level during your handover
+            yesterday." Focus on what you observed, not assumptions.
+          </p>
+
+          <h3>F - Feedback</h3>
+          <p>
+            Provide balanced feedback. "This is important because fuel tank
+            monitoring is a critical safety check. You've been strong in other
+            areas of your watch routine." Acknowledge what they're doing well
+            while addressing the gap.
+          </p>
+
+          <h3>A - Action</h3>
+          <p>
+            Agree on specific actions for improvement. "Next watch, I'd like you
+            to walk me through your fuel monitoring procedure. We'll identify
+            what you need to remember." Make it collaborative, not punitive.
+          </p>
+        </div>
+
+        <div class="activity">
+          <h3>🎮 Interactive Activity: Sequencing a Mentoring Conversation</h3>
+          <p>Put the conversation steps in the correct order:</p>
+          <div id="m3Activity"></div>
+          <button class="btn btn-success" onclick="checkM3Activity()">
+            Submit Answer
+          </button>
+        </div>
+
+        <div id="m3Feedback" class="feedback"></div>
+
+        <div id="m3Quiz"></div>
+
+        <p style="text-align: center; margin-top: 30px">
+          <button class="btn" onclick="completeAndGo('m3', 'm4')">
+            Next Module →
+          </button>
+        </p>
+      </div>
+
+      <!-- Module 4 -->
+      <div id="m4" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('hero')">Home</a> /
+          <a onclick="go('modules')">Modules</a> / Module 4
+        </div>
+        <div class="header">
+          <h1>🎯 Module 4: Feedback Skills</h1>
+          <p>Giving & Receiving Feedback</p>
+        </div>
+        <div class="content">
+          <h2>Effective Feedback Principles</h2>
+          <h3>Specific</h3>
+          <p>
+            Instead of "You need to improve your communication," say "During the
+            morning briefing, you didn't ask clarifying questions about the
+            cargo operation. I'd like to see you engage more actively."
+          </p>
+
+          <h3>Behavioural</h3>
+          <p>
+            Focus on what they did, not who they are. "You interrupted the Chief
+            Engineer three times" is better than "You're disrespectful."
+            Behavioural feedback is actionable.
+          </p>
+
+          <h3>Timely</h3>
+          <p>
+            Give feedback soon after the event, while it's fresh. Waiting weeks
+            reduces its impact. However, if emotions are high, wait for calm
+            before discussing.
+          </p>
+
+          <h3>Balanced</h3>
+          <p>
+            Include what they did well alongside areas for improvement. "Your
+            technical knowledge is excellent. I'd like to see you develop your
+            communication skills further."
+          </p>
+
+          <h3>Receiving Feedback</h3>
+          <p>
+            Listen without defensiveness. Ask clarifying questions. Thank them
+            for the feedback. This models the behaviour you want from junior
+            crew and strengthens your relationship.
+          </p>
+        </div>
+
+        <div class="activity">
+          <h3>🎮 Interactive Activity: Evaluating Feedback Quality</h3>
+          <p>
+            Assess whether each feedback example is Specific, Behavioural,
+            Timely, and Balanced:
+          </p>
+          <div id="m4Activity"></div>
+          <button class="btn btn-success" onclick="checkM4Activity()">
+            Submit Answer
+          </button>
+        </div>
+
+        <div id="m4Feedback" class="feedback"></div>
+
+        <div id="m4Quiz"></div>
+
+        <p style="text-align: center; margin-top: 30px">
+          <button class="btn" onclick="completeAndGo('m4', 'm5')">
+            Next Module →
+          </button>
+        </p>
+      </div>
+
+      <!-- Module 5 -->
+      <div id="m5" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('hero')">Home</a> /
+          <a onclick="go('modules')">Modules</a> / Module 5
+        </div>
+        <div class="header">
+          <h1>🆘 Module 5: Supporting Crew in Difficulty</h1>
+          <p>Development, Challenges & TRB Sign-off</p>
+        </div>
+        <div class="content">
+          <h2>Mentoring Beyond Performance</h2>
+          <h3>Recognizing Crew in Difficulty</h3>
+          <p>
+            Watch for signs of struggle: withdrawn behaviour, reduced
+            performance, increased errors, or personal issues affecting work.
+            Early intervention prevents problems from escalating.
+          </p>
+
+          <h3>Creating a Safe Space</h3>
+          <p>
+            Junior crew need to feel they can approach you with problems. "My
+            door is always open" means nothing if your actions show otherwise.
+            Be approachable, non-judgmental, and confidential.
+          </p>
+
+          <h3>TRB Task Sign-off as Mentoring</h3>
+          <p>
+            Don't just sign the TRB form. Use it as a mentoring moment. Discuss
+            what they learned, what was challenging, and how they'll apply this
+            knowledge. This reinforces learning and shows you care about their
+            development.
+          </p>
+
+          <h3>Your Role in Developing Future Leaders</h3>
+          <p>
+            As a senior officer, you're not just managing today's operations.
+            You're developing tomorrow's Masters and Chief Engineers. Invest in
+            mentoring. It's your responsibility to the maritime industry.
+          </p>
+        </div>
+
+        <div class="activity">
+          <h3>🎮 Interactive Activity: Mentoring Response Scenarios</h3>
+          <p>Choose the best mentoring response to each situation:</p>
+          <div id="m5Activity"></div>
+          <button class="btn btn-success" onclick="checkM5Activity()">
+            Submit Answer
+          </button>
+        </div>
+
+        <div id="m5Feedback" class="feedback"></div>
+
+        <div id="m5Quiz"></div>
+
+        <p style="text-align: center; margin-top: 30px">
+          <button class="btn" onclick="go('assess')">Take Assessment →</button>
+        </p>
+      </div>
+
+      <!-- Assessment Screen -->
+      <div id="assess" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('hero')">Home</a> / Assessment
+        </div>
+        <div class="header">
+          <h1>📋 Final Assessment</h1>
+          <p>Test your mentoring knowledge and skills</p>
+        </div>
+        <div class="content">
+          <h2>Answer all 25 questions to complete the course</h2>
+          <p>You need 70% (18 questions) to pass. Good luck!</p>
+          <div id="assessmentQuestions"></div>
+          <p style="text-align: center; margin-top: 30px">
+            <button class="btn btn-success" onclick="submitAssessment()">
+              Submit Assessment
+            </button>
+          </p>
+        </div>
+      </div>
+
+      <!-- Results Screen -->
+      <div id="results" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('hero')">Home</a> / Results
+        </div>
+        <div class="header">
+          <h1>🏆 Course Complete!</h1>
+          <p>Your Results</p>
+        </div>
+        <div id="resultsContent"></div>
+      </div>
+    </div>
+
+    <script>
+      // Course State
+      const courseState = {
+        currentScreen: "hero",
+        xp: 0,
+        badges: [],
+        modulesCompleted: [],
+        quizScores: {},
+        activityScores: {},
+        assessmentScore: 0,
+        startTime: Date.now(),
+        responses: {},
+      };
+
+      // Activity Data
+      const activities = {
+        m1: {
+          title: "Mentoring Approach Matching",
+          items: [
+            {
+              scenario:
+                "A cadet is confused about emergency procedures. You need them to understand immediately.",
+              correct: "Directing",
+              options: ["Directing", "Coaching", "Mentoring"],
+            },
+            {
+              scenario:
+                "A junior officer has been with you for 6 months. You want to develop their leadership skills over time.",
+              correct: "Mentoring",
+              options: ["Directing", "Coaching", "Mentoring"],
+            },
+            {
+              scenario:
+                "A 2nd Officer knows how to do a task but needs guidance on your specific procedures.",
+              correct: "Coaching",
+              options: ["Directing", "Coaching", "Mentoring"],
+            },
+            {
+              scenario:
+                "A new cadet is learning engine room procedures for the first time.",
+              correct: "Directing",
+              options: ["Directing", "Coaching", "Mentoring"],
+            },
+            {
+              scenario:
+                "You want to help a junior officer develop confidence and independence over several months.",
+              correct: "Mentoring",
+              options: ["Directing", "Coaching", "Mentoring"],
+            },
+          ],
+          feedback: {
+            Directing:
+              "Directing is appropriate for urgent situations or when basic knowledge is lacking.",
+            Coaching:
+              "Coaching is appropriate when someone has some knowledge but needs guidance.",
+            Mentoring:
+              "Mentoring is appropriate for long-term development and building future leaders.",
+          },
+        },
+        m2: {
+          title: "Identifying Mentoring Needs",
+          items: [
+            {
+              scenario:
+                "A cadet has improved significantly but nobody knows about it. Their achievements aren't recognized.",
+              correct: "Advocacy",
+              options: ["Feedback", "Challenge", "Support", "Advocacy"],
+            },
+            {
+              scenario:
+                "A junior officer is struggling with a new responsibility and seems overwhelmed.",
+              correct: "Support",
+              options: ["Feedback", "Challenge", "Support", "Advocacy"],
+            },
+            {
+              scenario:
+                "A 2nd Officer doesn't know how well they're doing or what to improve.",
+              correct: "Feedback",
+              options: ["Feedback", "Challenge", "Support", "Advocacy"],
+            },
+            {
+              scenario:
+                "A capable junior officer is bored and not developing new skills.",
+              correct: "Challenge",
+              options: ["Feedback", "Challenge", "Support", "Advocacy"],
+            },
+            {
+              scenario:
+                "A cadet is anxious about their performance and needs reassurance.",
+              correct: "Support",
+              options: ["Feedback", "Challenge", "Support", "Advocacy"],
+            },
+          ],
+          feedback: {
+            Feedback:
+              "Feedback helps people understand their performance and areas for improvement.",
+            Challenge:
+              "Challenge stretches people and develops new capabilities.",
+            Support:
+              "Support provides reassurance and helps people navigate difficulties.",
+            Advocacy:
+              "Advocacy means recognizing achievements and opening doors for opportunities.",
+          },
+        },
+        m3: {
+          title: "Sequencing a Mentoring Conversation",
+          items: [
+            {
+              scenario:
+                "Put these steps in order: 1) Agree on actions, 2) Share observations, 3) Clarify the goal, 4) Provide feedback",
+              correct: "3,2,4,1",
+              options: ["2,3,4,1", "3,4,2,1", "3,2,4,1", "1,2,3,4"],
+            },
+            {
+              scenario: "Which comes first in a mentoring conversation?",
+              correct: "Clarifying the goal",
+              options: [
+                "Sharing observations",
+                "Clarifying the goal",
+                "Providing feedback",
+                "Agreeing on actions",
+              ],
+            },
+            {
+              scenario: "What should you do before providing feedback?",
+              correct: "Share specific observations",
+              options: [
+                "Share specific observations",
+                "Agree on actions",
+                "Clarify the goal",
+                "End the conversation",
+              ],
+            },
+            {
+              scenario: "The GOFA framework stands for:",
+              correct: "Goal, Observation, Feedback, Action",
+              options: [
+                "Good, Objective, Feedback, Analysis",
+                "Goal, Outcome, Feedback, Assessment",
+                "Growth, Observation, Focus, Action",
+                "Goal, Observation, Feedback, Action",
+              ],
+            },
+            {
+              scenario: "What is the final step in the GOFA framework?",
+              correct: "Agree on specific actions",
+              options: [
+                "Agree on specific actions",
+                "Share observations",
+                "Provide feedback",
+                "Schedule next meeting",
+              ],
+            },
+          ],
+          feedback: {
+            Goal: "Starting with a clear goal sets expectations and helps the junior officer understand the purpose.",
+            Observation:
+              "Sharing specific observations grounds the conversation in facts.",
+            Feedback:
+              "Balanced feedback acknowledges strengths while addressing areas for improvement.",
+            Action:
+              "Agreeing on actions makes the conversation actionable and collaborative.",
+          },
+        },
+        m4: {
+          title: "Evaluating Feedback Quality",
+          items: [
+            {
+              scenario:
+                "You're disrespectful to the engineering team. - Is this Specific, Behavioural, Timely, Balanced?",
+              correct: "No - not specific or behavioural",
+              options: [
+                "Yes - all criteria met",
+                "No - not specific or behavioural",
+                "No - not timely",
+                "No - not balanced",
+              ],
+            },
+            {
+              scenario:
+                "During yesterday's briefing, you interrupted the Chief Engineer twice. I'd like to see you ask questions instead. You've been excellent with technical knowledge. - Evaluate this feedback.",
+              correct: "Yes - all criteria met",
+              options: [
+                "Yes - all criteria met",
+                "No - not specific",
+                "No - not balanced",
+                "No - not timely",
+              ],
+            },
+            {
+              scenario:
+                "Good job on the maintenance check last week. - Is this effective feedback?",
+              correct: "No - not specific",
+              options: [
+                "Yes - it's positive",
+                "No - not specific",
+                "No - not timely",
+                "No - not balanced",
+              ],
+            },
+            {
+              scenario: "What makes feedback behavioural?",
+              correct: "It focuses on what was done, not who the person is",
+              options: [
+                "It focuses on what was done, not who the person is",
+                "It includes both positive and negative",
+                "It's given immediately",
+                "It's specific to one incident",
+              ],
+            },
+            {
+              scenario: "When should you give feedback?",
+              correct: "Soon after the event, when emotions are calm",
+              options: [
+                "Immediately, even if emotions are high",
+                "Soon after the event, when emotions are calm",
+                "During the next formal review",
+                "Only when performance is poor",
+              ],
+            },
+          ],
+          feedback: {
+            Specific: "Specific feedback includes details about what happened.",
+            Behavioural:
+              "Behavioural feedback focuses on actions, not personality.",
+            Timely: "Timely feedback is given soon after the event.",
+            Balanced:
+              "Balanced feedback includes strengths alongside areas for improvement.",
+          },
+        },
+        m5: {
+          title: "Mentoring Response Scenarios",
+          items: [
+            {
+              scenario:
+                "A cadet tells you they're struggling with homesickness. Best response?",
+              correct:
+                "Listen, validate their feelings, discuss coping strategies",
+              options: [
+                "Tell them to get over it",
+                "Ignore it - it's not your problem",
+                "Report them to the Master",
+                "Listen, validate their feelings, discuss coping strategies",
+              ],
+            },
+            {
+              scenario:
+                "A junior officer's performance has declined recently. What do you do?",
+              correct:
+                "Have a private conversation to understand what's happening",
+              options: [
+                "Publicly criticize their performance",
+                "Have a private conversation to understand what's happening",
+                "Give them a written warning",
+                "Avoid the issue",
+              ],
+            },
+            {
+              scenario: "You're signing off a TRB task. What should you do?",
+              correct: "Discuss what they learned and how they'll apply it",
+              options: [
+                "Just sign the form",
+                "Only sign if they got it perfect",
+                "Discuss what they learned and how they'll apply it",
+                "Let them sign it themselves",
+              ],
+            },
+            {
+              scenario:
+                "A cadet is performing well but seems withdrawn. What's your priority?",
+              correct: "Check in with them to see if something is wrong",
+              options: [
+                "Leave them alone",
+                "Check in with them to see if something is wrong",
+                "Give them more work",
+                "Assume they're fine",
+              ],
+            },
+            {
+              scenario: "What's your most important role as a mentor?",
+              correct: "Developing the next generation of maritime officers",
+              options: [
+                "Developing the next generation of maritime officers",
+                "Checking their work",
+                "Enforcing rules",
+                "Staying distant and professional",
+              ],
+            },
+          ],
+          feedback: {
+            Listen:
+              "Listening without judgment creates a safe space for junior crew.",
+            Understand:
+              "Understanding the root cause helps you provide appropriate support.",
+            Discuss:
+              "Discussing learning outcomes reinforces the mentoring relationship.",
+            Develop:
+              "Your role is to develop future leaders for the maritime industry.",
+          },
+        },
+      };
+
+      // Quiz Data
+      const quizzes = {
+        m1: [
+          {
+            question:
+              "What is the main difference between coaching and mentoring?",
+            options: [
+              "Coaching is short-term guidance, mentoring is long-term development",
+              "Coaching is for emergencies, mentoring is for routine tasks",
+              "Mentoring is only for officers, coaching is for all crew",
+              "They are the same thing",
+            ],
+            correct: 0,
+          },
+          {
+            question: "When is directing most appropriate?",
+            options: [
+              "Always",
+              "For urgent situations or when basic knowledge is lacking",
+              "Never",
+              "Only for punishment",
+            ],
+            correct: 1,
+          },
+        ],
+        m2: [
+          {
+            question:
+              "Which of the four pillars of mentoring is about recognizing achievements?",
+            options: ["Feedback", "Challenge", "Support", "Advocacy"],
+            correct: 3,
+          },
+          {
+            question:
+              "What happens when you provide challenge without support?",
+            options: [
+              "Optimal learning",
+              "Anxiety and stress",
+              "Complacency",
+              "Improved performance",
+            ],
+            correct: 1,
+          },
+        ],
+        m3: [
+          {
+            question: 'What does the "G" in GOFA stand for?',
+            options: ["Good", "Growth", "Goal", "Guidance"],
+            correct: 2,
+          },
+          {
+            question:
+              "Why is it important to share observations before providing feedback?",
+            options: [
+              "It saves time",
+              "It grounds the conversation in facts",
+              "It's not important",
+              "It confuses the issue",
+            ],
+            correct: 1,
+          },
+        ],
+        m4: [
+          {
+            question: "Which characteristic makes feedback actionable?",
+            options: [
+              "Being positive",
+              "Being behavioural",
+              "Being frequent",
+              "Being harsh",
+            ],
+            correct: 1,
+          },
+          {
+            question:
+              "What should you do when a junior officer gives you feedback?",
+            options: [
+              "Dismiss it",
+              "Defend yourself",
+              "Listen without defensiveness and thank them",
+              "Ignore it",
+            ],
+            correct: 2,
+          },
+        ],
+        m5: [
+          {
+            question:
+              "What is a sign that a crew member might be in difficulty?",
+            options: [
+              "Asking questions",
+              "Withdrawn behaviour",
+              "Volunteering for tasks",
+              "Socializing more",
+            ],
+            correct: 1,
+          },
+          {
+            question:
+              "How should you use TRB task sign-off as a mentoring opportunity?",
+            options: [
+              "Just sign it quickly",
+              "Only sign if perfect",
+              "Ignore the learning aspect",
+              "Discuss learning outcomes and application",
+            ],
+            correct: 3,
+          },
+        ],
+      };
+
+      // Assessment Data
+      const assessmentQuestions = [
+        {
+          question: "What is mentoring primarily focused on?",
+          options: [
+            "Giving orders",
+            "Long-term development and support",
+            "Punishment",
+            "Routine tasks",
+          ],
+          correct: 1,
+        },
+        {
+          question: "Which approach should you use for an emergency situation?",
+          options: ["Mentoring", "Coaching", "Directing", "Ignoring"],
+          correct: 2,
+        },
+        {
+          question: "What are the four pillars of mentoring?",
+          options: [
+            "Rules, Discipline, Authority, Control",
+            "Feedback, Challenge, Support, Advocacy",
+            "Teaching, Testing, Timing, Tracking",
+            "Grades, Goals, Growth, Guidance",
+          ],
+          correct: 1,
+        },
+        {
+          question: "What does GOFA stand for?",
+          options: [
+            "Growth, Outcome, Focus, Assessment",
+            "Good, Objective, Feedback, Analysis",
+            "Goal, Observation, Feedback, Action",
+            "Guidance, Observation, Follow-up, Accountability",
+          ],
+          correct: 2,
+        },
+        {
+          question:
+            "Why is specific feedback more effective than general feedback?",
+          options: [
+            "It's shorter",
+            "It's actionable and clear",
+            "It's easier to give",
+            "It's less honest",
+          ],
+          correct: 1,
+        },
+        {
+          question: "What should you do if a junior officer is withdrawn?",
+          options: [
+            "Check in with them",
+            "Give them more work",
+            "Ignore it",
+            "Report them",
+          ],
+          correct: 0,
+        },
+        {
+          question: "How should you handle TRB task sign-off?",
+          options: [
+            "Just sign it",
+            "Discuss learning and application",
+            "Sign only if perfect",
+            "Let them sign themselves",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "What is the benefit of receiving feedback from junior crew?",
+          options: [
+            "It's a waste of time",
+            "It models desired behaviour and strengthens relationships",
+            "It shows weakness",
+            "It's unnecessary",
+          ],
+          correct: 1,
+        },
+        {
+          question: "When should you provide feedback?",
+          options: [
+            "Soon after the event, when emotions are calm",
+            "Never",
+            "Only in writing",
+            "Weeks later",
+          ],
+          correct: 0,
+        },
+        {
+          question: "What makes feedback behavioural?",
+          options: [
+            "It's positive",
+            "It focuses on actions, not personality",
+            "It's frequent",
+            "It's harsh",
+          ],
+          correct: 1,
+        },
+        {
+          question: "How does mentoring contribute to maritime safety?",
+          options: [
+            "It develops competent future leaders",
+            "It doesn't",
+            "It's just for HR",
+            "It's optional",
+          ],
+          correct: 0,
+        },
+        {
+          question: "What should balanced feedback include?",
+          options: [
+            "Only criticism",
+            "Only praise",
+            "Strengths and areas for improvement",
+            "Nothing specific",
+          ],
+          correct: 2,
+        },
+        {
+          question: "Why is advocacy important in mentoring?",
+          options: [
+            "It's not",
+            "It recognizes achievements and opens opportunities",
+            "It's just for favorites",
+            "It's the same as feedback",
+          ],
+          correct: 1,
+        },
+        {
+          question: "What is the first step in a mentoring conversation?",
+          options: [
+            "Providing feedback",
+            "Sharing observations",
+            "Clarifying the goal",
+            "Agreeing on actions",
+          ],
+          correct: 2,
+        },
+        {
+          question: "How can you create a safe space for junior crew?",
+          options: [
+            "Be distant",
+            "Be approachable, non-judgmental, and confidential",
+            "Ignore problems",
+            "Only talk about work",
+          ],
+          correct: 1,
+        },
+        {
+          question: 'What does "challenge" mean in the context of mentoring?',
+          options: [
+            "Criticizing",
+            "Stretching assignments that develop new skills",
+            "Punishment",
+            "Avoiding responsibility",
+          ],
+          correct: 1,
+        },
+        {
+          question: "When is coaching most appropriate?",
+          options: [
+            "Never",
+            "For emergencies",
+            "When someone has some knowledge but needs guidance",
+            "Only for officers",
+          ],
+          correct: 2,
+        },
+        {
+          question: "What should you observe before providing feedback?",
+          options: [
+            "Nothing",
+            "Specific behaviours",
+            "Personality traits",
+            "Assumptions",
+          ],
+          correct: 1,
+        },
+        {
+          question: "How does mentoring differ from managing?",
+          options: [
+            "Mentoring focuses on development, managing focuses on tasks",
+            "Mentoring is less important",
+            "They're the same",
+            "Managing is for officers, mentoring for crew",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "What is your responsibility as a senior officer regarding the next generation?",
+          options: [
+            "None",
+            "To develop future maritime leaders",
+            "To keep them subordinate",
+            "To avoid mentoring",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Which pillar of mentoring is about speaking on someone's behalf?",
+          options: ["Feedback", "Challenge", "Support", "Advocacy"],
+          correct: 3,
+        },
+        {
+          question:
+            "What should you do if a junior officer seems to be struggling?",
+          options: [
+            "Avoid them",
+            "Have a private conversation to understand",
+            "Give them a warning",
+            "Ignore it",
+          ],
+          correct: 1,
+        },
+        {
+          question: "How often should mentoring conversations happen?",
+          options: [
+            "Never",
+            "Only when there's a problem",
+            "Regularly and proactively",
+            "Once a year",
+          ],
+          correct: 2,
+        },
+        {
+          question: 'What is the purpose of the "Action" step in GOFA?',
+          options: [
+            "To end the conversation",
+            "To agree on specific improvements collaboratively",
+            "To punish",
+            "To avoid responsibility",
+          ],
+          correct: 1,
+        },
+        {
+          question: "Why is timely feedback important?",
+          options: [
+            "It's not",
+            "It's more impactful when fresh",
+            "It's easier to give late",
+            "It's less honest",
+          ],
+          correct: 1,
+        },
+      ];
+
+      // Render Activities
+      function renderActivities() {
+        Object.keys(activities).forEach((moduleId) => {
+          const activity = activities[moduleId];
+          const container = document.getElementById(moduleId + "Activity");
+          if (!container) return;
+
+          let html = "";
+          activity.items.forEach((item, idx) => {
+            html += `
+                        <div class="activity-item">
+                            <p><strong>Scenario ${idx + 1}:</strong> ${item.scenario}</p>
+                            ${item.options
+                              .map(
+                                (opt, optIdx) => `
+                                <div style="margin-left: 20px; margin-top: 8px;">
+                                    <input type="radio" name="m${moduleId}_${idx}" value="${opt}" id="m${moduleId}_${idx}_${optIdx}">
+                                    <label for="m${moduleId}_${idx}_${optIdx}">${opt}</label>
+                                </div>
+                            `,
+                              )
+                              .join("")}
+                        </div>
+                    `;
+          });
+          container.innerHTML = html;
+        });
+      }
+
+      // Render Quizzes
+      function renderQuizzes() {
+        Object.keys(quizzes).forEach((moduleId) => {
+          const quiz = quizzes[moduleId];
+          const container = document.getElementById(moduleId + "Quiz");
+          if (!container) return;
+
+          let html = '<h3 style="margin-top: 30px;">📝 Module Quiz</h3>';
+          quiz.forEach((q, idx) => {
+            html += `
+                        <div class="quiz-question">
+                            <h4>Question ${idx + 1}: ${q.question}</h4>
+                            ${q.options
+                              .map(
+                                (opt, optIdx) => `
+                                <div class="quiz-option">
+                                    <input type="radio" name="${moduleId}_quiz_${idx}" value="${optIdx}" id="${moduleId}_quiz_${idx}_${optIdx}">
+                                    <label for="${moduleId}_quiz_${idx}_${optIdx}">${opt}</label>
+                                </div>
+                            `,
+                              )
+                              .join("")}
+                        </div>
+                    `;
+          });
+          html += `<button class="btn btn-success" onclick="submitQuiz('${moduleId}')" style="margin-top: 20px;">Submit Quiz</button>`;
+          container.innerHTML = html;
+        });
+      }
+
+      // Render Assessment
+      function renderAssessment() {
+        const container = document.getElementById("assessmentQuestions");
+        let html = "";
+        assessmentQuestions.forEach((q, idx) => {
+          html += `
+                    <div class="assessment-question">
+                        <h4>Question ${idx + 1}: ${q.question}</h4>
+                        ${q.options
+                          .map(
+                            (opt, optIdx) => `
+                            <div class="quiz-option">
+                                <input type="radio" name="assess_${idx}" value="${optIdx}" id="assess_${idx}_${optIdx}">
+                                <label for="assess_${idx}_${optIdx}">${opt}</label>
+                            </div>
+                        `,
+                          )
+                          .join("")}
+                    </div>
+                `;
+        });
+        container.innerHTML = html;
+      }
+
+      // Check Activities
+      function checkM1Activity() {
+        checkActivity("m1");
+      }
+      function checkM2Activity() {
+        checkActivity("m2");
+      }
+      function checkM3Activity() {
+        checkActivity("m3");
+      }
+      function checkM4Activity() {
+        checkActivity("m4");
+      }
+      function checkM5Activity() {
+        checkActivity("m5");
+      }
+
+      function checkActivity(moduleId) {
+        const activity = activities[moduleId];
+        const feedbackContainer = document.getElementById(
+          moduleId + "Feedback",
+        );
+        let score = 0;
+        let html = "<h4>Activity Feedback:</h4>";
+
+        activity.items.forEach((item, idx) => {
+          const selected = document.querySelector(
+            `input[name="m${moduleId}_${idx}"]:checked`,
+          );
+          if (!selected) {
+            html += `<div class="feedback feedback-incorrect"><p>❌ Question ${idx + 1}: No answer selected. Correct answer: <strong>${item.correct}</strong></p></div>`;
+            return;
+          }
+
+          const isCorrect = selected.value === item.correct;
+          if (isCorrect) {
+            score++;
+            html += `<div class="feedback feedback-correct"><p>✓ Question ${idx + 1}: Correct!</p><p class="explanation">${activity.feedback[item.correct] || ""}</p></div>`;
+          } else {
+            html += `<div class="feedback feedback-incorrect"><p>✗ Question ${idx + 1}: Incorrect. Your answer: ${selected.value}</p><p class="correct-answer">Correct answer: ${item.correct}</p><p class="explanation">${activity.feedback[item.correct] || ""}</p></div>`;
+          }
+        });
+
+        const percentage = Math.round((score / activity.items.length) * 100);
+        html += `<div style="margin-top: 20px; padding: 15px; background: #e8f0f7; border-radius: 6px;"><h4>Activity Score: ${percentage}%</h4><p>You got ${score} out of ${activity.items.length} correct.</p></div>`;
+
+        feedbackContainer.innerHTML = html;
+        feedbackContainer.classList.add("show");
+
+        courseState.activityScores[moduleId] = percentage;
+        awardXP(25);
+      }
+
+      // Submit Quiz
+      function submitQuiz(moduleId) {
+        const quiz = quizzes[moduleId];
+        let score = 0;
+
+        quiz.forEach((q, idx) => {
+          const selected = document.querySelector(
+            `input[name="${moduleId}_quiz_${idx}"]:checked`,
+          );
+          if (selected && parseInt(selected.value) === q.correct) {
+            score++;
+          }
+        });
+
+        const percentage = Math.round((score / quiz.length) * 100);
+        courseState.quizScores[moduleId] = percentage;
+        awardXP(15);
+
+        alert(
+          `Quiz Score: ${percentage}%\n\nYou got ${score} out of ${quiz.length} correct.`,
+        );
+      }
+
+      // Submit Assessment
+      function submitAssessment() {
+        let score = 0;
+        assessmentQuestions.forEach((q, idx) => {
+          const selected = document.querySelector(
+            `input[name="assess_${idx}"]:checked`,
+          );
+          if (selected && parseInt(selected.value) === q.correct) {
+            score++;
+          }
+        });
+
+        const percentage = Math.round(
+          (score / assessmentQuestions.length) * 100,
+        );
+        const passed = percentage >= 70;
+
+        courseState.assessmentScore = percentage;
+        awardXP(50);
+
+        const resultsContent = document.getElementById("resultsContent");
+        let html = "";
+
+        if (passed) {
+          html += `
+                    <div class="results-box">
+                        <h2>🎉 PASSED!</h2>
+                        <p>Assessment Score: <strong>${percentage}%</strong></p>
+                        <p>You scored ${score} out of ${assessmentQuestions.length} questions.</p>
+                    </div>
+                    <div class="certificate">
+                        <h2>Certificate of Completion</h2>
+                        <p style="font-size: 18px; margin: 20px 0;">This certifies that</p>
+                        <p style="font-size: 20px; font-weight: bold; margin: 20px 0;">A Maritime Professional</p>
+                        <p style="font-size: 16px; margin: 20px 0;">has successfully completed the course</p>
+                        <p style="font-size: 18px; font-weight: bold; margin: 20px 0;">Mentoring Junior Crew — A Practical Guide for Senior Officers</p>
+                        <p style="font-size: 14px; margin: 20px 0;">with a score of ${percentage}%</p>
+                        <p style="font-size: 12px; margin: 20px 0; color: #999;">Completed: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                `;
+        } else {
+          html += `
+                    <div class="results-box failed">
+                        <h2>❌ NOT PASSED</h2>
+                        <p>Assessment Score: <strong>${percentage}%</strong></p>
+                        <p>You scored ${score} out of ${assessmentQuestions.length} questions.</p>
+                        <p>You need 70% to pass. Please review the modules and try again.</p>
+                    </div>
+                `;
+        }
+
+        html += `
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" onclick="go('modules')">Back to Modules</button>
+                    <button class="btn btn-success" onclick="sendLMSCompletion()">Complete Course</button>
+                </div>
+            `;
+
+        resultsContent.innerHTML = html;
+        go("results");
+
+        if (passed) {
+          sendLMSCompletion();
+        }
+      }
+
+      // Award XP
+      function awardXP(points) {
+        courseState.xp += points;
+        updateDashboard();
+        checkBadges();
+      }
+
+      // Check Badges
+      function checkBadges() {
+        if (
+          courseState.xp >= 100 &&
+          !courseState.badges.includes("Course Master")
+        ) {
+          courseState.badges.push("Course Master");
+        }
+        if (
+          courseState.xp >= 200 &&
+          !courseState.badges.includes("XP Champion")
+        ) {
+          courseState.badges.push("XP Champion");
+        }
+        if (courseState.xp >= 300 && !courseState.badges.includes("On Fire")) {
+          courseState.badges.push("On Fire");
+        }
+        updateDashboard();
+      }
+
+      // Update Dashboard
+      function updateDashboard() {
+        document.getElementById("xpDisplay").textContent = courseState.xp;
+        document.getElementById("badgeDisplay").textContent =
+          courseState.badges.length;
+        const progress = Math.round(
+          (courseState.modulesCompleted.length / 5) * 100,
+        );
+        document.getElementById("progressDisplay").textContent = progress + "%";
+        document.getElementById("progressBar").style.width = progress + "%";
+      }
+
+      // Navigation
+      function go(screenId) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(screenId).classList.add("active");
+        courseState.currentScreen = screenId;
+      }
+
+      function completeAndGo(currentModule, nextModule) {
+        if (!courseState.modulesCompleted.includes(currentModule)) {
+          courseState.modulesCompleted.push(currentModule);
+        }
+        updateDashboard();
+        go(nextModule);
+      }
+
+      // LMS Integration
+      function sendLMSCompletion() {
+        const completionData = {
+          courseId: "mentoring-junior-crew-001",
+          courseName:
+            "Mentoring Junior Crew — A Practical Guide for Senior Officers",
+          completionStatus:
+            courseState.assessmentScore >= 70 ? "PASSED" : "FAILED",
+          score: courseState.assessmentScore,
+          passingScore: 70,
+          totalXP: courseState.xp,
+          badges: courseState.badges,
+          modulesCompleted: courseState.modulesCompleted,
+          completionTime: Math.round(
+            (Date.now() - courseState.startTime) / 1000,
+          ),
+          timestamp: new Date().toISOString(),
+        };
+
+        // PostMessage API (for iframe-based LMS)
+        if (window.parent !== window) {
+          window.parent.postMessage(
+            {
+              type: "COURSE_COMPLETION",
+              data: completionData,
+            },
+            "*",
+          );
+        }
+
+        // localStorage (offline persistence)
+        localStorage.setItem(
+          "courseCompletion_mentoring",
+          JSON.stringify(completionData),
+        );
+
+        // REST API (for custom LMS)
+        fetch("https://lms-api.example.com/api/courses/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(completionData),
+        }).catch((err) => console.log("Offline - using localStorage"));
+
+        alert("Course completion recorded!");
+      }
+
+      // Initialize
+      window.addEventListener("load", () => {
+        renderActivities();
+        renderQuizzes();
+        renderAssessment();
+        updateDashboard();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1331 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Tank Cleaning Procedures, Safety and MARPOL Compliance — Interactive
+      Course
+    </title>
+    <style>
+      :root {
+        --blue: #1d4ed8;
+        --navy: #0f172a;
+        --slate: #475569;
+        --muted: #64748b;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --line: #e2e8f0;
+        --red: #dc2626;
+        --redbg: #fef2f2;
+        --yellow: #ca8a04;
+        --yellowbg: #fefce8;
+        --green: #16a34a;
+        --greenbg: #f0fdf4;
+        --purple: #7c3aed;
+        --purplebg: #f5f3ff;
+        --orange: #ea580c;
+        --orangebg: #fff7ed;
+        --shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+        --radius: 18px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #fff 0%, var(--bg) 100%);
+        color: var(--navy);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.55;
+      }
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(255, 255, 255, 0.96);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(10px);
+      }
+      .progress-track {
+        height: 5px;
+        background: #e5e7eb;
+      }
+      .progress-bar {
+        height: 5px;
+        width: 0;
+        background: linear-gradient(
+          90deg,
+          var(--green),
+          var(--blue),
+          var(--purple)
+        );
+        transition: 0.35s;
+      }
+      .nav {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1180px;
+        margin: auto;
+        padding: 12px 18px;
+      }
+      .brand {
+        font-weight: 900;
+        letter-spacing: 0.02em;
+      }
+      .brand small {
+        display: block;
+        font-weight: 700;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .status {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .pill {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-weight: 800;
+        color: #334155;
+        font-size: 13px;
+      }
+      .container {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 24px 18px 70px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 20px;
+        align-items: stretch;
+      }
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 24px;
+      }
+      .kicker {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        color: var(--blue);
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-weight: 900;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      h1 {
+        font-size: clamp(30px, 5vw, 56px);
+        line-height: 1.02;
+        margin: 18px 0 12px;
+        letter-spacing: -0.04em;
+      }
+      h2 {
+        margin: 0 0 12px;
+        font-size: 28px;
+      }
+      h3 {
+        margin: 0 0 10px;
+      }
+      .lead {
+        font-size: 18px;
+        color: #334155;
+        max-width: 830px;
+      }
+      .cta-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+      button {
+        font: inherit;
+      }
+      .btn {
+        border: 0;
+        border-radius: 14px;
+        padding: 12px 18px;
+        font-weight: 900;
+        cursor: pointer;
+        transition: 0.18s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn-primary {
+        background: var(--blue);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(29, 78, 216, 0.2);
+      }
+      .btn-light {
+        background: #fff;
+        border: 1px solid var(--line);
+        color: #334155;
+      }
+      .btn-light:hover {
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+      .btn-green {
+        background: var(--green);
+        color: #fff;
+      }
+      .btn-red {
+        background: var(--red);
+        color: #fff;
+      }
+      .btn-yellow {
+        background: var(--yellow);
+        color: #fff;
+      }
+      .map {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .map button {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .map button:hover {
+        border-color: var(--blue);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07);
+      }
+      .map .done {
+        border-color: #86efac;
+        background: var(--greenbg);
+      }
+      .map b {
+        display: block;
+      }
+      .map span {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: rise 0.25s ease;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .module-head {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 18px;
+        align-items: start;
+        border-left: 7px solid var(--blue);
+      }
+      .icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 20px;
+        background: #eff6ff;
+        display: grid;
+        place-items: center;
+        font-size: 34px;
+      }
+      .module-meta {
+        font-size: 12px;
+        font-weight: 900;
+        color: var(--blue);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .fact {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        background: #fff;
+      }
+      .fact b {
+        display: block;
+        margin-bottom: 6px;
+      }
+      .safety-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .safety {
+        border-radius: 16px;
+        padding: 14px;
+        border: 1px solid;
+      }
+      .safety.red {
+        background: var(--redbg);
+        border-color: #fecaca;
+        color: #7f1d1d;
+      }
+      .safety.yellow {
+        background: var(--yellowbg);
+        border-color: #fde68a;
+        color: #713f12;
+      }
+      .safety.green {
+        background: var(--greenbg);
+        border-color: #bbf7d0;
+        color: #14532d;
+      }
+      .svgbox {
+        background: #f8fafc;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 10px;
+        overflow: hidden;
+      }
+      .svgbox svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .narration {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+      }
+      .activity,
+      .quiz {
+        margin-top: 18px;
+      }
+      .activity {
+        border: 1px solid #ddd6fe;
+        background: #faf5ff;
+        border-radius: 18px;
+        padding: 18px;
+      }
+      .quiz {
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+        border-radius: 18px;
+        padding: 18px;
+      }
+      .label {
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        color: var(--purple);
+        margin-bottom: 8px;
+      }
+      .quiz .label {
+        color: var(--blue);
+      }
+      .options {
+        display: grid;
+        gap: 9px;
+      }
+      .opt {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 14px;
+        padding: 12px;
+        cursor: pointer;
+        text-align: left;
+      }
+      .opt:hover {
+        border-color: var(--blue);
+      }
+      .opt.selected {
+        background: #dbeafe;
+        border-color: var(--blue);
+        color: #1e3a8a;
+        font-weight: 700;
+      }
+      .opt.correct {
+        background: var(--greenbg);
+        border-color: #86efac;
+        color: #14532d;
+      }
+      .opt.wrong {
+        background: var(--redbg);
+        border-color: #fca5a5;
+        color: #7f1d1d;
+      }
+      .feedback {
+        margin-top: 10px;
+        font-weight: 800;
+        min-height: 24px;
+      }
+      .feedback.good {
+        color: var(--green);
+      }
+      .feedback.bad {
+        color: var(--red);
+      }
+      .drag-list {
+        display: grid;
+        gap: 9px;
+      }
+      .drag-item {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 11px;
+        cursor: grab;
+      }
+      .drag-item.used {
+        background: #e5e7eb;
+        color: #64748b;
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+      .dropgrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .dropzone {
+        min-height: 86px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 16px;
+        background: #fff;
+        padding: 10px;
+      }
+      .dropzone.over {
+        background: #eff6ff;
+        border-color: var(--blue);
+      }
+      .chip {
+        display: block;
+        width: fit-content;
+        margin-top: 8px;
+        background: #e0f2fe;
+        border: 1px solid #7dd3fc;
+        border-radius: 999px;
+        padding: 5px 9px;
+        margin: 4px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .seq {
+        display: grid;
+        gap: 8px;
+      }
+      .seq button {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 14px;
+        padding: 12px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .seq button.selected {
+        background: #eff6ff;
+        border-color: var(--blue);
+      }
+      .seq button.ok {
+        background: var(--greenbg);
+        border-color: #86efac;
+      }
+      .seq button.bad {
+        background: var(--redbg);
+        border-color: #fca5a5;
+      }
+      .checklist label {
+        display: block;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 11px;
+        margin: 8px 0;
+        cursor: pointer;
+      }
+      .checklist input {
+        transform: scale(1.2);
+        margin-right: 10px;
+      }
+      .slider-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+      }
+      .range {
+        width: 100%;
+      }
+      .footer-nav {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 22px;
+        border-top: 1px solid var(--line);
+        padding-top: 18px;
+      }
+      .assessment-card {
+        margin-top: 18px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px;
+        background: #fff;
+      }
+      .result {
+        display: none;
+        text-align: center;
+      }
+      .score {
+        font-size: 64px;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .certificate {
+        display: none;
+        margin-top: 18px;
+        padding: 24px;
+        border: 2px solid #f59e0b;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #fffbeb, #fff);
+      }
+      .certificate.show {
+        display: block;
+      }
+      .small {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .hidden {
+        display: none !important;
+      }
+      @media (max-width: 850px) {
+        .hero,
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+        .safety-grid,
+        .dropgrid {
+          grid-template-columns: 1fr;
+        }
+        .map {
+          grid-template-columns: 1fr;
+        }
+        .nav {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .status {
+          width: 100%;
+        }
+        .container {
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="progress-track">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+      <div class="nav">
+        <div class="brand">
+          Tank Cleaning Procedures, Safety and MARPOL Compliance<small
+            >P2 Operations · Tanker Operations · STCW / ISGOTT / MARPOL Annex I
+            aligned</small
+          >
+        </div>
+        <div class="status">
+          <span class="pill" id="moduleStatus">Course status: 0%</span
+          ><span class="pill" id="xpStatus">XP: 0</span
+          ><span class="pill" id="rankStatus">Rank: Trainee</span>
+        </div>
+      </div>
+    </div>
+    <main class="container">
+      <section id="home" class="screen active">
+        <div class="hero">
+          <div class="panel">
+            <span class="kicker">🧽 Tank cleaning course</span>
+            <h1>Clean the tank without creating the next emergency.</h1>
+            <p class="lead">
+              This interactive course trains tanker officers and cleaning teams
+              to plan, execute, verify and document tank cleaning safely — from
+              grade change and dry-dock cleaning to gas-free certification and
+              MARPOL-compliant slop handling.
+            </p>
+            <div class="safety-grid" style="margin-top: 18px">
+              <div class="safety red">
+                <b>Red</b>Stop work: unsafe atmosphere, ignition risk,
+                uncontrolled residues, no permit.
+              </div>
+              <div class="safety yellow">
+                <b>Yellow</b>Pause and verify: cleaning plan, compatibility,
+                readings, drainage, isolation.
+              </div>
+              <div class="safety green">
+                <b>Green</b>Proceed with controls: tested, isolated, documented,
+                supervised.
+              </div>
+            </div>
+            <div class="cta-row">
+              <button class="btn btn-primary" onclick="go('m1')">
+                Start course →</button
+              ><button
+                class="btn btn-light"
+                onclick="playNarration(homeNarration)"
+              >
+                ▶ Play course briefing</button
+              ><button class="btn btn-light" onclick="stopNarration()">
+                ■ Stop narration
+              </button>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Mission map</h2>
+            <div class="map" id="map"></div>
+            <p class="small" style="margin-top: 16px">
+              Each mission has narration, an activity, a quiz and a refresh
+              button. Progress starts at 0% and increases only after quiz
+              completion.
+            </p>
+          </div>
+        </div>
+      </section>
+      <div id="modules"></div>
+      <section id="assess" class="screen">
+        <div class="panel module-head">
+          <div class="icon">🎓</div>
+          <div>
+            <div class="module-meta">Final assessment · 10 questions</div>
+            <h2>Tank Cleaning Readiness Check</h2>
+            <p class="lead">
+              Answer all questions. You need 80% to pass. Use this as a
+              knowledge check before operational authorisation and onboard
+              familiarisation.
+            </p>
+            <div class="narration">
+              <button
+                class="btn btn-light"
+                onclick="
+                  playNarration(
+                    'Final assessment. Answer all ten questions carefully. Think like the officer in charge: safety first, atmosphere verified, pollution prevented, and records complete.',
+                  )
+                "
+              >
+                ▶ Narrate</button
+              ><button class="btn btn-light" onclick="stopNarration()">
+                ■ Stop</button
+              ><button class="btn btn-light" onclick="renderAssessment()">
+                ↻ Refresh assessment
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="assessmentWrap"></div>
+        <div class="result" id="result">
+          <div class="score" id="scorePct">0%</div>
+          <h2 id="resultTitle"></h2>
+          <p id="resultMsg" class="lead" style="margin: auto"></p>
+          <div class="certificate" id="certificate">
+            <h2>Certificate of Completion</h2>
+            <p>
+              This confirms successful completion of the interactive course:
+            </p>
+            <h3>Tank Cleaning Procedures, Safety and MARPOL Compliance</h3>
+            <p class="small">
+              Training record: Cargo / tank cleaning procedure · MARPOL
+              compliance procedure · Ship management procedure
+            </p>
+          </div>
+          <div class="cta-row" style="justify-content: center">
+            <button class="btn btn-primary" onclick="go('home')">
+              Back to course map</button
+            ><button
+              class="btn btn-light"
+              onclick="
+                renderAssessment();
+                window.scrollTo(0, 0);
+              "
+            >
+              Retake assessment
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const modules = [
+        {
+          id: "m1",
+          icon: "🧭",
+          title: "Why Tank Cleaning Is Done",
+          meta: "Module 1 of 6 · Planning logic",
+          desc: "Grade change, dry dock, gas-freeing, inspection and maintenance — understand the reason before choosing the method.",
+          narr: "Tank cleaning is never just washing a tank. It starts with the purpose. A grade change needs cargo compatibility control. Dry dock requires gas-free standards. Inspection requires safe entry. Every reason creates different hazards, cleaning intensity and records.",
+          facts: [
+            [
+              "Grade change",
+              "Cleaning may be needed to protect the next cargo from contamination or to meet charterer instructions. The previous cargo, next cargo and coating compatibility must be checked.",
+            ],
+            [
+              "Dry dock or repair",
+              "Tanks must be cleaned, ventilated and certified gas-free before hot work, inspection, repair or class attendance.",
+            ],
+            [
+              "Inspection or maintenance",
+              "Cleaning is planned to permit safe access, visual inspection and accurate atmosphere testing. Entry requires permit controls.",
+            ],
+            [
+              "Sludge and wax removal",
+              "Heavy residues may require heating, machines, chemical assistance, manual removal and extra slop capacity planning.",
+            ],
+          ],
+          activity: "sort",
+          quiz: [
+            "What is the first question before deciding a tank cleaning method?",
+            [
+              "How many crew are available",
+              "Why the tank is being cleaned",
+              "Which pump is closest",
+              "Whether daylight is available",
+            ],
+            1,
+            "The cleaning reason decides the method, hazards, documentation and verification standard.",
+          ],
+        },
+        {
+          id: "m2",
+          icon: "📋",
+          title: "Tank Cleaning Plan and Risk Assessment",
+          meta: "Module 2 of 6 · Permits and preparation",
+          desc: "Build the cleaning plan: cargo history, SDS, equipment, isolation, staffing, weather, slop capacity and emergency readiness.",
+          narr: "The cleaning plan is the control document. It confirms previous cargo, next cargo, tank condition, cleaning method, permits, PPE, ventilation, gas testing, slop capacity, communications and emergency arrangements. A weak plan leads to improvisation, and improvisation causes tanker incidents.",
+          facts: [
+            [
+              "Pre-cleaning meeting",
+              "The officer in charge briefs the team on cargo hazards, wash temperature, machine positions, ventilation, PPE, communications and emergency stop criteria.",
+            ],
+            [
+              "Isolation",
+              "Secure valves, blanks, pumps, heating coils, inert gas lines and electrical sources as required. Confirm line-up before starting.",
+            ],
+            [
+              "Compatibility checks",
+              "Use SDS, cargo manuals and coating guidance. Some chemicals, residues and coatings are incompatible.",
+            ],
+            [
+              "Stop criteria",
+              "Stop cleaning for unsafe gas readings, loss of ventilation, pump abnormality, leakage, lightning, poor communication or permit breach.",
+            ],
+          ],
+          activity: "checklist",
+          quiz: [
+            "Which item must be confirmed before starting cleaning?",
+            [
+              "Slop tank capacity and transfer route",
+              "Crew tea break timing",
+              "Paint colour of the tank",
+              "The ship’s Wi-Fi speed",
+            ],
+            0,
+            "Slop capacity and transfer route are essential to prevent overflow, illegal discharge and operational delay.",
+          ],
+        },
+        {
+          id: "m3",
+          icon: "🚿",
+          title: "Cleaning Methods and Equipment",
+          meta: "Module 3 of 6 · Fixed and portable machines",
+          desc: "Water washing, butterworthing, chemical cleaning, stripping and controlled drainage without creating pressure, overflow or ignition risk.",
+          narr: "Cleaning equipment includes fixed washing machines, portable machines, eductors, stripping systems, pumps, hoses and heating. The goal is to remove residues without damaging coating, creating static, overflowing slops or exposing people to toxic vapours.",
+          facts: [
+            [
+              "Fixed tank washing machines",
+              "Used for planned automated cleaning patterns. Confirm pressure, rotation and drainage. Monitor for blocked nozzles.",
+            ],
+            [
+              "Portable machines",
+              "Useful for shadow areas, but require careful rigging, bonding, hose control and entry-permit discipline when handled through openings.",
+            ],
+            [
+              "Chemical cleaning",
+              "Only use approved chemicals after compatibility checks. Control PPE, ventilation, exposure and slop segregation.",
+            ],
+            [
+              "Stripping and drainage",
+              "Effective cleaning depends on continuous drainage. Pooling wash water reduces cleaning quality and increases vapour generation.",
+            ],
+          ],
+          activity: "match",
+          quiz: [
+            "Why is good stripping important during tank cleaning?",
+            [
+              "It keeps the tank full",
+              "It prevents pooling and improves cleaning efficiency",
+              "It replaces gas testing",
+              "It removes the need for slop records",
+            ],
+            1,
+            "If wash water and residues are not stripped, cleaning efficiency falls and hazards increase.",
+          ],
+        },
+        {
+          id: "m4",
+          icon: "🌫️",
+          title: "Atmosphere Control and Gas Monitoring",
+          meta: "Module 4 of 6 · Oxygen, hydrocarbon and toxic gases",
+          desc: "Control oxygen, hydrocarbon vapour and toxic gases through inerting, ventilation, gas testing and entry limits.",
+          narr: "Atmosphere control is the life-saving part of tank cleaning. Measure oxygen, hydrocarbon vapour, hydrogen sulphide and toxic gases. A tank can look clean and still kill. Gas-free means tested, ventilated, documented and controlled. It does not mean guessed.",
+          facts: [
+            [
+              "Oxygen",
+              "Normal atmosphere is about 20.9 percent oxygen. Too low means asphyxiation risk. Enriched oxygen increases fire risk.",
+            ],
+            [
+              "Hydrocarbon vapour",
+              "Monitor LEL percentage. If the reading is unsafe, stop work and ventilate or inert as required.",
+            ],
+            [
+              "Toxic gases",
+              "H2S and benzene may be present in crude and some products. Smell is not a safety instrument.",
+            ],
+            [
+              "Gas-free certificate",
+              "Issued only after competent testing at representative points and maintained by continued controls. Conditions can change.",
+            ],
+          ],
+          activity: "slider",
+          quiz: [
+            "Which statement is safest?",
+            [
+              "The tank smells clean, so it is safe",
+              "A clean-looking tank can still contain lethal gas",
+              "Gas testing is only needed before dry dock",
+              "Oxygen readings alone are enough",
+            ],
+            1,
+            "Visual appearance and smell are not reliable. Use calibrated instruments and permit controls.",
+          ],
+        },
+        {
+          id: "m5",
+          icon: "🛢️",
+          title: "Slops, Residues and MARPOL Compliance",
+          meta: "Module 5 of 6 · Pollution prevention",
+          desc: "Manage wash water, residues, oily mixtures and disposal records through MARPOL-compliant shipboard procedures.",
+          narr: "Tank cleaning creates wash water, sludge and oily residues. These are not waste to be made invisible. They must be retained, transferred, treated or discharged only through permitted arrangements under the shipboard pollution prevention procedure and MARPOL Annex I controls.",
+          facts: [
+            [
+              "Slop tank planning",
+              "Confirm available capacity, segregation needs, heating, settling time, transfer route and high-level alarms.",
+            ],
+            [
+              "Discharge discipline",
+              "Never discharge oily residues or cleaning waste outside permitted MARPOL arrangements and company procedures.",
+            ],
+            [
+              "Oil Record Book",
+              "Tank cleaning, slop transfer, disposal, decanting and discharge operations must be recorded accurately.",
+            ],
+            [
+              "Evidence trail",
+              "Inspectors look for consistency between tank cleaning plans, logs, ORB, pump records, cargo documents and receipts.",
+            ],
+          ],
+          activity: "categorise",
+          quiz: [
+            "What is the safest approach to tank cleaning residues?",
+            [
+              "Pump overboard if diluted",
+              "Leave them for the next cargo",
+              "Hide them in a ballast tank",
+              "Record and manage them through slop/MARPOL procedures",
+            ],
+            3,
+            "Residues and wash water must be managed through approved pollution prevention procedures and recorded.",
+          ],
+        },
+        {
+          id: "m6",
+          icon: "✅",
+          title: "Inspection, Certification and Close-Out",
+          meta: "Module 6 of 6 · Verification and records",
+          desc: "Verify cleaning results, inspect safely, close permits, restore systems and complete the records before cargo readiness is declared.",
+          narr: "The job is not complete when washing stops. The tank must be drained, ventilated, tested, inspected and documented. Permits must be closed, equipment restored, residues controlled and the officer in charge must be satisfied before declaring readiness.",
+          facts: [
+            [
+              "Visual inspection",
+              "Check bottom, frames, bellmouths, heating coils, suction wells, shadow areas, residues and coating condition.",
+            ],
+            [
+              "Atmosphere re-test",
+              "Gas readings can change after stopping ventilation, disturbing residues or opening lines. Re-test before entry and as required.",
+            ],
+            [
+              "System restoration",
+              "Remove temporary hoses, close openings, restore valves, confirm lines, secure equipment and update status boards.",
+            ],
+            [
+              "Records",
+              "Complete tank cleaning logs, permits, gas test records, slop movements, ORB entries and handover notes.",
+            ],
+          ],
+          activity: "sequence",
+          quiz: [
+            "When is a tank cleaning operation properly closed out?",
+            [
+              "When the machines stop turning",
+              "When the next port is called",
+              "When records, inspection, permits and system restoration are complete",
+              "When the crew leaves the deck",
+            ],
+            2,
+            "Close-out includes technical verification, safety confirmation and documentation.",
+          ],
+        },
+      ];
+      let state = { xp: 0, done: {}, current: "home" };
+      try {
+        const s = JSON.parse(localStorage.getItem("tankCleaningState") || "{}");
+        if (s && typeof s === "object") state = { ...state, ...s };
+      } catch (e) {}
+      const homeNarration =
+        "Welcome to Tank Cleaning Procedures, Safety and MARPOL Compliance. This course is designed for tanker officers and cleaning teams. Work through each mission, complete the activity and pass the quiz. Red means stop, yellow means verify, and green means proceed only with controls.";
+      function save() {
+        localStorage.setItem("tankCleaningState", JSON.stringify(state));
+        updateStatus();
+      }
+      function pct() {
+        return Math.round(
+          (Object.keys(state.done).filter((k) => state.done[k]).length /
+            modules.length) *
+            100,
+        );
+      }
+      function updateStatus() {
+        document.getElementById("progressBar").style.width = pct() + "%";
+        document.getElementById("moduleStatus").textContent =
+          "Course status: " + pct() + "%";
+        document.getElementById("xpStatus").textContent = "XP: " + state.xp;
+        document.getElementById("rankStatus").textContent =
+          "Rank: " +
+          (state.xp >= 900
+            ? "Tank Cleaning Lead"
+            : state.xp >= 550
+              ? "Watch Officer"
+              : state.xp >= 250
+                ? "Deck Operator"
+                : "Trainee");
+        renderMap();
+      }
+      function go(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document
+          .getElementById(id === "home" ? "home" : id)
+          .classList.add("active");
+        state.current = id;
+        save();
+        window.scrollTo(0, 0);
+      }
+      function renderMap() {
+        const m = document.getElementById("map");
+        if (!m) return;
+        m.innerHTML =
+          modules
+            .map(
+              (x, i) =>
+                `<button class="${state.done[x.id] ? "done" : ""}" onclick="go('${x.id}')"><b>${x.icon} Mission ${i + 1}</b><span>${x.title}</span></button>`,
+            )
+            .join("") +
+          `<button onclick="go('assess')"><b>🎓 Final Assessment</b><span>10-question readiness check</span></button>`;
+      }
+      function svgFor(i) {
+        return `<div class="svgbox"><svg viewBox="0 0 780 260" role="img" aria-label="Tank cleaning training illustration"><defs><linearGradient id="g${i}" x1="0" x2="1"><stop offset="0" stop-color="#eff6ff"/><stop offset="1" stop-color="#f8fafc"/></linearGradient></defs><rect width="780" height="260" rx="22" fill="url(#g${i})"/><path d="M92 190 C130 108 230 78 390 86 C552 94 655 120 705 190 Z" fill="#dbeafe" stroke="#1d4ed8" stroke-width="4"/><path d="M118 186 C156 140 248 122 390 128 C528 134 620 148 680 188" fill="none" stroke="#60a5fa" stroke-width="10" opacity=".8"/><rect x="320" y="78" width="140" height="42" rx="12" fill="#0f172a"/><text x="390" y="105" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">CARGO TANK</text><circle cx="186" cy="164" r="22" fill="#fff" stroke="#16a34a" stroke-width="5"/><text x="186" y="171" text-anchor="middle" font-size="22">✓</text><circle cx="585" cy="164" r="22" fill="#fff" stroke="#dc2626" stroke-width="5"/><text x="585" y="171" text-anchor="middle" font-size="22">!</text><path d="M394 120 L394 180" stroke="#ca8a04" stroke-width="5" stroke-dasharray="8 8"/><text x="390" y="220" text-anchor="middle" font-size="18" fill="#334155" font-weight="800">Plan · Wash · Strip · Test · Inspect · Record</text></svg></div>`;
+      }
+      function renderModules() {
+        const wrap = document.getElementById("modules");
+        wrap.innerHTML = modules
+          .map(
+            (m, i) =>
+              `<section id="${m.id}" class="screen"><div class="panel module-head"><div class="icon">${m.icon}</div><div><div class="module-meta">${m.meta}</div><h2>${m.title}</h2><p class="lead">${m.desc}</p><div class="narration"><button class="btn btn-light" onclick="playNarration(modules[${i}].narr)">▶ Play narration</button><button class="btn btn-light" onclick="pauseNarration()">⏸ Pause/Resume</button><button class="btn btn-light" onclick="stopNarration()">■ Stop</button></div></div></div><div class="panel" style="margin-top:18px">${svgFor(i)}<div class="grid-2" style="margin-top:16px">${m.facts.map((f) => `<div class="fact"><b>${f[0]}</b>${f[1]}</div>`).join("")}</div><div class="safety-grid" style="margin-top:16px"><div class="safety red"><b>Stop</b> Unsafe gas readings, no permit, uncontrolled discharge, ignition risk or failed communication.</div><div class="safety yellow"><b>Verify</b> Cleaning plan, line-up, SDS, PPE, slop capacity, ventilation and weather limits.</div><div class="safety green"><b>Proceed</b> Competent supervision, tested atmosphere, correct method, documented records and emergency readiness.</div></div></div><div class="activity" id="act-${m.id}"><div class="label">Interactive activity</div><h3>${activityTitle(m.activity)}</h3><div id="actbody-${m.id}"></div><div class="cta-row"><button class="btn btn-light" onclick="renderActivity('${m.id}')">↻ Refresh activity</button><button class="btn btn-primary" onclick="checkActivity('${m.id}')">Check activity</button></div><div id="actfb-${m.id}" class="feedback"></div></div><div class="quiz"><div class="label">Module quiz</div><h3>${m.quiz[0]}</h3><div class="options" id="quiz-${m.id}">${m.quiz[1].map((o, idx) => `<button class="opt" onclick="answerQuiz('${m.id}',${idx})">${String.fromCharCode(65 + idx)}. ${o}</button>`).join("")}</div><div class="cta-row"><button class="btn btn-light" onclick="refreshQuiz('${m.id}')">↻ Refresh quiz</button></div><div id="qfb-${m.id}" class="feedback"></div></div><div class="footer-nav"><button class="btn btn-light" onclick="go('${i === 0 ? "home" : modules[i - 1].id}')">← Previous</button><button class="btn btn-primary" onclick="go('${i === modules.length - 1 ? "assess" : modules[i + 1].id}')">Next →</button></div></section>`,
+          )
+          .join("");
+        modules.forEach((m) => renderActivity(m.id));
+      }
+      function activityTitle(type) {
+        return {
+          sort: "Arrange the cleaning logic",
+          checklist: "Select safe preparation controls",
+          match: "Match equipment to control point",
+          slider: "Set the atmosphere decision",
+          categorise: "Classify residue actions",
+          sequence: "Build the close-out sequence",
+        }[type];
+      }
+      function renderActivity(id) {
+        const m = modules.find((x) => x.id === id),
+          el = document.getElementById("actbody-" + id),
+          fb = document.getElementById("actfb-" + id);
+        fb.textContent = "";
+        fb.className = "feedback";
+        if (m.activity === "sort") {
+          el.innerHTML =
+            '<p>Click the steps in the safest order.</p><div class="seq" data-seq=""><button onclick="pickSeq(this,1)">Identify cleaning reason and required standard</button><button onclick="pickSeq(this,2)">Review previous/next cargo, SDS and coating limits</button><button onclick="pickSeq(this,3)">Prepare permits, isolation, equipment and emergency controls</button><button onclick="pickSeq(this,4)">Clean, strip, ventilate, test and inspect</button></div>';
+        }
+        if (m.activity === "checklist") {
+          el.innerHTML =
+            '<div class="checklist"><label><input type="checkbox" data-good="1">Cargo history and SDS reviewed</label><label><input type="checkbox" data-good="1">Slop capacity and route confirmed</label><label><input type="checkbox" data-good="0">Start cleaning first and write the plan later</label><label><input type="checkbox" data-good="1">Permit, communication and emergency plan briefed</label><label><input type="checkbox" data-good="0">Ignore coating limits if the tank looks dirty</label></div>';
+        }
+        if (m.activity === "match") {
+          el.innerHTML =
+            '<div class="drag-list"><div class="drag-item" draggable="true" data-item="fixed" ondragstart="drag(event)">Fixed washing machine</div><div class="drag-item" draggable="true" data-item="portable" ondragstart="drag(event)">Portable washing machine</div><div class="drag-item" draggable="true" data-item="strip" ondragstart="drag(event)">Stripping system</div></div><div class="dropgrid"><div class="dropzone" data-accept="fixed" ondrop="drop(event)" ondragover="over(event)" ondragleave="leave(event)"><b>Planned tank pattern</b></div><div class="dropzone" data-accept="portable" ondrop="drop(event)" ondragover="over(event)" ondragleave="leave(event)"><b>Shadow/target cleaning</b></div><div class="dropzone" data-accept="strip" ondrop="drop(event)" ondragover="over(event)" ondragleave="leave(event)"><b>Remove wash water</b></div></div>';
+        }
+        if (m.activity === "slider") {
+          el.innerHTML =
+            '<div class="slider-row"><input class="range" id="lelRange" type="range" min="0" max="100" value="12" oninput="lelVal.textContent=this.value+\'% LEL\'"><b id="lelVal">12% LEL</b></div><p class="small">Set the hydrocarbon reading. Below 1% LEL is the normal entry target used in many enclosed-space procedures; any elevated reading requires careful control.</p>';
+        }
+        if (m.activity === "categorise") {
+          el.innerHTML =
+            '<div class="drag-list"><div class="drag-item" draggable="true" data-item="orb" ondragstart="drag(event)">Oil Record Book entry</div><div class="drag-item" draggable="true" data-item="slop" ondragstart="drag(event)">Transfer wash water to slop tank</div><div class="drag-item" draggable="true" data-item="bad" ondragstart="drag(event)">Pump residues secretly overboard</div></div><div class="dropgrid"><div class="dropzone" data-accept="orb" ondrop="drop(event)" ondragover="over(event)" ondragleave="leave(event)"><b>Documentation</b></div><div class="dropzone" data-accept="slop" ondrop="drop(event)" ondragover="over(event)" ondragleave="leave(event)"><b>Pollution control</b></div><div class="dropzone" data-accept="never" ondrop="drop(event)" ondragover="over(event)" ondragleave="leave(event)"><b>Never allowed</b></div></div>';
+        }
+        if (m.activity === "sequence") {
+          el.innerHTML =
+            '<p>Click the close-out steps in order.</p><div class="seq" data-seq=""><button onclick="pickSeq(this,1)">Stop washing and strip residues</button><button onclick="pickSeq(this,2)">Ventilate and gas test representative points</button><button onclick="pickSeq(this,3)">Inspect tank safely under permit controls</button><button onclick="pickSeq(this,4)">Close permits, restore systems and complete records</button></div>';
+        }
+      }
+      function pickSeq(btn, n) {
+        const p = btn.parentElement;
+        if (btn.classList.contains("selected")) return;
+        btn.classList.add("selected");
+        p.dataset.seq = (p.dataset.seq || "") + n;
+      }
+      function checkActivity(id) {
+        const m = modules.find((x) => x.id === id),
+          fb = document.getElementById("actfb-" + id);
+        let ok = false;
+        if (["sort", "sequence"].includes(m.activity)) {
+          const seq = document.querySelector("#actbody-" + id + " .seq").dataset
+            .seq;
+          ok = seq === "1234";
+        }
+        if (m.activity === "checklist") {
+          const boxes = [
+            ...document.querySelectorAll("#actbody-" + id + " input"),
+          ];
+          ok = boxes.every(
+            (b) => (b.checked ? 1 : 0) == Number(b.dataset.good),
+          );
+        }
+        if (["match", "categorise"].includes(m.activity)) {
+          const zones = [
+            ...document.querySelectorAll("#actbody-" + id + " .dropzone"),
+          ];
+          ok = zones.every((z) => {
+            const c = z.querySelector(".chip");
+            if (z.dataset.accept === "never")
+              return c && c.dataset.item === "bad";
+            return c && c.dataset.item === z.dataset.accept;
+          });
+        }
+        if (m.activity === "slider") {
+          ok = Number(document.getElementById("lelRange").value) < 1;
+        }
+        fb.textContent = ok
+          ? "Correct. You have applied the safe tank-cleaning control logic."
+          : "Not yet. Refresh or try again. Think: plan, control atmosphere, prevent pollution, record the operation.";
+        fb.className = "feedback " + (ok ? "good" : "bad");
+        if (ok) {
+          state.xp += 30;
+          save();
+        }
+      }
+      function drag(ev) {
+        ev.dataTransfer.setData("text/plain", ev.target.dataset.item);
+      }
+      function over(ev) {
+        ev.preventDefault();
+        ev.currentTarget.classList.add("over");
+      }
+      function leave(ev) {
+        ev.currentTarget.classList.remove("over");
+      }
+      function drop(ev) {
+        ev.preventDefault();
+        const z = ev.currentTarget;
+        z.classList.remove("over");
+        const item = ev.dataTransfer.getData("text/plain");
+        const source = document.querySelector(`[data-item="${item}"]`);
+
+        if (!source || source.classList.contains("used")) return;
+
+        if (!z.querySelector(".chip")) {
+          z.insertAdjacentHTML(
+            "beforeend",
+            `<span class="chip" data-item="${item}">${source.textContent}</span>`,
+          );
+
+          source.classList.add("used");
+          source.setAttribute("draggable", "false");
+        }
+      }
+      function answerQuiz(id, idx) {
+        const m = modules.find((x) => x.id === id),
+          correct = m.quiz[2],
+          fb = document.getElementById("qfb-" + id),
+          opts = [...document.querySelectorAll("#quiz-" + id + " .opt")];
+        opts.forEach((o, i) => {
+          o.disabled = true;
+          if (i === correct) o.classList.add("correct");
+          if (i === idx && i !== correct) o.classList.add("wrong");
+        });
+        if (idx === correct) {
+          fb.textContent = "Correct. " + m.quiz[3];
+          fb.className = "feedback good";
+          if (!state.done[id]) {
+            state.done[id] = true;
+            state.xp += 100;
+            save();
+          }
+        } else {
+          fb.textContent = "Incorrect. " + m.quiz[3];
+          fb.className = "feedback bad";
+        }
+      }
+      function refreshQuiz(id) {
+        const m = modules.find((x) => x.id === id);
+        document.getElementById("quiz-" + id).innerHTML = m.quiz[1]
+          .map(
+            (o, idx) =>
+              `<button class="opt" onclick="answerQuiz('${id}',${idx})">${String.fromCharCode(65 + idx)}. ${o}</button>`,
+          )
+          .join("");
+        document.getElementById("qfb-" + id).textContent = "";
+        document.getElementById("qfb-" + id).className = "feedback";
+      }
+      const assess = [
+        [
+          "Tank cleaning should start only after:",
+          [
+            "The Chief Officer is asleep",
+            "Planning, risk assessment, line-up, slop capacity and emergency controls are confirmed",
+            "The tank is visually dirty",
+            "The next cargo arrives",
+          ],
+          1,
+        ],
+        [
+          "H2S safety depends mainly on:",
+          [
+            "Smell",
+            "Crew experience only",
+            "Open doors",
+            "Portable/fixed gas detection and procedure",
+          ],
+          3,
+        ],
+        [
+          "Tank cleaning residues should be:",
+          [
+            "Managed through slop and MARPOL procedures",
+            "Pumped secretly overboard",
+            "Hidden in a void",
+            "Ignored if diluted",
+          ],
+          0,
+        ],
+        [
+          "A gas-free certificate means:",
+          [
+            "Conditions were properly tested and certified at that time",
+            "The tank is safe forever",
+            "No permit is needed",
+            "No ventilation is needed",
+          ],
+          0,
+        ],
+        [
+          "If LEL rises during cleaning:",
+          [
+            "Continue because washing is already started",
+            "Stop and regain atmosphere control",
+            "Remove PPE",
+            "Open all doors without assessment",
+          ],
+          1,
+        ],
+        [
+          "Before chemical cleaning:",
+          [
+            "Compatibility and PPE must be checked",
+            "Any chemical may be used",
+            "Records are optional",
+            "Gas testing can stop",
+          ],
+          0,
+        ],
+        [
+          "Close-out includes:",
+          [
+            "Records, permit closure, inspection and system restoration",
+            "Only stopping the pump",
+            "Only washing the deck",
+            "Only informing the agent",
+          ],
+          0,
+        ],
+        [
+          "Portable washing machines require attention to:",
+          [
+            "Bonding, hose control, openings and safe rigging",
+            "Galley menu",
+            "Paint colour",
+            "Email access",
+          ],
+          0,
+        ],
+        [
+          "A MARPOL evidence trail includes:",
+          [
+            "ORB, logs, transfer records and receipts where applicable",
+            "Rumours",
+            "Unofficial notes only",
+            "Nothing if no spill occurred",
+          ],
+          0,
+        ],
+        [
+          "Red condition means:",
+          [
+            "Stop work until the unsafe condition is controlled",
+            "Proceed faster",
+            "Skip permit",
+            "Ask another crew member to do it",
+          ],
+          0,
+        ],
+      ];
+      function renderAssessment() {
+        document.getElementById("result").style.display = "none";
+        const w = document.getElementById("assessmentWrap");
+
+        w.innerHTML =
+          assess
+            .map((q, i) => {
+              const answers = q[1].map((o, j) => ({
+                text: o,
+                correct: j === q[2],
+              }));
+
+              answers.sort(() => Math.random() - 0.5);
+
+              return `<div class="assessment-card">
+                <h3>Q${i + 1}. ${q[0]}</h3>
+                <div class="options">
+                  ${answers
+                    .map(
+                      (a, j) =>
+                        `<button class="opt" onclick="this.parentElement.querySelectorAll('.opt').forEach(x=>x.classList.remove('selected'));this.classList.add('selected')" data-correct="${a.correct}">${String.fromCharCode(65 + j)}. ${a.text}</button>`,
+                    )
+                    .join("")}
+                </div>
+              </div>`;
+            })
+            .join("") +
+          '<button class="btn btn-green" onclick="submitAssessment()">Submit assessment</button>';
+      }
+      function submitAssessment() {
+        const cards = [
+          ...document.querySelectorAll("#assessmentWrap .assessment-card"),
+        ];
+        let score = 0;
+        cards.forEach((c) => {
+          const sel = c.querySelector(".opt.selected");
+          c.querySelectorAll(".opt").forEach((o) => {
+            if (o.dataset.correct === "true") o.classList.add("correct");
+          });
+          if (sel && sel.dataset.correct === "true") score++;
+          else if (sel) sel.classList.add("wrong");
+        });
+        const pct = Math.round((score / assess.length) * 100);
+        document.getElementById("result").style.display = "block";
+        document.getElementById("scorePct").textContent = pct + "%";
+        document.getElementById("resultTitle").textContent =
+          pct >= 80
+            ? "Passed — Operationally Ready for Supervised Application"
+            : "More Practice Required";
+        document.getElementById("resultMsg").textContent =
+          pct >= 80
+            ? "You have demonstrated the core knowledge for tank cleaning planning, safety controls and MARPOL compliance."
+            : "Review the missions again, especially atmosphere control, residues and close-out records.";
+        document
+          .getElementById("certificate")
+          .classList.toggle("show", pct >= 80);
+        if (pct >= 80) {
+          state.xp += 250;
+          save();
+        }
+        document
+          .getElementById("result")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+      let utter = null;
+      function playNarration(text) {
+        stopNarration();
+        if (!("speechSynthesis" in window)) {
+          alert("Narration is not supported in this browser.");
+          return;
+        }
+        utter = new SpeechSynthesisUtterance(text);
+        utter.rate = 0.92;
+        utter.pitch = 1;
+        utter.onend = () => {
+          state.xp += 10;
+          save();
+        };
+        speechSynthesis.speak(utter);
+      }
+      function pauseNarration() {
+        if (!("speechSynthesis" in window)) return;
+        if (speechSynthesis.paused) speechSynthesis.resume();
+        else speechSynthesis.pause();
+      }
+      function stopNarration() {
+        if ("speechSynthesis" in window) speechSynthesis.cancel();
+      }
+      renderModules();
+      renderMap();
+      renderAssessment();
+      updateStatus();
+    </script>
+  </body>
+</html>

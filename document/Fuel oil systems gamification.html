@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Authority Gradient and Assertiveness — Speaking Up Safely</title>
+    <title>Fuel Oil Systems — Purification, Transfer and Bunkering</title>
     <style>
       * {
         box-sizing: border-box;
@@ -11,14 +11,14 @@
       body {
         margin: 0;
         font-family: Arial, Helvetica, sans-serif;
-        background: #fbf8ff;
-        color: #100b2e;
+        background: #f7fbff;
+        color: #071633;
       }
       header {
         position: sticky;
         top: 0;
         background: #fff;
-        border-bottom: 1px solid #e7def5;
+        border-bottom: 1px solid #dfe7f3;
         padding: 14px 24px;
         display: flex;
         justify-content: space-between;
@@ -27,17 +27,17 @@
       }
       .brand {
         font-weight: 900;
-        color: #6d28d9;
+        color: #2563eb;
         letter-spacing: 0.07em;
         text-transform: uppercase;
       }
       .pill {
-        border: 1px solid #e7def5;
+        border: 1px solid #dfe7f3;
         border-radius: 999px;
         padding: 8px 13px;
         background: #fff;
         font-weight: 800;
-        color: #665b7c;
+        color: #5d6b86;
       }
       main {
         max-width: 1050px;
@@ -53,9 +53,9 @@
       .card,
       .panel {
         background: #fff;
-        border: 1px solid #e7def5;
+        border: 1px solid #dfe7f3;
         border-radius: 24px;
-        box-shadow: 0 14px 35px rgba(53, 31, 86, 0.08);
+        box-shadow: 0 14px 35px rgba(15, 23, 42, 0.07);
         padding: 28px;
         margin: 18px 0;
       }
@@ -66,7 +66,7 @@
       }
       .kicker,
       .label {
-        color: #6d28d9;
+        color: #2563eb;
         font-weight: 900;
         letter-spacing: 0.12em;
         text-transform: uppercase;
@@ -79,7 +79,7 @@
         margin: 16px 0;
       }
       .lead {
-        color: #665b7c;
+        color: #5d6b86;
         font-size: 18px;
         line-height: 1.6;
       }
@@ -89,13 +89,13 @@
         gap: 12px;
       }
       .tile {
-        border: 1px solid #e7def5;
+        border: 1px solid #dfe7f3;
         border-radius: 18px;
         padding: 16px;
         cursor: pointer;
       }
       .tile:hover {
-        border-color: #6d28d9;
+        border-color: #2563eb;
       }
       .tile.done {
         background: #effdf4;
@@ -106,7 +106,7 @@
       }
       .btn {
         border: 0;
-        background: #6d28d9;
+        background: #2563eb;
         color: white;
         border-radius: 16px;
         padding: 13px 18px;
@@ -115,8 +115,11 @@
       }
       .btn.secondary {
         background: white;
-        color: #100b2e;
-        border: 1px solid #e7def5;
+        color: #071633;
+        border: 1px solid #dfe7f3;
+      }
+      .btn:hover {
+        filter: brightness(0.97);
       }
       .head {
         display: grid;
@@ -126,7 +129,7 @@
       }
       .big {
         font-size: 48px;
-        background: #f3e8ff;
+        background: #eef6ff;
         border-radius: 22px;
         padding: 18px;
       }
@@ -135,7 +138,7 @@
         font-weight: 900;
       }
       .sub {
-        color: #665b7c;
+        color: #5d6b86;
         line-height: 1.5;
       }
       .readgrid,
@@ -145,16 +148,16 @@
         gap: 12px;
       }
       .read {
-        background: #fcfaff;
-        border: 1px solid #e7def5;
+        background: #f8fbff;
+        border: 1px solid #dfe7f3;
         border-radius: 16px;
         padding: 15px;
-        color: #665b7c;
+        color: #5d6b86;
         line-height: 1.55;
       }
       .read b {
         display: block;
-        color: #100b2e;
+        color: #071633;
         margin-bottom: 7px;
       }
       .q {
@@ -167,7 +170,7 @@
         gap: 10px;
       }
       .opt {
-        border: 1px solid #e7def5;
+        border: 1px solid #dfe7f3;
         border-radius: 16px;
         background: #fff;
         padding: 15px;
@@ -223,7 +226,7 @@
       .safety div {
         border-radius: 16px;
         padding: 14px;
-        border: 1px solid #e7def5;
+        border: 1px solid #dfe7f3;
         font-weight: 700;
       }
       .visual {
@@ -242,21 +245,21 @@
       .score {
         font-size: 54px;
         font-weight: 900;
-        color: #6d28d9;
+        color: #2563eb;
       }
       .barwrap {
         position: fixed;
         top: 0;
         left: 0;
         height: 5px;
-        background: #e7def5;
+        background: #dfe7f3;
         width: 100%;
         z-index: 4;
       }
       .bar {
         height: 100%;
         width: 0;
-        background: linear-gradient(90deg, #6d28d9, #16a34a);
+        background: linear-gradient(90deg, #2563eb, #16a34a);
       }
       @media (max-width: 800px) {
         .hero,
@@ -283,7 +286,7 @@
     <div class="barwrap"><div class="bar" id="bar"></div></div>
     <header>
       <div class="brand">
-        🗣️ Authority Gradient and Assertiveness — Speaking Up Safely
+        ⛽ Fuel Oil Systems — Purification, Transfer and Bunkering
       </div>
       <div>
         <span class="pill" id="pct">0% Complete</span>
@@ -295,28 +298,28 @@
         <div class="hero">
           <div class="panel">
             <div class="kicker">
-              P3 Management · BCAV Behavioural Interactive Course
+              P2 Operations · Engine Department Interactive Course
             </div>
             <div class="h1">
-              Authority Gradient and Assertiveness — Speaking Up Safely
+              Fuel Oil Systems — Purification, Transfer and Bunkering
             </div>
             <p class="lead">
-              Practical offline course for all ranks on authority gradient,
-              respectful challenge, stop-work authority, leadership response and
-              SIRE 2.0 behavioural competence.
+              Practical offline course for Chief Engineers, 2nd Engineers and
+              3rd Engineers covering fuel handling, treatment, bunkering safety
+              and MARPOL Annex VI compliance.
             </p>
             <div class="safety">
               <div class="red">
-                <b>RED — STOP</b>Immediate danger, ignored concern or unsafe
-                order.
+                <b>RED — STOP</b>Leak, overflow, wrong valve line-up, unknown
+                fuel risk or compliance doubt.
               </div>
               <div class="yellow">
-                <b>YELLOW — VERIFY</b>Raise concern, check facts and confirm
-                understanding.
+                <b>YELLOW — VERIFY</b>Check compatibility, documentation,
+                samples, tank capacity and transfer path.
               </div>
               <div class="green">
-                <b>GREEN — PROCEED</b>Concern heard, risk controlled and action
-                agreed.
+                <b>GREEN — PROCEED</b>Controlled, recorded, communicated and
+                monitored operation.
               </div>
             </div>
             <p>
@@ -327,67 +330,67 @@
             <div class="kicker">Course Modules</div>
             <div class="grid">
               <div class="tile" id="tile-m1" onclick="go('m1')">
-                <div class="ic">🧭</div>
-                <b>Authority Gradient: What It Means</b>
+                <div class="ic">⛽</div>
+                <b>Fuel Oil Types and Properties</b>
                 <p>
-                  Understand steep and flat authority gradients, why they
-                  develop onboard, and how they affe...
+                  Recognise HFO, VLSFO, MGO and blended fuels, including
+                  viscosity, density, compatibility, flash...
                 </p>
               </div>
               <div class="tile" id="tile-m2" onclick="go('m2')">
-                <div class="ic">💬</div>
-                <b>Assertive Communication Tools</b>
+                <div class="ic">🔁</div>
+                <b>Transfer and Settling Systems</b>
                 <p>
-                  Use simple, respectful phrases, closed-loop communication,
-                  challenge-and-response, and gra...
+                  Operate bunker, transfer, settling, service, overflow and
+                  drain arrangements safely while preve...
                 </p>
               </div>
               <div class="tile" id="tile-m3" onclick="go('m3')">
-                <div class="ic">⚠️</div>
-                <b>Graded Challenge and Stop-Work</b>
+                <div class="ic">🌀</div>
+                <b>Purifier Operation and Fuel Treatment</b>
                 <p>
-                  Escalate from concern to direct challenge to stop-work when
-                  safety risk is not being contr...
+                  Understand purifier principles, correct gravity disc/setting,
+                  temperature control, desludging, ...
                 </p>
               </div>
               <div class="tile" id="tile-m4" onclick="go('m4')">
-                <div class="ic">👥</div>
-                <b>Receiving Challenge as a Senior</b>
+                <div class="ic">🚢</div>
+                <b>Bunkering Preparation and Watchkeeping</b>
                 <p>
-                  How officers should respond when juniors raise concerns:
-                  listen, verify, thank, decide and...
+                  Plan bunkering with safe valve line-up, tank capacity,
+                  communication, sampling, SOPEP readiness...
                 </p>
               </div>
               <div class="tile" id="tile-m5" onclick="go('m5')">
-                <div class="ic">🌉</div>
-                <b>Bridge and Engine Team Scenarios</b>
+                <div class="ic">📄</div>
+                <b>BDN, Sampling and MARPOL Annex VI</b>
                 <p>
-                  Apply assertiveness in bridge, engine room, cargo, enclosed
-                  space and mooring situations....
+                  Manage Bunker Delivery Note checks, representative sampling,
+                  seal numbers, sulphur records, MAR...
                 </p>
               </div>
               <div class="tile" id="tile-m6" onclick="go('m6')">
-                <div class="ic">📋</div>
-                <b>SIRE 2.0, BCAV and Safety Culture</b>
+                <div class="ic">🧯</div>
+                <b>Fuel Emergencies, Overflow and Changeover</b>
                 <p>
-                  Connect assertive communication with behavioural competence,
-                  inspection conversations, jus...
+                  Respond to overflow, leakage, purifier failure, filter
+                  choking, fuel changeover issues, low sul...
                 </p>
               </div>
             </div>
           </div>
         </div>
       </section>
+
       <section class="screen" id="m1">
         <div class="head">
-          <div class="big">🧭</div>
+          <div class="big">⛽</div>
           <div>
-            <div class="kicker">Module 1 of 6 · BCAV Behavioural</div>
-            <div class="mt">Authority Gradient: What It Means</div>
+            <div class="kicker">Module 1 of 6 · Engine Department</div>
+            <div class="mt">Fuel Oil Types and Properties</div>
             <p class="sub">
-              Understand steep and flat authority gradients, why they develop
-              onboard, and how they affect decision-making, reporting and safety
-              culture.
+              Recognise HFO, VLSFO, MGO and blended fuels, including viscosity,
+              density, compatibility, flash point and sulphur requirements.
             </p>
             <button class="btn secondary" onclick="speak('m1')">
               ▶ Narration
@@ -406,104 +409,77 @@
               width="760"
               height="245"
               rx="24"
-              fill="#fcfaff"
-              stroke="#e7def5"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
             />
             <rect
-              x="45"
+              x="50"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
-              fill="#fff1f2"
-              stroke="#dc2626"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#dbeafe"
+              stroke="#2563eb"
             />
             <text
               x="125"
-              y="100"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
-              fill="#991b1b"
+              fill="#1e40af"
             >
-              CONCERN
-            </text>
-            <text
-              x="125"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#991b1b"
-            >
-              I am concerned
+              BUNKER
             </text>
             <path
-              d="M215 105 H300"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M205 103 H300"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
               x="310"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
+              width="150"
+              height="75"
+              rx="14"
               fill="#fff8db"
               stroke="#ca8a04"
             />
             <text
-              x="390"
-              y="100"
+              x="385"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#854d0e"
             >
-              VERIFY
-            </text>
-            <text
-              x="390"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#854d0e"
-            >
-              Can we check?
+              SETTLE
             </text>
             <path
-              d="M480 105 H565"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M465 103 H560"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
-              x="575"
+              x="570"
               y="65"
               width="140"
-              height="80"
-              rx="16"
+              height="75"
+              rx="14"
               fill="#effdf4"
               stroke="#16a34a"
             />
             <text
-              x="645"
-              y="100"
+              x="640"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#166534"
             >
-              ACT
-            </text>
-            <text
-              x="645"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#166534"
-            >
-              Safe decision
+              PURIFY
             </text>
             <text
               x="380"
@@ -511,9 +487,9 @@
               text-anchor="middle"
               font-size="18"
               font-weight="900"
-              fill="#100b2e"
+              fill="#071633"
             >
-              Authority Gradient: What It Means
+              Fuel Oil Types and Properties
             </text>
           </svg>
         </div>
@@ -521,38 +497,40 @@
           <div class="label">Core Learning</div>
           <div class="readgrid">
             <div class="read">
-              <b>Behavioural focus</b>Understand steep and flat authority
-              gradients, why they develop onboard, and how they affect
-              decision-making, reporting and safety culture.
+              <b>Operational focus</b>Recognise HFO, VLSFO, MGO and blended
+              fuels, including viscosity, density, compatibility, flash point
+              and sulphur requirements.
             </div>
             <div class="read">
-              <b>Practical phrase</b>Use calm words: &#x27;I am
-              concerned...&#x27;, &#x27;Can we verify...&#x27;, &#x27;I believe
-              this is unsafe...&#x27;, &#x27;Stop, please, until checked.&#x27;
+              <b>Watchkeeping discipline</b>Check levels, temperatures,
+              pressures, flow path, abnormal sound, leakage, alarms and records.
+              Report doubt early.
             </div>
             <div class="read">
-              <b>Safety culture</b>Speaking up must be welcomed. The aim is not
-              to challenge rank; the aim is to prevent harm.
+              <b>Compliance focus</b>Follow SMS, engine standing orders, MARPOL
+              Annex VI requirements, bunker procedure, sampling procedure and
+              oil record expectations.
             </div>
           </div>
         </div>
         <div class="card activity-card">
           <div class="label">Interactive Activity</div>
           <div class="q">
-            A junior officer notices the senior officer dismissing a checklist
-            step because “we always do it this way.” What is the safest first
-            response?
+            A bunker delivery note shows VLSFO from a new supplier. The vessel
+            already has VLSFO onboard from a different stem. What should be done
+            before mixing?
           </div>
           <div class="options" id="m1-act">
             <button class="opt" onclick="ans('m1', 'act', 0, 1, this)">
-              Stay silent because the senior officer is responsible.</button
+              Transfer both fuels into the same service tank immediately.</button
             ><button class="opt" onclick="ans('m1', 'act', 1, 1, this)">
-              Ask respectfully whether the checklist step has been intentionally
-              changed and explain the safety concern.</button
+              Check compatibility guidance, retain samples, confirm segregation
+              plan and follow Chief Engineer instructions before mixing.</button
             ><button class="opt" onclick="ans('m1', 'act', 2, 1, this)">
-              Report directly to the company without speaking onboard.</button
+              Assume all VLSFO fuels are compatible because they meet sulphur
+              limits.</button
             ><button class="opt" onclick="ans('m1', 'act', 3, 1, this)">
-              Refuse all further work immediately.
+              Heat the new fuel until it becomes compatible.
             </button>
           </div>
           <div class="fb" id="m1-act-fb"></div>
@@ -562,17 +540,20 @@
         </div>
         <div class="card quiz-card">
           <div class="label">Module Quiz</div>
-          <div class="q">What is a steep authority gradient?</div>
+          <div class="q">
+            Why is compatibility important when handling blended low-sulphur
+            fuel oils?
+          </div>
           <div class="options" id="m1-quiz">
             <button class="opt" onclick="ans('m1', 'quiz', 0, 0, this)">
-              A situation where rank or personality makes juniors hesitant to
-              question or share safety concerns.</button
+              Incompatible fuels can create sludge, filter blockage, purifier
+              problems and fuel starvation.</button
             ><button class="opt" onclick="ans('m1', 'quiz', 1, 0, this)">
-              A ship stability calculation.</button
+              It only affects the colour of the fuel.</button
             ><button class="opt" onclick="ans('m1', 'quiz', 2, 0, this)">
-              A formal promotion ladder only.</button
+              It is only relevant during dry dock.</button
             ><button class="opt" onclick="ans('m1', 'quiz', 3, 0, this)">
-              A type of emergency muster list.
+              It is checked only by the bunker barge.
             </button>
           </div>
           <div class="fb" id="m1-quiz-fb"></div>
@@ -587,14 +568,13 @@
       </section>
       <section class="screen" id="m2">
         <div class="head">
-          <div class="big">💬</div>
+          <div class="big">🔁</div>
           <div>
-            <div class="kicker">Module 2 of 6 · BCAV Behavioural</div>
-            <div class="mt">Assertive Communication Tools</div>
+            <div class="kicker">Module 2 of 6 · Engine Department</div>
+            <div class="mt">Transfer and Settling Systems</div>
             <p class="sub">
-              Use simple, respectful phrases, closed-loop communication,
-              challenge-and-response, and graded assertiveness without sounding
-              confrontational.
+              Operate bunker, transfer, settling, service, overflow and drain
+              arrangements safely while preventing contamination and overflows.
             </p>
             <button class="btn secondary" onclick="speak('m2')">
               ▶ Narration
@@ -613,104 +593,77 @@
               width="760"
               height="245"
               rx="24"
-              fill="#fcfaff"
-              stroke="#e7def5"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
             />
             <rect
-              x="45"
+              x="50"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
-              fill="#fff1f2"
-              stroke="#dc2626"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#dbeafe"
+              stroke="#2563eb"
             />
             <text
               x="125"
-              y="100"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
-              fill="#991b1b"
+              fill="#1e40af"
             >
-              CONCERN
-            </text>
-            <text
-              x="125"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#991b1b"
-            >
-              I am concerned
+              BUNKER
             </text>
             <path
-              d="M215 105 H300"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M205 103 H300"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
               x="310"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
+              width="150"
+              height="75"
+              rx="14"
               fill="#fff8db"
               stroke="#ca8a04"
             />
             <text
-              x="390"
-              y="100"
+              x="385"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#854d0e"
             >
-              VERIFY
-            </text>
-            <text
-              x="390"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#854d0e"
-            >
-              Can we check?
+              SETTLE
             </text>
             <path
-              d="M480 105 H565"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M465 103 H560"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
-              x="575"
+              x="570"
               y="65"
               width="140"
-              height="80"
-              rx="16"
+              height="75"
+              rx="14"
               fill="#effdf4"
               stroke="#16a34a"
             />
             <text
-              x="645"
-              y="100"
+              x="640"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#166534"
             >
-              ACT
-            </text>
-            <text
-              x="645"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#166534"
-            >
-              Safe decision
+              PURIFY
             </text>
             <text
               x="380"
@@ -718,9 +671,9 @@
               text-anchor="middle"
               font-size="18"
               font-weight="900"
-              fill="#100b2e"
+              fill="#071633"
             >
-              Assertive Communication Tools
+              Transfer and Settling Systems
             </text>
           </svg>
         </div>
@@ -728,37 +681,38 @@
           <div class="label">Core Learning</div>
           <div class="readgrid">
             <div class="read">
-              <b>Behavioural focus</b>Use simple, respectful phrases,
-              closed-loop communication, challenge-and-response, and graded
-              assertiveness without sounding confrontational.
+              <b>Operational focus</b>Operate bunker, transfer, settling,
+              service, overflow and drain arrangements safely while preventing
+              contamination and overflows.
             </div>
             <div class="read">
-              <b>Practical phrase</b>Use calm words: &#x27;I am
-              concerned...&#x27;, &#x27;Can we verify...&#x27;, &#x27;I believe
-              this is unsafe...&#x27;, &#x27;Stop, please, until checked.&#x27;
+              <b>Watchkeeping discipline</b>Check levels, temperatures,
+              pressures, flow path, abnormal sound, leakage, alarms and records.
+              Report doubt early.
             </div>
             <div class="read">
-              <b>Safety culture</b>Speaking up must be welcomed. The aim is not
-              to challenge rank; the aim is to prevent harm.
+              <b>Compliance focus</b>Follow SMS, engine standing orders, MARPOL
+              Annex VI requirements, bunker procedure, sampling procedure and
+              oil record expectations.
             </div>
           </div>
         </div>
         <div class="card activity-card">
           <div class="label">Interactive Activity</div>
           <div class="q">
-            You are asked to open a valve but the label does not match the
-            line-up plan. Which phrase is most appropriate?
+            During transfer from a storage tank to the settling tank, the level
+            rises faster than expected. What is the safe action?
           </div>
           <div class="options" id="m2-act">
             <button class="opt" onclick="ans('m2', 'act', 0, 1, this)">
-              No, I will not do anything you say.</button
-            ><button class="opt" onclick="ans('m2', 'act', 1, 1, this)">
-              Captain, I may be wrong, but this valve label does not match the
-              plan. Can we verify before opening?</button
+              Continue transfer until the high-level alarm activates.</button
             ><button class="opt" onclick="ans('m2', 'act', 2, 1, this)">
-              It is probably fine, so I will open it.</button
+              Open more valves to increase flow.</button
             ><button class="opt" onclick="ans('m2', 'act', 3, 1, this)">
-              I will open it and check later.
+              Leave it to the next watch if no overflow has occurred.</button
+            ><button class="opt" onclick="ans('m2', 'act', 1, 1, this)">
+              Stop or reduce transfer, verify valve lineup, check receiving
+              capacity and investigate the unexpected rise.
             </button>
           </div>
           <div class="fb" id="m2-act-fb"></div>
@@ -768,20 +722,17 @@
         </div>
         <div class="card quiz-card">
           <div class="label">Module Quiz</div>
-          <div class="q">
-            Which is the best example of assertive communication?
-          </div>
+          <div class="q">What is the main purpose of a settling tank?</div>
           <div class="options" id="m2-quiz">
-            <button class="opt" onclick="ans('m2', 'quiz', 1, 0, this)">
-              Arguing loudly to prove you are right.</button
-            ><button class="opt" onclick="ans('m2', 'quiz', 2, 0, this)">
-              Keeping quiet until the job is over.</button
-            ><button class="opt" onclick="ans('m2', 'quiz', 3, 0, this)">
-              Using sarcasm to show disagreement.
-            </button>
             <button class="opt" onclick="ans('m2', 'quiz', 0, 0, this)">
-              Respectfully stating the concern, explaining the risk, and asking
-              for verification.
+              To allow water and heavy sediments to separate before purification
+              or service use.</button
+            ><button class="opt" onclick="ans('m2', 'quiz', 1, 0, this)">
+              To store only fresh water.</button
+            ><button class="opt" onclick="ans('m2', 'quiz', 2, 0, this)">
+              To cool fuel below flash point.</button
+            ><button class="opt" onclick="ans('m2', 'quiz', 3, 0, this)">
+              To replace the purifier.
             </button>
           </div>
           <div class="fb" id="m2-quiz-fb"></div>
@@ -796,13 +747,14 @@
       </section>
       <section class="screen" id="m3">
         <div class="head">
-          <div class="big">⚠️</div>
+          <div class="big">🌀</div>
           <div>
-            <div class="kicker">Module 3 of 6 · BCAV Behavioural</div>
-            <div class="mt">Graded Challenge and Stop-Work</div>
+            <div class="kicker">Module 3 of 6 · Engine Department</div>
+            <div class="mt">Purifier Operation and Fuel Treatment</div>
             <p class="sub">
-              Escalate from concern to direct challenge to stop-work when safety
-              risk is not being controlled.
+              Understand purifier principles, correct gravity disc/setting,
+              temperature control, desludging, water seal, back pressure and
+              response to purifier alarms.
             </p>
             <button class="btn secondary" onclick="speak('m3')">
               ▶ Narration
@@ -821,104 +773,77 @@
               width="760"
               height="245"
               rx="24"
-              fill="#fcfaff"
-              stroke="#e7def5"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
             />
             <rect
-              x="45"
+              x="50"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
-              fill="#fff1f2"
-              stroke="#dc2626"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#dbeafe"
+              stroke="#2563eb"
             />
             <text
               x="125"
-              y="100"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
-              fill="#991b1b"
+              fill="#1e40af"
             >
-              CONCERN
-            </text>
-            <text
-              x="125"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#991b1b"
-            >
-              I am concerned
+              BUNKER
             </text>
             <path
-              d="M215 105 H300"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M205 103 H300"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
               x="310"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
+              width="150"
+              height="75"
+              rx="14"
               fill="#fff8db"
               stroke="#ca8a04"
             />
             <text
-              x="390"
-              y="100"
+              x="385"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#854d0e"
             >
-              VERIFY
-            </text>
-            <text
-              x="390"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#854d0e"
-            >
-              Can we check?
+              SETTLE
             </text>
             <path
-              d="M480 105 H565"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M465 103 H560"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
-              x="575"
+              x="570"
               y="65"
               width="140"
-              height="80"
-              rx="16"
+              height="75"
+              rx="14"
               fill="#effdf4"
               stroke="#16a34a"
             />
             <text
-              x="645"
-              y="100"
+              x="640"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#166534"
             >
-              ACT
-            </text>
-            <text
-              x="645"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#166534"
-            >
-              Safe decision
+              PURIFY
             </text>
             <text
               x="380"
@@ -926,9 +851,9 @@
               text-anchor="middle"
               font-size="18"
               font-weight="900"
-              fill="#100b2e"
+              fill="#071633"
             >
-              Graded Challenge and Stop-Work
+              Purifier Operation and Fuel Treatment
             </text>
           </svg>
         </div>
@@ -936,37 +861,38 @@
           <div class="label">Core Learning</div>
           <div class="readgrid">
             <div class="read">
-              <b>Behavioural focus</b>Escalate from concern to direct challenge
-              to stop-work when safety risk is not being controlled.
+              <b>Operational focus</b>Understand purifier principles, correct
+              gravity disc/setting, temperature control, desludging, water seal,
+              back pressure and response to purifier alarms.
             </div>
             <div class="read">
-              <b>Practical phrase</b>Use calm words: &#x27;I am
-              concerned...&#x27;, &#x27;Can we verify...&#x27;, &#x27;I believe
-              this is unsafe...&#x27;, &#x27;Stop, please, until checked.&#x27;
+              <b>Watchkeeping discipline</b>Check levels, temperatures,
+              pressures, flow path, abnormal sound, leakage, alarms and records.
+              Report doubt early.
             </div>
             <div class="read">
-              <b>Safety culture</b>Speaking up must be welcomed. The aim is not
-              to challenge rank; the aim is to prevent harm.
+              <b>Compliance focus</b>Follow SMS, engine standing orders, MARPOL
+              Annex VI requirements, bunker procedure, sampling procedure and
+              oil record expectations.
             </div>
           </div>
         </div>
         <div class="card activity-card">
           <div class="label">Interactive Activity</div>
           <div class="q">
-            A mooring rope is under heavy load and a crew member is standing in
-            the snap-back zone. The first warning is ignored. What should you
-            do?
+            A purifier repeatedly throws high-sludge alarms after a bunker
+            changeover. What is the best response?
           </div>
           <div class="options" id="m3-act">
             <button class="opt" onclick="ans('m3', 'act', 0, 1, this)">
-              Leave because you already warned once.</button
+              Keep resetting the alarm to maintain fuel supply.</button
             ><button class="opt" onclick="ans('m3', 'act', 1, 1, this)">
-              Escalate clearly: stop the operation, call out the snap-back
-              danger, and ensure the person moves clear.</button
+              Check fuel condition, purifier temperature/settings, sludge
+              discharge, filters and inform the engineer in charge.</button
             ><button class="opt" onclick="ans('m3', 'act', 2, 1, this)">
-              Take a photo for later training.</button
+              Bypass all filtration permanently.</button
             ><button class="opt" onclick="ans('m3', 'act', 3, 1, this)">
-              Wait for the officer to notice.
+              Increase feed rate to push the sludge through.
             </button>
           </div>
           <div class="fb" id="m3-act-fb"></div>
@@ -976,18 +902,19 @@
         </div>
         <div class="card quiz-card">
           <div class="label">Module Quiz</div>
-          <div class="q">When is stop-work authority justified?</div>
+          <div class="q">
+            Why is correct fuel temperature important before purification?
+          </div>
           <div class="options" id="m3-quiz">
             <button class="opt" onclick="ans('m3', 'quiz', 1, 0, this)">
-              Only when the Master is on deck.</button
+              It makes the purifier rotate faster.</button
             ><button class="opt" onclick="ans('m3', 'quiz', 2, 0, this)">
-              Only during drills.</button
-            ><button class="opt" onclick="ans('m3', 'quiz', 3, 0, this)">
-              Only after an accident occurs.
+              It eliminates the need for filters.
             </button>
             <button class="opt" onclick="ans('m3', 'quiz', 0, 0, this)">
-              When there is an uncontrolled risk to people, ship, cargo or
-              environment.
+              It controls viscosity and improves separation efficiency.</button
+            ><button class="opt" onclick="ans('m3', 'quiz', 3, 0, this)">
+              It allows water to dissolve permanently in fuel.
             </button>
           </div>
           <div class="fb" id="m3-quiz-fb"></div>
@@ -1002,13 +929,14 @@
       </section>
       <section class="screen" id="m4">
         <div class="head">
-          <div class="big">👥</div>
+          <div class="big">🚢</div>
           <div>
-            <div class="kicker">Module 4 of 6 · BCAV Behavioural</div>
-            <div class="mt">Receiving Challenge as a Senior</div>
+            <div class="kicker">Module 4 of 6 · Engine Department</div>
+            <div class="mt">Bunkering Preparation and Watchkeeping</div>
             <p class="sub">
-              How officers should respond when juniors raise concerns: listen,
-              verify, thank, decide and close the loop.
+              Plan bunkering with safe valve line-up, tank capacity,
+              communication, sampling, SOPEP readiness, drip trays, scupper
+              plugging and watch arrangements.
             </p>
             <button class="btn secondary" onclick="speak('m4')">
               ▶ Narration
@@ -1027,104 +955,77 @@
               width="760"
               height="245"
               rx="24"
-              fill="#fcfaff"
-              stroke="#e7def5"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
             />
             <rect
-              x="45"
+              x="50"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
-              fill="#fff1f2"
-              stroke="#dc2626"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#dbeafe"
+              stroke="#2563eb"
             />
             <text
               x="125"
-              y="100"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
-              fill="#991b1b"
+              fill="#1e40af"
             >
-              CONCERN
-            </text>
-            <text
-              x="125"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#991b1b"
-            >
-              I am concerned
+              BUNKER
             </text>
             <path
-              d="M215 105 H300"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M205 103 H300"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
               x="310"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
+              width="150"
+              height="75"
+              rx="14"
               fill="#fff8db"
               stroke="#ca8a04"
             />
             <text
-              x="390"
-              y="100"
+              x="385"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#854d0e"
             >
-              VERIFY
-            </text>
-            <text
-              x="390"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#854d0e"
-            >
-              Can we check?
+              SETTLE
             </text>
             <path
-              d="M480 105 H565"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M465 103 H560"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
-              x="575"
+              x="570"
               y="65"
               width="140"
-              height="80"
-              rx="16"
+              height="75"
+              rx="14"
               fill="#effdf4"
               stroke="#16a34a"
             />
             <text
-              x="645"
-              y="100"
+              x="640"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#166534"
             >
-              ACT
-            </text>
-            <text
-              x="645"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#166534"
-            >
-              Safe decision
+              PURIFY
             </text>
             <text
               x="380"
@@ -1132,9 +1033,9 @@
               text-anchor="middle"
               font-size="18"
               font-weight="900"
-              fill="#100b2e"
+              fill="#071633"
             >
-              Receiving Challenge as a Senior
+              Bunkering Preparation and Watchkeeping
             </text>
           </svg>
         </div>
@@ -1142,36 +1043,39 @@
           <div class="label">Core Learning</div>
           <div class="readgrid">
             <div class="read">
-              <b>Behavioural focus</b>How officers should respond when juniors
-              raise concerns: listen, verify, thank, decide and close the loop.
+              <b>Operational focus</b>Plan bunkering with safe valve line-up,
+              tank capacity, communication, sampling, SOPEP readiness, drip
+              trays, scupper plugging and watch arrangements.
             </div>
             <div class="read">
-              <b>Practical phrase</b>Use calm words: &#x27;I am
-              concerned...&#x27;, &#x27;Can we verify...&#x27;, &#x27;I believe
-              this is unsafe...&#x27;, &#x27;Stop, please, until checked.&#x27;
+              <b>Watchkeeping discipline</b>Check levels, temperatures,
+              pressures, flow path, abnormal sound, leakage, alarms and records.
+              Report doubt early.
             </div>
             <div class="read">
-              <b>Safety culture</b>Speaking up must be welcomed. The aim is not
-              to challenge rank; the aim is to prevent harm.
+              <b>Compliance focus</b>Follow SMS, engine standing orders, MARPOL
+              Annex VI requirements, bunker procedure, sampling procedure and
+              oil record expectations.
             </div>
           </div>
         </div>
         <div class="card activity-card">
           <div class="label">Interactive Activity</div>
           <div class="q">
-            A rating challenges your instruction during bunkering, saying the
-            scupper plug is missing. What is the best senior-officer response?
+            The bunker hose is connected and the barge requests to start quickly
+            because of tidal pressure. Your checklist is not complete. What
+            should you do?
           </div>
           <div class="options" id="m4-act">
             <button class="opt" onclick="ans('m4', 'act', 0, 1, this)">
-              Tell him not to question officers.</button
+              Start slowly and finish the checklist later.</button
             ><button class="opt" onclick="ans('m4', 'act', 1, 1, this)">
-              Stop and verify the condition, thank him for raising it, correct
-              the issue, and explain the decision.</button
+              Do not start until checklist, communication, spill readiness, tank
+              plan and valve line-up are confirmed.</button
             ><button class="opt" onclick="ans('m4', 'act', 2, 1, this)">
-              Ignore him because bunkering has started.</button
+              Start if the bunker barge confirms they are ready.</button
             ><button class="opt" onclick="ans('m4', 'act', 3, 1, this)">
-              Punish him later for delaying work.
+              Open all tanks to avoid pressure build-up.
             </button>
           </div>
           <div class="fb" id="m4-act-fb"></div>
@@ -1182,17 +1086,18 @@
         <div class="card quiz-card">
           <div class="label">Module Quiz</div>
           <div class="q">
-            What does good leadership do when challenged on safety?
+            Which item is essential before starting bunkering?
           </div>
           <div class="options" id="m4-quiz">
             <button class="opt" onclick="ans('m4', 'quiz', 0, 0, this)">
-              Listens, verifies facts, avoids humiliation and closes the loop.</button
+              Agreed communication and emergency stop procedure between ship and
+              bunker supplier.</button
             ><button class="opt" onclick="ans('m4', 'quiz', 1, 0, this)">
-              Treats every challenge as disobedience.</button
+              Closing all save-alls to hide small leaks.</button
             ><button class="opt" onclick="ans('m4', 'quiz', 2, 0, this)">
-              Changes nothing to preserve authority.</button
+              Leaving scuppers open for drainage.</button
             ><button class="opt" onclick="ans('m4', 'quiz', 3, 0, this)">
-              Only accepts concerns from officers.
+              Starting at maximum rate to reduce port stay.
             </button>
           </div>
           <div class="fb" id="m4-quiz-fb"></div>
@@ -1207,13 +1112,14 @@
       </section>
       <section class="screen" id="m5">
         <div class="head">
-          <div class="big">🌉</div>
+          <div class="big">📄</div>
           <div>
-            <div class="kicker">Module 5 of 6 · BCAV Behavioural</div>
-            <div class="mt">Bridge and Engine Team Scenarios</div>
+            <div class="kicker">Module 5 of 6 · Engine Department</div>
+            <div class="mt">BDN, Sampling and MARPOL Annex VI</div>
             <p class="sub">
-              Apply assertiveness in bridge, engine room, cargo, enclosed space
-              and mooring situations.
+              Manage Bunker Delivery Note checks, representative sampling, seal
+              numbers, sulphur records, MARPOL Annex VI documentation and
+              retention of samples.
             </p>
             <button class="btn secondary" onclick="speak('m5')">
               ▶ Narration
@@ -1232,104 +1138,77 @@
               width="760"
               height="245"
               rx="24"
-              fill="#fcfaff"
-              stroke="#e7def5"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
             />
             <rect
-              x="45"
+              x="50"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
-              fill="#fff1f2"
-              stroke="#dc2626"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#dbeafe"
+              stroke="#2563eb"
             />
             <text
               x="125"
-              y="100"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
-              fill="#991b1b"
+              fill="#1e40af"
             >
-              CONCERN
-            </text>
-            <text
-              x="125"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#991b1b"
-            >
-              I am concerned
+              BUNKER
             </text>
             <path
-              d="M215 105 H300"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M205 103 H300"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
               x="310"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
+              width="150"
+              height="75"
+              rx="14"
               fill="#fff8db"
               stroke="#ca8a04"
             />
             <text
-              x="390"
-              y="100"
+              x="385"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#854d0e"
             >
-              VERIFY
-            </text>
-            <text
-              x="390"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#854d0e"
-            >
-              Can we check?
+              SETTLE
             </text>
             <path
-              d="M480 105 H565"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M465 103 H560"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
-              x="575"
+              x="570"
               y="65"
               width="140"
-              height="80"
-              rx="16"
+              height="75"
+              rx="14"
               fill="#effdf4"
               stroke="#16a34a"
             />
             <text
-              x="645"
-              y="100"
+              x="640"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#166534"
             >
-              ACT
-            </text>
-            <text
-              x="645"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#166534"
-            >
-              Safe decision
+              PURIFY
             </text>
             <text
               x="380"
@@ -1337,9 +1216,9 @@
               text-anchor="middle"
               font-size="18"
               font-weight="900"
-              fill="#100b2e"
+              fill="#071633"
             >
-              Bridge and Engine Team Scenarios
+              BDN, Sampling and MARPOL Annex VI
             </text>
           </svg>
         </div>
@@ -1347,37 +1226,39 @@
           <div class="label">Core Learning</div>
           <div class="readgrid">
             <div class="read">
-              <b>Behavioural focus</b>Apply assertiveness in bridge, engine
-              room, cargo, enclosed space and mooring situations.
+              <b>Operational focus</b>Manage Bunker Delivery Note checks,
+              representative sampling, seal numbers, sulphur records, MARPOL
+              Annex VI documentation and retention of samples.
             </div>
             <div class="read">
-              <b>Practical phrase</b>Use calm words: &#x27;I am
-              concerned...&#x27;, &#x27;Can we verify...&#x27;, &#x27;I believe
-              this is unsafe...&#x27;, &#x27;Stop, please, until checked.&#x27;
+              <b>Watchkeeping discipline</b>Check levels, temperatures,
+              pressures, flow path, abnormal sound, leakage, alarms and records.
+              Report doubt early.
             </div>
             <div class="read">
-              <b>Safety culture</b>Speaking up must be welcomed. The aim is not
-              to challenge rank; the aim is to prevent harm.
+              <b>Compliance focus</b>Follow SMS, engine standing orders, MARPOL
+              Annex VI requirements, bunker procedure, sampling procedure and
+              oil record expectations.
             </div>
           </div>
         </div>
         <div class="card activity-card">
           <div class="label">Interactive Activity</div>
           <div class="q">
-            During engine-room watch, a motorman reports an unusual smell near a
-            generator. The engineer is busy and says “later.” What should
-            happen?
+            The BDN sulphur value is compliant, but the MARPOL sample seal
+            number does not match the sample tag. What should you do?
           </div>
           <div class="options" id="m5-act">
             <button class="opt" onclick="ans('m5', 'act', 0, 1, this)">
-              The motorman should drop the matter.</button
+              Ignore it because the sulphur value is compliant.</button
             ><button class="opt" onclick="ans('m5', 'act', 1, 1, this)">
-              The concern should be acknowledged, checked promptly, and
-              escalated if a fire or fuel leak risk may exist.</button
+              Stop and clarify the discrepancy, record it, inform the Chief
+              Engineer/Master and correct documentation before acceptance if
+              possible.</button
             ><button class="opt" onclick="ans('m5', 'act', 2, 1, this)">
-              The motorman should switch off the generator alone.</button
+              Change the tag yourself without recording.</button
             ><button class="opt" onclick="ans('m5', 'act', 3, 1, this)">
-              Only record it at the end of the watch.
+              Dispose of the sample.
             </button>
           </div>
           <div class="fb" id="m5-act-fb"></div>
@@ -1388,18 +1269,19 @@
         <div class="card quiz-card">
           <div class="label">Module Quiz</div>
           <div class="q">
-            Why are weak speaking-up behaviours dangerous in team operations?
+            What is the Bunker Delivery Note primarily used for?
           </div>
           <div class="options" id="m5-quiz">
             <button class="opt" onclick="ans('m5', 'quiz', 1, 0, this)">
-              They make paperwork longer.</button
+              A crew attendance sheet.</button
             ><button class="opt" onclick="ans('m5', 'quiz', 2, 0, this)">
-              They reduce fuel consumption.</button
-            ><button class="opt" onclick="ans('m5', 'quiz', 0, 0, this)">
-              Early warning signs may be missed until the situation becomes an
-              incident.</button
+              A purifier maintenance certificate.
+            </button>
+            <button class="opt" onclick="ans('m5', 'quiz', 0, 0, this)">
+              Evidence of fuel supplied, including quantity, supplier details
+              and statutory fuel information such as sulphur content.</button
             ><button class="opt" onclick="ans('m5', 'quiz', 3, 0, this)">
-              They only matter during audits.
+              A tank cleaning certificate.
             </button>
           </div>
           <div class="fb" id="m5-quiz-fb"></div>
@@ -1414,14 +1296,14 @@
       </section>
       <section class="screen" id="m6">
         <div class="head">
-          <div class="big">📋</div>
+          <div class="big">🧯</div>
           <div>
-            <div class="kicker">Module 6 of 6 · BCAV Behavioural</div>
-            <div class="mt">SIRE 2.0, BCAV and Safety Culture</div>
+            <div class="kicker">Module 6 of 6 · Engine Department</div>
+            <div class="mt">Fuel Emergencies, Overflow and Changeover</div>
             <p class="sub">
-              Connect assertive communication with behavioural competence,
-              inspection conversations, just culture and evidence of real
-              onboard practice.
+              Respond to overflow, leakage, purifier failure, filter choking,
+              fuel changeover issues, low sulphur compliance risk and fuel
+              supply instability.
             </p>
             <button class="btn secondary" onclick="speak('m6')">
               ▶ Narration
@@ -1440,104 +1322,77 @@
               width="760"
               height="245"
               rx="24"
-              fill="#fcfaff"
-              stroke="#e7def5"
+              fill="#f8fbff"
+              stroke="#dfe7f3"
             />
             <rect
-              x="45"
+              x="50"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
-              fill="#fff1f2"
-              stroke="#dc2626"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#dbeafe"
+              stroke="#2563eb"
             />
             <text
               x="125"
-              y="100"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
-              fill="#991b1b"
+              fill="#1e40af"
             >
-              CONCERN
-            </text>
-            <text
-              x="125"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#991b1b"
-            >
-              I am concerned
+              BUNKER
             </text>
             <path
-              d="M215 105 H300"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M205 103 H300"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
               x="310"
               y="65"
-              width="160"
-              height="80"
-              rx="16"
+              width="150"
+              height="75"
+              rx="14"
               fill="#fff8db"
               stroke="#ca8a04"
             />
             <text
-              x="390"
-              y="100"
+              x="385"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#854d0e"
             >
-              VERIFY
-            </text>
-            <text
-              x="390"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#854d0e"
-            >
-              Can we check?
+              SETTLE
             </text>
             <path
-              d="M480 105 H565"
-              stroke="#a78bfa"
-              stroke-width="7"
+              d="M465 103 H560"
+              stroke="#64748b"
+              stroke-width="8"
               stroke-linecap="round"
             />
             <rect
-              x="575"
+              x="570"
               y="65"
               width="140"
-              height="80"
-              rx="16"
+              height="75"
+              rx="14"
               fill="#effdf4"
               stroke="#16a34a"
             />
             <text
-              x="645"
-              y="100"
+              x="640"
+              y="108"
               text-anchor="middle"
               font-size="15"
               font-weight="900"
               fill="#166534"
             >
-              ACT
-            </text>
-            <text
-              x="645"
-              y="122"
-              text-anchor="middle"
-              font-size="12"
-              fill="#166534"
-            >
-              Safe decision
+              PURIFY
             </text>
             <text
               x="380"
@@ -1545,9 +1400,9 @@
               text-anchor="middle"
               font-size="18"
               font-weight="900"
-              fill="#100b2e"
+              fill="#071633"
             >
-              SIRE 2.0, BCAV and Safety Culture
+              Fuel Emergencies, Overflow and Changeover
             </text>
           </svg>
         </div>
@@ -1555,37 +1410,38 @@
           <div class="label">Core Learning</div>
           <div class="readgrid">
             <div class="read">
-              <b>Behavioural focus</b>Connect assertive communication with
-              behavioural competence, inspection conversations, just culture and
-              evidence of real onboard practice.
+              <b>Operational focus</b>Respond to overflow, leakage, purifier
+              failure, filter choking, fuel changeover issues, low sulphur
+              compliance risk and fuel supply instability.
             </div>
             <div class="read">
-              <b>Practical phrase</b>Use calm words: &#x27;I am
-              concerned...&#x27;, &#x27;Can we verify...&#x27;, &#x27;I believe
-              this is unsafe...&#x27;, &#x27;Stop, please, until checked.&#x27;
+              <b>Watchkeeping discipline</b>Check levels, temperatures,
+              pressures, flow path, abnormal sound, leakage, alarms and records.
+              Report doubt early.
             </div>
             <div class="read">
-              <b>Safety culture</b>Speaking up must be welcomed. The aim is not
-              to challenge rank; the aim is to prevent harm.
+              <b>Compliance focus</b>Follow SMS, engine standing orders, MARPOL
+              Annex VI requirements, bunker procedure, sampling procedure and
+              oil record expectations.
             </div>
           </div>
         </div>
         <div class="card activity-card">
           <div class="label">Interactive Activity</div>
           <div class="q">
-            A SIRE 2.0 inspector asks how crew can stop an unsafe job. What
-            answer shows a healthy safety culture?
+            During bunkering, oil is seen in the save-all near the manifold.
+            What is the immediate action?
           </div>
           <div class="options" id="m6-act">
             <button class="opt" onclick="ans('m6', 'act', 0, 1, this)">
-              Only senior officers may stop work.</button
+              Wait to see whether it increases.</button
             ><button class="opt" onclick="ans('m6', 'act', 1, 1, this)">
-              Any crew member can raise a concern or stop unsafe work without
-              fear, and the concern is checked and recorded as appropriate.</button
+              Stop bunkering or activate emergency stop, contain the spill,
+              inform bridge/engine control room and follow SOPEP/SMS procedure.</button
             ><button class="opt" onclick="ans('m6', 'act', 2, 1, this)">
-              Crew should avoid raising concerns during inspections.</button
+              Wash it overboard quickly.</button
             ><button class="opt" onclick="ans('m6', 'act', 3, 1, this)">
-              Stop work is allowed only after injury.
+              Increase transfer rate to finish faster.
             </button>
           </div>
           <div class="fb" id="m6-act-fb"></div>
@@ -1596,18 +1452,19 @@
         <div class="card quiz-card">
           <div class="label">Module Quiz</div>
           <div class="q">
-            What does SIRE 2.0 style questioning often look for?
+            During fuel changeover, why must temperature and viscosity be
+            controlled gradually?
           </div>
           <div class="options" id="m6-quiz">
             <button class="opt" onclick="ans('m6', 'quiz', 0, 0, this)">
-              Whether crew can explain what they actually do and why, not just
-              repeat a memorised procedure.</button
+              Rapid changes can cause thermal shock, leakage, pump problems or
+              loss of proper fuel injection condition.</button
             ><button class="opt" onclick="ans('m6', 'quiz', 1, 0, this)">
-              Only whether the manual is printed.</button
+              It makes the fuel smell better.</button
             ><button class="opt" onclick="ans('m6', 'quiz', 2, 0, this)">
-              Only whether the ship is clean.</button
+              It reduces the need for log entries.</button
             ><button class="opt" onclick="ans('m6', 'quiz', 3, 0, this)">
-              Only whether the Master answers every question.
+              It is only required for gas carriers.
             </button>
           </div>
           <div class="fb" id="m6-quiz-fb"></div>
@@ -1627,7 +1484,7 @@
           <div class="big">✅</div>
           <div>
             <div class="kicker">Final Assessment</div>
-            <div class="mt">Speaking Up Safely Competence Check</div>
+            <div class="mt">Fuel Oil Systems Competence Check</div>
             <p class="sub">
               Answer all questions. 80% or higher unlocks completion.
             </p>
@@ -1635,166 +1492,172 @@
         </div>
         <div class="card final-q">
           <div class="label">Question 1</div>
-          <div class="q">A steep authority gradient can cause:</div>
+          <div class="q">A key risk when mixing two VLSFO stems is:</div>
           <div class="options">
-            <button class="opt" onclick="finalAns(0, 1, 0, this)">
-              Better teamwork automatically</button
-            ><button class="opt" onclick="finalAns(0, 2, 0, this)">
-              Lower fuel consumption
-            </button>
             <button class="opt" onclick="finalAns(0, 0, 0, this)">
-              Silence, hesitation and missed safety warnings</button
+              Incompatibility causing sludge and filter blockage</button
+            ><button class="opt" onclick="finalAns(0, 1, 0, this)">
+              Immediate evaporation</button
+            ><button class="opt" onclick="finalAns(0, 2, 0, this)">
+              Freshwater contamination only</button
             ><button class="opt" onclick="finalAns(0, 3, 0, this)">
-              Automatic compliance with every checklist
+              Loss of bunker paperwork only
             </button>
           </div>
           <div class="fb" id="f-fb-0"></div>
         </div>
         <div class="card final-q">
           <div class="label">Question 2</div>
-          <div class="q">The safest speaking-up style is:</div>
+          <div class="q">A settling tank helps by:</div>
           <div class="options">
-            <button class="opt" onclick="finalAns(1, 0, 0, this)">
-              Respectful, clear and specific about the risk</button
-            ><button class="opt" onclick="finalAns(1, 1, 0, this)">
-              Aggressive and personal</button
+            <button class="opt" onclick="finalAns(1, 1, 0, this)">
+              Increasing sulphur content</button
             ><button class="opt" onclick="finalAns(1, 2, 0, this)">
-              Silent and indirect</button
+              Replacing the service tank</button
+            ><button class="opt" onclick="finalAns(1, 0, 0, this)">
+              Allowing water/sediment separation before treatment</button
             ><button class="opt" onclick="finalAns(1, 3, 0, this)">
-              Only written after the event
+              Cooling lube oil
             </button>
           </div>
           <div class="fb" id="f-fb-1"></div>
         </div>
         <div class="card final-q">
           <div class="label">Question 3</div>
-          <div class="q">Graded assertiveness means:</div>
+          <div class="q">Purifier feed temperature mainly affects:</div>
           <div class="options">
             <button class="opt" onclick="finalAns(2, 1, 0, this)">
-              Repeating the same weak hint</button
+              Compass error
+            </button>
+            <button class="opt" onclick="finalAns(2, 0, 0, this)">
+              Viscosity and separation efficiency</button
             ><button class="opt" onclick="finalAns(2, 2, 0, this)">
-              Ignoring seniority completely</button
+              Radar performance</button
             ><button class="opt" onclick="finalAns(2, 3, 0, this)">
-              Never stopping work</button
-            ><button class="opt" onclick="finalAns(2, 0, 0, this)">
-              Escalating the challenge if the risk is not addressed
+              Paint drying
             </button>
           </div>
           <div class="fb" id="f-fb-2"></div>
         </div>
         <div class="card final-q">
           <div class="label">Question 4</div>
-          <div class="q">Stop-work authority should be used when:</div>
+          <div class="q">Before bunkering, the ship must confirm:</div>
           <div class="options">
-            <button class="opt" onclick="finalAns(3, 1, 0, this)">
-              Someone dislikes a task</button
+            <button class="opt" onclick="finalAns(3, 0, 0, this)">
+              Tank plan, valve line-up, communication and spill readiness</button
+            ><button class="opt" onclick="finalAns(3, 1, 0, this)">
+              Only the barge name</button
             ><button class="opt" onclick="finalAns(3, 2, 0, this)">
-              The job is boring</button
+              Only the weather forecast</button
             ><button class="opt" onclick="finalAns(3, 3, 0, this)">
-              Paperwork is complete<button
-                class="opt"
-                onclick="finalAns(3, 0, 0, this)"
-              >
-                Risk is uncontrolled and immediate safety action is needed
-              </button>
+              Only the arrival draft
             </button>
           </div>
           <div class="fb" id="f-fb-3"></div>
         </div>
         <div class="card final-q">
           <div class="label">Question 5</div>
-          <div class="q">A senior officer receiving a challenge should:</div>
+          <div class="q">
+            The BDN and MARPOL sample are important because they:
+          </div>
           <div class="options">
-            <button class="opt" onclick="finalAns(4, 0, 0, this)">
-              Listen, verify, thank and close the loop</button
-            ><button class="opt" onclick="finalAns(4, 1, 0, this)">
-              Defend rank immediately</button
+            <button class="opt" onclick="finalAns(4, 1, 0, this)">
+              Replace the oil record book</button
             ><button class="opt" onclick="finalAns(4, 2, 0, this)">
-              Ignore juniors</button
+              Remove the need for sampling</button
             ><button class="opt" onclick="finalAns(4, 3, 0, this)">
-              Hide the issue from the team
+              Guarantee purifier performance
+            </button>
+            <button class="opt" onclick="finalAns(4, 0, 0, this)">
+              Provide statutory fuel supply and compliance evidence
             </button>
           </div>
           <div class="fb" id="f-fb-4"></div>
         </div>
         <div class="card final-q">
           <div class="label">Question 6</div>
-          <div class="q">Closed-loop communication means:</div>
+          <div class="q">
+            If a spill is noticed during bunkering, the first priority is to:
+          </div>
           <div class="options">
+            <button class="opt" onclick="finalAns(5, 1, 0, this)">
+              Complete the bunker quantity first
+            </button>
             <button class="opt" onclick="finalAns(5, 0, 0, this)">
-              The receiver confirms the message and action clearly</button
-            ><button class="opt" onclick="finalAns(5, 1, 0, this)">
-              Only one person speaks</button
+              Stop transfer and contain/report as per SOPEP/SMS</button
             ><button class="opt" onclick="finalAns(5, 2, 0, this)">
-              No one asks questions</button
+              Wash it away</button
             ><button class="opt" onclick="finalAns(5, 3, 0, this)">
-              Messages are sent by email only
+              Wait for the barge to decide
             </button>
           </div>
           <div class="fb" id="f-fb-5"></div>
         </div>
         <div class="card final-q">
           <div class="label">Question 7</div>
-          <div class="q">A good challenge statement includes:</div>
+          <div class="q">Fuel changeover should be:</div>
           <div class="options">
             <button class="opt" onclick="finalAns(6, 1, 0, this)">
-              Insult and blame</button
+              Done instantly at full load</button
             ><button class="opt" onclick="finalAns(6, 2, 0, this)">
-              A vague complaint</button
-            ><button class="opt" onclick="finalAns(6, 0, 0, this)">
-              Concern, observed fact and requested verification/action</button
+              Avoided in all ECAs</button
             ><button class="opt" onclick="finalAns(6, 3, 0, this)">
-              A joke only
+              Recorded only if something fails</button
+            ><button class="opt" onclick="finalAns(6, 0, 0, this)">
+              Controlled gradually to manage temperature and viscosity changes
             </button>
           </div>
           <div class="fb" id="f-fb-6"></div>
         </div>
         <div class="card final-q">
           <div class="label">Question 8</div>
-          <div class="q">SIRE 2.0 conversations value:</div>
+          <div class="q">
+            A rising filter differential pressure after bunkering may indicate:
+          </div>
           <div class="options">
-            <button class="opt" onclick="finalAns(7, 1, 0, this)">
-              Only memorised definitions</button
-            ><button class="opt" onclick="finalAns(7, 2, 0, this)">
-              Only certificates</button
-            ><button class="opt" onclick="finalAns(7, 3, 0, this)">
-              Only senior officers speaking
-            </button>
             <button class="opt" onclick="finalAns(7, 0, 0, this)">
-              Real understanding and practical behaviour
+              Sludge or compatibility/treatment problems</button
+            ><button class="opt" onclick="finalAns(7, 1, 0, this)">
+              Better fuel quality</button
+            ><button class="opt" onclick="finalAns(7, 2, 0, this)">
+              Reduced engine load only</button
+            ><button class="opt" onclick="finalAns(7, 3, 0, this)">
+              Normal radar interference
             </button>
           </div>
           <div class="fb" id="f-fb-7"></div>
         </div>
         <div class="card final-q">
           <div class="label">Question 9</div>
-          <div class="q">A just culture supports speaking up by:</div>
+          <div class="q">Representative bunker sampling should be:</div>
           <div class="options">
             <button class="opt" onclick="finalAns(8, 0, 0, this)">
-              Avoiding blame for genuine safety concerns and learning from
-              reports</button
+              Continuous/approved method at the correct point with proper
+              sealing and records</button
             ><button class="opt" onclick="finalAns(8, 1, 0, this)">
-              Punishing every question</button
+              Taken from a random bucket after completion</button
             ><button class="opt" onclick="finalAns(8, 2, 0, this)">
-              Suppressing near misses</button
+              Done only if there is a dispute</button
             ><button class="opt" onclick="finalAns(8, 3, 0, this)">
-              Ignoring human factors
+              Skipped if the supplier is known
             </button>
           </div>
           <div class="fb" id="f-fb-8"></div>
         </div>
         <div class="card final-q">
           <div class="label">Question 10</div>
-          <div class="q">The best safety culture is one where:</div>
+          <div class="q">Overflow prevention depends on:</div>
           <div class="options">
-            <button class="opt" onclick="finalAns(9, 0, 0, this)">
-              Any rank can raise a concern and the team checks it seriously</button
-            ><button class="opt" onclick="finalAns(9, 1, 0, this)">
-              Only the Master thinks about safety</button
+            <button class="opt" onclick="finalAns(9, 1, 0, this)">
+              Paint colour of tanks</button
             ><button class="opt" onclick="finalAns(9, 2, 0, this)">
-              Concerns wait until the next meeting</button
+              Only the bunker barge pump
+            </button>
+            <button class="opt" onclick="finalAns(9, 0, 0, this)">
+              Capacity planning, watchkeeping, valve control, alarms and
+              communication</button
             ><button class="opt" onclick="finalAns(9, 3, 0, this)">
-              Crew avoid challenging decisions
+              Ignoring slow transfer rates
             </button>
           </div>
           <div class="fb" id="f-fb-9"></div>
@@ -1809,7 +1672,7 @@
         <div class="card cert" id="cert">
           <div class="kicker">Course Completed</div>
           <div class="score" id="score">0%</div>
-          <h2>Authority Gradient and Assertiveness — Speaking Up Safely</h2>
+          <h2>Fuel Oil Systems — Purification, Transfer and Bunkering</h2>
           <p class="lead">
             The trainee has completed the interactive course and final
             assessment.
@@ -1820,29 +1683,21 @@
     <script>
       const mids = ["m1", "m2", "m3", "m4", "m5", "m6"];
       const moduleText = {
-        m1: "Authority Gradient: What It Means. Understand steep and flat authority gradients, why they develop onboard, and how they affect decision-making, reporting and safety culture.",
-        m2: "Assertive Communication Tools. Use simple, respectful phrases, closed-loop communication, challenge-and-response, and graded assertiveness without sounding confrontational.",
-        m3: "Graded Challenge and Stop-Work. Escalate from concern to direct challenge to stop-work when safety risk is not being controlled.",
-        m4: "Receiving Challenge as a Senior. How officers should respond when juniors raise concerns: listen, verify, thank, decide and close the loop.",
-        m5: "Bridge and Engine Team Scenarios. Apply assertiveness in bridge, engine room, cargo, enclosed space and mooring situations.",
-        m6: "SIRE 2.0, BCAV and Safety Culture. Connect assertive communication with behavioural competence, inspection conversations, just culture and evidence of real onboard practice.",
-      };
-      const moduleTitles = {
-        m1: "Authority Gradient: What It Means",
-        m2: "Assertive Communication Tools",
-        m3: "Graded Challenge and Stop-Work",
-        m4: "Receiving Challenge as a Senior",
-        m5: "Bridge and Engine Team Scenarios",
-        m6: "SIRE 2.0, BCAV and Safety Culture",
+        m1: "Fuel Oil Types and Properties. Recognise HFO, VLSFO, MGO and blended fuels, including viscosity, density, compatibility, flash point and sulphur requirements.",
+        m2: "Transfer and Settling Systems. Operate bunker, transfer, settling, service, overflow and drain arrangements safely while preventing contamination and overflows.",
+        m3: "Purifier Operation and Fuel Treatment. Understand purifier principles, correct gravity disc/setting, temperature control, desludging, water seal, back pressure and response to purifier alarms.",
+        m4: "Bunkering Preparation and Watchkeeping. Plan bunkering with safe valve line-up, tank capacity, communication, sampling, SOPEP readiness, drip trays, scupper plugging and watch arrangements.",
+        m5: "BDN, Sampling and MARPOL Annex VI. Manage Bunker Delivery Note checks, representative sampling, seal numbers, sulphur records, MARPOL Annex VI documentation and retention of samples.",
+        m6: "Fuel Emergencies, Overflow and Changeover. Respond to overflow, leakage, purifier failure, filter choking, fuel changeover issues, low sulphur compliance risk and fuel supply instability.",
       };
       let state = JSON.parse(
         localStorage.getItem(
-          "authority_gradient_assertiveness_speaking_up_safely_state",
+          "fuel_oil_systems_purification_transfer_bunkering_state",
         ) || '{"done":{},"xp":0,"final":{}}',
       );
       function save() {
         localStorage.setItem(
-          "authority_gradient_assertiveness_speaking_up_safely_state",
+          "fuel_oil_systems_purification_transfer_bunkering_state",
           JSON.stringify(state),
         );
         update();
@@ -1866,45 +1721,6 @@
           if (t) t.classList.toggle("done", !!state.done[m]);
         });
       }
-      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
-        const percentage = Math.round((score / maxScore) * 100);
-        const message = {
-          type: "COURSE_MODULE_COMPLETE",
-          source: "course",
-          payload: {
-            moduleIndex,
-            moduleTitle,
-            score,
-            maxScore,
-            percentage,
-            status: percentage >= passingScore ? "passed" : "failed",
-            totalModules,
-            completedModules,
-            allModulesComplete: completedModules === totalModules
-          }
-        };
-        if (window.parent && window.parent !== window) {
-          window.parent.postMessage(message, "*");
-        }
-      }
-
-      function reportAssessment({ score, maxScore, passingScore }) {
-        const percentage = Math.round((score / maxScore) * 100);
-        const message = {
-          type: "COURSE_ASSESSMENT_COMPLETE",
-          source: "course",
-          payload: {
-            score,
-            maxScore,
-            percentage,
-            status: percentage >= passingScore ? "passed" : "failed"
-          }
-        };
-        if (window.parent && window.parent !== window) {
-          window.parent.postMessage(message, "*");
-        }
-      }
-
       function ans(mid, type, choice, correct, btn) {
         let box = document.getElementById(mid + "-" + type);
         box.querySelectorAll(".opt").forEach((b) => {
@@ -1916,22 +1732,12 @@
         let fb = document.getElementById(mid + "-" + type + "-fb");
         fb.className = "fb " + (ok ? "good" : "bad");
         fb.textContent = ok
-          ? "Correct. This supports safe assertive communication."
-          : "Not safe. The aim is respectful challenge and risk control.";
+          ? "Correct. Safe fuel-system practice selected."
+          : "Not safe. Apply stop, verify, record and report.";
         if (ok) {
           if (type === "act" && !state.done[mid]) {
             state.done[mid] = true;
             state.xp += 20;
-            const completedModules = mids.filter((m) => state.done[m]).length;
-            reportModuleComplete({
-              moduleIndex: mids.indexOf(mid),
-              moduleTitle: moduleTitles[mid],
-              score: 1,
-              maxScore: 1,
-              passingScore: 80,
-              totalModules: mids.length,
-              completedModules: completedModules,
-            });
           } else {
             state.xp += 10;
           }
@@ -1974,12 +1780,8 @@
         if (p >= 80) {
           mids.forEach((m) => (state.done[m] = true));
           state.xp += 50;
+          save();
         }
-        if (!state.assessmentReported) {
-          state.assessmentReported = true;
-          reportAssessment({ score: c, maxScore: 10, passingScore: 80 });
-        }
-        save();
         document.getElementById("cert").scrollIntoView({ behavior: "smooth" });
       }
       function refreshAssessment() {

@@ -1,0 +1,1778 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Stress Management Onboard — Staying Effective Under Pressure</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #fbf8ff;
+        color: #120b2f;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        background: #fff;
+        border-bottom: 1px solid #e8ddf8;
+        padding: 14px 24px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .brand {
+        font-weight: 900;
+        color: #6d28d9;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+      }
+      .pill {
+        border: 1px solid #e8ddf8;
+        border-radius: 999px;
+        padding: 8px 13px;
+        background: #fff;
+        font-weight: 800;
+        color: #6b5b84;
+      }
+      main {
+        max-width: 1050px;
+        margin: auto;
+        padding: 28px 20px 70px;
+      }
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+      }
+      .card,
+      .panel {
+        background: #fff;
+        border: 1px solid #e8ddf8;
+        border-radius: 24px;
+        box-shadow: 0 14px 35px rgba(76, 29, 149, 0.08);
+        padding: 28px;
+        margin: 18px 0;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .kicker,
+      .label {
+        color: #6d28d9;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 13px;
+      }
+      .h1 {
+        font-size: 46px;
+        line-height: 1.04;
+        font-weight: 900;
+        margin: 16px 0;
+      }
+      .lead {
+        color: #6b5b84;
+        font-size: 18px;
+        line-height: 1.6;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .tile {
+        border: 1px solid #e8ddf8;
+        border-radius: 18px;
+        padding: 16px;
+        cursor: pointer;
+      }
+      .tile:hover {
+        border-color: #6d28d9;
+      }
+      .tile.done {
+        background: #f0fdf4;
+        border-color: #16a34a;
+      }
+      .ic {
+        font-size: 30px;
+      }
+      .btn {
+        border: 0;
+        background: #6d28d9;
+        color: white;
+        border-radius: 16px;
+        padding: 13px 18px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      .btn.secondary {
+        background: white;
+        color: #120b2f;
+        border: 1px solid #e8ddf8;
+      }
+      .head {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 18px;
+        align-items: center;
+      }
+      .big {
+        font-size: 48px;
+        background: #f3e8ff;
+        border-radius: 22px;
+        padding: 18px;
+      }
+      .mt {
+        font-size: 34px;
+        font-weight: 900;
+      }
+      .sub {
+        color: #6b5b84;
+        line-height: 1.5;
+      }
+      .readgrid,
+      .safety {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .read {
+        background: #fcfaff;
+        border: 1px solid #e8ddf8;
+        border-radius: 16px;
+        padding: 15px;
+        color: #6b5b84;
+        line-height: 1.55;
+      }
+      .read b {
+        display: block;
+        color: #120b2f;
+        margin-bottom: 7px;
+      }
+      .q {
+        font-size: 25px;
+        font-weight: 900;
+        line-height: 1.35;
+      }
+      .options {
+        display: grid;
+        gap: 10px;
+      }
+      .opt {
+        border: 1px solid #e8ddf8;
+        border-radius: 16px;
+        background: #fff;
+        padding: 15px;
+        text-align: left;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .opt.correct {
+        background: #f0fdf4;
+        border-color: #16a34a;
+        color: #166534;
+      }
+      .opt.wrong {
+        background: #fff1f2;
+        border-color: #dc2626;
+        color: #991b1b;
+      }
+      .fb {
+        display: none;
+        margin-top: 12px;
+        padding: 13px;
+        border-radius: 14px;
+        font-weight: 800;
+      }
+      .fb.good {
+        display: block;
+        background: #f0fdf4;
+        color: #166534;
+      }
+      .fb.bad {
+        display: block;
+        background: #fff1f2;
+        color: #991b1b;
+      }
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .red {
+        background: #fff1f2;
+        color: #991b1b;
+      }
+      .yellow {
+        background: #fff8db;
+        color: #854d0e;
+      }
+      .green {
+        background: #f0fdf4;
+        color: #166534;
+      }
+      .safety div {
+        border-radius: 16px;
+        padding: 14px;
+        border: 1px solid #e8ddf8;
+        font-weight: 700;
+      }
+      .visual {
+        width: 100%;
+        max-width: 800px;
+        display: block;
+        margin: auto;
+      }
+      .cert {
+        display: none;
+        text-align: center;
+      }
+      .cert.show {
+        display: block;
+      }
+      .score {
+        font-size: 54px;
+        font-weight: 900;
+        color: #6d28d9;
+      }
+      .barwrap {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 5px;
+        background: #e8ddf8;
+        width: 100%;
+        z-index: 4;
+      }
+      .bar {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #6d28d9, #16a34a);
+      }
+      @media (max-width: 800px) {
+        .hero,
+        .readgrid,
+        .safety {
+          grid-template-columns: 1fr;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .h1 {
+          font-size: 34px;
+        }
+        header {
+          flex-direction: column;
+        }
+        .mt {
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="barwrap"><div class="bar" id="bar"></div></div>
+    <header>
+      <div class="brand">
+        🧠 Stress Management Onboard — Staying Effective Under Pressure
+      </div>
+      <div>
+        <span class="pill" id="pct">0% Complete</span>
+        <span class="pill" id="xp">0 XP</span>
+      </div>
+    </header>
+    <main>
+      <section class="screen active" id="home">
+        <div class="hero">
+          <div class="panel">
+            <div class="kicker">
+              P3 Management · BCAV Behavioural Interactive Course
+            </div>
+            <div class="h1">
+              Stress Management Onboard — Staying Effective Under Pressure
+            </div>
+            <p class="lead">
+              Practical offline course for all ranks on recognising stress,
+              staying effective under pressure, communicating clearly, managing
+              fatigue and seeking help early.
+            </p>
+            <div class="safety">
+              <div class="red">
+                <b>RED — STOP</b>Stress or fatigue is affecting safety,
+                judgement, mood, sleep or watchkeeping.
+              </div>
+              <div class="yellow">
+                <b>YELLOW — PAUSE</b>Breathe, check facts, reduce overload,
+                clarify instructions and ask for support.
+              </div>
+              <div class="green">
+                <b>GREEN — RESPOND</b>Communicate clearly, act by priority,
+                record concerns and support the team.
+              </div>
+            </div>
+            <p>
+              <button class="btn" onclick="go('m1')">Start Course →</button>
+            </p>
+          </div>
+          <div class="panel">
+            <div class="kicker">Course Modules</div>
+            <div class="grid">
+              <div class="tile" id="tile-m1" onclick="go('m1')">
+                <div class="ic">🧠</div>
+                <b>What Stress Is Onboard</b>
+                <p>
+                  Understand physiological and psychological stress responses in
+                  the shipboard environment....
+                </p>
+              </div>
+              <div class="tile" id="tile-m2" onclick="go('m2')">
+                <div class="ic">⚠️</div>
+                <b>Recognising Stress Signals</b>
+                <p>
+                  Identify early warning signs in yourself and in colleagues
+                  before they become safety problems....
+                </p>
+              </div>
+              <div class="tile" id="tile-m3" onclick="go('m3')">
+                <div class="ic">🌬️</div>
+                <b>Immediate Coping Tools</b>
+                <p>
+                  Use practical techniques to regain control during alarms,
+                  inspections, conflict or high workloa...
+                </p>
+              </div>
+              <div class="tile" id="tile-m4" onclick="go('m4')">
+                <div class="ic">🗣️</div>
+                <b>Communication Under Pressure</b>
+                <p>
+                  Maintain clear communication and teamwork when stress is
+                  high....
+                </p>
+              </div>
+              <div class="tile" id="tile-m5" onclick="go('m5')">
+                <div class="ic">🛌</div>
+                <b>Fatigue, Rest and Resilience</b>
+                <p>
+                  Connect stress with fatigue, isolation, sleep, routines and
+                  long-term performance....
+                </p>
+              </div>
+              <div class="tile" id="tile-m6" onclick="go('m6')">
+                <div class="ic">🤝</div>
+                <b>When to Seek Help and Support Others</b>
+                <p>
+                  Know when personal coping is not enough and how senior
+                  officers can reduce stressors under thei...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="screen" id="m1">
+        <div class="head">
+          <div class="big">🧠</div>
+          <div>
+            <div class="kicker">Module 1 of 6 · BCAV Behavioural</div>
+            <div class="mt">What Stress Is Onboard</div>
+            <p class="sub">
+              Understand physiological and psychological stress responses in the
+              shipboard environment.
+            </p>
+            <button class="btn secondary" onclick="speak('m1')">
+              ▶ Narration
+            </button>
+            <button class="btn secondary" onclick="stopSpeak()">■ Stop</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 245"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              width="760"
+              height="245"
+              rx="24"
+              fill="#fcfaff"
+              stroke="#e8ddf8"
+            />
+            <rect
+              x="70"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff1f2"
+              stroke="#dc2626"
+            />
+            <text
+              x="145"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#991b1b"
+            >
+              STRESSOR
+            </text>
+            <path
+              d="M230 105 H310"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="320"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="395"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#854d0e"
+            >
+              PAUSE
+            </text>
+            <path
+              d="M480 105 H560"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="570"
+              y="68"
+              width="130"
+              height="75"
+              rx="14"
+              fill="#f0fdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="635"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#166534"
+            >
+              RESPOND
+            </text>
+            <text
+              x="380"
+              y="195"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#120b2f"
+            >
+              What Stress Is Onboard
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="read">
+              <b>Stress point</b>Understand physiological and psychological
+              stress responses in the shipboard environment.
+            </div>
+            <div class="read">
+              <b>Safety link</b>Stress can affect attention, judgement, teamwork
+              and communication. Treat signs early before they become incidents.
+            </div>
+            <div class="read">
+              <b>Crew welfare</b>Support must be respectful, private where
+              possible, and escalated when safety or wellbeing may be affected.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="q">
+            A junior engineer says, “I am fine,” but he is unusually quiet,
+            irritable and making small mistakes during rounds. What is the
+            safest interpretation?
+          </div>
+          <div class="options" id="m1-act">
+            <button class="opt" onclick="ans('m1', 'act', 0, 1, this)">
+              He is lazy and should be criticised publicly.</button
+            ><button class="opt" onclick="ans('m1', 'act', 1, 1, this)">
+              These may be stress or fatigue signs; check in privately, reduce
+              immediate risk and inform the responsible officer if safety may be
+              affected.</button
+            ><button class="opt" onclick="ans('m1', 'act', 2, 1, this)">
+              Ignore it unless he asks for help directly.</button
+            ><button class="opt" onclick="ans('m1', 'act', 3, 1, this)">
+              Give him additional work to distract him.
+            </button>
+          </div>
+          <div class="fb" id="m1-act-fb"></div>
+          <button class="btn secondary" onclick="refresh('m1', 'act')">
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="q">Which statement is most accurate?</div>
+          <div class="options" id="m1-quiz">
+            <button class="opt" onclick="ans('m1', 'quiz', 0, 1, this)">
+              Stress only affects people who lack experience.</button
+            ><button class="opt" onclick="ans('m1', 'quiz', 2, 1, this)">
+              Stress is always visible to others.</button
+            ><button class="opt" onclick="ans('m1', 'quiz', 1, 1, this)">
+              Stress can affect any seafarer and may reduce attention,
+              decision-making and communication.</button
+            ><button class="opt" onclick="ans('m1', 'quiz', 3, 1, this)">
+              Stress has no link to safety performance.
+            </button>
+          </div>
+          <div class="fb" id="m1-quiz-fb"></div>
+          <button class="btn secondary" onclick="refresh('m1', 'quiz')">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="nav">
+          <button class="btn secondary" onclick="go('home')">← Back</button
+          ><button class="btn" onclick="go('m2')">Next Module →</button>
+        </div>
+      </section>
+      <section class="screen" id="m2">
+        <div class="head">
+          <div class="big">⚠️</div>
+          <div>
+            <div class="kicker">Module 2 of 6 · BCAV Behavioural</div>
+            <div class="mt">Recognising Stress Signals</div>
+            <p class="sub">
+              Identify early warning signs in yourself and in colleagues before
+              they become safety problems.
+            </p>
+            <button class="btn secondary" onclick="speak('m2')">
+              ▶ Narration
+            </button>
+            <button class="btn secondary" onclick="stopSpeak()">■ Stop</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 245"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              width="760"
+              height="245"
+              rx="24"
+              fill="#fcfaff"
+              stroke="#e8ddf8"
+            />
+            <rect
+              x="70"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff1f2"
+              stroke="#dc2626"
+            />
+            <text
+              x="145"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#991b1b"
+            >
+              STRESSOR
+            </text>
+            <path
+              d="M230 105 H310"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="320"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="395"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#854d0e"
+            >
+              PAUSE
+            </text>
+            <path
+              d="M480 105 H560"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="570"
+              y="68"
+              width="130"
+              height="75"
+              rx="14"
+              fill="#f0fdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="635"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#166534"
+            >
+              RESPOND
+            </text>
+            <text
+              x="380"
+              y="195"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#120b2f"
+            >
+              Recognising Stress Signals
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="read">
+              <b>Stress point</b>Identify early warning signs in yourself and in
+              colleagues before they become safety problems.
+            </div>
+            <div class="read">
+              <b>Safety link</b>Stress can affect attention, judgement, teamwork
+              and communication. Treat signs early before they become incidents.
+            </div>
+            <div class="read">
+              <b>Crew welfare</b>Support must be respectful, private where
+              possible, and escalated when safety or wellbeing may be affected.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="q">
+            During cargo watch, a rating becomes angry over a minor correction
+            and then stops communicating. What should the officer do?
+          </div>
+          <div class="options" id="m2-act">
+            <button class="opt" onclick="ans('m2', 'act', 0, 1, this)">
+              Respond with anger so discipline is maintained.</button
+            ><button class="opt" onclick="ans('m2', 'act', 2, 1, this)">
+              Leave him alone in a safety-critical task.</button
+            ><button class="opt" onclick="ans('m2', 'act', 1, 1, this)">
+              Calm the situation, restore safe communication, check his
+              condition and manage immediate work risk.</button
+            ><button class="opt" onclick="ans('m2', 'act', 3, 1, this)">
+              Mock him so the team learns not to complain.
+            </button>
+          </div>
+          <div class="fb" id="m2-act-fb"></div>
+          <button class="btn secondary" onclick="refresh('m2', 'act')">
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="q">
+            Which is an early sign that pressure may be affecting performance?
+          </div>
+          <div class="options" id="m2-quiz">
+            <button class="opt" onclick="ans('m2', 'quiz', 0, 1, this)">
+              A person asks a safety question.</button
+            ><button class="opt" onclick="ans('m2', 'quiz', 1, 1, this)">
+              Repeated small mistakes, irritability and loss of concentration.</button
+            ><button class="opt" onclick="ans('m2', 'quiz', 2, 1, this)">
+              A person follows the checklist slowly.</button
+            ><button class="opt" onclick="ans('m2', 'quiz', 3, 1, this)">
+              A person reports feeling tired before work starts.
+            </button>
+          </div>
+          <div class="fb" id="m2-quiz-fb"></div>
+          <button class="btn secondary" onclick="refresh('m2', 'quiz')">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="nav">
+          <button class="btn secondary" onclick="go('m1')">← Back</button
+          ><button class="btn" onclick="go('m3')">Next Module →</button>
+        </div>
+      </section>
+      <section class="screen" id="m3">
+        <div class="head">
+          <div class="big">🌬️</div>
+          <div>
+            <div class="kicker">Module 3 of 6 · BCAV Behavioural</div>
+            <div class="mt">Immediate Coping Tools</div>
+            <p class="sub">
+              Use practical techniques to regain control during alarms,
+              inspections, conflict or high workload.
+            </p>
+            <button class="btn secondary" onclick="speak('m3')">
+              ▶ Narration
+            </button>
+            <button class="btn secondary" onclick="stopSpeak()">■ Stop</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 245"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              width="760"
+              height="245"
+              rx="24"
+              fill="#fcfaff"
+              stroke="#e8ddf8"
+            />
+            <rect
+              x="70"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff1f2"
+              stroke="#dc2626"
+            />
+            <text
+              x="145"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#991b1b"
+            >
+              STRESSOR
+            </text>
+            <path
+              d="M230 105 H310"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="320"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="395"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#854d0e"
+            >
+              PAUSE
+            </text>
+            <path
+              d="M480 105 H560"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="570"
+              y="68"
+              width="130"
+              height="75"
+              rx="14"
+              fill="#f0fdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="635"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#166534"
+            >
+              RESPOND
+            </text>
+            <text
+              x="380"
+              y="195"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#120b2f"
+            >
+              Immediate Coping Tools
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="read">
+              <b>Stress point</b>Use practical techniques to regain control
+              during alarms, inspections, conflict or high workload.
+            </div>
+            <div class="read">
+              <b>Safety link</b>Stress can affect attention, judgement, teamwork
+              and communication. Treat signs early before they become incidents.
+            </div>
+            <div class="read">
+              <b>Crew welfare</b>Support must be respectful, private where
+              possible, and escalated when safety or wellbeing may be affected.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="q">
+            An alarm cascade starts during manoeuvring and the watchkeeper feels
+            overwhelmed. What is the best first personal control?
+          </div>
+          <div class="options" id="m3-act">
+            <button class="opt" onclick="ans('m3', 'act', 0, 1, this)">
+              Silence every alarm without checking.</button
+            ><button class="opt" onclick="ans('m3', 'act', 1, 1, this)">
+              Take one controlled breath, identify the most critical alarm, call
+              for support and act by priority.</button
+            ><button class="opt" onclick="ans('m3', 'act', 2, 1, this)">
+              Leave the control room to calm down without informing anyone.</button
+            ><button class="opt" onclick="ans('m3', 'act', 3, 1, this)">
+              Assume the alarms are false because there are many of them.
+            </button>
+          </div>
+          <div class="fb" id="m3-act-fb"></div>
+          <button class="btn secondary" onclick="refresh('m3', 'act')">
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="q">
+            What is a useful immediate stress-control technique during a
+            high-pressure operation?
+          </div>
+          <div class="options" id="m3-quiz">
+            <button class="opt" onclick="ans('m3', 'quiz', 0, 0, this)">
+              Pause briefly, breathe, identify priority and communicate the next
+              action.</button
+            ><button class="opt" onclick="ans('m3', 'quiz', 1, 0, this)">
+              Stop speaking to everyone.</button
+            ><button class="opt" onclick="ans('m3', 'quiz', 2, 0, this)">
+              Rush faster to finish before thinking.</button
+            ><button class="opt" onclick="ans('m3', 'quiz', 3, 0, this)">
+              Hide uncertainty from the team.
+            </button>
+          </div>
+          <div class="fb" id="m3-quiz-fb"></div>
+          <button class="btn secondary" onclick="refresh('m3', 'quiz')">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="nav">
+          <button class="btn secondary" onclick="go('m2')">← Back</button
+          ><button class="btn" onclick="go('m4')">Next Module →</button>
+        </div>
+      </section>
+      <section class="screen" id="m4">
+        <div class="head">
+          <div class="big">🗣️</div>
+          <div>
+            <div class="kicker">Module 4 of 6 · BCAV Behavioural</div>
+            <div class="mt">Communication Under Pressure</div>
+            <p class="sub">
+              Maintain clear communication and teamwork when stress is high.
+            </p>
+            <button class="btn secondary" onclick="speak('m4')">
+              ▶ Narration
+            </button>
+            <button class="btn secondary" onclick="stopSpeak()">■ Stop</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 245"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              width="760"
+              height="245"
+              rx="24"
+              fill="#fcfaff"
+              stroke="#e8ddf8"
+            />
+            <rect
+              x="70"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff1f2"
+              stroke="#dc2626"
+            />
+            <text
+              x="145"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#991b1b"
+            >
+              STRESSOR
+            </text>
+            <path
+              d="M230 105 H310"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="320"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="395"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#854d0e"
+            >
+              PAUSE
+            </text>
+            <path
+              d="M480 105 H560"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="570"
+              y="68"
+              width="130"
+              height="75"
+              rx="14"
+              fill="#f0fdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="635"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#166534"
+            >
+              RESPOND
+            </text>
+            <text
+              x="380"
+              y="195"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#120b2f"
+            >
+              Communication Under Pressure
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="read">
+              <b>Stress point</b>Maintain clear communication and teamwork when
+              stress is high.
+            </div>
+            <div class="read">
+              <b>Safety link</b>Stress can affect attention, judgement, teamwork
+              and communication. Treat signs early before they become incidents.
+            </div>
+            <div class="read">
+              <b>Crew welfare</b>Support must be respectful, private where
+              possible, and escalated when safety or wellbeing may be affected.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="q">
+            The Chief Officer gives a rapid instruction during a stressful
+            operation and you are not sure which valve he means. What should you
+            say?
+          </div>
+          <div class="options" id="m4-act">
+            <button class="opt" onclick="ans('m4', 'act', 0, 1, this)">
+              Operate the nearest valve quickly.</button
+            ><button class="opt" onclick="ans('m4', 'act', 1, 1, this)">
+              Ask for clarification and repeat back the confirmed instruction
+              before operating.</button
+            ><button class="opt" onclick="ans('m4', 'act', 2, 1, this)">
+              Stay silent because he is senior.</button
+            ><button class="opt" onclick="ans('m4', 'act', 3, 1, this)">
+              Ask another rating to guess.
+            </button>
+          </div>
+          <div class="fb" id="m4-act-fb"></div>
+          <button class="btn secondary" onclick="refresh('m4', 'act')">
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="q">What does closed-loop communication mean?</div>
+          <div class="options" id="m4-quiz">
+            <button class="opt" onclick="ans('m4', 'quiz', 0, 0, this)">
+              The receiver repeats or confirms the instruction so both sides
+              know it was understood.</button
+            ><button class="opt" onclick="ans('m4', 'quiz', 1, 0, this)">
+              Only senior officers are allowed to speak.</button
+            ><button class="opt" onclick="ans('m4', 'quiz', 2, 0, this)">
+              Communication stops once the order is given.</button
+            ><button class="opt" onclick="ans('m4', 'quiz', 3, 0, this)">
+              Instructions are written only after the job is over.
+            </button>
+          </div>
+          <div class="fb" id="m4-quiz-fb"></div>
+          <button class="btn secondary" onclick="refresh('m4', 'quiz')">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="nav">
+          <button class="btn secondary" onclick="go('m3')">← Back</button
+          ><button class="btn" onclick="go('m5')">Next Module →</button>
+        </div>
+      </section>
+      <section class="screen" id="m5">
+        <div class="head">
+          <div class="big">🛌</div>
+          <div>
+            <div class="kicker">Module 5 of 6 · BCAV Behavioural</div>
+            <div class="mt">Fatigue, Rest and Resilience</div>
+            <p class="sub">
+              Connect stress with fatigue, isolation, sleep, routines and
+              long-term performance.
+            </p>
+            <button class="btn secondary" onclick="speak('m5')">
+              ▶ Narration
+            </button>
+            <button class="btn secondary" onclick="stopSpeak()">■ Stop</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 245"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              width="760"
+              height="245"
+              rx="24"
+              fill="#fcfaff"
+              stroke="#e8ddf8"
+            />
+            <rect
+              x="70"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff1f2"
+              stroke="#dc2626"
+            />
+            <text
+              x="145"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#991b1b"
+            >
+              STRESSOR
+            </text>
+            <path
+              d="M230 105 H310"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="320"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="395"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#854d0e"
+            >
+              PAUSE
+            </text>
+            <path
+              d="M480 105 H560"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="570"
+              y="68"
+              width="130"
+              height="75"
+              rx="14"
+              fill="#f0fdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="635"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#166534"
+            >
+              RESPOND
+            </text>
+            <text
+              x="380"
+              y="195"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#120b2f"
+            >
+              Fatigue, Rest and Resilience
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="read">
+              <b>Stress point</b>Connect stress with fatigue, isolation, sleep,
+              routines and long-term performance.
+            </div>
+            <div class="read">
+              <b>Safety link</b>Stress can affect attention, judgement, teamwork
+              and communication. Treat signs early before they become incidents.
+            </div>
+            <div class="read">
+              <b>Crew welfare</b>Support must be respectful, private where
+              possible, and escalated when safety or wellbeing may be affected.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="q">
+            A crew member has slept poorly for several nights and is assigned a
+            hazardous maintenance task. What is the safest management action?
+          </div>
+          <div class="options" id="m5-act">
+            <button class="opt" onclick="ans('m5', 'act', 0, 1, this)">
+              Proceed because fatigue is personal responsibility only.</button
+            ><button class="opt" onclick="ans('m5', 'act', 1, 1, this)">
+              Assess fitness for duty, adjust supervision or task allocation,
+              and ensure rest and safe controls are in place.</button
+            ><button class="opt" onclick="ans('m5', 'act', 2, 1, this)">
+              Give him energy drinks and continue.</button
+            ><button class="opt" onclick="ans('m5', 'act', 3, 1, this)">
+              Tell him not to mention fatigue again.
+            </button>
+          </div>
+          <div class="fb" id="m5-act-fb"></div>
+          <button class="btn secondary" onclick="refresh('m5', 'act')">
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="q">Why is fatigue important in stress management?</div>
+          <div class="options" id="m5-quiz">
+            <button class="opt" onclick="ans('m5', 'quiz', 0, 0, this)">
+              Fatigue reduces attention and emotional control, increasing the
+              effect of stress.</button
+            ><button class="opt" onclick="ans('m5', 'quiz', 1, 0, this)">
+              Fatigue only matters during night watches.</button
+            ><button class="opt" onclick="ans('m5', 'quiz', 2, 0, this)">
+              Fatigue improves decision-making under pressure.</button
+            ><button class="opt" onclick="ans('m5', 'quiz', 3, 0, this)">
+              Fatigue can be ignored if the person is experienced.
+            </button>
+          </div>
+          <div class="fb" id="m5-quiz-fb"></div>
+          <button class="btn secondary" onclick="refresh('m5', 'quiz')">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="nav">
+          <button class="btn secondary" onclick="go('m4')">← Back</button
+          ><button class="btn" onclick="go('m6')">Next Module →</button>
+        </div>
+      </section>
+      <section class="screen" id="m6">
+        <div class="head">
+          <div class="big">🤝</div>
+          <div>
+            <div class="kicker">Module 6 of 6 · BCAV Behavioural</div>
+            <div class="mt">When to Seek Help and Support Others</div>
+            <p class="sub">
+              Know when personal coping is not enough and how senior officers
+              can reduce stressors under their control.
+            </p>
+            <button class="btn secondary" onclick="speak('m6')">
+              ▶ Narration
+            </button>
+            <button class="btn secondary" onclick="stopSpeak()">■ Stop</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">Training Visual</div>
+          <svg
+            class="visual"
+            viewBox="0 0 760 245"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              width="760"
+              height="245"
+              rx="24"
+              fill="#fcfaff"
+              stroke="#e8ddf8"
+            />
+            <rect
+              x="70"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff1f2"
+              stroke="#dc2626"
+            />
+            <text
+              x="145"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#991b1b"
+            >
+              STRESSOR
+            </text>
+            <path
+              d="M230 105 H310"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="320"
+              y="68"
+              width="150"
+              height="75"
+              rx="14"
+              fill="#fff8db"
+              stroke="#ca8a04"
+            />
+            <text
+              x="395"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#854d0e"
+            >
+              PAUSE
+            </text>
+            <path
+              d="M480 105 H560"
+              stroke="#a78bfa"
+              stroke-width="7"
+              stroke-linecap="round"
+            />
+            <rect
+              x="570"
+              y="68"
+              width="130"
+              height="75"
+              rx="14"
+              fill="#f0fdf4"
+              stroke="#16a34a"
+            />
+            <text
+              x="635"
+              y="111"
+              text-anchor="middle"
+              font-size="15"
+              font-weight="900"
+              fill="#166534"
+            >
+              RESPOND
+            </text>
+            <text
+              x="380"
+              y="195"
+              text-anchor="middle"
+              font-size="18"
+              font-weight="900"
+              fill="#120b2f"
+            >
+              When to Seek Help and Support Others
+            </text>
+          </svg>
+        </div>
+        <div class="card">
+          <div class="label">Core Learning</div>
+          <div class="readgrid">
+            <div class="read">
+              <b>Stress point</b>Know when personal coping is not enough and how
+              senior officers can reduce stressors under their control.
+            </div>
+            <div class="read">
+              <b>Safety link</b>Stress can affect attention, judgement, teamwork
+              and communication. Treat signs early before they become incidents.
+            </div>
+            <div class="read">
+              <b>Crew welfare</b>Support must be respectful, private where
+              possible, and escalated when safety or wellbeing may be affected.
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <div class="label">Interactive Activity</div>
+          <div class="q">
+            A seafarer privately says he is not coping and is afraid he may make
+            a serious mistake on watch. What should the officer do?
+          </div>
+          <div class="options" id="m6-act">
+            <button class="opt" onclick="ans('m6', 'act', 0, 1, this)">
+              Tell him to toughen up and continue watch alone.</button
+            ><button class="opt" onclick="ans('m6', 'act', 1, 1, this)">
+              Take the concern seriously, remove immediate safety risk, keep
+              privacy as far as possible, and involve the Master/Chief
+              Engineer/company support as appropriate.</button
+            ><button class="opt" onclick="ans('m6', 'act', 2, 1, this)">
+              Promise complete secrecy even if safety is affected.</button
+            ><button class="opt" onclick="ans('m6', 'act', 3, 1, this)">
+              Share the story publicly so others know.
+            </button>
+          </div>
+          <div class="fb" id="m6-act-fb"></div>
+          <button class="btn secondary" onclick="refresh('m6', 'act')">
+            ↻ Refresh Activity
+          </button>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Module Quiz</div>
+          <div class="q">When should help be sought?</div>
+          <div class="options" id="m6-quiz">
+            <button class="opt" onclick="ans('m6', 'quiz', 0, 1, this)">
+              Only after an incident has occurred.</button
+            ><button class="opt" onclick="ans('m6', 'quiz', 2, 1, this)">
+              Never, because seafarers must manage alone.</button
+            ><button class="opt" onclick="ans('m6', 'quiz', 1, 1, this)">
+              When stress or fatigue may affect safety, judgement, sleep, mood,
+              conflict or ability to perform duties.</button
+            ><button class="opt" onclick="ans('m6', 'quiz', 3, 1, this)">
+              Only during port stays.
+            </button>
+          </div>
+          <div class="fb" id="m6-quiz-fb"></div>
+          <button class="btn secondary" onclick="refresh('m6', 'quiz')">
+            ↻ Refresh Quiz
+          </button>
+        </div>
+        <div class="nav">
+          <button class="btn secondary" onclick="go('m5')">← Back</button
+          ><button class="btn" onclick="go('assessment')">
+            Final Assessment →
+          </button>
+        </div>
+      </section>
+      <section class="screen" id="assessment">
+        <div class="head">
+          <div class="big">✅</div>
+          <div>
+            <div class="kicker">Final Assessment</div>
+            <div class="mt">Stress Management Competence Check</div>
+            <p class="sub">
+              Answer all questions. 80% or higher unlocks completion.
+            </p>
+          </div>
+        </div>
+        <div class="card final-q">
+          <div class="label">Question 1</div>
+          <div class="q">Stress onboard is best understood as:</div>
+          <div class="options">
+            <button class="opt" onclick="finalAns(0, 0, 0, this)">
+              A real body and mind response to pressure that can affect safety</button
+            ><button class="opt" onclick="finalAns(0, 1, 0, this)">
+              Weakness in junior crew only</button
+            ><button class="opt" onclick="finalAns(0, 2, 0, this)">
+              Something that disappears at sea</button
+            ><button class="opt" onclick="finalAns(0, 3, 0, this)">
+              A paperwork issue only
+            </button>
+          </div>
+          <div class="fb" id="f-fb-0"></div>
+        </div>
+        <div class="card final-q">
+          <div class="label">Question 2</div>
+          <div class="q">A stressed seafarer may show:</div>
+          <div class="options">
+            <button class="opt" onclick="finalAns(1, 1, 0, this)">
+              Only physical injury</button
+            ><button class="opt" onclick="finalAns(1, 2, 0, this)">
+              No visible signs ever</button
+            ><button class="opt" onclick="finalAns(1, 0, 0, this)">
+              Irritability, withdrawal, poor concentration or repeated small
+              errors</button
+            ><button class="opt" onclick="finalAns(1, 3, 0, this)">
+              Improved judgement in all cases
+            </button>
+          </div>
+          <div class="fb" id="f-fb-1"></div>
+        </div>
+        <div class="card final-q">
+          <div class="label">Question 3</div>
+          <div class="q">A useful immediate coping action is:</div>
+          <div class="options">
+            <button class="opt" onclick="finalAns(2, 0, 0, this)">
+              Pause, breathe, identify priority and communicate</button
+            ><button class="opt" onclick="finalAns(2, 1, 0, this)">
+              Rush faster</button
+            ><button class="opt" onclick="finalAns(2, 2, 0, this)">
+              Ignore all alarms</button
+            ><button class="opt" onclick="finalAns(2, 3, 0, this)">
+              Stop communicating
+            </button>
+          </div>
+          <div class="fb" id="f-fb-2"></div>
+        </div>
+        <div class="card final-q">
+          <div class="label">Question 4</div>
+          <div class="q">
+            If unsure of an instruction during pressure, you should:
+          </div>
+          <div class="options">
+            <button class="opt" onclick="finalAns(3, 1, 0, this)">
+              Guess quickly</button
+            ><button class="opt" onclick="finalAns(3, 2, 0, this)">
+              Stay silent</button
+            ><button class="opt" onclick="finalAns(3, 3, 0, this)">
+              Ask someone else to guess
+            </button>
+            <button class="opt" onclick="finalAns(3, 0, 0, this)">
+              Clarify and repeat back before acting
+            </button>
+          </div>
+          <div class="fb" id="f-fb-3"></div>
+        </div>
+        <div class="card final-q">
+          <div class="label">Question 5</div>
+          <div class="q">Fatigue and stress are linked because fatigue:</div>
+          <div class="options">
+            <button class="opt" onclick="finalAns(4, 1, 0, this)">
+              Has no safety effect</button
+            ><button class="opt" onclick="finalAns(4, 0, 0, this)">
+              Reduces attention and emotional control</button
+            ><button class="opt" onclick="finalAns(4, 2, 0, this)">
+              Only affects catering staff</button
+            ><button class="opt" onclick="finalAns(4, 3, 0, this)">
+              Always improves resilience
+            </button>
+          </div>
+          <div class="fb" id="f-fb-4"></div>
+        </div>
+        <div class="card final-q">
+          <div class="label">Question 6</div>
+          <div class="q">A senior officer reduces stress by:</div>
+          <div class="options">
+            <button class="opt" onclick="finalAns(5, 0, 0, this)">
+              Planning realistically, managing fatigue and encouraging
+              respectful communication</button
+            ><button class="opt" onclick="finalAns(5, 1, 0, this)">
+              Shouting more often</button
+            ><button class="opt" onclick="finalAns(5, 2, 0, this)">
+              Punishing all questions</button
+            ><button class="opt" onclick="finalAns(5, 3, 0, this)">
+              Ignoring rest hours
+            </button>
+          </div>
+          <div class="fb" id="f-fb-5"></div>
+        </div>
+        <div class="card final-q">
+          <div class="label">Question 7</div>
+          <div class="q">
+            If stress may affect watchkeeping safety, the correct action is:
+          </div>
+          <div class="options">
+            <button class="opt" onclick="finalAns(6, 1, 0, this)">
+              Hide it until sign-off</button
+            ><button class="opt" onclick="finalAns(6, 2, 0, this)">
+              Wait for an accident</button
+            ><button class="opt" onclick="finalAns(6, 3, 0, this)">
+              Tell nobody
+            </button>
+            <button class="opt" onclick="finalAns(6, 0, 0, this)">
+              Escalate early and manage immediate risk
+            </button>
+          </div>
+          <div class="fb" id="f-fb-6"></div>
+        </div>
+        <div class="card final-q">
+          <div class="label">Question 8</div>
+          <div class="q">Closed-loop communication means:</div>
+          <div class="options">
+            <button class="opt" onclick="finalAns(7, 0, 0, this)">
+              Instruction is repeated/confirmed so understanding is clear</button
+            ><button class="opt" onclick="finalAns(7, 1, 0, this)">
+              Only written orders are valid</button
+            ><button class="opt" onclick="finalAns(7, 2, 0, this)">
+              Crew do not ask questions</button
+            ><button class="opt" onclick="finalAns(7, 3, 0, this)">
+              The loop is closed after the voyage
+            </button>
+          </div>
+          <div class="fb" id="f-fb-7"></div>
+        </div>
+        <div class="card final-q">
+          <div class="label">Question 9</div>
+          <div class="q">Under pressure, decision-making often becomes:</div>
+          <div class="options">
+            <button class="opt" onclick="finalAns(8, 1, 0, this)">
+              Automatically perfect</button
+            ><button class="opt" onclick="finalAns(8, 0, 0, this)">
+              Narrower and more error-prone</button
+            ><button class="opt" onclick="finalAns(8, 2, 0, this)">
+              Unrelated to communication</button
+            ><button class="opt" onclick="finalAns(8, 3, 0, this)">
+              Independent of fatigue
+            </button>
+          </div>
+          <div class="fb" id="f-fb-8"></div>
+        </div>
+        <div class="card final-q">
+          <div class="label">Question 10</div>
+          <div class="q">Supportive peer response should be:</div>
+          <div class="options">
+            <button class="opt" onclick="finalAns(9, 1, 0, this)">
+              Public criticism
+            </button>
+            <button class="opt" onclick="finalAns(9, 0, 0, this)">
+              Private, respectful, practical and safety-focused</button
+            ><button class="opt" onclick="finalAns(9, 2, 0, this)">
+              Mockery</button
+            ><button class="opt" onclick="finalAns(9, 3, 0, this)">
+              Complete secrecy even if safety is at risk
+            </button>
+          </div>
+          <div class="fb" id="f-fb-9"></div>
+        </div>
+        <div class="nav">
+          <button class="btn secondary" onclick="go('m6')">← Back</button
+          ><button class="btn" onclick="submitFinal()">Submit Assessment</button
+          ><button class="btn secondary" onclick="refreshAssessment()">
+            ↻ Refresh Assessment
+          </button>
+        </div>
+        <div class="card cert" id="cert">
+          <div class="kicker">Course Completed</div>
+          <div class="score" id="score">0%</div>
+          <h2>Stress Management Onboard — Staying Effective Under Pressure</h2>
+          <p class="lead">
+            The trainee has completed the interactive course and final
+            assessment.
+          </p>
+        </div>
+      </section>
+    </main>
+    <script>
+      const mids = ["m1", "m2", "m3", "m4", "m5", "m6"];
+      const moduleText = {
+        m1: "What Stress Is Onboard. Understand physiological and psychological stress responses in the shipboard environment.",
+        m2: "Recognising Stress Signals. Identify early warning signs in yourself and in colleagues before they become safety problems.",
+        m3: "Immediate Coping Tools. Use practical techniques to regain control during alarms, inspections, conflict or high workload.",
+        m4: "Communication Under Pressure. Maintain clear communication and teamwork when stress is high.",
+        m5: "Fatigue, Rest and Resilience. Connect stress with fatigue, isolation, sleep, routines and long-term performance.",
+        m6: "When to Seek Help and Support Others. Know when personal coping is not enough and how senior officers can reduce stressors under their control.",
+      };
+      let state = JSON.parse(
+        localStorage.getItem(
+          "stress_management_onboard_staying_effective_under_pressure_state",
+        ) || '{"done":{},"xp":0,"final":{}}',
+      );
+      function save() {
+        localStorage.setItem(
+          "stress_management_onboard_staying_effective_under_pressure_state",
+          JSON.stringify(state),
+        );
+        update();
+      }
+      function go(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+        scrollTo(0, 0);
+        update();
+      }
+      function update() {
+        let d = mids.filter((m) => state.done[m]).length,
+          p = Math.round((d / mids.length) * 100);
+        document.getElementById("bar").style.width = p + "%";
+        document.getElementById("pct").textContent = p + "% Complete";
+        document.getElementById("xp").textContent = (state.xp || 0) + " XP";
+        mids.forEach((m) => {
+          let t = document.getElementById("tile-" + m);
+          if (t) t.classList.toggle("done", !!state.done[m]);
+        });
+      }
+      function ans(mid, type, choice, correct, btn) {
+        let box = document.getElementById(mid + "-" + type);
+        box.querySelectorAll(".opt").forEach((b) => {
+          b.disabled = true;
+          b.classList.remove("correct", "wrong");
+        });
+        let ok = choice === correct;
+        btn.classList.add(ok ? "correct" : "wrong");
+        let fb = document.getElementById(mid + "-" + type + "-fb");
+        fb.className = "fb " + (ok ? "good" : "bad");
+        fb.textContent = ok
+          ? "Correct. This protects safety and performance under pressure."
+          : "Not safe. Pause, reassess and use respectful support.";
+        if (ok) {
+          if (type === "act" && !state.done[mid]) {
+            state.done[mid] = true;
+            state.xp += 20;
+          } else {
+            state.xp += 10;
+          }
+          save();
+        }
+      }
+      function refresh(mid, type) {
+        let box = document.getElementById(mid + "-" + type);
+        box.querySelectorAll(".opt").forEach((b) => {
+          b.disabled = false;
+          b.classList.remove("correct", "wrong");
+        });
+        let fb = document.getElementById(mid + "-" + type + "-fb");
+        fb.className = "fb";
+        fb.textContent = "";
+      }
+      function finalAns(q, c, cor, btn) {
+        let card = btn.closest(".final-q");
+        card.querySelectorAll(".opt").forEach((b) => {
+          b.disabled = true;
+          b.classList.remove("correct", "wrong");
+        });
+        let ok = c === cor;
+        btn.classList.add(ok ? "correct" : "wrong");
+        state.final[q] = ok;
+        let fb = document.getElementById("f-fb-" + q);
+        fb.className = "fb " + (ok ? "good" : "bad");
+        fb.textContent = ok ? "Correct." : "Review the related module.";
+        save();
+      }
+      function submitFinal() {
+        if (Object.keys(state.final).length < 10) {
+          alert("Please answer all final assessment questions.");
+          return;
+        }
+        let c = Object.values(state.final).filter(Boolean).length,
+          p = Math.round(c * 10);
+        document.getElementById("score").textContent = p + "%";
+        document.getElementById("cert").classList.add("show");
+        if (p >= 80) {
+          mids.forEach((m) => (state.done[m] = true));
+          state.xp += 50;
+          save();
+        }
+        document.getElementById("cert").scrollIntoView({ behavior: "smooth" });
+      }
+      function refreshAssessment() {
+        state.final = {};
+        save();
+        document.querySelectorAll(".final-q").forEach((card, i) => {
+          card.querySelectorAll(".opt").forEach((b) => {
+            b.disabled = false;
+            b.classList.remove("correct", "wrong");
+          });
+          let fb = document.getElementById("f-fb-" + i);
+          fb.className = "fb";
+          fb.textContent = "";
+        });
+        document.getElementById("cert").classList.remove("show");
+      }
+      function speak(mid) {
+        stopSpeak();
+        if (!("speechSynthesis" in window)) {
+          alert("Narration not supported in this browser.");
+          return;
+        }
+        let u = new SpeechSynthesisUtterance(moduleText[mid]);
+        u.rate = 0.92;
+        speechSynthesis.speak(u);
+      }
+      function stopSpeak() {
+        if ("speechSynthesis" in window) speechSynthesis.cancel();
+      }
+      update();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,4714 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oil Tanker Familiarisation — STCW A-V/1-1</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Barlow", sans-serif;
+        background: #fafaf8;
+        color: #1a1a1a;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      :root {
+        --amber: #d97706;
+        --amber-lt: #fffbeb;
+        --amber-mid: #f59e0b;
+        --amber-dark: #92400e;
+        --orange: #c2410c;
+        --orange-lt: #fff7ed;
+        --orange-mid: #ea580c;
+        --red: #dc2626;
+        --red-lt: #fef2f2;
+        --green: #15803d;
+        --green-lt: #f0fdf4;
+        --green-mid: #22c55e;
+        --blue: #1d4ed8;
+        --blue-lt: #eff6ff;
+        --navy: #1e293b;
+        --steel: #475569;
+        --muted: #94a3b8;
+        --white: #ffffff;
+        --bg: #fafaf8;
+        --bg2: #f5f4f0;
+        --border: #e5e4df;
+        --border2: #d4d2cc;
+        --shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+        --radius: 10px;
+        --radius-sm: 7px;
+      }
+
+      /* ── PROGRESS ── */
+      #prog-wrap {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--border);
+        z-index: 300;
+      }
+      #prog-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--amber), var(--orange-mid));
+        width: 0%;
+        transition: width 0.5s ease;
+      }
+
+      /* ── NAV ── */
+      nav {
+        position: fixed;
+        top: 4px;
+        left: 0;
+        right: 0;
+        height: 52px;
+        background: rgba(255, 255, 255, 0.97);
+        border-bottom: 1px solid var(--border);
+        z-index: 299;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        backdrop-filter: blur(10px);
+      }
+      .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .nav-logo {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1.1rem;
+        letter-spacing: 0.04em;
+        color: var(--navy);
+      }
+      .nav-logo em {
+        font-style: normal;
+        color: var(--amber);
+      }
+      .nav-badge {
+        font-family: "Fira Code", monospace;
+        font-size: 10px;
+        color: var(--amber-dark);
+        background: var(--amber-lt);
+        border: 1px solid rgba(217, 119, 6, 0.25);
+        padding: 2px 8px;
+        border-radius: 3px;
+        letter-spacing: 0.04em;
+      }
+      #nav-mod {
+        font-family: "Fira Code", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.03em;
+      }
+      #nav-pts {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--amber-dark);
+        background: var(--amber-lt);
+        border: 1px solid rgba(217, 119, 6, 0.2);
+        padding: 3px 12px;
+        border-radius: 20px;
+        letter-spacing: 0.04em;
+      }
+
+      main {
+        padding-top: 56px;
+        min-height: 100vh;
+      }
+
+      /* ── SCREENS ── */
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: enter 0.35s ease;
+      }
+      @keyframes enter {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      #screen-hero {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: var(--white);
+        min-height: calc(100vh - 56px);
+      }
+      #screen-hero.active {
+        display: flex;
+      }
+
+      /* ── HERO ── */
+      .hero-inner {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+        text-align: center;
+      }
+      .hero-sticker {
+        display: inline-block;
+        background: var(--orange-lt);
+        color: var(--orange);
+        border: 1px solid rgba(194, 65, 12, 0.2);
+        font-family: "Fira Code", monospace;
+        font-size: 11px;
+        font-weight: 500;
+        padding: 5px 16px;
+        border-radius: 20px;
+        letter-spacing: 0.08em;
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+      }
+      .hero-icon {
+        font-size: 80px;
+        display: block;
+        margin-bottom: 1rem;
+        filter: drop-shadow(0 4px 20px rgba(217, 119, 6, 0.25));
+      }
+      .hero-inner h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 800;
+        font-size: clamp(2rem, 6vw, 3.2rem);
+        letter-spacing: 0.02em;
+        color: var(--navy);
+        line-height: 1.05;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+      }
+      .hero-inner h1 em {
+        font-style: normal;
+        color: var(--amber);
+      }
+      .hero-desc {
+        font-size: 14px;
+        color: var(--steel);
+        line-height: 1.75;
+        margin-bottom: 2rem;
+        font-weight: 300;
+        max-width: 460px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        max-width: 460px;
+        margin: 0 auto 2rem;
+      }
+      .hg {
+        background: var(--bg2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 6px;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-align: center;
+      }
+      .hg:hover {
+        border-color: var(--amber);
+        background: var(--amber-lt);
+      }
+      .hg.done {
+        border-color: var(--green-mid);
+        background: var(--green-lt);
+      }
+      .hg.done .hgn {
+        color: var(--green);
+      }
+      .hg-ic {
+        font-size: 22px;
+        display: block;
+        margin-bottom: 3px;
+      }
+      .hgn {
+        font-family: "Fira Code", monospace;
+        font-size: 10px;
+        color: var(--amber);
+        letter-spacing: 0.08em;
+        margin-bottom: 2px;
+      }
+      .hgl {
+        font-size: 10px;
+        color: var(--muted);
+        line-height: 1.3;
+      }
+      .btn-begin {
+        background: var(--amber);
+        color: var(--white);
+        border: none;
+        padding: 13px 42px;
+        border-radius: var(--radius-sm);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);
+      }
+      .btn-begin:hover {
+        background: var(--amber-mid);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(217, 119, 6, 0.4);
+      }
+
+      /* ── MODULE LAYOUT ── */
+      .mod-wrap {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 1.5rem 1.5rem 5rem;
+      }
+
+      /* ── BREADCRUMBS ── */
+      .bcrumbs {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+        align-items: center;
+      }
+      .bc {
+        font-family: "Fira Code", monospace;
+        font-size: 10px;
+        padding: 4px 10px;
+        border-radius: 3px;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        cursor: pointer;
+        background: var(--white);
+        transition: all 0.12s;
+        white-space: nowrap;
+      }
+      .bc:hover {
+        border-color: var(--amber);
+        color: var(--amber);
+      }
+      .bc.active {
+        background: var(--amber);
+        border-color: var(--amber);
+        color: var(--white);
+      }
+      .bc.done {
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+      }
+
+      /* ── MODULE HEADER ── */
+      .mod-hdr {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--amber);
+        border-radius: 0 var(--radius) var(--radius) 0;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.25rem;
+        box-shadow: var(--shadow);
+      }
+      .mh-icon {
+        font-size: 40px;
+        flex-shrink: 0;
+      }
+      .mh-num {
+        font-family: "Fira Code", monospace;
+        font-size: 10px;
+        color: var(--amber);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+      }
+      .mh-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1.4rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: var(--navy);
+        line-height: 1.2;
+      }
+      .mh-desc {
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 4px;
+        font-weight: 300;
+      }
+
+      /* ── CARDS ── */
+      .card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+        margin-bottom: 1.1rem;
+        box-shadow: var(--shadow);
+      }
+      .card-label {
+        font-family: "Fira Code", monospace;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .card-label.read {
+        color: var(--blue);
+      }
+      .card-label.do {
+        color: var(--orange);
+      }
+      .card-label.check {
+        color: #7c3aed;
+      }
+      .card-q {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 1.1rem;
+        letter-spacing: 0.02em;
+        color: var(--navy);
+        margin-bottom: 0.9rem;
+        line-height: 1.4;
+      }
+
+      /* ── FACT GRID ── */
+      .fact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 0.75rem 0;
+      }
+      .fact-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.9rem;
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .fi {
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+      .ft {
+        font-size: 13px;
+        color: var(--steel);
+        line-height: 1.6;
+        font-weight: 300;
+      }
+      .ft strong {
+        color: var(--navy);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .callout {
+        border-radius: var(--radius-sm);
+        padding: 0.85rem 1.1rem;
+        margin: 0.75rem 0;
+        font-size: 13px;
+        line-height: 1.7;
+        border-left: 3px solid;
+        font-weight: 300;
+      }
+      .callout.danger {
+        background: var(--red-lt);
+        border-color: var(--red);
+        color: #7f1d1d;
+      }
+      .callout.warn {
+        background: var(--amber-lt);
+        border-color: var(--amber);
+        color: var(--amber-dark);
+      }
+      .callout.tip {
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+      }
+      .callout.info {
+        background: var(--blue-lt);
+        border-color: var(--blue);
+        color: #1e3a8a;
+      }
+      .callout strong {
+        font-weight: 600;
+      }
+
+      /* ── TABLE ── */
+      .t-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        margin: 0.75rem 0;
+      }
+      .t-table th {
+        background: var(--bg2);
+        color: var(--steel);
+        font-family: "Fira Code", monospace;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 2px solid var(--border2);
+        font-weight: 500;
+      }
+      .t-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+        color: var(--steel);
+        line-height: 1.5;
+        vertical-align: top;
+        font-weight: 300;
+      }
+      .t-table td:first-child {
+        color: var(--navy);
+        font-weight: 500;
+      }
+      .t-table tr:hover td {
+        background: var(--bg2);
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 3px;
+        font-size: 10px;
+        font-weight: 600;
+        font-family: "Fira Code", monospace;
+      }
+      .b-red {
+        background: var(--red-lt);
+        color: var(--red);
+        border: 1px solid rgba(220, 38, 38, 0.2);
+      }
+      .b-amber {
+        background: var(--amber-lt);
+        color: var(--amber);
+        border: 1px solid rgba(217, 119, 6, 0.2);
+      }
+      .b-green {
+        background: var(--green-lt);
+        color: var(--green);
+        border: 1px solid rgba(21, 128, 61, 0.2);
+      }
+      .b-blue {
+        background: var(--blue-lt);
+        color: var(--blue);
+        border: 1px solid rgba(29, 78, 216, 0.2);
+      }
+
+      /* ── SORT ── */
+      .sort-list {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        width: 100%;
+      }
+      .sort-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--bg2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        cursor: grab;
+        user-select: none;
+        transition: all 0.12s;
+        width: 100%;
+        color: var(--steel) !important;
+        font-size: 13px;
+        font-weight: 400;
+      }
+      .sort-item:hover {
+        border-color: rgba(217, 119, 6, 0.4);
+        background: var(--amber-lt);
+      }
+      .sort-item.over {
+        border-color: var(--amber);
+        background: rgba(217, 119, 6, 0.08);
+        transform: scale(1.01);
+      }
+      .sort-item.dragging {
+        opacity: 0.3;
+        border: 1.5px dashed var(--amber);
+      }
+      .sort-item.correct-item {
+        background: var(--green-lt) !important;
+        border-color: var(--green-mid) !important;
+        color: var(--green) !important;
+        cursor: default;
+      }
+      .sort-handle {
+        color: var(--border2);
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .sort-badge {
+        min-width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        flex-shrink: 0;
+        font-family: "Fira Code", monospace;
+      }
+      .correct-item .sort-badge {
+        background: var(--green-mid);
+        color: #fff;
+      }
+      .sort-text {
+        flex: 1;
+        line-height: 1.45;
+        color: var(--steel) !important;
+        min-width: 0;
+        word-break: break-word;
+        font-weight: 400;
+      }
+      .correct-item .sort-text {
+        color: var(--green) !important;
+      }
+      .sort-feedback {
+        margin-top: 0.7rem;
+        font-size: 13px;
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        display: none;
+        line-height: 1.65;
+        word-wrap: break-word;
+        border-left: 3px solid;
+        font-weight: 300;
+      }
+      .sort-feedback.pass {
+        display: block;
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+        font-weight: 500;
+      }
+      .sort-feedback.fail {
+        display: block;
+        background: var(--red-lt);
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      /* ── MCQ ── */
+      .mcq-opts {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .mcq-opt {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        background: var(--bg2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        cursor: pointer;
+        transition: all 0.12s;
+        text-align: left;
+        font-size: 13px;
+        color: var(--steel) !important;
+        line-height: 1.5;
+        font-family: "Barlow", sans-serif;
+        font-weight: 400;
+        width: 100%;
+      }
+      .mcq-opt:hover:not([disabled]) {
+        border-color: rgba(217, 119, 6, 0.4);
+        background: var(--amber-lt);
+      }
+      .mcq-letter {
+        min-width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+        flex-shrink: 0;
+        margin-top: 1px;
+        font-family: "Fira Code", monospace;
+        transition: all 0.12s;
+      }
+      .mcq-opt.correct-ans {
+        background: var(--green-lt) !important;
+        border-color: var(--green-mid) !important;
+        color: var(--green) !important;
+      }
+      .mcq-opt.correct-ans .mcq-letter {
+        background: var(--green-mid) !important;
+        color: #fff !important;
+      }
+      .mcq-opt.wrong-ans {
+        background: var(--red-lt) !important;
+        border-color: var(--red) !important;
+        color: var(--red) !important;
+      }
+      .mcq-opt.wrong-ans .mcq-letter {
+        background: var(--red) !important;
+        color: #fff !important;
+      }
+      .mcq-opt[disabled] {
+        cursor: default;
+      }
+      .mcq-fb {
+        font-size: 12px;
+        margin-top: 0.6rem;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        display: none;
+        line-height: 1.6;
+        border-left: 3px solid;
+        font-weight: 300;
+      }
+      .mcq-fb.ok {
+        display: block;
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+      }
+      .mcq-fb.err {
+        display: block;
+        background: var(--red-lt);
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .mcq-fb.err::before {
+        content: "⚠ Noted — ";
+        font-weight: 600;
+      }
+
+      /* ── MATCH ── */
+      .match-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .match-col-hdr {
+        font-family: "Fira Code", monospace;
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .match-col {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .match-item {
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 9px 12px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: var(--white);
+        line-height: 1.5;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        color: var(--steel) !important;
+        font-weight: 400;
+      }
+      .match-item:hover:not(.matched-ok):not(.matched-err) {
+        border-color: rgba(217, 119, 6, 0.4);
+        background: var(--amber-lt);
+      }
+      .match-item.selected {
+        border-color: var(--amber);
+        background: var(--amber-lt);
+        font-weight: 500;
+        color: var(--amber-dark) !important;
+      }
+      .match-item.matched-ok {
+        background: var(--green-lt) !important;
+        border-color: var(--green-mid) !important;
+        color: var(--green) !important;
+        cursor: default;
+        font-weight: 500;
+      }
+      .match-item.matched-err {
+        background: var(--red-lt) !important;
+        border-color: var(--red) !important;
+        color: var(--red) !important;
+        cursor: default;
+      }
+      .match-hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 0.5rem;
+        font-style: italic;
+        font-family: "Fira Code", monospace;
+      }
+      .match-score {
+        font-size: 13px;
+        margin-top: 0.75rem;
+        display: none;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        font-weight: 500;
+        border-left: 3px solid;
+      }
+      .match-score.show-ok {
+        display: block;
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+      }
+
+      /* ── HOTSPOT ACTIVITY ── */
+      .hotspot-wrap {
+        position: relative;
+        margin: 0.75rem 0;
+      }
+      .hotspot-wrap svg {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+      .hs-dot {
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .hs-dot:hover circle {
+        fill-opacity: 0.4;
+      }
+      .hs-dot.found circle {
+        fill: rgba(21, 128, 61, 0.3);
+        stroke: #15803d;
+      }
+      .hs-dot.found text {
+        fill: #15803d;
+      }
+      .hs-info {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem 1rem;
+        margin-top: 0.75rem;
+        font-size: 13px;
+        color: var(--steel);
+        line-height: 1.6;
+        font-weight: 300;
+        display: none;
+      }
+      .hs-info.show {
+        display: block;
+        animation: enter 0.25s ease;
+      }
+      .hs-progress {
+        font-family: "Fira Code", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 0.5rem;
+        text-align: center;
+      }
+
+      /* ── PPE DRAG ── */
+      .ppe-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 1rem;
+      }
+      .ppe-item {
+        background: var(--bg2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 8px;
+        cursor: grab;
+        user-select: none;
+        text-align: center;
+        transition: all 0.15s;
+        font-size: 12px;
+        color: var(--steel);
+      }
+      .ppe-item:hover {
+        border-color: var(--amber);
+        background: var(--amber-lt);
+      }
+      .ppe-item.placed {
+        opacity: 0.3;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .ppe-item.dragging-ppe {
+        opacity: 0.25;
+      }
+      .ppe-icon {
+        font-size: 28px;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .ppe-name {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--navy);
+      }
+      .ppe-zones {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .ppe-zone {
+        border: 1.5px dashed var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        min-height: 58px;
+        transition: all 0.15s;
+      }
+      .ppe-zone.over-zone {
+        border-color: var(--amber);
+        background: var(--amber-lt);
+      }
+      .pz-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--navy);
+        margin-bottom: 5px;
+        font-family: "Barlow Condensed", sans-serif;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+      .pz-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        min-height: 22px;
+      }
+      .placed-chip {
+        background: rgba(217, 119, 6, 0.1);
+        border: 1px solid rgba(217, 119, 6, 0.3);
+        border-radius: 4px;
+        padding: 3px 8px;
+        font-size: 11px;
+        font-family: "Fira Code", monospace;
+        color: var(--amber-dark);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .placed-chip:hover {
+        background: rgba(217, 119, 6, 0.2);
+      }
+      .ppe-result {
+        font-size: 13px;
+        margin-top: 0.75rem;
+        padding: 9px 12px;
+        border-radius: var(--radius-sm);
+        display: none;
+        line-height: 1.55;
+        border-left: 3px solid;
+        font-weight: 300;
+      }
+      .ppe-result.show-pass {
+        display: block;
+        background: var(--green-lt);
+        border-color: var(--green-mid);
+        color: var(--green);
+        font-weight: 500;
+      }
+      .ppe-result.show-fail {
+        display: block;
+        background: var(--red-lt);
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      /* ── SCENARIO ── */
+      .scenario {
+        background: #fffdf5;
+        border: 1px solid #fde68a;
+        border-left: 4px solid var(--amber-mid);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        padding: 1rem 1.2rem;
+        margin: 0.75rem 0;
+      }
+      .scenario-lbl {
+        font-family: "Fira Code", monospace;
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--amber);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .scenario p {
+        font-size: 13px;
+        line-height: 1.75;
+        color: var(--navy);
+      }
+      .scenario p strong {
+        color: var(--amber-dark);
+        font-weight: 600;
+      }
+
+      /* ── BUTTONS ── */
+      .btn-check {
+        background: #7c3aed;
+        color: #fff;
+        border: none;
+        padding: 8px 20px;
+        border-radius: var(--radius-sm);
+        font-family: "Fira Code", monospace;
+        font-weight: 500;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.12s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 0.75rem;
+        letter-spacing: 0.04em;
+      }
+      .btn-check:hover {
+        background: #6d28d9;
+      }
+      .btn-reset {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        padding: 8px 16px;
+        border-radius: var(--radius-sm);
+        font-family: "Fira Code", monospace;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.12s;
+        margin-left: 6px;
+      }
+      .btn-reset:hover {
+        border-color: var(--amber);
+        color: var(--amber);
+      }
+      .btn-next {
+        background: var(--amber);
+        color: #fff;
+        border: none;
+        padding: 10px 24px;
+        border-radius: var(--radius-sm);
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .btn-next:hover {
+        background: var(--amber-mid);
+        transform: translateY(-1px);
+      }
+      .btn-prev {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        padding: 10px 20px;
+        border-radius: var(--radius-sm);
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 15px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.12s;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .btn-prev:hover {
+        border-color: var(--amber);
+        color: var(--amber);
+      }
+      .mod-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+
+      /* ── ASSESSMENT ── */
+      .assess-hdr {
+        background: var(--white);
+        border: 1px solid rgba(217, 119, 6, 0.25);
+        border-top: 4px solid var(--amber);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+      .assess-hdr h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--navy);
+        margin-bottom: 4px;
+      }
+      .assess-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 0.6rem;
+      }
+      .a-chip {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        font-family: "Fira Code", monospace;
+        font-size: 10px;
+        padding: 3px 9px;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+      }
+      .timer-strip {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 8px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.2rem;
+        position: sticky;
+        top: 56px;
+        z-index: 10;
+        box-shadow: var(--shadow);
+      }
+      #a-timer {
+        font-family: "Fira Code", monospace;
+        font-size: 1.3rem;
+        font-weight: 500;
+        color: var(--navy);
+      }
+      #a-timer.warn {
+        color: var(--amber);
+      }
+      #a-timer.danger {
+        color: var(--red);
+        animation: pulse 0.6s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      #a-qcount {
+        font-family: "Fira Code", monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .a-q {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+        margin-bottom: 0.9rem;
+        box-shadow: var(--shadow);
+      }
+      .a-qnum {
+        font-family: "Fira Code", monospace;
+        font-size: 10px;
+        color: #7c3aed;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+      .a-qtext {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: var(--navy);
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+        letter-spacing: 0.02em;
+      }
+      .btn-submit-a {
+        width: 100%;
+        background: var(--amber);
+        color: #fff;
+        border: none;
+        padding: 13px;
+        border-radius: var(--radius-sm);
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.15s;
+        margin-top: 0.5rem;
+      }
+      .btn-submit-a:hover:not(:disabled) {
+        background: var(--amber-mid);
+      }
+      .btn-submit-a:disabled {
+        background: rgba(217, 119, 6, 0.25);
+        cursor: not-allowed;
+        color: var(--muted);
+      }
+
+      /* ── RESULTS ── */
+      .results-panel {
+        display: none;
+        text-align: center;
+        padding: 2.5rem 1rem;
+        animation: enter 0.5s ease;
+      }
+      .score-ring {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid;
+      }
+      .score-ring.pass {
+        border-color: var(--green-mid);
+        background: var(--green-lt);
+      }
+      .score-ring.fail {
+        border-color: var(--red);
+        background: var(--red-lt);
+      }
+      .score-pct {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 800;
+        font-size: 3rem;
+        line-height: 1;
+      }
+      .score-ring.pass .score-pct {
+        color: var(--green);
+      }
+      .score-ring.fail .score-pct {
+        color: var(--red);
+      }
+      .score-lbl {
+        font-family: "Fira Code", monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .verdict {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1.6rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+      }
+      .verdict-msg {
+        font-size: 13px;
+        color: var(--muted);
+        max-width: 480px;
+        margin: 0 auto 1.5rem;
+        line-height: 1.75;
+        font-weight: 300;
+      }
+      .breakdown {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin: 1.2rem 0;
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .bd {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem;
+        text-align: center;
+      }
+      .bd-score {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1.8rem;
+      }
+      .bd.good .bd-score {
+        color: var(--green);
+      }
+      .bd.bad .bd-score {
+        color: var(--red);
+      }
+      .bd-lbl {
+        font-family: "Fira Code", monospace;
+        font-size: 9px;
+        color: var(--muted);
+        margin-top: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .cert {
+        background: linear-gradient(135deg, var(--amber-lt), var(--white));
+        border: 1px solid rgba(217, 119, 6, 0.25);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin: 1.5rem auto;
+        max-width: 480px;
+        text-align: center;
+        display: none;
+      }
+      .cert.show {
+        display: block;
+        animation: enter 0.6s ease;
+      }
+      .cert-icon {
+        font-size: 48px;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      .cert h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--navy);
+        margin-bottom: 5px;
+      }
+      .cert p {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.6;
+        font-weight: 300;
+      }
+      .cert-note {
+        font-family: "Fira Code", monospace;
+        font-size: 11px;
+        color: var(--amber-dark);
+        margin-top: 0.5rem;
+        border-top: 1px solid var(--border);
+        padding-top: 0.5rem;
+      }
+      .res-btns {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+      }
+
+      @media (max-width: 560px) {
+        .match-wrap {
+          grid-template-columns: 1fr;
+        }
+        .fact-grid {
+          grid-template-columns: 1fr;
+        }
+        .breakdown {
+          grid-template-columns: 1fr 1fr;
+        }
+        .hero-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .ppe-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="prog-wrap"><div id="prog-bar"></div></div>
+    <nav>
+      <div class="nav-brand">
+        <div class="nav-logo">🛢️ <em>Tanker</em> Familiarisation</div>
+        <div class="nav-badge">STCW A-V/1-1</div>
+      </div>
+      <div id="nav-mod"></div>
+      <div id="nav-pts">0 pts</div>
+    </nav>
+    <main>
+      <!-- ══ HERO ══ -->
+      <div class="screen" id="screen-hero">
+        <div class="hero-inner">
+          <div class="hero-sticker">
+            All tanker crew — mandatory before joining
+          </div>
+          <span class="hero-icon">🛢️</span>
+          <h1>Oil Tanker<br /><em>Familiarisation</em></h1>
+          <p class="hero-desc">
+            Six modules covering everything you need to know before you step
+            aboard an oil tanker for the first time. Cargo hazards, safety
+            rules, emergency procedures — and how to stay alive. Referenced to
+            ISGOTT Chapter 2.
+          </p>
+          <div class="hero-grid">
+            <div class="hg" id="mgpill-m1" onclick="goTo('m1')">
+              <span class="hg-ic">🚢</span>
+              <div class="hgn">MOD 1</div>
+              <div class="hgl">Tanker Types</div>
+            </div>
+            <div class="hg" id="mgpill-m2" onclick="goTo('m2')">
+              <span class="hg-ic">⚠️</span>
+              <div class="hgn">MOD 2</div>
+              <div class="hgl">Cargo Hazards</div>
+            </div>
+            <div class="hg" id="mgpill-m3" onclick="goTo('m3')">
+              <span class="hg-ic">🔥</span>
+              <div class="hgn">MOD 3</div>
+              <div class="hgl">Ignition Control</div>
+            </div>
+            <div class="hg" id="mgpill-m4" onclick="goTo('m4')">
+              <span class="hg-ic">🛡️</span>
+              <div class="hgn">MOD 4</div>
+              <div class="hgl">PPE &amp; Safe Access</div>
+            </div>
+            <div class="hg" id="mgpill-m5" onclick="goTo('m5')">
+              <span class="hg-ic">📋</span>
+              <div class="hgn">MOD 5</div>
+              <div class="hgl">Ship-Shore Safety</div>
+            </div>
+            <div class="hg" id="mgpill-m6" onclick="goTo('m6')">
+              <span class="hg-ic">🚨</span>
+              <div class="hgn">MOD 6</div>
+              <div class="hgl">Emergencies</div>
+            </div>
+          </div>
+          <button class="btn-begin" onclick="goTo('m1')">
+            START TRAINING →
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ M1: TANKER TYPES ══ -->
+      <div class="screen" id="screen-m1">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc active" onclick="goTo('m1')">M1 TYPES</span>
+            <span class="bc" onclick="goTo('m2')">M2 HAZARDS</span>
+            <span class="bc" onclick="goTo('m3')">M3 IGNITION</span>
+            <span class="bc" onclick="goTo('m4')">M4 PPE</span>
+            <span class="bc" onclick="goTo('m5')">M5 SHIP-SHORE</span>
+            <span class="bc" onclick="goTo('m6')">M6 EMERGENCY</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--amber);
+                color: var(--amber);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mh-icon">🚢</div>
+            <div>
+              <div class="mh-num">
+                Module 1 of 6 · STCW A-V/1-1 · ISGOTT Ch.1
+              </div>
+              <div class="mh-title">Tanker Types and Characteristics</div>
+              <div class="mh-desc">
+                Understanding what kind of vessel you are on — and why it
+                matters for safety
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+            <div
+              class="illus-wrap"
+              style="text-align: center; margin: 0.5rem 0 1rem"
+            >
+              <svg
+                viewBox="0 0 520 160"
+                width="520"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="520" height="160" rx="10" fill="#f5f4f0" />
+                <!-- VLCC -->
+                <rect
+                  x="10"
+                  y="30"
+                  width="150"
+                  height="100"
+                  rx="6"
+                  fill="#1e293b"
+                  opacity="0.9"
+                />
+                <rect
+                  x="10"
+                  y="30"
+                  width="150"
+                  height="30"
+                  rx="6"
+                  fill="#475569"
+                />
+                <text
+                  x="85"
+                  y="52"
+                  text-anchor="middle"
+                  font-size="11"
+                  fill="white"
+                  font-weight="bold"
+                >
+                  CRUDE OIL TANKER
+                </text>
+                <text
+                  x="85"
+                  y="66"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#94a3b8"
+                >
+                  VLCC / Suezmax / Aframax
+                </text>
+                <rect
+                  x="25"
+                  y="72"
+                  width="30"
+                  height="40"
+                  rx="3"
+                  fill="#d97706"
+                  opacity="0.4"
+                />
+                <rect
+                  x="65"
+                  y="72"
+                  width="30"
+                  height="40"
+                  rx="3"
+                  fill="#d97706"
+                  opacity="0.4"
+                />
+                <rect
+                  x="105"
+                  y="72"
+                  width="30"
+                  height="40"
+                  rx="3"
+                  fill="#d97706"
+                  opacity="0.4"
+                />
+                <text
+                  x="85"
+                  y="125"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#94a3b8"
+                >
+                  Centre-line manifold
+                </text>
+                <text
+                  x="85"
+                  y="138"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#d97706"
+                >
+                  Crude oil cargo
+                </text>
+                <!-- Product tanker -->
+                <rect
+                  x="185"
+                  y="30"
+                  width="150"
+                  height="100"
+                  rx="6"
+                  fill="#1e3a5f"
+                  opacity="0.9"
+                />
+                <rect
+                  x="185"
+                  y="30"
+                  width="150"
+                  height="30"
+                  rx="6"
+                  fill="#1d4ed8"
+                  opacity="0.7"
+                />
+                <text
+                  x="260"
+                  y="52"
+                  text-anchor="middle"
+                  font-size="11"
+                  fill="white"
+                  font-weight="bold"
+                >
+                  PRODUCT TANKER
+                </text>
+                <text
+                  x="260"
+                  y="66"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#93c5fd"
+                >
+                  MR / Handysize
+                </text>
+                <rect
+                  x="195"
+                  y="72"
+                  width="20"
+                  height="20"
+                  rx="2"
+                  fill="#60a5fa"
+                  opacity="0.5"
+                />
+                <rect
+                  x="220"
+                  y="72"
+                  width="20"
+                  height="20"
+                  rx="2"
+                  fill="#f59e0b"
+                  opacity="0.5"
+                />
+                <rect
+                  x="245"
+                  y="72"
+                  width="20"
+                  height="20"
+                  rx="2"
+                  fill="#34d399"
+                  opacity="0.5"
+                />
+                <rect
+                  x="270"
+                  y="72"
+                  width="20"
+                  height="20"
+                  rx="2"
+                  fill="#f87171"
+                  opacity="0.5"
+                />
+                <rect
+                  x="295"
+                  y="72"
+                  width="30"
+                  height="20"
+                  rx="2"
+                  fill="#a78bfa"
+                  opacity="0.5"
+                />
+                <text
+                  x="260"
+                  y="110"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#93c5fd"
+                >
+                  Multiple grades in separate tanks
+                </text>
+                <text
+                  x="260"
+                  y="125"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#60a5fa"
+                >
+                  Coated / stainless tanks
+                </text>
+                <text
+                  x="260"
+                  y="138"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#f59e0b"
+                >
+                  Refined petroleum products
+                </text>
+                <!-- Combination -->
+                <rect
+                  x="360"
+                  y="30"
+                  width="150"
+                  height="100"
+                  rx="6"
+                  fill="#14532d"
+                  opacity="0.9"
+                />
+                <rect
+                  x="360"
+                  y="30"
+                  width="150"
+                  height="30"
+                  rx="6"
+                  fill="#15803d"
+                  opacity="0.7"
+                />
+                <text
+                  x="435"
+                  y="52"
+                  text-anchor="middle"
+                  font-size="11"
+                  fill="white"
+                  font-weight="bold"
+                >
+                  COMBINATION
+                </text>
+                <text
+                  x="435"
+                  y="66"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#86efac"
+                >
+                  OBO / Oil-Bulk-Ore
+                </text>
+                <path
+                  d="M375,72 L365,112 L505,112 L495,72 Z"
+                  fill="#22c55e"
+                  opacity="0.2"
+                  stroke="#22c55e"
+                  stroke-width="1"
+                />
+                <text
+                  x="435"
+                  y="97"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#86efac"
+                >
+                  Single large cargo hold
+                </text>
+                <text
+                  x="435"
+                  y="125"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#86efac"
+                >
+                  Carries oil OR dry bulk
+                </text>
+                <text
+                  x="435"
+                  y="138"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#f59e0b"
+                >
+                  Requires careful tank cleaning
+                </text>
+              </svg>
+            </div>
+
+            <table class="t-table">
+              <thead>
+                <tr>
+                  <th>Tanker type</th>
+                  <th>Cargo</th>
+                  <th>Key safety feature</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VLCC / Suezmax</td>
+                  <td>Crude oil — single grade, very large volumes</td>
+                  <td>
+                    Inert gas system mandatory. Large confined space risk in
+                    cargo tanks.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Product tanker</td>
+                  <td>Refined products — multiple grades, smaller parcels</td>
+                  <td>
+                    Multiple pump rooms, coated tanks. Grade segregation
+                    critical.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Bitumen/asphalt tanker</td>
+                  <td>Hot cargo — up to 200°C</td>
+                  <td>
+                    Thermal burns risk. Heating coils. Vapour management
+                    essential.
+                  </td>
+                </tr>
+                <tr>
+                  <td>OBO (Oil-Bulk-Ore)</td>
+                  <td>Oil voyages alternating with dry bulk</td>
+                  <td>
+                    Residue removal critical before bulk cargo. Gas-free
+                    certification.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Shuttle tanker</td>
+                  <td>Crude oil from offshore production</td>
+                  <td>
+                    Dynamic positioning + tandem mooring. No shore berth
+                    operations.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="fact-grid">
+              <div class="fact-card">
+                <div class="fi">🏗️</div>
+                <div class="ft">
+                  <strong>Key tanker structures</strong>Cargo tanks (below main
+                  deck), pump room (below main deck — highest enclosed space
+                  risk), inert gas plant, manifold (port and starboard
+                  connections to shore), bow thruster room, void spaces and
+                  cofferdams.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">📍</div>
+                <div class="ft">
+                  <strong>Why tanker type matters for safety</strong>The cargo
+                  determines the hazards. Crude oil carries different vapour
+                  risks to aviation fuel. The ship's structure determines where
+                  danger zones are. Your familiarisation is type-specific — what
+                  applies on one tanker may not apply on another.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MATCH: Tanker type to cargo/use -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — match the tanker to its cargo
+            </div>
+            <div class="card-q">
+              Match each tanker type to the cargo or key characteristic that
+              defines it.
+            </div>
+            <div class="match-wrap" id="m1-match">
+              <div>
+                <div class="match-col-hdr">Tanker type</div>
+                <div class="match-col" id="m1-left"></div>
+              </div>
+              <div>
+                <div class="match-col-hdr">Cargo / Key characteristic</div>
+                <div class="match-col" id="m1-right"></div>
+              </div>
+            </div>
+            <div class="match-hint">Tap left → tap right to match</div>
+            <div class="match-score" id="m1-score"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m1-quiz"></div>
+          </div>
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('hero')">← Overview</button>
+            <button class="btn-next" onclick="goTo('m2')">Module 2 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ M2: CARGO HAZARDS ══ -->
+      <div class="screen" id="screen-m2">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc done" onclick="goTo('m1')">M1 TYPES</span>
+            <span class="bc active">M2 HAZARDS</span>
+            <span class="bc" onclick="goTo('m3')">M3 IGNITION</span>
+            <span class="bc" onclick="goTo('m4')">M4 PPE</span>
+            <span class="bc" onclick="goTo('m5')">M5 SHIP-SHORE</span>
+            <span class="bc" onclick="goTo('m6')">M6 EMERGENCY</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--amber);
+                color: var(--amber);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mh-icon">⚠️</div>
+            <div>
+              <div class="mh-num">
+                Module 2 of 6 · STCW A-V/1-1 · ISGOTT Ch.2
+              </div>
+              <div class="mh-title">
+                Cargo Properties — Flammability, Toxicity, Vapour
+              </div>
+              <div class="mh-desc">
+                The cargo you carry wants to burn or poison you. Know its
+                properties before you go anywhere near it.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+            <div
+              class="illus-wrap"
+              style="text-align: center; margin: 0.5rem 0 1rem"
+            >
+              <svg
+                viewBox="0 0 520 150"
+                width="520"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="520" height="150" rx="10" fill="#fffbeb" />
+                <!-- Flammability diagram -->
+                <rect
+                  x="10"
+                  y="15"
+                  width="155"
+                  height="125"
+                  rx="8"
+                  fill="white"
+                  stroke="#fde68a"
+                  stroke-width="1.5"
+                />
+                <text
+                  x="87"
+                  y="34"
+                  text-anchor="middle"
+                  font-size="11"
+                  fill="#92400e"
+                  font-weight="bold"
+                >
+                  FLAMMABILITY
+                </text>
+                <rect
+                  x="20"
+                  y="45"
+                  width="135"
+                  height="18"
+                  rx="3"
+                  fill="#fca5a5"
+                />
+                <text
+                  x="87"
+                  y="57"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#7f1d1d"
+                  font-weight="bold"
+                >
+                  ABOVE UEL — TOO RICH TO BURN
+                </text>
+                <rect
+                  x="20"
+                  y="68"
+                  width="135"
+                  height="22"
+                  rx="3"
+                  fill="#fde68a"
+                />
+                <text
+                  x="87"
+                  y="83"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#92400e"
+                  font-weight="bold"
+                >
+                  FLAMMABLE RANGE (LEL–UEL)
+                </text>
+                <rect
+                  x="20"
+                  y="95"
+                  width="135"
+                  height="18"
+                  rx="3"
+                  fill="#bbf7d0"
+                />
+                <text
+                  x="87"
+                  y="107"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#14532d"
+                  font-weight="bold"
+                >
+                  BELOW LEL — TOO LEAN TO BURN
+                </text>
+                <text
+                  x="87"
+                  y="130"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#94a3b8"
+                >
+                  Crude oil LEL ≈ 1% | UEL ≈ 10%
+                </text>
+                <!-- Vapour density -->
+                <rect
+                  x="183"
+                  y="15"
+                  width="155"
+                  height="125"
+                  rx="8"
+                  fill="white"
+                  stroke="#fde68a"
+                  stroke-width="1.5"
+                />
+                <text
+                  x="260"
+                  y="34"
+                  text-anchor="middle"
+                  font-size="11"
+                  fill="#92400e"
+                  font-weight="bold"
+                >
+                  VAPOUR DENSITY
+                </text>
+                <text x="260" y="55" text-anchor="middle" font-size="24">
+                  💨
+                </text>
+                <text
+                  x="260"
+                  y="78"
+                  text-anchor="middle"
+                  font-size="10"
+                  fill="#475569"
+                >
+                  Oil vapour is heavier than air
+                </text>
+                <text
+                  x="260"
+                  y="93"
+                  text-anchor="middle"
+                  font-size="10"
+                  fill="#475569"
+                >
+                  (Vapour density &gt; 1)
+                </text>
+                <path
+                  d="M220,100 L260,130 L300,100"
+                  fill="none"
+                  stroke="#d97706"
+                  stroke-width="2"
+                />
+                <text
+                  x="260"
+                  y="118"
+                  text-anchor="middle"
+                  font-size="10"
+                  fill="#d97706"
+                  font-weight="bold"
+                >
+                  SINKS TO LOW POINTS
+                </text>
+                <text
+                  x="260"
+                  y="132"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#94a3b8"
+                >
+                  Pump rooms, bilges, tank top
+                </text>
+                <!-- Toxicity -->
+                <rect
+                  x="356"
+                  y="15"
+                  width="155"
+                  height="125"
+                  rx="8"
+                  fill="white"
+                  stroke="#fde68a"
+                  stroke-width="1.5"
+                />
+                <text
+                  x="433"
+                  y="34"
+                  text-anchor="middle"
+                  font-size="11"
+                  fill="#92400e"
+                  font-weight="bold"
+                >
+                  TOXICITY — H₂S
+                </text>
+                <text x="433" y="55" text-anchor="middle" font-size="22">
+                  ☠️
+                </text>
+                <text
+                  x="433"
+                  y="75"
+                  text-anchor="middle"
+                  font-size="10"
+                  fill="#7f1d1d"
+                  font-weight="bold"
+                >
+                  HYDROGEN SULPHIDE
+                </text>
+                <text
+                  x="433"
+                  y="89"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#475569"
+                >
+                  Rotten egg smell at low conc.
+                </text>
+                <text
+                  x="433"
+                  y="102"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#dc2626"
+                  font-weight="bold"
+                >
+                  NO SMELL at lethal levels!
+                </text>
+                <text
+                  x="433"
+                  y="115"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#475569"
+                >
+                  OEL: 1 ppm | IDLH: 100 ppm
+                </text>
+                <text
+                  x="433"
+                  y="128"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#dc2626"
+                >
+                  Kills in seconds at 500+ ppm
+                </text>
+              </svg>
+            </div>
+
+            <div class="fact-grid">
+              <div class="fact-card">
+                <div class="fi">🔥</div>
+                <div class="ft">
+                  <strong>Flammability — the dangerous range</strong>Every
+                  petroleum product has a Flammable Range between the Lower
+                  Explosive Limit (LEL) and Upper Explosive Limit (UEL). Inside
+                  this range — any ignition source causes an explosion. The goal
+                  is always to keep the atmosphere either below LEL or above UEL
+                  using inert gas.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">💨</div>
+                <div class="ft">
+                  <strong>Vapour density — it sinks</strong>Petroleum vapour is
+                  heavier than air (density &gt;1). It collects in the lowest
+                  points of a vessel: pump rooms, bilges, below-deck voids, tank
+                  tops. This is why pump rooms are the most dangerous spaces on
+                  a tanker even when no cargo loading is happening.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">☠️</div>
+                <div class="ft">
+                  <strong>Hydrogen sulphide (H₂S)</strong>Present in crude oil
+                  and some products. Smells of rotten eggs at low concentrations
+                  — but at dangerous levels your sense of smell is overwhelmed
+                  instantly. You smell nothing, and you die. Always use a fixed
+                  or portable gas detector — never trust your nose alone.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">📊</div>
+                <div class="ft">
+                  <strong>Flash point — know your cargo</strong>Flash point is
+                  the minimum temperature at which a liquid gives off enough
+                  vapour to ignite. Crude oil: below 60°C (often −30°C).
+                  Aviation fuel: below −43°C. Diesel: above 60°C. The lower the
+                  flash point, the higher the immediate risk.
+                </div>
+              </div>
+            </div>
+
+            <div class="callout danger">
+              <strong>Never trust your nose on a tanker.</strong> H₂S paralyses
+              your sense of smell at concentrations that are immediately lethal.
+              A tank or pump room that smells "fine" can contain gas that kills
+              you before you can react. Always test with instruments first.
+            </div>
+          </div>
+
+          <!-- MATCH: cargo property to hazard -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — match the property to the hazard
+            </div>
+            <div class="card-q">
+              Match each cargo property or measurement to what it tells you
+              about the hazard level.
+            </div>
+            <div class="match-wrap" id="m2-match">
+              <div>
+                <div class="match-col-hdr">Property / Reading</div>
+                <div class="match-col" id="m2-left"></div>
+              </div>
+              <div>
+                <div class="match-col-hdr">What it means</div>
+                <div class="match-col" id="m2-right"></div>
+              </div>
+            </div>
+            <div class="match-hint">Tap left → tap right to match</div>
+            <div class="match-score" id="m2-score"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m2-quiz"></div>
+          </div>
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('m1')">← Module 1</button>
+            <button class="btn-next" onclick="goTo('m3')">Module 3 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ M3: IGNITION CONTROL ══ -->
+      <div class="screen" id="screen-m3">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc done" onclick="goTo('m1')">M1 TYPES</span>
+            <span class="bc done" onclick="goTo('m2')">M2 HAZARDS</span>
+            <span class="bc active">M3 IGNITION</span>
+            <span class="bc" onclick="goTo('m4')">M4 PPE</span>
+            <span class="bc" onclick="goTo('m5')">M5 SHIP-SHORE</span>
+            <span class="bc" onclick="goTo('m6')">M6 EMERGENCY</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--amber);
+                color: var(--amber);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mh-icon">🔥</div>
+            <div>
+              <div class="mh-num">
+                Module 3 of 6 · STCW A-V/1-1 · ISGOTT Ch.3
+              </div>
+              <div class="mh-title">
+                Ignition Source Control and Tanker Safety Rules
+              </div>
+              <div class="mh-desc">
+                Every ignition source on a tanker is a potential trigger for a
+                catastrophic explosion
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+
+            <div class="callout danger">
+              <strong>The tanker golden rule:</strong> No naked flames, no
+              smoking except in the designated area, and no non-intrinsically
+              safe electrical equipment anywhere near a cargo area, pump room,
+              or open tank. One spark in a flammable atmosphere kills everyone
+              on board.
+            </div>
+
+            <div class="fact-grid">
+              <div class="fact-card">
+                <div class="fi">🚬</div>
+                <div class="ft">
+                  <strong>Smoking policy</strong>Smoking is only permitted in
+                  the designated smoking room with a self-closing metal door and
+                  an ashtray. Smoking is never permitted on deck, in cargo
+                  areas, or in the accommodation unless in the smoking room.
+                  E-cigarettes are treated the same as regular cigarettes.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">⚡</div>
+                <div class="ft">
+                  <strong>Electrical equipment</strong>Only intrinsically safe
+                  (IS) or explosion-proof (Ex) equipment may be used in
+                  hazardous areas. Portable radios, mobile phones, cameras, and
+                  ordinary torches are all forbidden on deck during cargo
+                  operations or at anchor with open tanks.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🔨</div>
+                <div class="ft">
+                  <strong>Hot work</strong>Welding, grinding, cutting — any work
+                  that produces heat or sparks — is "hot work". A hot work
+                  permit signed by the Master is required. The area must be
+                  confirmed gas-free before and continuously during hot work. No
+                  hot work near open tanks or cargo areas.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">⚙️</div>
+                <div class="ft">
+                  <strong>Static electricity</strong>Cargo flow through pipes
+                  generates static electricity. Correct bonding connections
+                  between ship and shore must be made before cargo transfer.
+                  Never use non-conductive hoses or improper bonding — this is a
+                  common cause of tanker fires.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">📡</div>
+                <div class="ft">
+                  <strong>Inert gas system (IGS)</strong>The IGS replaces the
+                  air in cargo tanks with inert gas (usually exhaust gas or
+                  nitrogen) that will not support combustion. When tank
+                  atmosphere is above UEL — it cannot ignite. IGS must be
+                  running during cargo discharge and tank washing. Tank O₂
+                  content must be maintained below 8%.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🌩️</div>
+                <div class="ft">
+                  <strong>Electrical storms</strong>Stop cargo operations if
+                  lightning is sighted within 5 nautical miles. Close all cargo
+                  tank openings. Wait until the storm passes before resuming.
+                  Static from lightning is an ignition risk even without a
+                  direct strike.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HOTSPOT: Identify ignition sources on deck SVG -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — find the ignition hazards
+            </div>
+            <div class="card-q">
+              Tap each item on the tanker deck diagram that represents an
+              ignition source or safety violation. Find all 5.
+            </div>
+            <div class="hotspot-wrap">
+              <svg
+                viewBox="0 0 520 200"
+                width="520"
+                xmlns="http://www.w3.org/2000/svg"
+                id="deck-svg"
+              >
+                <rect width="520" height="200" rx="10" fill="#e2e8f0" />
+                <!-- Deck surface -->
+                <rect
+                  x="0"
+                  y="100"
+                  width="520"
+                  height="100"
+                  fill="#94a3b8"
+                  rx="0"
+                />
+                <rect x="0" y="96" width="520" height="6" fill="#64748b" />
+                <!-- Main deck structure -->
+                <rect
+                  x="40"
+                  y="50"
+                  width="440"
+                  height="50"
+                  fill="#334155"
+                  rx="4"
+                />
+                <!-- Manifold -->
+                <rect
+                  x="220"
+                  y="40"
+                  width="80"
+                  height="60"
+                  rx="4"
+                  fill="#475569"
+                />
+                <text
+                  x="260"
+                  y="73"
+                  text-anchor="middle"
+                  font-size="10"
+                  fill="#94a3b8"
+                  font-weight="bold"
+                >
+                  MANIFOLD
+                </text>
+                <!-- Cargo tank hatches -->
+                <rect
+                  x="60"
+                  y="55"
+                  width="40"
+                  height="40"
+                  rx="3"
+                  fill="#1e293b"
+                  stroke="#475569"
+                  stroke-width="1"
+                />
+                <text
+                  x="80"
+                  y="79"
+                  text-anchor="middle"
+                  font-size="8"
+                  fill="#64748b"
+                >
+                  TANK
+                </text>
+                <rect
+                  x="380"
+                  y="55"
+                  width="40"
+                  height="40"
+                  rx="3"
+                  fill="#1e293b"
+                  stroke="#475569"
+                  stroke-width="1"
+                />
+                <text
+                  x="400"
+                  y="79"
+                  text-anchor="middle"
+                  font-size="8"
+                  fill="#64748b"
+                >
+                  TANK
+                </text>
+                <!-- HAZARD 1: Smoking on deck - person with cigarette -->
+                <g id="hs-smoke" class="hs-dot" onclick="tapHazard('smoke')">
+                  <circle
+                    cx="140"
+                    cy="80"
+                    r="20"
+                    fill="rgba(220,38,38,0.15)"
+                    stroke="#dc2626"
+                    stroke-width="2"
+                    stroke-dasharray="4,2"
+                  />
+                  <text
+                    cx="140"
+                    cy="80"
+                    text-anchor="middle"
+                    font-size="18"
+                    dy=".35em"
+                    x="140"
+                    y="80"
+                  >
+                    🚬
+                  </text>
+                </g>
+                <!-- HAZARD 2: Mobile phone -->
+                <g id="hs-phone" class="hs-dot" onclick="tapHazard('phone')">
+                  <circle
+                    cx="340"
+                    cy="80"
+                    r="20"
+                    fill="rgba(220,38,38,0.15)"
+                    stroke="#dc2626"
+                    stroke-width="2"
+                    stroke-dasharray="4,2"
+                  />
+                  <text
+                    cx="340"
+                    cy="80"
+                    text-anchor="middle"
+                    font-size="18"
+                    dy=".35em"
+                    x="340"
+                    y="80"
+                  >
+                    📱
+                  </text>
+                </g>
+                <!-- HAZARD 3: Open flame / portable stove -->
+                <g id="hs-flame" class="hs-dot" onclick="tapHazard('flame')">
+                  <circle
+                    cx="460"
+                    cy="130"
+                    r="20"
+                    fill="rgba(220,38,38,0.15)"
+                    stroke="#dc2626"
+                    stroke-width="2"
+                    stroke-dasharray="4,2"
+                  />
+                  <text
+                    cx="460"
+                    cy="130"
+                    text-anchor="middle"
+                    font-size="18"
+                    dy=".35em"
+                    x="460"
+                    y="130"
+                  >
+                    🔦
+                  </text>
+                </g>
+                <!-- HAZARD 4: Open tank hatch with no guard -->
+                <g id="hs-hatch" class="hs-dot" onclick="tapHazard('hatch')">
+                  <circle
+                    cx="80"
+                    cy="150"
+                    r="22"
+                    fill="rgba(220,38,38,0.15)"
+                    stroke="#dc2626"
+                    stroke-width="2"
+                    stroke-dasharray="4,2"
+                  />
+                  <text
+                    cx="80"
+                    cy="150"
+                    text-anchor="middle"
+                    font-size="18"
+                    dy=".35em"
+                    x="80"
+                    y="150"
+                  >
+                    🔓
+                  </text>
+                </g>
+                <!-- HAZARD 5: Grinding/grinding sparks -->
+                <g id="hs-grind" class="hs-dot" onclick="tapHazard('grind')">
+                  <circle
+                    cx="270"
+                    cy="145"
+                    r="20"
+                    fill="rgba(220,38,38,0.15)"
+                    stroke="#dc2626"
+                    stroke-width="2"
+                    stroke-dasharray="4,2"
+                  />
+                  <text
+                    cx="270"
+                    cy="145"
+                    text-anchor="middle"
+                    font-size="18"
+                    dy=".35em"
+                    x="270"
+                    y="145"
+                  >
+                    ⚙️
+                  </text>
+                </g>
+                <!-- Labels for safe items -->
+                <text
+                  x="260"
+                  y="20"
+                  text-anchor="middle"
+                  font-size="11"
+                  fill="#475569"
+                  font-weight="bold"
+                >
+                  OIL TANKER MAIN DECK — TAP THE HAZARDS
+                </text>
+              </svg>
+            </div>
+            <div class="hs-info" id="hs-info"></div>
+            <div class="hs-progress" id="hs-progress">
+              Found: <strong id="hs-count">0</strong> / 5 ignition hazards
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m3-quiz"></div>
+          </div>
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('m2')">← Module 2</button>
+            <button class="btn-next" onclick="goTo('m4')">Module 4 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ M4: PPE & SAFE ACCESS ══ -->
+      <div class="screen" id="screen-m4">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc done" onclick="goTo('m1')">M1 TYPES</span>
+            <span class="bc done" onclick="goTo('m2')">M2 HAZARDS</span>
+            <span class="bc done" onclick="goTo('m3')">M3 IGNITION</span>
+            <span class="bc active">M4 PPE</span>
+            <span class="bc" onclick="goTo('m5')">M5 SHIP-SHORE</span>
+            <span class="bc" onclick="goTo('m6')">M6 EMERGENCY</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--amber);
+                color: var(--amber);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mh-icon">🛡️</div>
+            <div>
+              <div class="mh-num">
+                Module 4 of 6 · STCW A-V/1-1 · ISGOTT Ch.4
+              </div>
+              <div class="mh-title">PPE and Safe Access to Tanker Spaces</div>
+              <div class="mh-desc">
+                Enclosed spaces kill more tanker crew than cargo fires — know
+                your PPE and the permit system
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+            <div class="fact-grid">
+              <div class="fact-card">
+                <div class="fi">🦺</div>
+                <div class="ft">
+                  <strong>Minimum PPE on deck during operations</strong
+                  >Boilersuit (coveralls), safety helmet, safety footwear,
+                  safety glasses. Chemical-resistant gloves and goggles when
+                  handling cargo samples or chemicals. No loose clothing, no
+                  open-toe footwear — ever.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">😷</div>
+                <div class="ft">
+                  <strong>Respiratory protection</strong>Air-line breathing
+                  apparatus (ELSA/SCBA) for tank entry and high H₂S areas.
+                  Escape sets (EEBD) for emergency escape only — not entry.
+                  Air-purifying respirators (APR/half-masks) only if the
+                  atmosphere is confirmed oxygen-adequate and below IDLH levels.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🔒</div>
+                <div class="ft">
+                  <strong>Enclosed space entry — permit required</strong>A
+                  permit to work in enclosed spaces is mandatory for every entry
+                  into cargo tanks, pump rooms, void spaces, cofferdams, and any
+                  enclosed space on a tanker. The permit requires: atmosphere
+                  testing, standby person, rescue equipment ready, communication
+                  established.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">📟</div>
+                <div class="ft">
+                  <strong>Portable gas detector — always</strong>Every person
+                  entering or working near a tanker cargo area must carry or
+                  have access to a portable multi-gas detector measuring: O₂
+                  (normal: 20.8%), LEL/% gas, H₂S (ppm), CO (ppm). Below 19.5%
+                  O₂ — do not enter. Above 1% LEL — do not enter.
+                </div>
+              </div>
+            </div>
+            <div class="callout danger">
+              <strong
+                >The pump room is the most dangerous space on the ship.</strong
+              >
+              It has poor ventilation, contains cargo vapour from piping
+              systems, and H₂S can accumulate without warning. Never enter the
+              pump room without a full atmosphere test and a standby person
+              maintaining two-way communication throughout.
+            </div>
+            <div class="callout warn">
+              <strong>Never enter a tanker enclosed space alone.</strong> You
+              need: a permit, a standby person at the entrance, tested
+              atmosphere, SCBA ready to deploy, and a rescue plan in place. If
+              any of these is missing — do not enter.
+            </div>
+          </div>
+
+          <!-- PPE drag to situation -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — assign the correct PPE
+            </div>
+            <div class="card-q">
+              Drag the correct protection to each situation. Some situations may
+              need more than one item — but drag the single MOST CRITICAL item
+              for each.
+            </div>
+            <div class="ppe-grid" id="ppe-items">
+              <div
+                class="ppe-item"
+                draggable="true"
+                data-ppe="Gas detector"
+                ondragstart="ppeDragStart(event, this)"
+                ondragend="ppeDragEnd(event, this)"
+              >
+                <span class="ppe-icon">📟</span>
+                <div class="ppe-name">Gas detector</div>
+              </div>
+              <div
+                class="ppe-item"
+                draggable="true"
+                data-ppe="SCBA"
+                ondragstart="ppeDragStart(event, this)"
+                ondragend="ppeDragEnd(event, this)"
+              >
+                <span class="ppe-icon">🪖</span>
+                <div class="ppe-name">SCBA</div>
+              </div>
+
+              <div
+                class="ppe-item"
+                draggable="true"
+                data-ppe="EEBD"
+                ondragstart="ppeDragStart(event, this)"
+                ondragend="ppeDragEnd(event, this)"
+              >
+                <span class="ppe-icon">🌬️</span>
+                <div class="ppe-name">EEBD</div>
+              </div>
+              <div
+                class="ppe-item"
+                draggable="true"
+                data-ppe="Chemical gloves"
+                ondragstart="ppeDragStart(event, this)"
+                ondragend="ppeDragEnd(event, this)"
+              >
+                <span class="ppe-icon">🧤</span>
+                <div class="ppe-name">Chemical gloves</div>
+              </div>
+            </div>
+            <div class="ppe-zones" id="ppe-zones">
+              <div
+                class="ppe-zone"
+                data-accepts="SCBA"
+                ondragover="ppeOver(event, this)"
+                ondragleave="ppeLeave(event, this)"
+                ondrop="ppeDrop(event, this)"
+              >
+                <div class="pz-label">
+                  🚪 Entering a cargo tank that has just been gas-freed
+                </div>
+                <div class="pz-chips" id="pz-0"></div>
+              </div>
+              <div
+                class="ppe-zone"
+                data-accepts="Gas detector"
+                ondragover="ppeOver(event, this)"
+                ondragleave="ppeLeave(event, this)"
+                ondrop="ppeDrop(event, this)"
+              >
+                <div class="pz-label">
+                  📋 Doing any job near a cargo area or open tank
+                </div>
+                <div class="pz-chips" id="pz-1"></div>
+              </div>
+              <div
+                class="ppe-zone"
+                data-accepts="Chemical gloves"
+                ondragover="ppeOver(event, this)"
+                ondragleave="ppeLeave(event, this)"
+                ondrop="ppeDrop(event, this)"
+              >
+                <div class="pz-label">
+                  🧪 Taking a cargo sample from the manifold
+                </div>
+                <div class="pz-chips" id="pz-2"></div>
+              </div>
+              <div
+                class="ppe-zone"
+                data-accepts="EEBD"
+                ondragover="ppeOver(event, this)"
+                ondragleave="ppeLeave(event, this)"
+                ondrop="ppeDrop(event, this)"
+              >
+                <div class="pz-label">
+                  🚨 Escaping through a gas-filled space to reach muster station
+                </div>
+                <div class="pz-chips" id="pz-3"></div>
+              </div>
+            </div>
+            <div style="margin-top: 0.75rem">
+              <button class="btn-check" onclick="checkPPE()">
+                ✓ Check assignments
+              </button>
+              <button class="btn-reset" onclick="resetPPE()">Reset</button>
+            </div>
+            <div class="ppe-result" id="ppe-result"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m4-quiz"></div>
+          </div>
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('m3')">← Module 3</button>
+            <button class="btn-next" onclick="goTo('m5')">Module 4 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ M5: SHIP-SHORE SAFETY ══ -->
+      <div class="screen" id="screen-m5">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc done" onclick="goTo('m1')">M1 TYPES</span>
+            <span class="bc done" onclick="goTo('m2')">M2 HAZARDS</span>
+            <span class="bc done" onclick="goTo('m3')">M3 IGNITION</span>
+            <span class="bc done" onclick="goTo('m4')">M4 PPE</span>
+            <span class="bc active">M5 SHIP-SHORE</span>
+            <span class="bc" onclick="goTo('m6')">M6 EMERGENCY</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--amber);
+                color: var(--amber);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mh-icon">📋</div>
+            <div>
+              <div class="mh-num">
+                Module 5 of 6 · STCW A-V/1-1 · ISGOTT Ch.5
+              </div>
+              <div class="mh-title">
+                Ship-Shore Safety Checklist and Your Role
+              </div>
+              <div class="mh-desc">
+                The Ship-Shore Safety Checklist is not paperwork — it is the
+                agreed safety state for cargo transfer
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+            <div class="fact-grid">
+              <div class="fact-card">
+                <div class="fi">📋</div>
+                <div class="ft">
+                  <strong>What is the Ship-Shore Safety Checklist?</strong>A
+                  mandatory checklist completed jointly by the ship's officer
+                  and the terminal representative before cargo transfer begins.
+                  It verifies that both sides have agreed on: communication,
+                  emergency procedures, cargo limits, mooring, fire-fighting
+                  readiness, and personnel notifications.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🤝</div>
+                <div class="ft">
+                  <strong>Key items YOU must know</strong>Emergency stop
+                  procedure (who calls it and how). Agreed communication channel
+                  (VHF channel — usually channel 16 for emergency). Maximum
+                  loading/discharge rate. Maximum cargo pressure. Warning signal
+                  for leaks or emergencies.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">🔴</div>
+                <div class="ft">
+                  <strong>Emergency stop (ESD)</strong>Either the ship or
+                  terminal can call an emergency stop at any time. The response
+                  is: stop all cargo pumps, close all valves, notify both sides.
+                  The watchkeeping officer must know the ESD procedure cold —
+                  without needing to look it up.
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fi">👤</div>
+                <div class="ft">
+                  <strong>Crew role during cargo operations</strong>Maintain
+                  continuous watch. Monitor manifold for leaks. Check hose/arm
+                  connections regularly. Maintain gangway watch. Never leave
+                  manifold area unattended. Report any change in condition,
+                  smell, or cargo system pressure immediately.
+                </div>
+              </div>
+            </div>
+            <div class="callout info">
+              <strong
+                >The watch officer's primary job during cargo is
+                vigilance.</strong
+              >
+              A 30-second response to a leak at the manifold is the difference
+              between a spillage and a fire. Know what normal looks like so you
+              immediately recognise abnormal.
+            </div>
+          </div>
+
+          <!-- SORT: Ship-Shore checklist sequence -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — sequence the cargo transfer setup
+            </div>
+            <div class="card-q">
+              You have arrived at the terminal and are preparing to load cargo.
+              Put the key steps in the correct order before cargo transfer can
+              begin.
+            </div>
+            <div class="sort-list" id="m5-sort"></div>
+            <div style="margin-top: 0.75rem">
+              <button
+                class="btn-check"
+                onclick="checkSort('m5-sort', 'm5-correct', 'm5-sort-fb')"
+              >
+                ✓ Check order
+              </button>
+              <button
+                class="btn-reset"
+                onclick="resetSort('m5-sort', 'm5-data')"
+              >
+                Reset
+              </button>
+            </div>
+            <div class="sort-feedback" id="m5-sort-fb"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m5-quiz"></div>
+          </div>
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('m4')">← Module 4</button>
+            <button class="btn-next" onclick="goTo('m6')">Module 6 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ M6: EMERGENCIES ══ -->
+      <div class="screen" id="screen-m6">
+        <div class="mod-wrap">
+          <div class="bcrumbs">
+            <span class="bc done" onclick="goTo('m1')">M1 TYPES</span>
+            <span class="bc done" onclick="goTo('m2')">M2 HAZARDS</span>
+            <span class="bc done" onclick="goTo('m3')">M3 IGNITION</span>
+            <span class="bc done" onclick="goTo('m4')">M4 PPE</span>
+            <span class="bc done" onclick="goTo('m5')">M5 SHIP-SHORE</span>
+            <span class="bc active">M6 EMERGENCY</span>
+            <span
+              class="bc"
+              onclick="goTo('assess')"
+              style="
+                margin-left: auto;
+                border-color: var(--amber);
+                color: var(--amber);
+              "
+              >★ ASSESS</span
+            >
+          </div>
+          <div class="mod-hdr">
+            <div class="mh-icon">🚨</div>
+            <div>
+              <div class="mh-num">
+                Module 6 of 6 · STCW A-V/1-1 · ISGOTT Ch.9
+              </div>
+              <div class="mh-title">
+                Emergency Procedures — Cargo Fire, Spillage, Gas Release
+              </div>
+              <div class="mh-desc">
+                Three emergencies specific to oil tankers. Know your immediate
+                actions before you ever set foot on board.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label read">▶ READ</div>
+            <table class="t-table">
+              <thead>
+                <tr>
+                  <th>Emergency</th>
+                  <th>Immediate action</th>
+                  <th>What NOT to do</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>🔥 Cargo fire at manifold</td>
+                  <td>
+                    Sound alarm. Stop cargo immediately (ESD). Notify terminal.
+                    Shut all valves. Apply fixed foam if available. Muster fire
+                    party. Prepare to disconnect hoses if safe.
+                  </td>
+                  <td>
+                    Do not use water jet on burning oil. Do not disconnect hoses
+                    until instructed. Never re-open valves once cargo stops.
+                  </td>
+                </tr>
+                <tr>
+                  <td>🛢️ Cargo spillage on deck</td>
+                  <td>
+                    Stop cargo. Notify terminal. Contain the spill — close
+                    scuppers. Prevent ignition: remove all sources. Muster
+                    response team. Prepare for notification under MARPOL.
+                  </td>
+                  <td>
+                    Do not wash spill overboard — MARPOL violation. Do not
+                    approach without PPE. Do not ignore small spills — they
+                    spread.
+                  </td>
+                </tr>
+                <tr>
+                  <td>☠️ Toxic gas release (H₂S)</td>
+                  <td>
+                    Sound alarm. Put on SCBA immediately. Do not approach
+                    without BA. Account for all personnel. Evacuate affected
+                    area. Notify terminal. TMAS consultation for any casualties.
+                  </td>
+                  <td>
+                    Do not enter the area without SCBA — you will be
+                    incapacitated within seconds. Do not wait to see if it
+                    clears.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="callout danger">
+              <strong>MARPOL applies to every tanker worldwide.</strong> Any oil
+              spillage to the sea must be reported. Attempting to conceal a
+              spill is a criminal offence for the Master. Notify the terminal,
+              flag state, and coastal state if in territorial waters.
+            </div>
+          </div>
+
+          <!-- MATCH: Emergency response -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — match the emergency to its first response
+            </div>
+            <div class="card-q">
+              Match each tanker emergency to the correct immediate action.
+            </div>
+            <div class="match-wrap" id="m6-match">
+              <div>
+                <div class="match-col-hdr">Emergency</div>
+                <div class="match-col" id="m6-left"></div>
+              </div>
+              <div>
+                <div class="match-col-hdr">Immediate first action</div>
+                <div class="match-col" id="m6-right"></div>
+              </div>
+            </div>
+            <div class="match-hint">Tap left → tap right to match</div>
+            <div class="match-score" id="m6-score"></div>
+          </div>
+
+          <!-- SCENARIO: Emergency decision -->
+          <div class="card">
+            <div class="card-label do">
+              ⚡ Activity — emergency response decision
+            </div>
+            <div class="scenario">
+              <div class="scenario-lbl">
+                Emergency scenario — during cargo loading
+              </div>
+              <p>
+                You are on deck watch during cargo loading. You notice
+                <strong>liquid cargo leaking from the manifold flange</strong>.
+                The leak is small but increasing. The terminal has not noticed.
+                Cargo is still flowing.
+              </p>
+            </div>
+            <div class="card-q">What is your immediate action?</div>
+            <div class="mcq-opts" id="m6-scen1"></div>
+            <div class="mcq-fb" id="m6-scen1-fb"></div>
+            <div id="m6-scen2-wrap" style="display: none; margin-top: 1rem">
+              <div class="card-q" style="margin-top: 0.5rem">
+                You have stopped cargo and the terminal knows. The spill has
+                reached the deck. A crewman suggests opening the deck scupper to
+                drain it into the sea. What do you say?
+              </div>
+              <div class="mcq-opts" id="m6-scen2"></div>
+              <div class="mcq-fb" id="m6-scen2-fb"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label check">▶ Module quiz</div>
+            <div id="m6-quiz"></div>
+          </div>
+
+          <div class="callout tip" style="margin-top: 1rem">
+            <strong>All 6 modules complete.</strong> Final assessment is 18
+            questions. Pass mark 75%. All tanker crew must complete this
+            familiarisation before joining — record completion in the SMS
+            training matrix.
+          </div>
+
+          <div class="mod-nav">
+            <button class="btn-prev" onclick="goTo('m5')">← Module 5</button>
+            <button
+              class="btn-next"
+              style="background: var(--orange)"
+              onclick="goTo('assess')"
+            >
+              ★ Assessment →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ASSESSMENT ══ -->
+      <div class="screen" id="screen-assess">
+        <div class="mod-wrap">
+          <div class="assess-hdr">
+            <div style="font-size: 32px; margin-bottom: 6px">🛢️</div>
+            <h2>Final Assessment — Oil Tanker Familiarisation</h2>
+            <p
+              style="
+                font-size: 13px;
+                color: var(--muted);
+                margin-top: 3px;
+                font-weight: 300;
+              "
+            >
+              STCW Table A-V/1-1 — All seafarers joining an oil tanker
+            </p>
+            <div class="assess-meta">
+              <span class="a-chip">18 QUESTIONS</span>
+              <span class="a-chip">PASS: 75% (14/18)</span>
+              <span class="a-chip">TIME: 18 MIN</span>
+              <span class="a-chip">ONE ATTEMPT</span>
+            </div>
+          </div>
+          <div class="timer-strip">
+            <span
+              style="
+                font-family: &quot;Fira Code&quot;, monospace;
+                font-size: 11px;
+                color: var(--muted);
+                letter-spacing: 0.05em;
+              "
+              >TIME REMAINING</span
+            >
+            <span id="a-timer">18:00</span>
+            <span
+              id="a-qcount"
+              style="
+                font-family: &quot;Fira Code&quot;, monospace;
+                font-size: 11px;
+                color: var(--muted);
+              "
+              >0 / 18 answered</span
+            >
+          </div>
+          <div id="assess-qs"></div>
+          <button
+            class="btn-submit-a"
+            id="btn-sub"
+            onclick="submitAssessment()"
+            disabled
+          >
+            SUBMIT ASSESSMENT
+          </button>
+          <div class="results-panel" id="results">
+            <div class="score-ring" id="score-ring">
+              <div class="score-pct" id="score-pct">—</div>
+              <div class="score-lbl" id="score-lbl">—</div>
+            </div>
+            <div class="verdict" id="verdict">—</div>
+            <div class="verdict-msg" id="verdict-msg"></div>
+            <div class="breakdown" id="breakdown"></div>
+            <div class="cert" id="cert">
+              <span class="cert-icon">🏅</span>
+              <h3>Familiarisation Complete</h3>
+              <p>STCW Oil Tanker Familiarisation — A-V/1-1</p>
+              <div class="cert-note">
+                Record in SMS training matrix. Complete vessel-specific
+                familiarisation checklist on joining. Reference ISGOTT Chapter 2
+                for cargo operations.
+              </div>
+            </div>
+            <div class="res-btns">
+              <button
+                class="btn-begin"
+                style="background: var(--amber)"
+                onclick="goTo('hero')"
+              >
+                ← Back to modules
+              </button>
+              <button class="btn-prev" onclick="location.reload()">
+                Retake
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      // ═══════════════════════════════════════════════
+      // SORT DATA
+      // ═══════════════════════════════════════════════
+      var sortData = {
+        "m5-data": [
+          {
+            id: 1,
+            text: "Berth and make fast — confirm all moorings are secure and gangway rigged",
+          },
+          {
+            id: 2,
+            text: "Complete Ship-Shore Safety Checklist jointly with the terminal representative",
+          },
+          {
+            id: 3,
+            text: "Connect cargo hose or loading arm — check flange integrity and confirm bonding wire connected",
+          },
+          {
+            id: 4,
+            text: "Open manifold valves — confirm communication channel and emergency stop procedure agreed",
+          },
+          {
+            id: 5,
+            text: "Commence cargo at agreed slow start rate — monitor manifold and tanks continuously",
+          },
+          {
+            id: 6,
+            text: "Increase to agreed full loading rate after confirming no leaks at connections",
+          },
+        ],
+      };
+      var sortCorrect = { "m5-correct": [1, 2, 3, 4, 5, 6] };
+      var sortCurrent = {};
+      var dragSrc = null;
+
+      // ═══════════════════════════════════════════════
+      // MATCH DATA
+      // ═══════════════════════════════════════════════
+      var matchData = {
+        m1: {
+          left: [
+            "VLCC",
+            "Product tanker",
+            "OBO (Oil-Bulk-Ore)",
+            "Shuttle tanker",
+          ],
+          right: [
+            "Multiple grades of refined products in separate coated tanks",
+            "Crude oil from an offshore production facility — no shore berth",
+            "Very large crude oil carrier — single grade, IGS mandatory",
+            "Alternates between oil voyages and dry bulk — thorough gas-freeing required between",
+          ],
+          pairs: [2, 0, 3, 1],
+        },
+        m2: {
+          left: [
+            "Gas reading of 3% LEL in pump room",
+            "Flash point below 60°C",
+            "H₂S reading of 5 ppm",
+            "Cargo tank atmosphere at 45% O₂ level... wait: O₂ at 18.5%",
+          ],
+          right: [
+            "Atmosphere is oxygen-deficient — do not enter without SCBA",
+            "High flammability risk — treat as highly flammable cargo, rigorous ignition control",
+            "Approaching but below LEL — increase ventilation, investigate source, do not enter",
+            "The cargo presents an immediate fire risk even at ambient temperature",
+          ],
+          pairs: [2, 3, 1, 0],
+        },
+        m6: {
+          left: [
+            "Cargo fire at the manifold",
+            "Oil spillage reaching the deck",
+            "H₂S gas release in pump room",
+            "Small leak detected at hose connection",
+          ],
+          right: [
+            "Stop cargo immediately — close scuppers — contain spill — eliminate ignition sources — report to terminal",
+            "Stop cargo — apply ESD — notify terminal — shut valves — muster fire party",
+            "Stop cargo immediately — notify officer — attempt controlled tightening — monitor for increase",
+            "Do NOT enter — sound alarm — muster with SCBA — account for all personnel",
+          ],
+          pairs: [2, 0, 3, 1],
+        },
+      };
+      var matchState = {};
+
+      // ═══════════════════════════════════════════════
+      // MCQ DATA
+      // ═══════════════════════════════════════════════
+      var mcqData = {
+        "m1-q1": {
+          q: "What is the mandatory gas system for crude oil tankers that prevents cargo tank atmospheres from becoming flammable during discharge?",
+          opts: [
+            "The inert gas system (IGS)",
+            "The ventilation system",
+            "The compressed air system",
+            "The cargo heating system",
+          ],
+          a: 0,
+          fb: [
+            "Correct. The Inert Gas System (IGS) replaces air in cargo tanks with combustion gas or nitrogen, keeping the atmosphere above the Upper Explosive Limit (non-flammable). Mandatory on crude carriers.",
+            "Incorrect. Ventilation moves air but does not inert the atmosphere.",
+            "Incorrect. Compressed air is used for instrumentation and tools — not tank inerting.",
+            "Incorrect. Heating systems control cargo viscosity — they do not affect tank flammability.",
+          ],
+        },
+        "m1-q2": {
+          q: "On a product tanker, why is grade segregation critically important?",
+          opts: [
+            "To reduce the weight of the vessel",
+            "Because all products are identical and only documentation separates them",
+            "To improve the vessel's speed",
+            "To prevent contamination of different refined product cargoes loaded in separate tanks",
+          ],
+          a: 3,
+          fb: [
+            "Incorrect. Weight distribution is managed by ballasting — segregation is about product integrity.",
+            "Incorrect. The products are chemically different — physical contamination between grades is the concern.",
+            "Incorrect. Grade segregation does not affect vessel speed.",
+            "Correct. Product tankers carry multiple different refined products (gasoline, jet fuel, diesel, chemicals) in separate tanks. Cross-contamination destroys cargo value and may cause safety incidents.",
+          ],
+        },
+        "m1-q3": {
+          q: "What is the most hazardous enclosed space on an oil tanker and why?",
+          opts: [
+            "The engine room — it contains high temperatures",
+            "The pump room — it has cargo piping systems with vapour, poor ventilation, and H₂S accumulation risk",
+            "The accommodation — it is the most crowded space",
+            "The bridge — it has the most electrical equipment",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. The engine room has hazards but has dedicated ventilation and safety systems.",
+            "Correct. The pump room is below the main deck with poor ventilation, contains cargo piping (vapour source), and can accumulate H₂S. It has caused more tanker crew deaths than any other single location.",
+            "Incorrect. Accommodation areas are not cargo hazard areas.",
+            "Incorrect. The bridge is not a cargo hazard area.",
+          ],
+        },
+        "m2-q1": {
+          q: "Oil vapour is heavier than air (vapour density >1). Where does this mean it collects?",
+          opts: [
+            "At the highest points of the vessel — mast and superstructure",
+            "It disperses evenly throughout the atmosphere",
+            "In the lowest areas — pump rooms, bilges, tank tops, and below-deck spaces",
+            "Only inside cargo tanks",
+          ],
+          a: 2,
+          fb: [
+            "Incorrect. Vapours heavier than air sink — they do not rise to high points.",
+            "Incorrect. Heavy vapours do not disperse evenly — they concentrate in low spaces.",
+            "Correct. Petroleum vapour with density greater than 1 sinks to the lowest points on the vessel. This is why pump rooms are so dangerous — vapour from cargo piping accumulates in a confined low space.",
+            "Incorrect. Vapour escapes from tank openings and piping — it is not confined to tanks.",
+          ],
+        },
+        "m2-q2": {
+          q: "At what H₂S concentration should you be most concerned — and why?",
+          opts: [
+            "500+ ppm — because at this level your sense of smell is instantly paralysed and death can occur in seconds",
+            "50 ppm — this is the IDLH level where you are immediately in danger",
+            "1 ppm — because any H₂S indicates a serious hazard",
+            "The concentration at which you can smell rotten eggs is the dangerous level",
+          ],
+          a: 0,
+          fb: [
+            "Correct. At very high H₂S concentrations (500+ ppm), the olfactory nerve is paralysed immediately — you cannot smell anything. You receive no warning. You are incapacitated before you can respond. Always use instruments — never trust your nose.",
+            "Incorrect. 50 ppm is the NIOSH IDLH (immediately dangerous to life and health), but at 500+ ppm the danger is far more immediate.",
+            "Incorrect. 1 ppm is detectable but not immediately dangerous.",
+            "Incorrect. The smell of rotten eggs occurs at low, non-lethal concentrations. At dangerous concentrations — there is no smell.",
+          ],
+        },
+        "m2-q3": {
+          q: "What is the flash point of a cargo and why does it matter?",
+          opts: [
+            "The temperature at which a cargo solidifies — important for heating",
+            "The minimum temperature at which a liquid produces enough vapour to ignite — determines how carefully ignition sources must be controlled",
+            "The temperature at which the cargo boils — important for pumping",
+            "The maximum pressure the cargo can sustain",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. The solidification point is pour point or cloud point — not flash point.",
+            "Correct. Flash point determines at what temperature a cargo presents a fire risk. Crude oil and gasoline have very low flash points (below 0°C to 60°C), meaning they present a fire risk even in cold conditions. Diesel has a flash point above 60°C — less immediate risk.",
+            "Incorrect. The boiling point is relevant to vapour generation — but flash point specifically relates to ignition risk.",
+            "Incorrect. Cargo pressure rating is a different property.",
+          ],
+        },
+        "m3-q1": {
+          q: "A crew member wants to use their mobile phone on the cargo deck to take a photo of the loading operation. What do you tell them?",
+          opts: [
+            "Mobile phones are not intrinsically safe and are absolutely prohibited on the cargo deck — confiscate it immediately",
+            "It is fine as long as they are not near the manifold",
+            "Only smartphones with camera are prohibited — calls are acceptable",
+            "They can use it briefly if they are quick",
+          ],
+          a: 0,
+          fb: [
+            "Correct. Mobile phones are not intrinsically safe (IS) or explosion-proof (Ex). Any spark from the phone — from a call, text, battery connection, or even turning it on or off — is an ignition source. Prohibited on the entire cargo deck.",
+            "Incorrect. The entire cargo deck is a hazardous area. Proximity to the manifold is not the issue — vapour can be present anywhere on deck.",
+            "Incorrect. All phone functions are prohibited — calls, data, camera, and standby.",
+            "Incorrect. Brief use is not permitted. There is no acceptable exception for non-IS equipment on the cargo deck.",
+          ],
+        },
+        "m3-q2": {
+          q: "The inert gas system (IGS) keeps cargo tanks safe by:",
+          opts: [
+            "Cooling the cargo to below its flash point",
+            "Filling the tanks with water to prevent vapour formation",
+            "Replacing air in the tanks with non-combustible gas, keeping O₂ below 8% so the atmosphere cannot support combustion",
+            "Removing H₂S from the tank atmosphere",
+          ],
+          a: 2,
+          fb: [
+            "Incorrect. Cooling the cargo is achieved by temperature management — not the IGS.",
+            "Incorrect. Filling with water would contaminate the cargo and cause structural problems.",
+            "Correct. The IGS introduces inert gas (usually flue gas from the boiler or nitrogen) to replace air in cargo tanks, maintaining O₂ content below 8%. Below this level, combustion cannot be sustained regardless of the vapour concentration.",
+            "Incorrect. IGS does not remove H₂S — its purpose is to control oxygen content and prevent explosions.",
+          ],
+        },
+        "m3-q3": {
+          q: "When must cargo operations stop due to an electrical storm?",
+          opts: [
+            "Never — the risk from lightning is negligible compared to operational delays",
+            "When lightning is sighted within 5 nautical miles — stop cargo and close all tank openings",
+            "Only if lightning strikes the vessel directly",
+            "After thunder is heard",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Lightning within 5nm is a recognised ignition risk for tanker cargo operations. ISGOTT specifies this as a criterion for stopping operations.",
+            "Correct. Lightning within 5 nautical miles means cargo operations must stop and all cargo tank openings must be closed. Static from nearby strikes can be sufficient to ignite a flammable atmosphere.",
+            "Incorrect. Waiting for a direct strike is too late. ISGOTT specifies 5nm as the safety threshold.",
+            "Incorrect. Thunder is heard after lightning — waiting for thunder wastes the warning time.",
+          ],
+        },
+        "m4-q1": {
+          q: "What atmosphere test reading means you must NOT enter an enclosed space on a tanker?",
+          opts: [
+            "O₂ reading above 20%",
+            "H₂S reading of 0.5 ppm",
+            "LEL reading of 0%",
+            "O₂ reading below 19.5% — the space is oxygen-deficient",
+          ],
+          a: 3,
+          fb: [
+            "Incorrect. Above 20% O₂ is normal — this is not a reason to prohibit entry.",
+            "Incorrect. 0.5 ppm H₂S is detectable but below immediately dangerous levels.",
+            "Incorrect. 0% LEL means the gas concentration is below the lower explosive limit — this is fine for entry if O₂ is normal.",
+            "Correct. Below 19.5% O₂ indicates oxygen deficiency. This can be caused by cargo vapour displacing air, or by gas consumption from biological processes. Entry without SCBA in oxygen-deficient atmosphere causes rapid incapacitation and death.",
+          ],
+        },
+        "m4-q2": {
+          q: "What is an EEBD and when is it used?",
+          opts: [
+            "Emergency Exit Breathing Device — used for entering tanks",
+            "Emergency Escape Breathing Device — used only for emergency escape through a gas-contaminated area, not for entry",
+            "Extra Equipment for Breathing — the same as SCBA",
+            "Emergency Equipment for Breathing Divers — used for underwater work",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. EEBDs are for escape only — they cannot be used for entry work.",
+            "Correct. EEBD (Emergency Escape Breathing Device) provides limited air for emergency escape only — typically 10–15 minutes. They are never used for tank entry. Entry requires SCBA which provides sustained breathing for work.",
+            "Incorrect. EEBD and SCBA are completely different. SCBA is for entry and sustained work.",
+            "Incorrect. EEBDs are for crew emergency escape from a gas-contaminated area — not diving.",
+          ],
+        },
+        "m4-q3": {
+          q: "An enclosed space entry permit requires which of the following before entry is permitted?",
+          opts: [
+            "Atmosphere test results, standby person, rescue equipment ready, and two-way communication established",
+            "Only the supervisor's signature",
+            "Just the gas-free certificate from the previous day",
+            "The Master's presence at the entry point",
+          ],
+          a: 0,
+          fb: [
+            "Correct. All four elements are mandatory: confirmed atmosphere test (O₂, LEL, H₂S), a dedicated standby person at the entrance, rescue equipment deployed and ready, and continuous two-way communication between the entrant and standby.",
+            "Incorrect. A signature alone does not make an enclosed space safe to enter.",
+            "Incorrect. A certificate from the previous day is invalid — atmosphere can change rapidly. A fresh test immediately before entry is required.",
+            "Incorrect. The Master's physical presence is not required — but all permit elements must be in place.",
+          ],
+        },
+        "m5-q1": {
+          q: "What is the primary purpose of the Ship-Shore Safety Checklist?",
+          opts: [
+            "To document cargo quantities for invoicing",
+            "To check that the vessel is properly insured",
+            "To confirm that both ship and terminal have agreed on safety conditions and emergency procedures before cargo transfer begins",
+            "To record the vessel's draft on arrival",
+          ],
+          a: 2,
+          fb: [
+            "Incorrect. Cargo quantities are documented in the Bill of Lading and cargo log — not the SSSCL.",
+            "Incorrect. Insurance is handled separately — not through the SSSCL.",
+            "Correct. The Ship-Shore Safety Checklist confirms that both parties have agreed on: communication channels, emergency stop procedures, cargo transfer rates, mooring adequacy, fire-fighting readiness, and notification procedures. It is a safety agreement, not an administrative document.",
+            "Incorrect. Draft is recorded in the deck log — not the SSSCL.",
+          ],
+        },
+        "m5-q2": {
+          q: "During cargo loading, you notice a small but increasing smell of cargo vapour near the manifold. What is the correct action?",
+          opts: [
+            "Stop cargo immediately using ESD, notify terminal, investigate the source, and do not restart until the cause is identified and rectified",
+            "Note it in the log and continue — small leaks are normal",
+            "Increase the loading rate to get the cargo onboard faster before a problem develops",
+            "Wait to see if it gets worse before taking action",
+          ],
+          a: 0,
+          fb: [
+            "Correct. Any vapour release from cargo connections is an emergency in progress. Stop cargo immediately. Notify the terminal. Identify the source. Do not resume until fixed. A small leak at 400 bar can become a spray ignition in seconds.",
+            "Incorrect. Small leaks on a tanker are never acceptable. Cargo vapour near an ignition source causes an explosion.",
+            "Incorrect. Increasing the rate increases the pressure at the leak and worsens it. This is exactly the wrong response.",
+            "Incorrect. Waiting for a situation to worsen before acting is not an acceptable safety approach. Act at the first sign of an abnormality.",
+          ],
+        },
+        "m5-q3": {
+          q: "Which VHF channel is the standard emergency communication channel during cargo transfer?",
+          opts: [
+            "Channel 6",
+            "Channel 72",
+            "Channel 77",
+            "Channel 16 — the international distress, safety, and calling channel",
+          ],
+          a: 3,
+          fb: [
+            "Incorrect. Channel 6 is used for ship-to-ship communication — not the standard emergency channel.",
+            "Incorrect. Channel 72 is used for port operations in some regions — not the standard emergency channel.",
+            "Incorrect. Channel 77 is used for pilot communications in some areas — not the standard emergency channel.",
+            "Correct. Channel 16 is the international distress, safety, and calling frequency. During cargo operations, agreement on the emergency communication channel is part of the Ship-Shore Safety Checklist.",
+          ],
+        },
+        "m6-q1": {
+          q: "The immediate first action when you notice a cargo fire at the manifold during loading is:",
+          opts: [
+            "Call the fire brigade ashore before doing anything onboard",
+            "Continue loading until the terminal notices — they have better fire-fighting resources",
+            "Use a water jet to extinguish the burning cargo",
+            "Stop cargo immediately using ESD, notify terminal, shut all valves, and sound the alarm",
+          ],
+          a: 3,
+          fb: [
+            "Incorrect. Waiting for shore fire brigade allows the fire to grow. Immediate onboard action is required first.",
+            "Incorrect. The ship has the initial responsibility to respond. Waiting for the terminal wastes critical seconds.",
+            "Incorrect. Water jet on burning oil spreads and intensifies the fire — never use a water jet on burning petroleum.",
+            "Correct. Stop cargo (ESD) — removing the fuel supply is the first priority. Notify terminal. Shut all valves. Sound alarm and muster fire party. Then deploy available fire-fighting systems.",
+          ],
+        },
+        "m6-q2": {
+          q: "A cargo spill on deck must NOT be cleared by opening the deck scupper because:",
+          opts: [
+            "Discharging oil to the sea is prohibited under MARPOL — it is an environmental crime",
+            "The scupper might get blocked",
+            "The spill will evaporate naturally if left on deck",
+            "Deck scuppers are not strong enough to handle liquid cargo",
+          ],
+          a: 0,
+          fb: [
+            "Correct. Discharging oil to the sea is prohibited under MARPOL Annex I regardless of quantity, location, or circumstances during cargo operations. Close all scuppers. Contain the spill on deck. Report it. Penalties include criminal prosecution of the Master.",
+            "Incorrect. Scupper blockage is a minor maintenance concern — not the reason.",
+            "Incorrect. Oil does not evaporate cleanly — it leaves a residue and the vapour creates a fire hazard.",
+            "Incorrect. Scupper capacity is not the reason.",
+          ],
+        },
+        "m6-q3": {
+          q: "If H₂S gas is detected in the pump room, the correct immediate action for a crew member is:",
+          opts: [
+            "Enter quickly to open the ventilation fan",
+            "Do not enter — sound the alarm, account for personnel, approach only with SCBA",
+            "Close the pump room door and wait for the gas to disperse",
+            "Call the terminal for assistance before taking any action",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Entering without SCBA to operate any equipment is suicidal. At IDLH levels of H₂S, incapacitation is almost instantaneous.",
+            "Correct. Do not enter. The smell may already be undetectable at the concentration present. Sound the alarm. Account for all personnel — is anyone already inside? Respond only with SCBA. This is a rescue scenario — treat it as such.",
+            "Incorrect. Closing the door and waiting allows any person inside to die. It also does not address the cause.",
+            "Incorrect. You must act immediately. Do not wait for the terminal. Sound the alarm and muster.",
+          ],
+        },
+      };
+
+      // ═══════════════════════════════════════════════
+      // SCENARIO MCQ DATA
+      // ═══════════════════════════════════════════════
+      var scenarioMCQ = {
+        "m6-scen1": {
+          opts: [
+            "Notify the terminal officer and wait for their instructions",
+            "Stop cargo immediately using the Emergency Shutdown — notify terminal, investigate the leak",
+            "Reduce the loading rate slightly and continue watching",
+            "Apply deck foam over the area and continue loading",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. You do not wait for terminal instructions on a safety issue you can see developing. You act first. Notify the terminal as part of the response — not before acting.",
+            "Correct. Any leak at the manifold is an emergency. Stop cargo immediately (ESD). Notify terminal. Investigate and find the source. Do not restart until the leak is fixed and the area is confirmed safe. A small leak can spray onto a hot surface or find an ignition source in seconds.",
+            "Incorrect. Reducing the rate still allows a leak to continue. The correct action is to stop immediately.",
+            "Incorrect. Applying foam before stopping cargo is backwards. Stop the cargo first — remove the fuel supply. Then deal with any spillage.",
+          ],
+        },
+        "m6-scen2": {
+          opts: [
+            "Agree — opening the scupper is the fastest way to clear the deck",
+            "Absolutely refuse — discharging oil to sea is illegal under MARPOL — close all scuppers and contain the spill on deck",
+            "Compromise — open the scupper briefly then close it",
+            "Let the officer in charge decide — it is not your responsibility",
+          ],
+          a: 1,
+          fb: [
+            "Incorrect. Opening the scupper discharges oil to sea which is a MARPOL violation — criminal for the Master, and potentially all officers who permitted it.",
+            "Correct. Close all scuppers immediately. Contain the spill on deck using boom or absorbent material. Notify the officer in charge and terminal. Prepare a MARPOL spillage report. There is no acceptable compromise on this.",
+            "Incorrect. Any discharge to sea — even brief — is a MARPOL violation. There is no permitted brief period.",
+            "Incorrect. You have a personal responsibility to refuse an illegal order regardless of rank.",
+          ],
+        },
+      };
+
+      // ═══════════════════════════════════════════════
+      // HOTSPOT DATA
+      // ═══════════════════════════════════════════════
+      var hazardInfo = {
+        smoke: {
+          found: false,
+          label: "Smoking on deck",
+          text: "Smoking is only permitted in the designated smoking room with a self-closing door. Smoking on the cargo deck is absolutely prohibited — it is a direct ignition source in a potentially flammable atmosphere.",
+        },
+        phone: {
+          found: false,
+          label: "Mobile phone on deck",
+          text: "Mobile phones are not intrinsically safe. They can produce sparks when calls are received, when buttons are pressed, or when connecting/disconnecting from power. Prohibited on the entire cargo deck during operations.",
+        },
+        flame: {
+          found: false,
+          label: "Non-intrinsically safe torch",
+          text: "Standard torches contain non-IS electrical components. Only approved intrinsically safe (IS) or explosion-proof (Ex) torches and equipment may be used in cargo areas. Look for the Ex or IS marking on equipment.",
+        },
+        hatch: {
+          found: false,
+          label: "Open cargo tank hatch unattended",
+          text: "An open tank hatch allows cargo vapour to escape freely onto the deck. All tank openings must be closed when not in use. When open for gauging or sampling — a responsible person must be present.",
+        },
+        grind: {
+          found: false,
+          label: "Grinding/hot work without permit",
+          text: "Grinding produces sparks. Any work producing heat or sparks — welding, grinding, cutting — requires a hot work permit, a confirmed gas-free atmosphere, and continuous monitoring. Never do hot work near open tanks or cargo areas.",
+        },
+      };
+      var hazardsFound = 0;
+
+      // ═══════════════════════════════════════════════
+      // PPE DATA
+      // ═══════════════════════════════════════════════
+      var ppeCorrect = {
+        "pz-0": "SCBA",
+        "pz-1": "Gas detector",
+        "pz-2": "Chemical gloves",
+        "pz-3": "EEBD",
+      };
+      var ppeDragging = null;
+
+      // ═══════════════════════════════════════════════
+      // ASSESSMENT DATA (18 questions)
+      // ═══════════════════════════════════════════════
+      var aData = [
+        {
+          q: "What system keeps crude oil tanker cargo tanks non-flammable during discharge?",
+          opts: [
+            "Ventilation system",
+            "Compressed air system",
+            "Inert gas system (IGS)",
+            "Cargo heating system",
+          ],
+          a: 2,
+          cat: "m1",
+          fb: [
+            "Incorrect. Ventilation moves air — does not inert the atmosphere.",
+            "Incorrect. Compressed air is for instrumentation.",
+            "Correct. IGS replaces air with non-combustible gas, maintaining O₂ below 8%.",
+            "Incorrect. Heating manages viscosity — not flammability.",
+          ],
+        },
+        {
+          q: "The pump room is the most dangerous enclosed space on a tanker because:",
+          opts: [
+            "It has the highest temperature",
+            "It is the largest space",
+            "It contains the most electrical equipment",
+            "It has cargo piping, poor ventilation, and H₂S accumulation risk",
+          ],
+          a: 3,
+          cat: "m1",
+          fb: [
+            "Incorrect. Temperature is not the primary hazard.",
+            "Incorrect. Size is not the hazard factor.",
+            "Incorrect. Electrical equipment density is not the primary pump room hazard.",
+            "Correct. Cargo vapour from piping, poor ventilation, and H₂S accumulation make the pump room the most dangerous enclosed space.",
+          ],
+        },
+        {
+          q: "On a product tanker, cargo segregation prevents:",
+          opts: [
+            "Contamination of different refined product grades in separate tanks",
+            "Loss of vessel speed",
+            "Excessive fuel consumption",
+            "Excessive crew overtime",
+          ],
+          a: 0,
+          cat: "m1",
+          fb: [
+            "Correct. Product tankers carry multiple different refined products — cross-contamination destroys cargo value and safety.",
+            "Incorrect. Speed is unrelated.",
+            "Incorrect. Fuel consumption is unrelated to cargo segregation.",
+            "Incorrect. Overtime is unrelated.",
+          ],
+        },
+        {
+          q: "Petroleum vapour (density >1) sinks to the lowest points of the vessel. Where must you always check for gas first?",
+          opts: [
+            "Bridge deck and mast",
+            "Accommodation and galley",
+            "Engine room exhaust outlets",
+            "Pump rooms, bilges, and below-deck spaces",
+          ],
+          a: 3,
+          cat: "m2",
+          fb: [
+            "Incorrect. High points are the last place heavy vapours collect.",
+            "Incorrect. Accommodation is not a cargo vapour collection point.",
+            "Incorrect. Exhaust outlets disperse — not collect — vapour.",
+            "Correct. Vapour heavier than air sinks to pump rooms, bilges, void spaces, and tank tops.",
+          ],
+        },
+        {
+          q: "Why should you never rely on your sense of smell to detect H₂S?",
+          opts: [
+            "At dangerous concentrations H₂S instantly paralyses the sense of smell — you smell nothing and may be incapacitated before reacting",
+            "H₂S always smells of perfume at high concentrations",
+            "Gas detectors are more convenient than smell",
+            "H₂S has no smell at any concentration",
+          ],
+          a: 0,
+          cat: "m2",
+          fb: [
+            "Correct. At 500+ ppm, H₂S instantly defeats your sense of smell. No warning. No time to react. Always use a calibrated gas detector.",
+            "Incorrect. H₂S smells of rotten eggs at LOW concentrations.",
+            "Incorrect. H₂S always smells of rotten eggs when detectable — but not at lethal levels.",
+            "Incorrect. Convenience is not the safety reason.",
+          ],
+        },
+        {
+          q: "The flash point of a cargo tells you:",
+          opts: [
+            "When the cargo will solidify",
+            "The minimum temperature at which it produces enough vapour to ignite — the lower it is, the higher the fire risk",
+            "How hot the cargo can be heated before it boils",
+            "The maximum pressure allowed in cargo tanks",
+          ],
+          a: 1,
+          cat: "m2",
+          fb: [
+            "Incorrect. Solidification is the pour point.",
+            "Correct. Low flash point means the cargo presents a fire risk even in cold conditions. Gasoline has a flash point below -40°C.",
+            "Incorrect. That is the boiling point.",
+            "Incorrect. Tank pressure is a different parameter.",
+          ],
+        },
+        {
+          q: "A crew member wants to use their personal mobile phone on the cargo deck. You should:",
+          opts: [
+            "Allow it if there is no cargo in the tanks",
+            "Allow it for a brief call only",
+            "Tell them mobile phones are not intrinsically safe and are absolutely prohibited on the cargo deck",
+            "Allow it if they stand away from the manifold",
+          ],
+          a: 2,
+          cat: "m3",
+          fb: [
+            "Incorrect. Vapour can be present anywhere on the cargo deck — not only near manifolds or filled tanks.",
+            "Incorrect. There is no time exception for non-IS equipment.",
+            "Correct. Mobile phones are not IS/Ex rated. Any electrical spark from the phone is a potential ignition source. Prohibited everywhere on the cargo deck.",
+            "Incorrect. Distance from the manifold is not the criterion.",
+          ],
+        },
+        {
+          q: "Cargo operations must stop when lightning is sighted within:",
+          opts: [
+            "1 nautical mile",
+            "5 nautical miles",
+            "10 nautical miles",
+            "Lightning is not a cargo operations concern",
+          ],
+          a: 1,
+          cat: "m3",
+          fb: [
+            "Incorrect. 1nm is too close — the threshold is 5nm.",
+            "Correct. ISGOTT specifies stopping cargo operations and closing all tank openings when lightning is within 5 nautical miles.",
+            "Incorrect. 10nm is more conservative than required.",
+            "Incorrect. Lightning is a recognised ignition risk for tanker cargo operations.",
+          ],
+        },
+        {
+          q: "What does the Inert Gas System (IGS) do?",
+          opts: [
+            "Cools the cargo below its flash point",
+            "Maintains O₂ below 8% in cargo tanks — preventing the atmosphere from supporting combustion",
+            "Removes H₂S from cargo tanks",
+            "Fills tanks with water ballast",
+          ],
+          a: 1,
+          cat: "m3",
+          fb: [
+            "Incorrect. IGS does not cool the cargo.",
+            "Correct. IGS maintains tank O₂ below 8%. Below this level, combustion cannot occur regardless of vapour concentration.",
+            "Incorrect. IGS does not remove H₂S.",
+            "Incorrect. Ballasting is a separate operation.",
+          ],
+        },
+        {
+          q: "Below what O₂ level must you not enter an enclosed space without SCBA?",
+          opts: ["Below 20.8%", "Below 19.5%", "Below 17%", "Below 15%"],
+          a: 1,
+          cat: "m4",
+          fb: [
+            "Incorrect. 20.8% is normal — this is not a restriction threshold.",
+            "Correct. Below 19.5% O₂ the atmosphere is oxygen-deficient. Entry requires SCBA.",
+            "Incorrect. 17% is dangerously late to identify — 19.5% is the action threshold.",
+            "Incorrect. 15% O₂ causes rapid incapacitation — the threshold must be 19.5%.",
+          ],
+        },
+        {
+          q: "An EEBD is used for:",
+          opts: [
+            "Entering enclosed spaces for work",
+            "Firefighting in cargo areas",
+            "Underwater work on the hull",
+            "Emergency escape only — through a gas-contaminated area to safety",
+          ],
+          a: 3,
+          cat: "m4",
+          fb: [
+            "Incorrect. EEBD is not rated for sustained entry work — SCBA is required.",
+            "Incorrect. Firefighting requires SCBA or fire-fighting breathing apparatus.",
+            "Incorrect. Underwater work requires diving equipment.",
+            "Correct. EEBD (Emergency Escape Breathing Device) provides approximately 10–15 minutes of air for emergency escape only.",
+          ],
+        },
+        {
+          q: "Before entering a tanker enclosed space, which combination is mandatory?",
+          opts: [
+            "Just a gas-free certificate",
+            "Atmosphere test, standby person, rescue equipment, and two-way communication",
+            "The Master's presence and a witness",
+            "Supervisor signature and crew agreement",
+          ],
+          a: 1,
+          cat: "m4",
+          fb: [
+            "Incorrect. A certificate alone is insufficient — atmosphere changes.",
+            "Correct. All four elements are mandatory for every enclosed space entry without exception.",
+            "Incorrect. The Master's physical presence is not required.",
+            "Incorrect. Agreement is not a substitute for the practical safety requirements.",
+          ],
+        },
+        {
+          q: "The Ship-Shore Safety Checklist confirms:",
+          opts: [
+            "Cargo invoicing and quantities",
+            "Agreed safety conditions and emergency procedures before cargo transfer",
+            "The vessel's class and insurance",
+            "Loading port documentation",
+          ],
+          a: 1,
+          cat: "m5",
+          fb: [
+            "Incorrect. Quantities are in cargo documents.",
+            "Correct. The SSSCL is a safety agreement — communication channels, ESD procedure, transfer rates, mooring, fire-fighting readiness.",
+            "Incorrect. Class and insurance are separate.",
+            "Incorrect. Port documentation is handled separately.",
+          ],
+        },
+        {
+          q: "You smell cargo vapour increasing near the manifold during loading. What do you do?",
+          opts: [
+            "Wait to see if it increases further",
+            "Note it in the log and continue",
+            "Stop cargo immediately — notify terminal — investigate source — do not restart until fixed",
+            "Reduce the rate and continue monitoring",
+          ],
+          a: 2,
+          cat: "m5",
+          fb: [
+            "Incorrect. Any vapour release is an emergency — not something to log and ignore.",
+            "Incorrect. Reducing the rate does not stop the leak.",
+            "Correct. Stop cargo immediately. Notify terminal. Find the source. Fix it. A small leak can find an ignition source in seconds.",
+            "Incorrect. Waiting for a hazard to worsen is not an acceptable response.",
+          ],
+        },
+        {
+          q: "The standard emergency communication channel during cargo transfer is:",
+          opts: ["Channel 6", "Channel 16", "Channel 72", "Channel 77"],
+          a: 1,
+          cat: "m5",
+          fb: [
+            "Incorrect. Channel 6 is ship-to-ship.",
+            "Correct. Channel 16 is the international distress, safety, and calling channel agreed in the Ship-Shore Safety Checklist.",
+            "Incorrect. Channel 72 is used for various port operations.",
+            "Incorrect. Channel 77 is used for pilot communications in some areas.",
+          ],
+        },
+        {
+          q: "A cargo fire at the manifold — what is the FIRST action?",
+          opts: [
+            "Call shore fire brigade",
+            "Apply water jet to the burning cargo",
+            "Stop cargo immediately (ESD) — notify terminal — shut valves — sound alarm",
+            "Continue cargo until the terminal notices",
+          ],
+          a: 2,
+          cat: "m6",
+          fb: [
+            "Incorrect. Onboard action comes first — stop the fuel supply.",
+            "Incorrect. Water jet on burning petroleum spreads the fire.",
+            "Correct. ESD immediately stops cargo flow (removes fuel). Notify terminal. Shut valves. Sound alarm and muster fire party.",
+            "Incorrect. Waiting for the terminal to notice wastes critical seconds.",
+          ],
+        },
+        {
+          q: "A cargo spill on deck must be contained — not drained to sea — because:",
+          opts: [
+            "The scupper may get blocked",
+            "Discharging oil to sea violates MARPOL — it is an environmental crime with criminal penalties",
+            "The spill will evaporate safely",
+            "It looks bad during a port inspection",
+          ],
+          a: 1,
+          cat: "m6",
+          fb: [
+            "Incorrect. Scupper blockage is a minor maintenance issue.",
+            "Correct. MARPOL prohibits all oil discharge to sea from tankers during cargo operations. Close all scuppers. Contain on deck. Report the spill.",
+            "Incorrect. Oil does not evaporate safely — it leaves contamination and creates vapour hazard.",
+            "Incorrect. Appearance during inspection is not the safety reason.",
+          ],
+        },
+        {
+          q: "H₂S is detected in the pump room. The correct response is:",
+          opts: [
+            "Enter quickly to open the ventilation fan",
+            "Close the door and wait for the gas to clear",
+            "Do not enter — sound alarm — account for personnel — respond only with SCBA",
+            "Notify the terminal first",
+          ],
+          a: 2,
+          cat: "m6",
+          fb: [
+            "Incorrect. Entering without SCBA causes incapacitation almost instantly at dangerous H₂S concentrations.",
+            "Incorrect. Waiting allows anyone inside to die. You must act immediately.",
+            "Correct. Do not enter without SCBA. Sound alarm immediately. Account for all personnel — someone may already be inside. This is a rescue scenario.",
+            "Incorrect. Sound the alarm first. Notify others as part of the response — not as the first step.",
+          ],
+        },
+      ];
+
+      // ═══════════════════════════════════════════════
+      // STATE
+      // ═══════════════════════════════════════════════
+      var points = 0;
+      var assessAnswers = {};
+      var assessTimer = null;
+      var assessTimeLeft = 1080; // 18 minutes
+
+      // ═══════════════════════════════════════════════
+      // NAVIGATION
+      // ═══════════════════════════════════════════════
+      function goTo(dest) {
+        document.querySelectorAll(".screen").forEach(function (s) {
+          s.classList.remove("active");
+        });
+        var el = document.getElementById("screen-" + dest);
+        if (el) {
+          el.classList.add("active");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+        var pm = {
+          hero: 0,
+          m1: 12,
+          m2: 26,
+          m3: 42,
+          m4: 58,
+          m5: 74,
+          m6: 88,
+          assess: 100,
+        };
+        document.getElementById("prog-bar").style.width = (pm[dest] || 0) + "%";
+        var lm = {
+          hero: "Overview",
+          m1: "M1 — Tanker Types",
+          m2: "M2 — Cargo Hazards",
+          m3: "M3 — Ignition Control",
+          m4: "M4 — PPE & Access",
+          m5: "M5 — Ship-Shore Safety",
+          m6: "M6 — Emergencies",
+          assess: "Final Assessment",
+        };
+        document.getElementById("nav-mod").textContent = lm[dest] || "";
+        if (dest === "assess" && !assessTimer) startAssessTimer();
+        var mp = document.getElementById("mgpill-" + dest);
+        if (mp) mp.classList.add("done");
+      }
+      function addPoints(n) {
+        points += n;
+        document.getElementById("nav-pts").textContent = points + " pts";
+      }
+
+      // ═══════════════════════════════════════════════
+      // SORT
+      // ═══════════════════════════════════════════════
+      function initSort(listId, dataKey) {
+        var data = sortData[dataKey].slice();
+        shuffle(data);
+        sortCurrent[listId] = data.map(function (d) {
+          return d.id;
+        });
+        renderSort(listId, data);
+      }
+      function shuffle(a) {
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = a[i];
+          a[i] = a[j];
+          a[j] = t;
+        }
+      }
+      function renderSort(listId, data) {
+        var list = document.getElementById(listId);
+        if (!list) return;
+        list.innerHTML = "";
+        data.forEach(function (item, i) {
+          var div = document.createElement("div");
+          div.className = "sort-item";
+          div.draggable = true;
+          div.dataset.id = item.id;
+          div.innerHTML =
+            '<span class="sort-handle">&#8942;</span><span class="sort-badge">' +
+            (i + 1) +
+            '</span><span class="sort-text">' +
+            item.text +
+            "</span>";
+          div.addEventListener("dragstart", function (e) {
+            dragSrc = this;
+            this.classList.add("dragging");
+            e.dataTransfer.effectAllowed = "move";
+          });
+          div.addEventListener("dragend", function () {
+            this.classList.remove("dragging");
+            list.querySelectorAll(".sort-item").forEach(function (el) {
+              el.classList.remove("over");
+            });
+          });
+          div.addEventListener("dragover", function (e) {
+            e.preventDefault();
+            if (this !== dragSrc) {
+              list.querySelectorAll(".sort-item").forEach(function (el) {
+                el.classList.remove("over");
+              });
+              this.classList.add("over");
+            }
+          });
+          div.addEventListener("drop", function (e) {
+            e.stopPropagation();
+            if (this !== dragSrc) {
+              var items = Array.from(list.querySelectorAll(".sort-item"));
+              var si = items.indexOf(dragSrc),
+                ti = items.indexOf(this);
+              var cur = sortCurrent[listId];
+              var tmp = cur[si];
+              cur[si] = cur[ti];
+              cur[ti] = tmp;
+              var allData = sortData[listId.replace("-sort", "-data")];
+              var reordered = cur.map(function (id) {
+                return allData.find(function (d) {
+                  return d.id === id;
+                });
+              });
+              renderSort(listId, reordered);
+            }
+          });
+          list.appendChild(div);
+        });
+      }
+      function resetSort(listId, dataKey) {
+        initSort(listId, dataKey);
+        var fb = document.getElementById(listId.replace("-sort", "-sort-fb"));
+        if (fb) fb.className = "sort-feedback";
+      }
+      function checkSort(listId, correctKey, fbId) {
+        var cur = sortCurrent[listId],
+          cor = sortCorrect[correctKey];
+        var fb = document.getElementById(fbId);
+        if (!fb) return;
+        if (JSON.stringify(cur) === JSON.stringify(cor)) {
+          fb.className = "sort-feedback pass";
+          fb.textContent =
+            "✓ Correct sequence. This is the order you must follow every time.";
+          document
+            .getElementById(listId)
+            .querySelectorAll(".sort-item")
+            .forEach(function (el) {
+              el.classList.add("correct-item");
+            });
+          addPoints(8);
+        } else {
+          var allData = sortData[listId.replace("-sort", "-data")];
+          var names = cor.map(function (id) {
+            return allData.find(function (d) {
+              return d.id === id;
+            }).text;
+          });
+          fb.className = "sort-feedback fail";
+          fb.innerHTML =
+            'Not quite. Correct sequence:<ol style="margin:8px 0 0 18px;line-height:2;font-size:12px">' +
+            names
+              .map(function (n) {
+                return "<li>" + n + "</li>";
+              })
+              .join("") +
+            "</ol>";
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      // MATCH
+      // ═══════════════════════════════════════════════
+      function initMatch(mid) {
+        var data = matchData[mid];
+        matchState[mid] = { selected: null, matched: [] };
+        var leftEl = document.getElementById(mid + "-left"),
+          rightEl = document.getElementById(mid + "-right");
+        if (!leftEl || !rightEl) return;
+        leftEl.innerHTML = "";
+        rightEl.innerHTML = "";
+        var rightShuffled = data.right.slice();
+        shuffle(rightShuffled);
+        data.left.forEach(function (txt, i) {
+          var el = document.createElement("div");
+          el.className = "match-item";
+          el.textContent = txt;
+          el.addEventListener("click", function () {
+            matchClick(mid, "left", i, this);
+          });
+          leftEl.appendChild(el);
+        });
+        rightShuffled.forEach(function (txt) {
+          var origIdx = data.right.indexOf(txt);
+          var el = document.createElement("div");
+          el.className = "match-item";
+          el.textContent = txt;
+          el.addEventListener("click", function () {
+            matchClick(mid, "right", origIdx, this);
+          });
+          rightEl.appendChild(el);
+        });
+      }
+      function matchClick(mid, side, idx, el) {
+        var state = matchState[mid];
+        if (
+          el.classList.contains("matched-ok") ||
+          el.classList.contains("matched-err")
+        )
+          return;
+        var data = matchData[mid];
+        if (!state.selected) {
+          if (side === "left") {
+            state.selected = { side: side, idx: idx, el: el };
+            el.classList.add("selected");
+          } else {
+            el.style.outline = "2px solid var(--amber)";
+            setTimeout(function () {
+              el.style.outline = "";
+            }, 600);
+          }
+          return;
+        }
+        if (state.selected.side === side) {
+          state.selected.el.classList.remove("selected");
+          if (side === "left") {
+            state.selected = { side: side, idx: idx, el: el };
+            el.classList.add("selected");
+          } else state.selected = null;
+          return;
+        }
+        var lEl = state.selected.el,
+          rEl = el,
+          lIdx = state.selected.idx,
+          rIdx = idx;
+        lEl.classList.remove("selected");
+        var isMatch = data.pairs[lIdx] === rIdx;
+        if (isMatch) {
+          lEl.classList.add("matched-ok");
+          rEl.classList.add("matched-ok");
+          state.matched.push(lIdx);
+          addPoints(3);
+          if (state.matched.length === data.left.length) {
+            var sc = document.getElementById(mid + "-score");
+            if (sc) {
+              sc.className = "match-score show-ok";
+              sc.textContent = "✓ All matched correctly.";
+            }
+          }
+        } else {
+          lEl.classList.add("matched-err");
+          rEl.classList.add("matched-err");
+          setTimeout(function () {
+            lEl.classList.remove("matched-err");
+            rEl.classList.remove("matched-err");
+          }, 900);
+        }
+        state.selected = null;
+      }
+
+      // ═══════════════════════════════════════════════
+      // HOTSPOT
+      // ═══════════════════════════════════════════════
+      function tapHazard(key) {
+        if (hazardInfo[key].found) return;
+        hazardInfo[key].found = true;
+        hazardsFound++;
+        var dot = document.getElementById("hs-" + key);
+        if (dot) {
+          dot.classList.add("found");
+          var circle = dot.querySelector("circle");
+          if (circle) {
+            circle.setAttribute("fill", "rgba(21,128,61,0.2)");
+            circle.setAttribute("stroke", "#15803d");
+          }
+        }
+        document.getElementById("hs-count").textContent = hazardsFound;
+        var info = document.getElementById("hs-info");
+        info.className = "hs-info show";
+        info.innerHTML =
+          '<strong style="color:var(--green)">' +
+          hazardInfo[key].label +
+          "</strong><br>" +
+          hazardInfo[key].text;
+        addPoints(4);
+        if (hazardsFound === 5) {
+          info.innerHTML +=
+            '<br><br><strong style="color:var(--green)">✓ All 5 ignition hazards found.</strong> On a real tanker, any one of these in the wrong place and conditions can cause a catastrophic explosion. Recognising them is the first step to preventing them.';
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      // PPE DRAG/DROP
+      // ═══════════════════════════════════════════════
+
+      ppeDragging = null;
+
+      function ppeDragStart(e, el) {
+        // Prevent dragging already placed items
+        if (el.classList.contains("placed")) {
+          e.preventDefault();
+          return;
+        }
+
+        ppeDragging = el;
+
+        el.classList.add("dragging-ppe");
+
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", el.dataset.ppe);
+      }
+
+      function ppeDragEnd(e, el) {
+        el.classList.remove("dragging-ppe");
+
+        document.querySelectorAll(".ppe-zone").forEach(function (z) {
+          z.classList.remove("over-zone");
+        });
+
+        ppeDragging = null;
+      }
+
+      function ppeOver(e, zone) {
+        e.preventDefault();
+
+        e.dataTransfer.dropEffect = "move";
+
+        zone.classList.add("over-zone");
+      }
+
+      function ppeLeave(e, zone) {
+        zone.classList.remove("over-zone");
+      }
+
+      function ppeDrop(e, zone) {
+        e.preventDefault();
+
+        zone.classList.remove("over-zone");
+
+        if (!ppeDragging) return;
+
+        const dzEl = zone.querySelector(".pz-chips");
+
+        if (!dzEl) return;
+
+        // Remove old chip from this zone
+        const existingChip = dzEl.querySelector(".placed-chip");
+
+        if (existingChip) {
+          const existingItem = document.querySelector(
+            '.ppe-item[data-ppe="' + existingChip.dataset.ppe + '"]',
+          );
+
+          if (existingItem) {
+            existingItem.classList.remove("placed");
+          }
+
+          existingChip.remove();
+        }
+
+        // Remove same PPE from other zones
+        document.querySelectorAll(".placed-chip").forEach(function (chip) {
+          if (chip.dataset.ppe === ppeDragging.dataset.ppe) {
+            chip.remove();
+          }
+        });
+
+        // Mark item as placed
+        ppeDragging.classList.add("placed");
+
+        const chip = document.createElement("div");
+
+        chip.className = "placed-chip";
+        chip.dataset.ppe = ppeDragging.dataset.ppe;
+
+        chip.innerHTML = `
+    <span>${ppeDragging.dataset.ppe}</span>
+    <span class="remove-chip">×</span>
+  `;
+
+        // Remove chip button
+        chip
+          .querySelector(".remove-chip")
+          .addEventListener("click", function () {
+            const originalItem = document.querySelector(
+              '.ppe-item[data-ppe="' + chip.dataset.ppe + '"]',
+            );
+
+            if (originalItem) {
+              originalItem.classList.remove("placed");
+            }
+
+            chip.remove();
+          });
+
+        dzEl.appendChild(chip);
+
+        ppeDragging = null;
+      }
+
+      function checkPPE() {
+        var zones = document.querySelectorAll(".ppe-zone"),
+          correct = 0;
+
+        zones.forEach(function (zone, i) {
+          var chip = zone.querySelector(".placed-chip");
+
+          var key = "pz-" + i;
+
+          var correctPPE = ppeCorrect[key];
+
+          if (chip && chip.dataset.ppe === correctPPE) {
+            correct++;
+
+            chip.style.background = "rgba(21,128,61,0.15)";
+            chip.style.borderColor = "var(--green-mid)";
+            chip.style.color = "var(--green)";
+
+            zone.style.borderColor = "var(--green-mid)";
+            zone.style.borderStyle = "solid";
+          } else if (chip) {
+            chip.style.background = "rgba(220,38,38,0.1)";
+            chip.style.borderColor = "var(--red)";
+            chip.style.color = "var(--red)";
+
+            zone.style.borderColor = "var(--red)";
+            zone.style.borderStyle = "solid";
+          }
+        });
+
+        var result = document.getElementById("ppe-result");
+
+        if (correct === 4) {
+          result.className = "ppe-result show-pass";
+
+          result.textContent =
+            "✓ All correct. SCBA for entry, Gas detector always, Chemical gloves for sampling, EEBD for escape — never mix these up.";
+
+          addPoints(10);
+        } else {
+          result.className = "ppe-result show-fail";
+
+          result.textContent =
+            correct +
+            "/4 correct. Remember: SCBA for entry (sustained air supply). Gas detector for working near cargo (always carry). Chemical gloves for liquid chemical contact. EEBD for escape only (limited air — not for work).";
+        }
+      }
+
+      function resetPPE() {
+        document.querySelectorAll(".pz-chips").forEach(function (dz) {
+          dz.innerHTML = "";
+        });
+
+        document.querySelectorAll(".ppe-zone").forEach(function (z) {
+          z.style.borderColor = "";
+          z.style.borderStyle = "";
+
+          z.classList.remove("over-zone");
+        });
+
+        document.querySelectorAll(".ppe-item").forEach(function (c) {
+          c.classList.remove("placed");
+          c.classList.remove("dragging-ppe");
+        });
+
+        document.getElementById("ppe-result").className = "ppe-result";
+
+        ppeDragging = null;
+      }
+
+      // ═══════════════════════════════════════════════
+      // MCQ
+      // ═══════════════════════════════════════════════
+      function renderModuleQuiz(modId, qKeys) {
+        var container = document.getElementById(modId + "-quiz");
+        if (!container) return;
+        container.innerHTML = "";
+        qKeys.forEach(function (key, i) {
+          var data = mcqData[key];
+          if (!data) return;
+          var div = document.createElement("div");
+          div.style.cssText =
+            "margin-bottom:1rem" +
+            (i > 0
+              ? ";border-top:1px solid var(--border);padding-top:1rem;margin-top:0.5rem"
+              : "");
+          var opts = '<div class="mcq-opts" id="opts-' + key + '">';
+          data.opts.forEach(function (opt, j) {
+            opts +=
+              '<button class="mcq-opt" onclick="selectMCQ(\'' +
+              key +
+              "'," +
+              j +
+              ',this,3)"><span class="mcq-letter">' +
+              ["A", "B", "C", "D"][j] +
+              "</span>" +
+              opt +
+              "</button>";
+          });
+          opts += '</div><div class="mcq-fb" id="fb-' + key + '"></div>';
+          div.innerHTML =
+            '<div style="font-family:Fira Code,monospace;font-size:10px;color:#7c3aed;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px">Q' +
+            (i + 1) +
+            '</div><div style="font-family:Barlow Condensed,sans-serif;font-weight:600;font-size:1.05rem;color:var(--navy);margin-bottom:0.7rem;line-height:1.4;letter-spacing:0.02em">' +
+            data.q +
+            "</div>" +
+            opts;
+          container.appendChild(div);
+        });
+      }
+      function selectMCQ(key, idx, btn, pts) {
+        var data = mcqData[key];
+        if (!data) return;
+        var container = document.getElementById("opts-" + key);
+        var fb = document.getElementById("fb-" + key);
+        container.querySelectorAll(".mcq-opt").forEach(function (b) {
+          b.disabled = true;
+        });
+        if (idx === data.a) {
+          btn.classList.add("correct-ans");
+          if (fb) {
+            fb.className = "mcq-fb ok";
+            fb.textContent = data.fb[idx];
+          }
+          addPoints(pts || 3);
+        } else {
+          btn.classList.add("wrong-ans");
+          container
+            .querySelectorAll(".mcq-opt")
+            [data.a].classList.add("correct-ans");
+          if (fb) {
+            fb.className = "mcq-fb err";
+            fb.textContent = data.fb[idx];
+          }
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      // SCENARIO MCQ
+      // ═══════════════════════════════════════════════
+      function renderScenMCQ(containerId, dataKey, onCorrect) {
+        var data = scenarioMCQ[dataKey];
+        if (!data) return;
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = "";
+        data.opts.forEach(function (opt, i) {
+          var btn = document.createElement("button");
+          btn.className = "mcq-opt";
+          btn.innerHTML =
+            '<span class="mcq-letter">' +
+            ["A", "B", "C", "D"][i] +
+            "</span>" +
+            opt;
+          btn.addEventListener(
+            "click",
+            (function (idx, b) {
+              return function () {
+                container.querySelectorAll(".mcq-opt").forEach(function (x) {
+                  x.disabled = true;
+                });
+                var fb = document.getElementById(dataKey + "-fb");
+                if (idx === data.a) {
+                  b.classList.add("correct-ans");
+                  if (fb) {
+                    fb.className = "mcq-fb ok";
+                    fb.textContent = data.fb[idx];
+                  }
+                  addPoints(4);
+                  if (onCorrect) setTimeout(onCorrect, 900);
+                } else {
+                  b.classList.add("wrong-ans");
+                  container
+                    .querySelectorAll(".mcq-opt")
+                    [data.a].classList.add("correct-ans");
+                  if (fb) {
+                    fb.className = "mcq-fb err";
+                    fb.textContent = data.fb[idx];
+                  }
+                }
+              };
+            })(i, btn),
+          );
+          container.appendChild(btn);
+        });
+      }
+
+      // ═══════════════════════════════════════════════
+      // ASSESSMENT
+      // ═══════════════════════════════════════════════
+      function renderAssessment() {
+        var container = document.getElementById("assess-qs");
+        container.innerHTML = "";
+        aData.forEach(function (q, qi) {
+          var div = document.createElement("div");
+          div.className = "a-q";
+          div.id = "aq" + qi;
+          var html =
+            '<div class="a-qnum">Question ' +
+            (qi + 1) +
+            ' of 18</div><div class="a-qtext">' +
+            q.q +
+            '</div><div class="mcq-opts" id="aopts' +
+            qi +
+            '">';
+          q.opts.forEach(function (opt, oi) {
+            html +=
+              '<button class="mcq-opt" onclick="pickA(' +
+              qi +
+              "," +
+              oi +
+              ',this)"><span class="mcq-letter">' +
+              ["A", "B", "C", "D"][oi] +
+              "</span>" +
+              opt +
+              "</button>";
+          });
+          html += "</div>";
+          div.innerHTML = html;
+          container.appendChild(div);
+        });
+      }
+      function pickA(qi, oi, btn) {
+        var parent = document.getElementById("aq" + qi);
+        parent.querySelectorAll(".mcq-opt").forEach(function (b) {
+          b.style.borderColor = "";
+          b.style.background = "";
+        });
+        btn.style.borderColor = "var(--amber)";
+        btn.style.background = "var(--amber-lt)";
+        assessAnswers[qi] = oi;
+        var answered = Object.keys(assessAnswers).length;
+        document.getElementById("a-qcount").textContent =
+          answered + " / 18 answered";
+        document.getElementById("btn-sub").disabled = answered < 18;
+      }
+      function startAssessTimer() {
+        assessTimer = setInterval(function () {
+          assessTimeLeft--;
+          var m = Math.floor(assessTimeLeft / 60),
+            s = assessTimeLeft % 60;
+          var el = document.getElementById("a-timer");
+          if (el) {
+            el.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+            if (assessTimeLeft <= 300) el.className = "warn";
+            if (assessTimeLeft <= 60) el.className = "danger";
+          }
+          if (assessTimeLeft <= 0) {
+            clearInterval(assessTimer);
+            submitAssessment();
+          }
+        }, 1000);
+      }
+      function submitAssessment() {
+        clearInterval(assessTimer);
+        document.getElementById("btn-sub").style.display = "none";
+        document.querySelector(".timer-strip").style.display = "none";
+        var correct = 0,
+          cats = { m1: 0, m2: 0, m3: 0, m4: 0, m5: 0, m6: 0 },
+          catTot = { m1: 0, m2: 0, m3: 0, m4: 0, m5: 0, m6: 0 };
+        aData.forEach(function (q, qi) {
+          var sel = assessAnswers[qi];
+          catTot[q.cat]++;
+          var parent = document.getElementById("aq" + qi);
+          var opts = parent.querySelectorAll(".mcq-opt");
+          opts.forEach(function (b) {
+            b.disabled = true;
+            b.style.borderColor = "";
+            b.style.background = "";
+          });
+          if (sel === q.a) {
+            correct++;
+            cats[q.cat]++;
+            if (opts[sel]) opts[sel].classList.add("correct-ans");
+          } else {
+            if (sel !== undefined && opts[sel])
+              opts[sel].classList.add("wrong-ans");
+            if (opts[q.a]) opts[q.a].classList.add("correct-ans");
+          }
+          var fb = document.createElement("div");
+          fb.className = "mcq-fb " + (sel === q.a ? "ok" : "err");
+          fb.textContent =
+            sel === undefined
+              ? "Not answered — correct answer shown above."
+              : q.fb[sel];
+          parent.appendChild(fb);
+        });
+        var pct = Math.round((correct / 18) * 100),
+          passed = pct >= 75;
+        var panel = document.getElementById("results");
+        panel.style.display = "block";
+        var ring = document.getElementById("score-ring");
+        ring.className = "score-ring " + (passed ? "pass" : "fail");
+        document.getElementById("score-pct").textContent = pct + "%";
+        document.getElementById("score-lbl").textContent =
+          correct + " / 18 correct";
+        var verdict = document.getElementById("verdict");
+        verdict.textContent = passed
+          ? "Familiarisation Complete"
+          : "Below Pass Threshold";
+        verdict.style.color = passed ? "var(--green)" : "var(--red)";
+        document.getElementById("verdict-msg").textContent = passed
+          ? "You have met the STCW A-V/1-1 knowledge standard for Oil Tanker Familiarisation. Complete the vessel-specific familiarisation checklist on joining. Record in SMS training matrix."
+          : "Score below 75%. Review flagged modules and re-attempt. Do not board a tanker without completing this familiarisation — it is a STCW mandatory requirement.";
+        var bd = document.getElementById("breakdown"),
+          labels = {
+            m1: "Types",
+            m2: "Hazards",
+            m3: "Ignition",
+            m4: "PPE",
+            m5: "Ship-Shore",
+            m6: "Emergency",
+          };
+        bd.innerHTML = "";
+        ["m1", "m2", "m3", "m4", "m5", "m6"].forEach(function (cat) {
+          var r = cats[cat],
+            t = catTot[cat];
+          var div = document.createElement("div");
+          div.className = "bd " + (r >= Math.ceil(t * 0.67) ? "good" : "bad");
+          div.innerHTML =
+            '<div class="bd-score">' +
+            r +
+            "/" +
+            t +
+            '</div><div class="bd-lbl">' +
+            labels[cat] +
+            "</div>";
+          bd.appendChild(div);
+        });
+        if (passed) {
+          document.getElementById("cert").className = "cert show";
+        }
+        panel.scrollIntoView({ behavior: "smooth" });
+      }
+
+      // ═══════════════════════════════════════════════
+      // INIT
+      // ═══════════════════════════════════════════════
+      document.addEventListener("DOMContentLoaded", function () {
+        goTo("hero");
+        initSort("m5-sort", "m5-data");
+        initMatch("m1");
+        initMatch("m2");
+        initMatch("m6");
+        renderModuleQuiz("m1", ["m1-q1", "m1-q2", "m1-q3"]);
+        renderModuleQuiz("m2", ["m2-q1", "m2-q2", "m2-q3"]);
+        renderModuleQuiz("m3", ["m3-q1", "m3-q2", "m3-q3"]);
+        renderModuleQuiz("m4", ["m4-q1", "m4-q2", "m4-q3"]);
+        renderModuleQuiz("m5", ["m5-q1", "m5-q2", "m5-q3"]);
+        renderModuleQuiz("m6", ["m6-q1", "m6-q2", "m6-q3"]);
+        renderScenMCQ("m6-scen1", "m6-scen1", function () {
+          document.getElementById("m6-scen2-wrap").style.display = "block";
+          renderScenMCQ("m6-scen2", "m6-scen2", null);
+        });
+        renderAssessment();
+      });
+    </script>
+  </body>
+</html>
