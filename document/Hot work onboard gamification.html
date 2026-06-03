@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hot Work Onboard — Precautions and Safe Execution</title>
+    <style>
+      :root {
+        --blue: #2448db;
+        --navy: #071735;
+        --text: #21304a;
+        --muted: #63718a;
+        --line: #dfe6f2;
+        --bg: #ffffff;
+        --soft: #f8fbff;
+        --red: #dc2626;
+        --redbg: #fff1f2;
+        --yellow: #d97706;
+        --yellowbg: #fffbeb;
+        --green: #15803d;
+        --greenbg: #f0fdf4;
+        --shadow: 0 14px 35px rgba(5, 20, 50, 0.08);
+        --r: 24px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: white;
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.55;
+      }
+      .topbar {
+        position: sticky;
+        top: 0;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+        z-index: 9;
+      }
+      .topbar-inner {
+        max-width: 1180px;
+        margin: auto;
+        padding: 14px 22px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .brand {
+        font-weight: 900;
+        color: var(--navy);
+        letter-spacing: 0.04em;
+      }
+      .tag {
+        font-size: 12px;
+        color: #fff;
+        background: var(--blue);
+        border-radius: 999px;
+        padding: 5px 10px;
+      }
+      .meter {
+        height: 8px;
+        background: #edf2fb;
+        flex: 1;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .meter > span {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(
+          90deg,
+          var(--red),
+          var(--yellow),
+          var(--green)
+        );
+        transition: 0.3s;
+      }
+      .score {
+        font-weight: 800;
+        color: var(--blue);
+      }
+      main {
+        max-width: 1180px;
+        margin: auto;
+        padding: 26px 22px 80px;
+      }
+      .hero {
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        box-shadow: var(--shadow);
+        padding: 34px;
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 28px;
+        background: linear-gradient(180deg, #fff, #fbfdff);
+      }
+      h1 {
+        font-size: 42px;
+        line-height: 1.05;
+        margin: 0 0 14px;
+        color: var(--navy);
+        letter-spacing: -0.04em;
+      }
+      .subtitle {
+        font-size: 18px;
+        color: var(--muted);
+        max-width: 760px;
+      }
+      .chips {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+      .chip {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 13px;
+        background: #fff;
+        font-weight: 700;
+        color: #344761;
+      }
+      .btn {
+        border: 0;
+        border-radius: 18px;
+        background: var(--blue);
+        color: #fff;
+        font-weight: 900;
+        padding: 14px 22px;
+        cursor: pointer;
+        box-shadow: 0 12px 26px rgba(36, 72, 219, 0.22);
+        font-size: 15px;
+      }
+      .btn.secondary {
+        background: #fff;
+        color: var(--navy);
+        border: 1px solid var(--line);
+        box-shadow: none;
+      }
+      .btn.small {
+        padding: 10px 14px;
+        border-radius: 14px;
+      }
+      .hero-actions {
+        margin-top: 24px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .visual {
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        background: white;
+        padding: 16px;
+      }
+      .module-nav {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+        margin: 24px 0;
+      }
+      .module-tab {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 18px;
+        padding: 12px;
+        text-align: left;
+        cursor: pointer;
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .module-tab.active {
+        outline: 3px solid rgba(36, 72, 219, 0.12);
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+      .module-tab.done {
+        border-color: #86efac;
+        background: var(--greenbg);
+        color: var(--green);
+      }
+      .module {
+        display: none;
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        box-shadow: var(--shadow);
+        padding: 28px;
+        background: white;
+      }
+      .module.active {
+        display: block;
+      }
+      .eyebrow {
+        color: var(--blue);
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 13px;
+      }
+      .module h2 {
+        font-size: 32px;
+        line-height: 1.1;
+        color: var(--navy);
+        margin: 8px 0 10px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 20px;
+        background: #fff;
+      }
+      .card.soft {
+        background: var(--soft);
+      }
+      .callout {
+        border-radius: 20px;
+        padding: 16px 18px;
+        margin: 14px 0;
+        font-weight: 700;
+      }
+      .red {
+        background: var(--redbg);
+        border: 1px solid #fecdd3;
+        color: #8a1020;
+      }
+      .yellow {
+        background: var(--yellowbg);
+        border: 1px solid #fde68a;
+        color: #7c3d12;
+      }
+      .green {
+        background: var(--greenbg);
+        border: 1px solid #bbf7d0;
+        color: #14532d;
+      }
+      .traffic {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .light {
+        border-radius: 22px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        font-weight: 800;
+      }
+      .light b {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 6px;
+      }
+      .activity,
+      .quiz {
+        margin-top: 18px;
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        padding: 22px;
+      }
+      .activity h3,
+      .quiz h3 {
+        margin: 0 0 14px;
+        color: var(--navy);
+        font-size: 24px;
+      }
+      .option {
+        display: block;
+        width: 100%;
+        text-align: left;
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 18px;
+        padding: 14px 16px;
+        margin: 10px 0;
+        color: var(--text);
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .option:hover {
+        border-color: var(--blue);
+      }
+      .option.correct {
+        background: var(--greenbg);
+        border-color: var(--green);
+        color: var(--green);
+        font-weight: 800;
+      }
+      .option.wrong {
+        background: var(--redbg);
+        border-color: var(--red);
+        color: var(--red);
+        font-weight: 800;
+      }
+      .feedback {
+        display: none;
+        margin-top: 12px;
+        padding: 14px;
+        border-radius: 18px;
+        font-weight: 700;
+      }
+      .feedback.show {
+        display: block;
+      }
+      .controls {
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+        margin-top: 24px;
+        border-top: 1px solid var(--line);
+        padding-top: 20px;
+      }
+      .narration {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 16px 0;
+      }
+      .sequence {
+        display: grid;
+        gap: 10px;
+      }
+      .seq-item {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 13px;
+        background: #fff;
+        cursor: pointer;
+      }
+      .seq-item.selected {
+        border: 2px solid var(--blue);
+        background: #f4f7ff;
+      }
+      .result {
+        display: none;
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        box-shadow: var(--shadow);
+        padding: 34px;
+        text-align: center;
+      }
+      .result.show {
+        display: block;
+      }
+      .certificate {
+        border: 2px dashed var(--blue);
+        border-radius: 28px;
+        padding: 28px;
+        margin-top: 18px;
+        background: #fbfdff;
+      }
+      .hidden {
+        display: none !important;
+      }
+      @media (max-width: 850px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .module-nav {
+          grid-template-columns: 1fr 1fr;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .traffic {
+          grid-template-columns: 1fr;
+        }
+        h1 {
+          font-size: 34px;
+        }
+        .module h2 {
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">🔥 Hot Work Onboard</div>
+        <span class="tag">P2 Operations · Safety Management</span>
+        <div class="meter"><span id="progressBar"></span></div>
+        <div class="score"><span id="score">0</span> XP</div>
+      </div>
+    </header>
+    <main>
+      <section class="hero" id="hero">
+        <div>
+          <div class="eyebrow">STCW mandatory interactive course</div>
+          <h1>Hot Work Onboard — Precautions and Safe Execution</h1>
+          <p class="subtitle">
+            A practical shipboard course on welding, grinding, cutting and other
+            spark-producing work. The course focuses on permit discipline,
+            atmosphere testing, fire watch, gas-free checks, supervision,
+            post-work monitoring and the decision to stop when conditions
+            change.
+          </p>
+          <div class="chips">
+            <span class="chip">Offline single HTML</span
+            ><span class="chip">Narration enabled</span
+            ><span class="chip">Every module has activity + quiz</span
+            ><span class="chip">Red / Yellow / Green decision logic</span>
+          </div>
+          <div class="hero-actions">
+            <button class="btn" onclick="startCourse()">Start course</button
+            ><button class="btn secondary" onclick="speakText(heroNarration)">
+              ▶ Play narration</button
+            ><button class="btn secondary" onclick="stopSpeech()">
+              ■ Stop narration
+            </button>
+          </div>
+        </div>
+        <div class="visual">
+          <svg
+            viewBox="0 0 520 360"
+            width="100%"
+            role="img"
+            aria-label="Shipboard hot work visual"
+          >
+            <rect
+              x="10"
+              y="20"
+              width="500"
+              height="320"
+              rx="26"
+              fill="#f8fbff"
+              stroke="#dfe6f2"
+            />
+            <rect
+              x="45"
+              y="210"
+              width="430"
+              height="70"
+              rx="10"
+              fill="#cbd5e1"
+            />
+            <rect
+              x="70"
+              y="90"
+              width="160"
+              height="120"
+              rx="12"
+              fill="#e2e8f0"
+              stroke="#94a3b8"
+            />
+            <text
+              x="150"
+              y="155"
+              font-size="18"
+              text-anchor="middle"
+              fill="#071735"
+              font-weight="700"
+            >
+              Cargo tank
+            </text>
+            <rect
+              x="290"
+              y="80"
+              width="130"
+              height="130"
+              rx="18"
+              fill="#fff1f2"
+              stroke="#dc2626"
+            />
+            <text x="355" y="120" text-anchor="middle" font-size="34">🔥</text>
+            <text
+              x="355"
+              y="155"
+              font-size="15"
+              text-anchor="middle"
+              fill="#8a1020"
+              font-weight="700"
+            >
+              Hot work zone
+            </text>
+            <path
+              d="M270 150 L240 172 L270 194"
+              stroke="#d97706"
+              stroke-width="5"
+              fill="none"
+            />
+            <circle cx="250" cy="180" r="8" fill="#d97706" />
+            <rect
+              x="315"
+              y="220"
+              width="80"
+              height="20"
+              rx="10"
+              fill="#2448db"
+            />
+            <circle cx="305" cy="230" r="12" fill="#071735" />
+            <circle cx="405" cy="230" r="12" fill="#071735" />
+            <text
+              x="360"
+              y="258"
+              font-size="13"
+              text-anchor="middle"
+              fill="#334155"
+            >
+              Fire watch + extinguisher
+            </text>
+            <g>
+              <circle cx="120" cy="290" r="18" fill="#dc2626" />
+              <circle cx="190" cy="290" r="18" fill="#d97706" />
+              <circle cx="260" cy="290" r="18" fill="#15803d" />
+              <text
+                x="120"
+                y="325"
+                text-anchor="middle"
+                font-size="12"
+                fill="#334155"
+              >
+                Stop
+              </text>
+              <text
+                x="190"
+                y="325"
+                text-anchor="middle"
+                font-size="12"
+                fill="#334155"
+              >
+                Verify
+              </text>
+              <text
+                x="260"
+                y="325"
+                text-anchor="middle"
+                font-size="12"
+                fill="#334155"
+              >
+                Proceed
+              </text>
+            </g>
+          </svg>
+        </div>
+      </section>
+      <div class="module-nav" id="moduleNav"></div>
+      <section id="modules"></section>
+      <section class="result" id="result">
+        <h2>Course complete</h2>
+        <p id="resultText"></p>
+        <div class="certificate">
+          <h3>Certificate screen</h3>
+          <p>
+            This confirms completion of the interactive course:
+            <b>Hot Work Onboard — Precautions and Safe Execution</b>.
+          </p>
+          <p id="certScore"></p>
+        </div>
+        <button class="btn" onclick="goModule(0)">Review course</button>
+      </section>
+    </main>
+    <script>
+      const heroNarration =
+        "Welcome to Hot Work Onboard. This course is about preventing fire and explosion during welding, cutting, grinding and other spark producing work. Remember the simple discipline: stop, verify, proceed. If the permit, gas readings, fire watch, isolation or supervision is not correct, the job does not start.";
+      const modules = [
+        {
+          t: "What is hot work?",
+          icon: "🔥",
+          n: "Hot work includes welding, cutting, grinding, burning, brazing, soldering, heat shrinking, and any job that can produce sparks, heat, flame or an ignition source. On a ship, the location matters: near cargo spaces, fuel tanks, paint lockers, accommodation boundaries, engine room bilges or enclosed spaces, the risk increases sharply.",
+          bullets: [
+            "Hot work may be controlled in designated workshops, but outside workshops it normally requires a permit.",
+            "Cold work can become hot work when sparks, heat or non-ex equipment are introduced.",
+            "The Master, responsible officer and work team must understand the exact scope before approval.",
+          ],
+          actQ: "A fitter says: “It is only small grinding on deck for two minutes.” What is the safest response?",
+          act: [
+            "Treat it as hot work and require permit controls before starting.",
+            "Allow it because the duration is short.",
+            "Allow it if the sparks are small.",
+            "Ask him to do it quickly before the watch changes.",
+          ],
+          correct: 0,
+          quizQ: "Which activity is normally considered hot work onboard?",
+          quiz: [
+            "Reading the sounding book.",
+            "Changing a notice board label.",
+            "Preparing a passage plan.",
+            "Welding a bracket on deck.",
+          ],
+          qc: 3,
+          why: "Grinding, welding and cutting can generate sparks or heat sufficient to ignite vapour or combustible material.",
+        },
+        {
+          t: "Permit and authorisation",
+          icon: "📋",
+          n: "A hot work permit is not a piece of paper to protect the company; it is a control system to protect the ship. It confirms location, scope, isolation, atmosphere test, fire watch, PPE, equipment condition, emergency readiness and supervision. A permit must be specific to one job, one location and one time period.",
+          bullets: [
+            "The permit issuer must verify the site, not sign blindly.",
+            "The performing team must understand the conditions and stop-work triggers.",
+            "If the job scope or site condition changes, the permit must be suspended and revalidated.",
+          ],
+          actQ: "The job moves from the workshop to near a bunker tank boundary. What must happen?",
+          act: [
+            "Continue because the original permit was already signed.",
+            "Suspend and revalidate the permit for the new location and hazard.",
+            "Tell the fitter to keep a bucket of water nearby only.",
+            "Proceed if the welder is experienced.",
+          ],
+          correct: 1,
+          quizQ: "A hot work permit should be valid for:",
+          quiz: [
+            "Any similar job during the month.",
+            "All departments on the vessel.",
+            "The exact job, location and period stated on the permit.",
+            "Only the contractor, not ship staff.",
+          ],
+          qc: 2,
+          why: "Permit validity is limited by scope, location, time, conditions and approvals.",
+        },
+        {
+          t: "Atmosphere testing and gas-free checks",
+          icon: "📟",
+          n: "Before hot work, the atmosphere must be tested where the work will be done and in adjacent or connected spaces that may contain flammable vapour. Oxygen, LEL and toxic gases must be checked with a calibrated instrument by a competent person. A single good reading is not enough if conditions can change.",
+          bullets: [
+            "Test the work site, nearby drains, bilges, tank boundaries and spaces behind plates.",
+            "Ventilation must be effective and maintained.",
+            "Continuous or repeated gas monitoring is required where there is any possibility of vapour return.",
+          ],
+          actQ: "The first gas test is acceptable, but cargo vapour smell appears during grinding. What should the team do?",
+          act: [
+            "Continue because the first reading was clear.",
+            "Stop work, withdraw ignition sources and retest before any restart.",
+            "Increase grinding speed to finish earlier.",
+            "Ask only the fire watch to check later.",
+          ],
+          correct: 1,
+          quizQ: "Why are adjacent spaces tested before hot work?",
+          quiz: [
+            "Because heat can transfer and vapour may exist behind the work boundary.",
+            "Only to complete paperwork.",
+            "Because it improves paint adhesion.",
+            "It is not required if the main space is clean.",
+          ],
+          qc: 0,
+          why: "Hot work can heat boundaries, ignite residues or affect vapours in connected and adjacent spaces.",
+        },
+        {
+          t: "Fire watch and emergency readiness",
+          icon: "🧯",
+          n: "The fire watch is an active safety role. The person must observe sparks, heat transfer, smouldering material, adjacent compartments and hidden spaces. Firefighting equipment must be ready at the site before work starts, and the fire watch must continue after work because fires often start after the welding arc has stopped.",
+          bullets: [
+            "Fire watch must not be given unrelated duties.",
+            "Extinguishers, hose or fixed systems must be ready as appropriate.",
+            "Post-work monitoring is required for at least the company SMS period and longer if the risk remains.",
+          ],
+          actQ: "The fire watch is asked to leave the job to collect stores while welding continues. What is correct?",
+          act: [
+            "Allow it for a few minutes.",
+            "Stop hot work until fire watch is back and controls are restored.",
+            "Continue if the welder can see the sparks.",
+            "Leave only one extinguisher nearby and continue.",
+          ],
+          correct: 1,
+          quizQ: "The fire watch should continue after the job because:",
+          quiz: [
+            "Hidden heat or smouldering material can ignite later.",
+            "The permit needs a signature only.",
+            "It gives the crew rest time.",
+            "The deck must be painted immediately.",
+          ],
+          qc: 0,
+          why: "Post-work fire checks are essential because delayed ignition is a common hot work risk.",
+        },
+        {
+          t: "Safe execution and supervision",
+          icon: "👷",
+          n: "Safe execution means the work party follows the approved method, uses correct PPE, shields sparks, removes combustibles, isolates lines, controls ventilation and communicates with the responsible officer. Supervision is not optional; it is how the ship notices drift from the plan before an incident occurs.",
+          bullets: [
+            "Remove or shield combustible materials below and around the work site.",
+            "Blank, isolate, drain, clean and gas-free any pipeline or tank connected to the job.",
+            "Stop immediately if weather, ventilation, cargo operation, bunkering or adjacent work changes the risk.",
+          ],
+          actQ: "A tarpaulin below the work site begins to smoke from falling sparks. What is the correct action?",
+          act: [
+            "Stop work and extinguish/remove the smouldering material before reassessment.",
+            "Keep welding but ask someone to watch it.",
+            "Ignore it because it has not flamed.",
+            "Pour oil on it to cool it.",
+          ],
+          correct: 0,
+          quizQ: "Which is the best example of supervision during hot work?",
+          quiz: [
+            "Signing the permit from the office without visiting the site.",
+            "Assuming contractors know all ship rules.",
+            "Checking only after completion.",
+            "Periodic checks that permit conditions remain valid and the site is safe.",
+          ],
+          qc: 3,
+          why: "Supervision confirms controls remain effective during the job, not only before it starts.",
+        },
+        {
+          t: "Stop-work authority and lessons from incidents",
+          icon: "🛑",
+          n: "Every crew member has stop-work authority when hot work controls are not in place or conditions change. Many shipboard fires come from ordinary jobs done casually: grinding near residues, welding over uncleaned spaces, poor fire watch, weak isolation or restarting work after a permit has expired.",
+          bullets: [
+            "No one should be punished for stopping unsafe hot work.",
+            "Near misses must be reported and used for learning.",
+            "The safest hot work is the one that is planned, questioned, verified and monitored.",
+          ],
+          actQ: "A junior rating notices sparks falling into an uninspected void but the supervisor is rushing the job. What should the rating do?",
+          act: [
+            "Stop the job and report the unsafe condition immediately.",
+            "Stay quiet because the supervisor is senior.",
+            "Throw water into the void without stopping work.",
+            "Wait until the end of the shift.",
+          ],
+          correct: 0,
+          quizQ: "The most important culture message for hot work is:",
+          quiz: [
+            "Only the Master may notice hazards.",
+            "Anyone can stop the job when controls are missing or conditions change.",
+            "Fast completion is more important than permit discipline.",
+            "A signed permit means the job can never become unsafe.",
+          ],
+          qc: 1,
+          why: "Stop-work authority prevents small deviations from becoming fires or explosions.",
+        },
+      ];
+      let current = 0,
+        xp = 0,
+        done = new Set();
+      function render() {
+        const nav = document.getElementById("moduleNav");
+        nav.innerHTML = modules
+          .map(
+            (m, i) =>
+              `<button class="module-tab ${i === current ? "active" : ""} ${done.has(i) ? "done" : ""}" onclick="goModule(${i})"><div>${m.icon} Module ${i + 1}</div><small>${m.t}</small></button>`,
+          )
+          .join("");
+        const box = document.getElementById("modules");
+        box.innerHTML = modules
+          .map(
+            (m, i) =>
+              `<article class="module ${i === current ? "active" : ""}" id="mod${i}"><div class="eyebrow">Module ${i + 1} of ${modules.length}</div><h2>${m.icon} ${m.t}</h2><div class="narration"><button class="btn secondary small" onclick="speakText(modules[${i}].n)">▶ Play narration</button><button class="btn secondary small" onclick="pauseSpeech()">⏸ Pause</button><button class="btn secondary small" onclick="resumeSpeech()">▶ Resume</button><button class="btn secondary small" onclick="stopSpeech()">■ Stop</button></div><div class="grid"><div class="card soft"><p>${m.n}</p><ul>${m.bullets.map((b) => `<li>${b}</li>`).join("")}</ul></div><div class="card"><svg viewBox="0 0 420 250" width="100%"><rect width="420" height="250" rx="22" fill="#f8fbff" stroke="#dfe6f2"/><text x="210" y="42" text-anchor="middle" font-size="20" font-weight="800" fill="#071735">${m.t.replace(/&/g, "and")}</text><circle cx="110" cy="125" r="42" fill="#fff1f2" stroke="#dc2626"/><text x="110" y="137" text-anchor="middle" font-size="42">🔥</text><circle cx="210" cy="125" r="42" fill="#fffbeb" stroke="#d97706"/><text x="210" y="137" text-anchor="middle" font-size="38">📋</text><circle cx="310" cy="125" r="42" fill="#f0fdf4" stroke="#15803d"/><text x="310" y="137" text-anchor="middle" font-size="38">✅</text><text x="110" y="195" text-anchor="middle" fill="#8a1020" font-weight="800">STOP</text><text x="210" y="195" text-anchor="middle" fill="#7c3d12" font-weight="800">VERIFY</text><text x="310" y="195" text-anchor="middle" fill="#14532d" font-weight="800">PROCEED</text></svg></div></div><div class="traffic"><div class="light red"><b>Red — Stop</b>No permit, gas concern, missing fire watch, change in conditions.</div><div class="light yellow"><b>Yellow — Verify</b>Check scope, location, isolation, atmosphere, PPE and emergency readiness.</div><div class="light green"><b>Green — Proceed</b>Only after controls are confirmed and supervision remains active.</div></div><div class="activity"><h3>Interactive activity</h3><p><b>${m.actQ}</b></p>${m.act.map((o, k) => `<button class="option" onclick="answer(this,${k === m.correct},'af${i}',${i})">${o}</button>`).join("")}<div class="feedback" id="af${i}"></div><button class="btn secondary small" onclick="resetBlock(this)">↻ Refresh Activity</button></div><div class="quiz"><h3>Module quiz</h3><p><b>${m.quizQ}</b></p>${m.quiz.map((o, k) => `<button class="option" onclick="answer(this,${k === m.qc},'qf${i}',${i})">${o}</button>`).join("")}<div class="feedback" id="qf${i}"></div><button class="btn secondary small" onclick="resetBlock(this)">↻ Refresh Quiz</button></div><div class="controls"><button class="btn secondary" onclick="goModule(${Math.max(0, i - 1)})">← Previous</button><button class="btn" onclick="${i === modules.length - 1 ? "finishCourse()" : "goModule(" + (i + 1) + ")"}">${i === modules.length - 1 ? "Finish course" : "Next module →"}</button></div></article>`,
+          )
+          .join("");
+        updateProgress();
+      }
+      function startCourse() {
+        document.getElementById("hero").classList.add("hidden");
+        goModule(0);
+      }
+      function goModule(i) {
+        current = i;
+        document.getElementById("hero").classList.add("hidden");
+        document.getElementById("result").classList.remove("show");
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function answer(btn, ok, fid, mi) {
+        const group = btn.parentElement.querySelectorAll(".option");
+        group.forEach((b) => (b.disabled = true));
+        const fb = document.getElementById(fid);
+        fb.className = "feedback show " + (ok ? "green" : "red");
+        if (ok) {
+          btn.classList.add("correct");
+          fb.textContent = "Correct. " + modules[mi].why;
+          addXp(10);
+          done.add(mi);
+        } else {
+          btn.classList.add("wrong");
+          fb.textContent = "Not safe. " + modules[mi].why;
+        }
+        updateProgress();
+        renderNavOnly();
+      }
+      function renderNavOnly() {
+        document.getElementById("moduleNav").innerHTML = modules
+          .map(
+            (m, i) =>
+              `<button class="module-tab ${i === current ? "active" : ""} ${done.has(i) ? "done" : ""}" onclick="goModule(${i})"><div>${m.icon} Module ${i + 1}</div><small>${m.t}</small></button>`,
+          )
+          .join("");
+      }
+      function resetBlock(button) {
+        const box = button.parentElement;
+        box.querySelectorAll(".option").forEach((b) => {
+          b.disabled = false;
+          b.classList.remove("correct", "wrong");
+        });
+        const fb = box.querySelector(".feedback");
+        if (fb) {
+          fb.className = "feedback";
+          fb.textContent = "";
+        }
+      }
+      function addXp(n) {
+        xp += n;
+        document.getElementById("score").textContent = xp;
+      }
+      function updateProgress() {
+        const pct = Math.round((done.size / modules.length) * 100);
+        document.getElementById("progressBar").style.width = pct + "%";
+      }
+      function finishCourse() {
+        done.add(current);
+        updateProgress();
+        renderNavOnly();
+        document.getElementById("modules").innerHTML = "";
+        document.getElementById("result").classList.add("show");
+        document.getElementById("resultText").textContent =
+          "You have completed the Hot Work Onboard course. Review weak areas before issuing, supervising or performing hot work.";
+        document.getElementById("certScore").textContent =
+          "XP earned: " +
+          xp +
+          " | Modules completed: " +
+          done.size +
+          " of " +
+          modules.length;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function speakText(txt) {
+        stopSpeech();
+        if (!("speechSynthesis" in window)) {
+          alert("Narration is not supported in this browser.");
+          return;
+        }
+        const u = new SpeechSynthesisUtterance(txt);
+        u.rate = 0.92;
+        u.pitch = 1;
+        speechSynthesis.speak(u);
+      }
+      function stopSpeech() {
+        if ("speechSynthesis" in window) speechSynthesis.cancel();
+      }
+      function pauseSpeech() {
+        if ("speechSynthesis" in window) speechSynthesis.pause();
+      }
+      function resumeSpeech() {
+        if ("speechSynthesis" in window) speechSynthesis.resume();
+      }
+      render();
+    </script>
+  </body>
+</html>
