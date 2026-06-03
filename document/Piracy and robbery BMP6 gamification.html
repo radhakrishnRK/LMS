@@ -1529,6 +1529,20 @@
     </main>
     <script>
       const screens = [...document.querySelectorAll(".screen")];
+      const piracyModuleTitles = {
+        m1: "Threat Picture and Watchkeeping",
+        m2: "Hardening and Deterrence Measures",
+        m3: "Reporting and Communication",
+        m4: "Attack Response and Crew Muster",
+        m5: "Anchorage and Port Precautions",
+        m6: "After an Incident — Evidence, Welfare and Reporting",
+      };
+      const piracyModuleIds = ["m1", "m2", "m3", "m4", "m5", "m6"];
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
       let completed = JSON.parse(
         localStorage.getItem("piracyBMP6Done") || "[]",
       );
@@ -1580,6 +1594,7 @@
             points += 100;
             save();
             update();
+            reportModuleComplete({ moduleIndex: piracyModuleIds.indexOf(mod.id), moduleTitle: piracyModuleTitles[mod.id], score: 1, maxScore: 1, passingScore: 80, totalModules: piracyModuleIds.length, completedModules: completed.length });
           }
         } else {
           btn.classList.add("wrong");

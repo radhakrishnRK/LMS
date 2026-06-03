@@ -3783,6 +3783,12 @@
       var cprCount = 0;
       var cprGameDone = false;
       var completedMods = [];
+      var efaAssessmentReported = false;
+      function reportAssessment({ score, maxScore, passingScore }) {
+        var percentage = Math.round((score / maxScore) * 100);
+        var message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score: score, maxScore: maxScore, percentage: percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
 
       // ═══════════════════════════════════════════════════════════
       // NAVIGATION
@@ -4449,6 +4455,10 @@
         if (passed) {
           var cert = document.getElementById("cert");
           cert.className = "cert show";
+        }
+        if (!efaAssessmentReported) {
+          efaAssessmentReported = true;
+          reportAssessment({ score: correct, maxScore: 18, passingScore: 75 });
         }
         panel.scrollIntoView({ behavior: "smooth" });
       }

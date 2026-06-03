@@ -1630,10 +1630,22 @@
         save();
         update();
       }
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function reportAssessment({ score, maxScore, passingScore }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
       function completeModule(n) {
         if (!state.done[n]) {
           state.done[n] = true;
           addXP(50);
+          const completedModules = Object.keys(state.done).filter((k) => state.done[k]).length;
+          reportModuleComplete({ moduleIndex: n - 1, moduleTitle: modules[n - 1][1], score: 1, maxScore: 1, passingScore: 80, totalModules: modules.length, completedModules });
         }
         save();
         update();
@@ -2117,6 +2129,11 @@
           document.getElementById("verdict").textContent = "Review Required";
           document.getElementById("resultText").textContent =
             "Review the course modules and repeat the assessment.";
+        }
+        if (!state.assessmentReported) {
+          state.assessmentReported = true;
+          reportAssessment({ score, maxScore: assessQ.length, passingScore: 80 });
+          save();
         }
       }
       window.addEventListener("load", () => {

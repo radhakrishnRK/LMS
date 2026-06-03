@@ -777,6 +777,17 @@
       let current = 0,
         points = 0;
       const done = new Set();
+      let assessmentReported = false;
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function reportAssessment({ score, maxScore, passingScore }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
       let selected = null,
         utter = null;
       const qs = {
@@ -983,8 +994,11 @@
         else goHome();
       }
       function markDone(i) {
-        done.add(i);
-        points += 10;
+        if (!done.has(i)) {
+          done.add(i);
+          points += 10;
+          reportModuleComplete({ moduleIndex: i, moduleTitle: modules[i].title, score: 1, maxScore: 1, passingScore: 80, totalModules: modules.length, completedModules: done.size });
+        }
         updateProgress();
         renderHome();
       }
@@ -1360,6 +1374,10 @@
           $("verdictText").textContent =
             "Review the modules and refresh the assessment.";
           $("cert").classList.remove("show");
+        }
+        if (!assessmentReported) {
+          assessmentReported = true;
+          reportAssessment({ score: correct, maxScore: total, passingScore: 80 });
         }
       }
       function speakModule() {

@@ -815,6 +815,24 @@
 
     <script>
       // Course State
+      const mentoringModuleIds = ["m1", "m2", "m3", "m4", "m5"];
+      const mentoringModuleTitles = {
+        m1: "Mentoring Fundamentals",
+        m2: "What Junior Crew Need",
+        m3: "Structuring Mentoring Conversations",
+        m4: "Feedback Skills",
+        m5: "Supporting Crew in Difficulty",
+      };
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function reportAssessment({ score, maxScore, passingScore }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
       const courseState = {
         currentScreen: "hero",
         xp: 0,
@@ -1695,6 +1713,10 @@
         resultsContent.innerHTML = html;
         go("results");
 
+        if (!courseState.assessmentReported) {
+          courseState.assessmentReported = true;
+          reportAssessment({ score, maxScore: assessmentQuestions.length, passingScore: 70 });
+        }
         if (passed) {
           sendLMSCompletion();
         }
@@ -1751,6 +1773,7 @@
       function completeAndGo(currentModule, nextModule) {
         if (!courseState.modulesCompleted.includes(currentModule)) {
           courseState.modulesCompleted.push(currentModule);
+          reportModuleComplete({ moduleIndex: mentoringModuleIds.indexOf(currentModule), moduleTitle: mentoringModuleTitles[currentModule], score: 1, maxScore: 1, passingScore: 70, totalModules: mentoringModuleIds.length, completedModules: courseState.modulesCompleted.length });
         }
         updateDashboard();
         go(nextModule);

@@ -2065,6 +2065,14 @@
     </main>
     <script>
       const modules = ["m1", "m2", "m3", "m4", "m5", "m6"];
+      const moduleTitles = {
+        m1: "Watchkeeping Mindset and Legal Duty",
+        m2: "Monitoring Parameters and Trend Awareness",
+        m3: "Alarm Response and UMS Operation",
+        m4: "Log Keeping and Watch Records",
+        m5: "Watch Handover and Communication",
+        m6: "Standing Orders, Call Criteria and Practical Rounds",
+      };
       const moduleText = {
         m1: "Watchkeeping Mindset and Legal Duty. Why the engineer watch exists: safe, continuous and recorded machinery operation. Watchkeeping is active supervision. A safe engine-room watch is not a walk-through. It is a continuous cycle of checking, comparing, trending, recording and reporting. A junior engineer must know normal values, abnormal trends and the point at which the senior engineer must be called. Standing orders are not optional. Engine room standing orders, Chief Engineer\u2019s orders and company SMS procedures define how the watch is to be kept. They cover log intervals, call-out conditions, UMS rounds, alarm handling, handover, restricted manoeuvring and emergency response. The watchkeeper protects propulsion. The engineering watch supports navigational safety. Loss of propulsion, steering, electrical power, cooling water or compressed air can create immediate risk to the vessel, people and environment.",
         m2: "Monitoring Parameters and Trend Awareness. Temperatures, pressures, levels, amps, vibration, leakages and smell \u2014 read the engine room like a pattern. Normal values matter. A parameter is useful only when compared against normal running values. Cooling water temperature, lube oil pressure, exhaust temperature, scavenge pressure, purifier back pressure, pump current and tank levels must be understood as trends, not isolated numbers. Trend beats snapshot. A temperature slowly rising for two hours may be more important than a single value just below the alarm set point. Watchkeepers must look for direction, rate of change and associated symptoms. Use all senses safely. Smell, sound, vibration and visible leaks often appear before alarms. A burning smell, unusual bearing noise, steam leak or vibrating pump must be treated as an early warning.",
@@ -2106,10 +2114,22 @@
           if (t) t.classList.toggle("done", !!state.done[m]);
         });
       }
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function reportAssessment({ score, maxScore, passingScore }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
       function markDone(mid) {
         if (!state.done[mid]) {
           state.done[mid] = true;
           state.xp = (state.xp || 0) + 20;
+          const completedModules = modules.filter((m) => state.done[m]).length;
+          reportModuleComplete({ moduleIndex: modules.indexOf(mid), moduleTitle: moduleTitles[mid], score: 1, maxScore: 1, passingScore: 80, totalModules: modules.length, completedModules });
           save();
         }
       }
@@ -2193,8 +2213,12 @@
         if (pct >= 80) {
           modules.forEach((m) => (state.done[m] = true));
           state.xp = (state.xp || 0) + 50;
-          save();
         }
+        if (!state.assessmentReported) {
+          state.assessmentReported = true;
+          reportAssessment({ score: correct, maxScore: 10, passingScore: 80 });
+        }
+        save();
         cert.scrollIntoView({ behavior: "smooth" });
       }
       function refreshAssessment() {

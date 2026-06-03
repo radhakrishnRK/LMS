@@ -1690,6 +1690,14 @@
         m5: "BDN, Sampling and MARPOL Annex VI. Manage Bunker Delivery Note checks, representative sampling, seal numbers, sulphur records, MARPOL Annex VI documentation and retention of samples.",
         m6: "Fuel Emergencies, Overflow and Changeover. Respond to overflow, leakage, purifier failure, filter choking, fuel changeover issues, low sulphur compliance risk and fuel supply instability.",
       };
+      const moduleTitles = {
+        m1: "Fuel Oil Types and Properties",
+        m2: "Transfer and Settling Systems",
+        m3: "Purifier Operation and Fuel Treatment",
+        m4: "Bunkering Preparation and Watchkeeping",
+        m5: "BDN, Sampling and MARPOL Annex VI",
+        m6: "Fuel Emergencies, Overflow and Changeover",
+      };
       let state = JSON.parse(
         localStorage.getItem(
           "fuel_oil_systems_purification_transfer_bunkering_state",
@@ -1721,6 +1729,16 @@
           if (t) t.classList.toggle("done", !!state.done[m]);
         });
       }
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function reportAssessment({ score, maxScore, passingScore }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
       function ans(mid, type, choice, correct, btn) {
         let box = document.getElementById(mid + "-" + type);
         box.querySelectorAll(".opt").forEach((b) => {
@@ -1738,6 +1756,8 @@
           if (type === "act" && !state.done[mid]) {
             state.done[mid] = true;
             state.xp += 20;
+            const completedModules = mids.filter((m) => state.done[m]).length;
+            reportModuleComplete({ moduleIndex: mids.indexOf(mid), moduleTitle: moduleTitles[mid], score: 1, maxScore: 1, passingScore: 80, totalModules: mids.length, completedModules });
           } else {
             state.xp += 10;
           }
@@ -1780,8 +1800,12 @@
         if (p >= 80) {
           mids.forEach((m) => (state.done[m] = true));
           state.xp += 50;
-          save();
         }
+        if (!state.assessmentReported) {
+          state.assessmentReported = true;
+          reportAssessment({ score: c, maxScore: 10, passingScore: 80 });
+        }
+        save();
         document.getElementById("cert").scrollIntoView({ behavior: "smooth" });
       }
       function refreshAssessment() {

@@ -1782,10 +1782,22 @@
           location.reload();
         }
       }
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function reportAssessment({ score, maxScore, passingScore }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
       function complete(m) {
         if (!state.completed[m]) {
           state.completed[m] = true;
           state.xp = (state.xp || 0) + 50;
+          const completedModules = modules.filter((x) => state.completed[x]).length;
+          reportModuleComplete({ moduleIndex: modules.indexOf(m), moduleTitle: moduleNames[m], score: 1, maxScore: 1, passingScore: 80, totalModules: modules.length, completedModules });
           save();
         }
       }
@@ -2106,8 +2118,12 @@
         if (pass) {
           modules.forEach((m) => (state.completed[m] = true));
           state.xp = (state.xp || 0) + 100;
-          save();
         }
+        if (!state.assessmentReported) {
+          state.assessmentReported = true;
+          reportAssessment({ score: correct, maxScore: assessment.length, passingScore: 80 });
+        }
+        save();
         res.scrollIntoView({ behavior: "smooth" });
       }
       function resetAssessment() {

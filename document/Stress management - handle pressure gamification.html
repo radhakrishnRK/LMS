@@ -1651,6 +1651,14 @@
         m5: "Fatigue, Rest and Resilience. Connect stress with fatigue, isolation, sleep, routines and long-term performance.",
         m6: "When to Seek Help and Support Others. Know when personal coping is not enough and how senior officers can reduce stressors under their control.",
       };
+      const moduleTitles = {
+        m1: "What Stress Is Onboard",
+        m2: "Recognising Stress Signals",
+        m3: "Immediate Coping Tools",
+        m4: "Communication Under Pressure",
+        m5: "Fatigue, Rest and Resilience",
+        m6: "When to Seek Help and Support Others",
+      };
       let state = JSON.parse(
         localStorage.getItem(
           "stress_management_onboard_staying_effective_under_pressure_state",
@@ -1682,6 +1690,16 @@
           if (t) t.classList.toggle("done", !!state.done[m]);
         });
       }
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function reportAssessment({ score, maxScore, passingScore }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
       function ans(mid, type, choice, correct, btn) {
         let box = document.getElementById(mid + "-" + type);
         box.querySelectorAll(".opt").forEach((b) => {
@@ -1699,6 +1717,8 @@
           if (type === "act" && !state.done[mid]) {
             state.done[mid] = true;
             state.xp += 20;
+            const completedModules = mids.filter((m) => state.done[m]).length;
+            reportModuleComplete({ moduleIndex: mids.indexOf(mid), moduleTitle: moduleTitles[mid], score: 1, maxScore: 1, passingScore: 80, totalModules: mids.length, completedModules });
           } else {
             state.xp += 10;
           }
@@ -1741,8 +1761,12 @@
         if (p >= 80) {
           mids.forEach((m) => (state.done[m] = true));
           state.xp += 50;
-          save();
         }
+        if (!state.assessmentReported) {
+          state.assessmentReported = true;
+          reportAssessment({ score: c, maxScore: 10, passingScore: 80 });
+        }
+        save();
         document.getElementById("cert").scrollIntoView({ behavior: "smooth" });
       }
       function refreshAssessment() {

@@ -2361,6 +2361,12 @@
       var assessAnswers = {};
       var assessTimer = null;
       var assessTimeLeft = 1200;
+      var pstAssessmentReported = false;
+      function reportAssessment({ score, maxScore, passingScore }) {
+        var percentage = Math.round((score / maxScore) * 100);
+        var message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score: score, maxScore: maxScore, percentage: percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
 
       // ─── NAVIGATION ───
       var visitedChapters = [];
@@ -3739,6 +3745,10 @@
             "</div>";
           bd.appendChild(div);
         });
+        if (!pstAssessmentReported) {
+          pstAssessmentReported = true;
+          reportAssessment({ score: correct, maxScore: 20, passingScore: 75 });
+        }
         panel.scrollIntoView({ behavior: "smooth" });
       }
 

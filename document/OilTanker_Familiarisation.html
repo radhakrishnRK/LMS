@@ -3963,6 +3963,12 @@
       var assessAnswers = {};
       var assessTimer = null;
       var assessTimeLeft = 1080; // 18 minutes
+      var oilTankerAssessmentReported = false;
+      function reportAssessment({ score, maxScore, passingScore }) {
+        var percentage = Math.round((score / maxScore) * 100);
+        var message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score: score, maxScore: maxScore, percentage: percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
 
       // ═══════════════════════════════════════════════
       // NAVIGATION
@@ -4684,6 +4690,10 @@
         });
         if (passed) {
           document.getElementById("cert").className = "cert show";
+        }
+        if (!oilTankerAssessmentReported) {
+          oilTankerAssessmentReported = true;
+          reportAssessment({ score: correct, maxScore: 18, passingScore: 75 });
         }
         panel.scrollIntoView({ behavior: "smooth" });
       }

@@ -912,6 +912,16 @@
           ],
         },
       ];
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function reportAssessment({ score, maxScore, passingScore }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_ASSESSMENT_COMPLETE", source: "course", payload: { score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed" } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
       let state = { xp: 0, done: {}, current: "home" };
       try {
         const s = JSON.parse(localStorage.getItem("tankCleaningState") || "{}");
@@ -1115,6 +1125,9 @@
             state.done[id] = true;
             state.xp += 100;
             save();
+            const mi = modules.findIndex((x) => x.id === id);
+            const completedModules = Object.keys(state.done).filter((k) => state.done[k]).length;
+            reportModuleComplete({ moduleIndex: mi, moduleTitle: modules[mi].title, score: 1, maxScore: 1, passingScore: 80, totalModules: modules.length, completedModules });
           }
         } else {
           fb.textContent = "Incorrect. " + m.quiz[3];
@@ -1292,8 +1305,12 @@
           .classList.toggle("show", pct >= 80);
         if (pct >= 80) {
           state.xp += 250;
-          save();
         }
+        if (!state.assessmentReported) {
+          state.assessmentReported = true;
+          reportAssessment({ score, maxScore: assess.length, passingScore: 80 });
+        }
+        save();
         document
           .getElementById("result")
           .scrollIntoView({ behavior: "smooth" });
