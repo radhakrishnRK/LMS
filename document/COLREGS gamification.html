@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STCW COLREGS – Rules of the Road | Gamified Course</title>
+    <style>
+      :root {
+        --navy: #102a43;
+        --blue: #2563eb;
+        --cyan: #0891b2;
+        --green: #16a34a;
+        --yellow: #f59e0b;
+        --red: #dc2626;
+        --purple: #7c3aed;
+        --ink: #1f2937;
+        --muted: #64748b;
+        --line: #dbe5f0;
+        --soft: #f8fafc;
+        --card: #ffffff;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family:
+          Inter,
+          Segoe UI,
+          Roboto,
+          Arial,
+          sans-serif;
+        background: #fff;
+        color: var(--ink);
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 22px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo {
+        width: 46px;
+        height: 46px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--navy), var(--blue));
+        display: grid;
+        place-items: center;
+        color: white;
+        font-weight: 900;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0;
+        color: var(--navy);
+      }
+      .sub {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .stats {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .pill {
+        border: 1px solid var(--line);
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: white;
+        font-weight: 800;
+        color: var(--navy);
+        font-size: 13px;
+      }
+      .wrap {
+        display: grid;
+        grid-template-columns: 305px 1fr;
+        min-height: calc(100vh - 75px);
+      }
+      aside {
+        border-right: 1px solid var(--line);
+        padding: 20px;
+        background: #fbfdff;
+      }
+      .progressBox {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 16px;
+        box-shadow: 0 8px 22px rgba(15, 42, 75, 0.06);
+      }
+      .bar {
+        height: 12px;
+        background: #eef3f8;
+        border-radius: 99px;
+        overflow: hidden;
+        margin: 12px 0;
+      }
+      .fill {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(
+          90deg,
+          var(--red),
+          var(--yellow),
+          var(--green)
+        );
+        transition: 0.35s;
+      }
+      .modules {
+        margin-top: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .navbtn {
+        width: 100%;
+        text-align: left;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: white;
+        padding: 12px;
+        cursor: pointer;
+        color: var(--ink);
+        transition: 0.2s;
+      }
+      .navbtn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(2, 8, 23, 0.07);
+      }
+      .navbtn.active {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      }
+      .navbtn.locked {
+        opacity: 0.48;
+        cursor: not-allowed;
+      }
+      .navtitle {
+        font-weight: 900;
+        color: var(--navy);
+        display: flex;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      .navsmall {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+      main {
+        padding: 24px;
+        max-width: 1240px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 20px;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+      .card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 22px;
+        box-shadow: 0 10px 30px rgba(15, 42, 75, 0.06);
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-weight: 900;
+        font-size: 12px;
+      }
+      .red {
+        background: #fff1f2;
+        color: #b91c1c;
+      }
+      .yellow {
+        background: #fffbeb;
+        color: #92400e;
+      }
+      .green {
+        background: #ecfdf5;
+        color: #166534;
+      }
+      .blue {
+        background: #eff6ff;
+        color: #1d4ed8;
+      }
+      .purple {
+        background: #f5f3ff;
+        color: #6d28d9;
+      }
+      h2 {
+        color: var(--navy);
+        margin: 12px 0 8px;
+        font-size: 30px;
+      }
+      p {
+        line-height: 1.6;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .info {
+        border-left: 5px solid var(--blue);
+        background: #f8fbff;
+        padding: 14px;
+        border-radius: 14px;
+      }
+      .info.redline {
+        border-left-color: var(--red);
+      }
+      .info.yellowline {
+        border-left-color: var(--yellow);
+      }
+      .info.greenline {
+        border-left-color: var(--green);
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 15px 0;
+      }
+      button {
+        border: 0;
+        border-radius: 13px;
+        padding: 11px 15px;
+        font-weight: 900;
+        cursor: pointer;
+        background: var(--navy);
+        color: white;
+      }
+      button.secondary {
+        background: #eef4ff;
+        color: var(--navy);
+        border: 1px solid #d8e7ff;
+      }
+      button.good {
+        background: var(--green);
+      }
+      button.warn {
+        background: var(--yellow);
+        color: #111827;
+      }
+      button.bad {
+        background: var(--red);
+      }
+      button.purpleBtn {
+        background: var(--purple);
+      }
+      .activity {
+        border: 1px dashed #b8c9db;
+        background: #fbfdff;
+        border-radius: 20px;
+        padding: 18px;
+        margin: 18px 0;
+      }
+      .option {
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin: 8px 0;
+        background: white;
+        color: var(--ink);
+        border: 1px solid var(--line);
+      }
+      .option.selected {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      }
+      .option.correct {
+        border-color: var(--green);
+        background: #f0fdf4;
+      }
+      .option.wrong {
+        border-color: var(--red);
+        background: #fff1f2;
+      }
+      .feedback {
+        font-weight: 900;
+        margin-top: 8px;
+      }
+      .badgeRow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .badge {
+        border-radius: 999px;
+        padding: 7px 10px;
+        font-size: 12px;
+        font-weight: 900;
+        border: 1px solid var(--line);
+      }
+      .hotspots {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .hot {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 12px;
+        cursor: pointer;
+        min-height: 86px;
+      }
+      .hot.done {
+        border-color: var(--green);
+        background: #f0fdf4;
+      }
+      .vesselSVG {
+        width: 100%;
+        height: auto;
+      }
+      .tokens {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .token {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px;
+        cursor: pointer;
+      }
+      .miniPanel {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 10px 0;
+      }
+      .lightbox {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 12px;
+        background: white;
+        min-height: 92px;
+      }
+      .sound {
+        font-size: 28px;
+        letter-spacing: 4px;
+        font-weight: 900;
+        color: var(--navy);
+      }
+      .cert {
+        border: 2px solid var(--navy);
+        border-radius: 24px;
+        background: linear-gradient(135deg, #ffffff, #f8fbff);
+        text-align: center;
+        padding: 30px;
+        margin-top: 18px;
+      }
+      .footer {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 20px;
+      }
+      @media (max-width: 900px) {
+        .wrap {
+          grid-template-columns: 1fr;
+        }
+        .hero,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .hotspots,
+        .miniPanel {
+          grid-template-columns: 1fr;
+        }
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">ROR</div>
+          <div>
+            <h1>STCW Mandatory: COLREGS – Rules of the Road</h1>
+            <div class="sub">
+              Full knowledge series • STCW A-II/1 & A-II/2 • OOW to Master •
+              Collision avoidance and watchkeeping
+            </div>
+          </div>
+        </div>
+        <div class="stats">
+          <span class="pill">XP: <span id="xp">0</span></span
+          ><span class="pill">Rank: <span id="rank">Cadet</span></span
+          ><span class="pill">Status: <span id="status">0%</span></span>
+        </div>
+      </div>
+    </header>
+    <div class="wrap">
+      <aside>
+        <div class="progressBox">
+          <b>Course Progress</b>
+          <div class="bar"><div class="fill" id="fill"></div></div>
+          <div class="sub">
+            Pass each mission quiz to unlock the next COLREGS watchkeeping
+            challenge. Fresh course starts at 0%.
+          </div>
+          <div class="controls">
+            <button class="secondary" onclick="resetCourse()">
+              Reset Course
+            </button>
+          </div>
+        </div>
+        <div class="modules" id="nav"></div>
+      </aside>
+      <main id="app"></main>
+    </div>
+    <script>
+      const course = [
+        {
+          code: "Mission 1",
+          title: "Why COLREGS Exists: Responsibility and Definitions",
+          rules: "Rules 1–3",
+          img: "general",
+          brief:
+            "COLREGS is not a memory test. It is the common decision language used by vessels to avoid collision. The first mission establishes where the rules apply, who remains responsible, and how vessel types are defined.",
+          facts: [
+            "Rule 1 gives the application of the rules.",
+            "Rule 2 keeps responsibility on the master, owner and crew — no rule removes ordinary seamanship.",
+            "Rule 3 defines vessel types such as power-driven, sailing, fishing, NUC, RAM, CBD and WIG craft.",
+          ],
+          activity: "hotspots",
+          quiz: {
+            q: "Which is the safest way to understand Rule 2?",
+            a: [
+              "The rules replace good seamanship.",
+              "The master and OOW remain responsible for safe navigation and ordinary practice of seamen.",
+              "If the other vessel is wrong, own vessel need not act.",
+            ],
+            correct: 1,
+          },
+        },
+        {
+          code: "Mission 2",
+          title: "Any Visibility: Lookout, Safe Speed and Risk of Collision",
+          rules: "Rules 4–8",
+          img: "risk",
+          brief:
+            "This is the heart of professional watchkeeping. Before asking who is stand-on or give-way, the OOW must maintain lookout, proceed at safe speed, assess risk, and take early positive action.",
+          facts: [
+            "Lookout is by sight, hearing and all available means.",
+            "Safe speed depends on traffic, visibility, manoeuvrability, background lights, sea state, draught and radar limitations.",
+            "If there is doubt about risk of collision, risk shall be deemed to exist.",
+          ],
+          activity: "traffic",
+          quiz: {
+            q: "A target bearing remains steady and range is decreasing. What should the OOW assume?",
+            a: [
+              "Risk of collision may exist and must be acted upon correctly.",
+              "There is no danger until AIS says so.",
+              "Wait for the target to alter course first.",
+            ],
+            correct: 0,
+          },
+        },
+        {
+          code: "Mission 3",
+          title: "Narrow Channels and Traffic Separation Schemes",
+          rules: "Rules 9–10",
+          img: "channel",
+          brief:
+            "Channels and TSS areas demand discipline. Vessels must navigate predictably, keep clear where required, cross correctly, and avoid impeding vessels that are constrained by the channel or lane.",
+          facts: [
+            "In a narrow channel, keep to the starboard side as safe and practicable.",
+            "Crossing traffic lanes should be as nearly as practicable at right angles to traffic flow.",
+            "Fishing or small vessels must not impede vessels following a traffic lane or navigating only within a channel.",
+          ],
+          activity: "sequence",
+          quiz: {
+            q: "When crossing a traffic lane, the safest COLREGS principle is to:",
+            a: [
+              "Cross slowly at a shallow angle to remain comfortable.",
+              "Cross as nearly as practicable at right angles to the traffic flow.",
+              "Follow the lane against traffic if it is shorter.",
+            ],
+            correct: 1,
+          },
+        },
+        {
+          code: "Mission 4",
+          title: "Vessels in Sight: Overtaking, Head-on and Crossing",
+          rules: "Rules 11–17",
+          img: "encounter",
+          brief:
+            "When vessels are in sight of one another, the encounter must be classified correctly. A wrong classification creates wrong action. Overtaking keeps clear. Head-on usually alters to starboard. Crossing gives duty to the vessel with the other on her own starboard side.",
+          facts: [
+            "The overtaking vessel keeps out of the way until finally past and clear.",
+            "In a head-on situation, both power-driven vessels should alter course to starboard.",
+            "In crossing, the give-way vessel takes early and substantial action; the stand-on vessel maintains course and speed until action becomes necessary.",
+          ],
+          activity: "classify",
+          quiz: {
+            q: "A power-driven vessel sees another on her own starboard side with risk of collision. What is her status?",
+            a: ["Stand-on vessel.", "Give-way vessel.", "Not under command."],
+            correct: 1,
+          },
+        },
+        {
+          code: "Mission 5",
+          title: "Responsibilities Between Vessels",
+          rules: "Rule 18",
+          img: "hierarchy",
+          brief:
+            "Rule 18 explains responsibility between vessel categories. It is not a licence to ignore danger. It is a structured way to decide who keeps clear while still applying risk assessment, safe speed and good seamanship.",
+          facts: [
+            "Power-driven vessels generally keep out of the way of sailing, fishing, NUC and RAM vessels as applicable.",
+            "Sailing vessels generally keep out of the way of fishing, NUC and RAM vessels.",
+            "NUC and RAM signals must be identified early, especially at night or in restricted visibility.",
+          ],
+          activity: "order",
+          quiz: {
+            q: "A power-driven vessel encounters a vessel not under command with risk of collision. What is the basic duty?",
+            a: [
+              "Keep out of the way of the vessel not under command.",
+              "Expect the NUC vessel to manoeuvre normally.",
+              "Call VHF and wait.",
+            ],
+            correct: 0,
+          },
+        },
+        {
+          code: "Mission 6",
+          title: "Restricted Visibility",
+          rules: "Rule 19",
+          img: "fog",
+          brief:
+            "Restricted visibility is not simply night navigation with less range. Rule 19 applies when vessels are not in sight of one another. The OOW must proceed at safe speed, have engines ready, use radar plotting systematically and avoid dangerous alterations when another vessel is detected forward of the beam.",
+          facts: [
+            "Rule 19 applies to vessels not in sight of one another when navigating in or near restricted visibility.",
+            "Avoid an alteration to port for a vessel forward of the beam, other than for a vessel being overtaken, when circumstances allow.",
+            "On hearing a fog signal forward of the beam or when close-quarters cannot be avoided, reduce speed to minimum at which course can be kept.",
+          ],
+          activity: "fogcheck",
+          quiz: {
+            q: "In restricted visibility, a vessel detected by radar forward of the beam presents risk. Which action is generally dangerous if avoidable?",
+            a: [
+              "An alteration to port for a vessel forward of the beam.",
+              "Systematic radar plotting.",
+              "Proceeding at safe speed with engines ready.",
+            ],
+            correct: 0,
+          },
+        },
+        {
+          code: "Mission 7",
+          title: "Lights and Shapes: Seeing the Other Vessel Before the Rule",
+          rules: "Rules 20–31",
+          img: "lights",
+          brief:
+            "Before applying the steering rule, the OOW must know what the other vessel is. Lights and shapes are the visual grammar of COLREGS. This mission trains recognition of common vessel states and the red/yellow/green decision response.",
+          facts: [
+            "Lights generally apply from sunset to sunrise and in restricted visibility when required.",
+            "Shapes are displayed by day to indicate condition or operation.",
+            "NUC, RAM, fishing, towing, pilot, anchoring and aground signals change the decision picture.",
+          ],
+          activity: "lights",
+          quiz: {
+            q: "Two all-round red lights in a vertical line indicate:",
+            a: [
+              "Vessel not under command.",
+              "Pilot vessel underway.",
+              "Power-driven vessel less than 50 metres.",
+            ],
+            correct: 0,
+          },
+        },
+        {
+          code: "Mission 8",
+          title: "Sound and Light Signals",
+          rules: "Rules 32–37",
+          img: "sound",
+          brief:
+            "Sound signals communicate manoeuvre, warning, restricted-visibility status and distress. The OOW must know the difference between manoeuvring signals in sight, warning signals, fog signals and distress signals.",
+          facts: [
+            "A short blast is about one second; a prolonged blast is four to six seconds.",
+            "One short blast: I am altering course to starboard. Two short blasts: to port. Three short blasts: operating astern propulsion.",
+            "Five or more short and rapid blasts is a doubt or danger signal.",
+          ],
+          activity: "sound",
+          quiz: {
+            q: "Five or more short and rapid blasts usually means:",
+            a: [
+              "I am altering course to starboard.",
+              "Doubt or danger about the other vessel’s intentions or action.",
+              "I am at anchor.",
+            ],
+            correct: 1,
+          },
+        },
+        {
+          code: "Mission 9",
+          title: "Exemptions, Verification and Annex Awareness",
+          rules: "Rules 38–41 + Annexes",
+          img: "annex",
+          brief:
+            "The final rules and annexes remind us that COLREGS is a convention with technical detail behind the classroom examples: positioning of lights and shapes, sound appliances, fishing signals and distress signals.",
+          facts: [
+            "Rule 38 covers exemptions for certain older vessels.",
+            "Rules 39–41 concern verification of compliance by Parties.",
+            "Annexes give technical details for lights, shapes, sound appliances, fishing signals and distress signals.",
+          ],
+          activity: "match",
+          quiz: {
+            q: "Where would you look for technical details on positioning of lights and shapes?",
+            a: ["Annex I.", "Rule 14 only.", "The pilot card."],
+            correct: 0,
+          },
+        },
+        {
+          code: "Final Challenge",
+          title: "COLREGS Bridge Decision Simulator",
+          rules: "Integrated assessment",
+          img: "bridge",
+          brief:
+            "The final challenge combines the full thinking process: maintain lookout, identify the vessel, classify the encounter, determine risk, select the correct rule, take early and positive action, and record/communicate the decision professionally.",
+          facts: [
+            "Classify before acting.",
+            "Avoid small, late and unclear alterations.",
+            "COLREGS decisions must be visible, timely and supported by proper bridge resource management.",
+          ],
+          activity: "final",
+          quiz: {
+            q: "Which bridge statement reflects the best COLREGS discipline?",
+            a: [
+              "Bearing steady, range closing, target on starboard side. I am give-way; taking early substantial action to keep clear and monitoring CPA/TCPA.",
+              "The other vessel should understand my intention without any action from me.",
+              "I will call on VHF first and decide later.",
+            ],
+            correct: 0,
+          },
+        },
+      ];
+      const key = "colregsGamifiedStateV1";
+      let state = JSON.parse(
+        localStorage.getItem(key) || '{"active":0,"completed":[],"xp":0}',
+      );
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function save() {
+        localStorage.setItem(key, JSON.stringify(state));
+      }
+      function rank() {
+        if (state.xp >= 1000) return "COLREGS Master";
+        if (state.xp >= 750) return "Senior OOW";
+        if (state.xp >= 500) return "Certified Watchkeeper";
+        if (state.xp >= 250) return "Junior OOW";
+        return "Cadet";
+      }
+      function updateStats() {
+        let pct = Math.round((state.completed.length / course.length) * 100);
+        document.getElementById("xp").textContent = state.xp;
+        document.getElementById("rank").textContent = rank();
+        document.getElementById("status").textContent = pct + "%";
+        document.getElementById("fill").style.width = pct + "%";
+      }
+      function renderNav() {
+        let nav = document.getElementById("nav");
+        nav.innerHTML = course
+          .map((m, i) => {
+            let locked = i > 0 && !state.completed.includes(i - 1);
+            let done = state.completed.includes(i);
+            return `<button class="navbtn ${state.active === i ? "active" : ""} ${locked ? "locked" : ""}" onclick="go(${i})"><div class="navtitle"><span>${m.code}</span><span>${done ? "✅" : locked ? "🔒" : "⚓"}</span></div><div class="navsmall">${m.rules} • ${m.title}</div></button>`;
+          })
+          .join("");
+      }
+      function go(i) {
+        if (i > 0 && !state.completed.includes(i - 1)) return;
+        state.active = i;
+        save();
+        render();
+      }
+      function svg(type) {
+        const base = `<svg class="vesselSVG" viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg"><rect width="640" height="360" rx="24" fill="#f8fbff"/><defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/></marker></defs>`;
+        const ship = (x, y, c, n) =>
+          `<g transform="translate(${x} ${y})"><path d="M0 28 L85 0 L170 28 L135 52 L35 52 Z" fill="${c}"/><rect x="58" y="20" width="54" height="18" rx="5" fill="white" opacity=".85"/><text x="85" y="82" text-anchor="middle" font-size="18" fill="#102a43" font-weight="900">${n}</text></g>`;
+        let s = "";
+        if (type === "general")
+          s = `${ship(235, 145, "#2563eb", "Own ship")}<circle cx="320" cy="180" r="100" fill="none" stroke="#cbd5e1" stroke-width="4"/><text x="62" y="62" fill="#102a43" font-size="24" font-weight="900">Common language for safe decisions</text><text x="84" y="304" fill="#64748b" font-size="18">Rule 2: responsibility never disappears</text>`;
+        if (type === "risk")
+          s = `${ship(110, 210, "#12324a", "A")} ${ship(405, 70, "#dc2626", "B")}<line x1="210" y1="218" x2="415" y2="120" stroke="#dc2626" stroke-width="5" marker-end="url(#arrow)"/><text x="72" y="62" fill="#102a43" font-size="24" font-weight="900">Bearing steady + range closing = danger</text><circle cx="320" cy="180" r="90" fill="none" stroke="#f59e0b" stroke-dasharray="8 8" stroke-width="4"/>`;
+        if (type === "channel")
+          s = `<path d="M80 90 C210 130 410 130 560 90" fill="none" stroke="#94a3b8" stroke-width="28"/><path d="M80 270 C210 230 410 230 560 270" fill="none" stroke="#94a3b8" stroke-width="28"/><path d="M125 180 H515" stroke="#2563eb" stroke-width="6" stroke-dasharray="16 10" marker-end="url(#arrow)"/>${ship(245, 160, "#16a34a", "Keep starboard")}<text x="74" y="55" fill="#102a43" font-size="23" font-weight="900">Channel / TSS discipline</text>`;
+        if (type === "encounter")
+          s = `${ship(90, 145, "#2563eb", "Give-way?")} ${ship(390, 100, "#dc2626", "Target")}<path d="M190 165 C275 145 330 138 410 142" fill="none" stroke="#dc2626" stroke-width="5" marker-end="url(#arrow)"/><path d="M260 70 L260 280" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 8"/><text x="75" y="55" fill="#102a43" font-size="23" font-weight="900">Classify the encounter before action</text>`;
+        if (type === "hierarchy")
+          s = `<circle cx="320" cy="85" r="36" fill="#fff1f2" stroke="#dc2626" stroke-width="4"/><text x="320" y="90" text-anchor="middle" font-weight="900" fill="#b91c1c">NUC</text><circle cx="200" cy="170" r="36" fill="#fffbeb" stroke="#f59e0b" stroke-width="4"/><text x="200" y="178" text-anchor="middle" font-weight="900" fill="#92400e">RAM</text><circle cx="440" cy="170" r="36" fill="#ecfdf5" stroke="#16a34a" stroke-width="4"/><text x="440" y="178" text-anchor="middle" font-weight="900" fill="#166534">Fish</text><circle cx="320" cy="270" r="42" fill="#eff6ff" stroke="#2563eb" stroke-width="4"/><text x="320" y="278" text-anchor="middle" font-weight="900" fill="#1d4ed8">Power</text><line x1="320" y1="230" x2="320" y2="120" stroke="#94a3b8" stroke-width="4"/><text x="70" y="42" fill="#102a43" font-size="22" font-weight="900">Responsibilities are structured, not casual</text>`;
+        if (type === "fog")
+          s = `<g opacity=".55"><path d="M80 115 H560" stroke="#94a3b8" stroke-width="13"/><path d="M60 170 H580" stroke="#94a3b8" stroke-width="13"/><path d="M90 225 H550" stroke="#94a3b8" stroke-width="13"/></g>${ship(140, 160, "#12324a", "Own")} ${ship(390, 150, "#dc2626", "Radar target")}<text x="68" y="58" fill="#102a43" font-size="23" font-weight="900">Restricted visibility: Rule 19 thinking</text>`;
+        if (type === "lights")
+          s = `<rect x="120" y="110" width="400" height="130" rx="22" fill="#102a43"/><circle cx="235" cy="145" r="17" fill="#ef4444"/><circle cx="235" cy="198" r="17" fill="#ef4444"/><circle cx="320" cy="172" r="17" fill="#22c55e"/><circle cx="405" cy="145" r="17" fill="#fff"/><circle cx="405" cy="198" r="17" fill="#fff"/><text x="88" y="55" fill="#102a43" font-size="23" font-weight="900">Lights and shapes identify the vessel</text><text x="320" y="286" text-anchor="middle" fill="#64748b" font-size="18">Red over red = NUC in this mission</text>`;
+        if (type === "sound")
+          s = `<circle cx="320" cy="180" r="70" fill="#eff6ff" stroke="#2563eb" stroke-width="5"/><path d="M380 135 C450 155 450 205 380 225" fill="none" stroke="#2563eb" stroke-width="8"/><path d="M405 105 C520 140 520 220 405 255" fill="none" stroke="#f59e0b" stroke-width="8"/><text x="320" y="190" text-anchor="middle" fill="#102a43" font-size="42" font-weight="900">● ● ● ● ●</text><text x="75" y="55" fill="#102a43" font-size="23" font-weight="900">Sound signals: intention, warning, fog, distress</text>`;
+        if (type === "annex")
+          s = `<rect x="120" y="70" width="400" height="220" rx="24" fill="#fff" stroke="#dbe5f0"/><text x="320" y="125" text-anchor="middle" fill="#102a43" font-size="28" font-weight="900">COLREGS Annexes</text><text x="320" y="170" text-anchor="middle" fill="#2563eb" font-size="18">Lights • Shapes • Sound appliances</text><text x="320" y="205" text-anchor="middle" fill="#16a34a" font-size="18">Fishing signals • Distress signals</text><text x="320" y="250" text-anchor="middle" fill="#64748b" font-size="17">Technical detail behind the classroom rule</text>`;
+        if (type === "bridge")
+          s = `<rect x="85" y="225" width="470" height="62" rx="20" fill="#102a43"/><rect x="115" y="85" width="112" height="88" rx="16" fill="#eff6ff" stroke="#2563eb"/><text x="171" y="136" text-anchor="middle" font-weight="900" fill="#102a43">LOOKOUT</text><rect x="264" y="85" width="112" height="88" rx="16" fill="#fffbeb" stroke="#f59e0b"/><text x="320" y="136" text-anchor="middle" font-weight="900" fill="#102a43">RISK</text><rect x="413" y="85" width="112" height="88" rx="16" fill="#ecfdf5" stroke="#16a34a"/><text x="469" y="136" text-anchor="middle" font-weight="900" fill="#102a43">ACTION</text><text x="88" y="55" fill="#102a43" font-size="23" font-weight="900">Professional bridge decision cycle</text>`;
+        return base + s + `</svg>`;
+      }
+      function renderActivity(m) {
+        if (m.activity === "hotspots")
+          return `<div class="activity"><h3>Tap the three Rule 1–3 foundations</h3><div class="hotspots"><div class="hot" onclick="hot(this)">Application: know where COLREGS applies</div><div class="hot" onclick="hot(this)">Responsibility: rules + seamanship</div><div class="hot" onclick="hot(this)">Definitions: identify vessel type correctly</div></div><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "traffic")
+          return `<div class="activity"><h3>Red / Yellow / Green risk scan</h3><button class="option bad" onclick="actAnswer(this,false)">RED: Use scanty radar information and assume there is no risk</button><button class="option warn" onclick="actAnswer(this,false)">YELLOW: Wait until CPA becomes zero before acting</button><button class="option good" onclick="actAnswer(this,true)">GREEN: Use all available means; if doubt exists, treat risk as existing</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "sequence")
+          return `<div class="activity"><h3>Arrange the TSS crossing plan</h3><p>Click the steps in order.</p><div id="seq">${["Assess traffic flow and lane direction", "Plan crossing nearly at right angles", "Keep clear and avoid impeding lane traffic", "Monitor CPA/TCPA and complete crossing promptly"].map((x) => `<button class="option" onclick="seqPick(this)">${x}</button>`).join("")}</div><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "classify")
+          return `<div class="activity"><h3>Encounter classifier</h3><p>Choose the safest classification for a power-driven vessel abaft your beam coming up from more than 22.5° abaft your beam.</p><button class="option good" onclick="actAnswer(this,true)">Overtaking: the overtaking vessel keeps clear</button><button class="option bad" onclick="actAnswer(this,false)">Head-on: both alter course to port</button><button class="option warn" onclick="actAnswer(this,false)">Crossing: wait until close quarters</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "order")
+          return `<div class="activity"><h3>Responsibility ladder</h3><p>Select the best action by a power-driven vessel meeting a RAM vessel.</p><button class="option good" onclick="actAnswer(this,true)">Keep out of the way early and clearly, while continuing to monitor risk</button><button class="option bad" onclick="actAnswer(this,false)">Maintain course because power-driven vessels have priority</button><button class="option warn" onclick="actAnswer(this,false)">Call on VHF and ask the RAM vessel to move</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "fogcheck")
+          return `<div class="activity"><h3>Restricted-visibility checklist</h3>${["Safe speed", "Engines ready for immediate manoeuvre", "Systematic radar plotting", "Sound signals and extra lookout"].map((x) => `<label class="option"><input type="checkbox" class="chk"> ${x}</label>`).join("")}<button onclick="checkList()">Submit checklist</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "lights")
+          return `<div class="activity"><h3>Night identification drill</h3><div class="miniPanel"><div class="lightbox"><b>Signal A</b><br><span class="tag red">Red over Red</span></div><div class="lightbox"><b>Signal B</b><br><span class="tag green">Green over White</span></div><div class="lightbox"><b>Signal C</b><br><span class="tag yellow">Ball Diamond Ball</span></div></div><p>Signal A means:</p><button class="option good" onclick="actAnswer(this,true)">Not under command</button><button class="option bad" onclick="actAnswer(this,false)">Pilot vessel</button><button class="option warn" onclick="actAnswer(this,false)">Sailing vessel under sail only</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "sound")
+          return `<div class="activity"><h3>Sound signal drill</h3><div class="sound">● ● ● ● ●</div><p>What is being communicated?</p><button class="option good" onclick="actAnswer(this,true)">Doubt or danger signal</button><button class="option bad" onclick="actAnswer(this,false)">Altering course to starboard</button><button class="option warn" onclick="actAnswer(this,false)">I am aground</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "match")
+          return `<div class="activity"><h3>Annex match</h3><p>Where are distress signals listed?</p><button class="option good" onclick="actAnswer(this,true)">Annex IV</button><button class="option bad" onclick="actAnswer(this,false)">Rule 12 only</button><button class="option warn" onclick="actAnswer(this,false)">The logbook only</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        return `<div class="activity"><h3>Final bridge callout</h3><p>Choose the statement you would be proud to hear from your OOW.</p><button class="option good" onclick="actAnswer(this,true)">“I have classified the encounter, confirmed risk by bearing and ARPA, and am taking early positive action under the applicable rule.”</button><button class="option bad" onclick="actAnswer(this,false)">“I am not sure, but I will wait and see because the other vessel may alter.”</button><button class="option warn" onclick="actAnswer(this,false)">“I will make a small alteration now and check later.”</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+      }
+      function renderQuiz(m, i) {
+        return `<div class="card"><h3>Mission Quiz</h3><p><b>${m.quiz.q}</b></p>${m.quiz.a.map((x, idx) => `<button class="option" onclick="quizPick(${idx},${i},this)">${x}</button>`).join("")}<div id="quizmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshQuiz()">Refresh Quiz</button></div></div>`;
+      }
+      function render() {
+        updateStats();
+        renderNav();
+        let m = course[state.active],
+          i = state.active;
+        document.getElementById("app").innerHTML =
+          `<section class="hero"><div class="card"><span class="tag blue">${m.code}</span> <span class="tag purple">${m.rules}</span><h2>${m.title}</h2><p>${m.brief}</p><div class="badgeRow"><span class="tag red">Red: unsafe assumption</span><span class="tag yellow">Yellow: verify before action</span><span class="tag green">Green: correct COLREGS discipline</span></div><div class="controls"><button onclick="speak()">▶ Narration</button><button class="secondary" onclick="pauseSpeak()">Pause / Resume</button><button class="secondary" onclick="stopSpeak()">Stop</button></div></div><div class="card">${svg(m.img)}</div></section><div class="grid">${m.facts.map((f, n) => `<div class="info ${n == 0 ? "redline" : n == 1 ? "yellowline" : "greenline"}">${f}</div>`).join("")}</div>${renderActivity(m)}${renderQuiz(m, i)}${state.completed.length === course.length ? `<div class="cert"><h2>Certificate Unlocked</h2><p><b>COLREGS Rules of the Road – Knowledge Series</b></p><p>Completed with ${state.xp} XP. This certificate screen is a prototype and should be integrated with the LMS for official record keeping.</p></div>` : ""}<div class="footer">Training reference: COLREGS 1972 Rules 1–41 and Annex awareness; STCW navigational watch competence for OOW/Master. This prototype is for training design and should be reviewed against flag-state/approved course requirements before certification use.</div>`;
+      }
+      function addXp(n) {
+        state.xp += n;
+        save();
+        updateStats();
+      }
+      function hot(el) {
+        el.classList.add("done");
+        if (
+          [...document.querySelectorAll(".hot")].every((x) =>
+            x.classList.contains("done"),
+          )
+        ) {
+          document.getElementById("actmsg").textContent =
+            "Good. The Rules start with application, responsibility and definitions.";
+          addXp(15);
+        }
+      }
+      let seq = [];
+      const seqCorrect = [
+        "Assess traffic flow and lane direction",
+        "Plan crossing nearly at right angles",
+        "Keep clear and avoid impeding lane traffic",
+        "Monitor CPA/TCPA and complete crossing promptly",
+      ];
+      function seqPick(el) {
+        seq.push(el.textContent);
+        el.disabled = true;
+        el.classList.add("selected");
+        if (seq.length === 4) {
+          let ok = seq.every((x, i) => x === seqCorrect[i]);
+          document.getElementById("actmsg").textContent = ok
+            ? "Correct. Predictable TSS behaviour reduces confusion."
+            : "Not quite. Refresh and build the plan from assessment to execution.";
+          if (ok) addXp(20);
+        }
+      }
+      function actAnswer(el, ok) {
+        document
+          .querySelectorAll(".activity .option")
+          .forEach((b) => (b.disabled = true));
+        el.classList.add(ok ? "correct" : "wrong");
+        document.getElementById("actmsg").textContent = ok
+          ? "Correct. Safe action is early, clear and rule-based."
+          : "Not safe. Review the mission and try again.";
+        if (ok) addXp(20);
+      }
+      function checkList() {
+        let boxes = [...document.querySelectorAll(".chk")];
+        let ok = boxes.every((b) => b.checked);
+        document.getElementById("actmsg").textContent = ok
+          ? "Complete. Restricted visibility requires a full bridge response."
+          : "Complete every required action before proceeding.";
+        if (ok) addXp(20);
+      }
+      function quizPick(idx, i, el) {
+        let m = course[i],
+          ok = idx === m.quiz.correct;
+        document
+          .querySelectorAll("#app .card:last-of-type .option")
+          .forEach((b) => (b.disabled = true));
+        el.classList.add(ok ? "correct" : "wrong");
+        document.getElementById("quizmsg").textContent = ok
+          ? "Passed. Next mission unlocked."
+          : "Not yet. Refresh the quiz after reviewing the briefing.";
+        if (ok) {
+          if (!state.completed.includes(i)) {
+            state.completed.push(i);
+            state.completed.sort((a, b) => a - b);
+            addXp(100);
+            reportModuleComplete({ moduleIndex: i, moduleTitle: course[i].title, score: 1, maxScore: 1, passingScore: 80, totalModules: course.length, completedModules: state.completed.length });
+          }
+          if (i < course.length - 1) {
+            setTimeout(() => {
+              state.active = i + 1;
+              save();
+              render();
+            }, 750);
+          } else {
+            save();
+            updateStats();
+            renderNav();
+            setTimeout(() => render(), 600);
+          }
+        }
+      }
+      function refreshActivity() {
+        seq = [];
+        render();
+      }
+      function refreshQuiz() {
+        render();
+      }
+      let utt = null;
+      function speak() {
+        stopSpeak();
+        let m = course[state.active];
+        utt = new SpeechSynthesisUtterance(
+          `${m.code}. ${m.title}. ${m.brief} Key points. ${m.facts.join(". ")} Complete the activity and quiz to unlock the next mission.`,
+        );
+        utt.rate = 0.92;
+        utt.pitch = 1;
+        speechSynthesis.speak(utt);
+        addXp(5);
+      }
+      function pauseSpeak() {
+        if (speechSynthesis.speaking && !speechSynthesis.paused) {
+          speechSynthesis.pause();
+        } else {
+          speechSynthesis.resume();
+        }
+      }
+      function stopSpeak() {
+        speechSynthesis.cancel();
+      }
+      function resetCourse() {
+        localStorage.removeItem(key);
+        location.reload();
+      }
+      render();
+    </script>
+  </body>
+</html>

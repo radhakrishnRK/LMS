@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STCW Radar & ARPA – Operational Navigation | Gamified Course</title>
+    <style>
+      :root {
+        --navy: #12324a;
+        --blue: #2563eb;
+        --sky: #eaf4ff;
+        --green: #16a34a;
+        --yellow: #f59e0b;
+        --red: #dc2626;
+        --ink: #1f2937;
+        --muted: #64748b;
+        --line: #dbe5f0;
+        --soft: #f8fafc;
+        --card: #ffffff;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family:
+          Inter,
+          Segoe UI,
+          Roboto,
+          Arial,
+          sans-serif;
+        background: #fff;
+        color: var(--ink);
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line);
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 22px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--navy), var(--blue));
+        display: grid;
+        place-items: center;
+        color: white;
+        font-weight: 900;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0;
+        color: var(--navy);
+      }
+      .sub {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .stats {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .pill {
+        border: 1px solid var(--line);
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: white;
+        font-weight: 700;
+        color: var(--navy);
+        font-size: 13px;
+      }
+      .wrap {
+        display: grid;
+        grid-template-columns: 290px 1fr;
+        min-height: calc(100vh - 73px);
+      }
+      aside {
+        border-right: 1px solid var(--line);
+        padding: 20px;
+        background: #fbfdff;
+      }
+      .progressBox {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 16px;
+        box-shadow: 0 8px 22px rgba(15, 42, 75, 0.06);
+      }
+      .bar {
+        height: 12px;
+        background: #eef3f8;
+        border-radius: 99px;
+        overflow: hidden;
+        margin: 12px 0;
+      }
+      .fill {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(
+          90deg,
+          var(--red),
+          var(--yellow),
+          var(--green)
+        );
+        transition: 0.35s;
+      }
+      .modules {
+        margin-top: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .navbtn {
+        width: 100%;
+        text-align: left;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: white;
+        padding: 12px;
+        cursor: pointer;
+        color: var(--ink);
+        transition: 0.2s;
+      }
+      .navbtn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(2, 8, 23, 0.07);
+      }
+      .navbtn.active {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      }
+      .navbtn.locked {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .navtitle {
+        font-weight: 800;
+        color: var(--navy);
+        display: flex;
+        justify-content: space-between;
+      }
+      .navsmall {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+      main {
+        padding: 24px;
+        max-width: 1220px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 20px;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+      .card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 22px;
+        box-shadow: 0 10px 30px rgba(15, 42, 75, 0.06);
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-weight: 800;
+        font-size: 12px;
+      }
+      .red {
+        background: #fff1f2;
+        color: #b91c1c;
+      }
+      .yellow {
+        background: #fffbeb;
+        color: #92400e;
+      }
+      .green {
+        background: #ecfdf5;
+        color: #166534;
+      }
+      .blue {
+        background: #eff6ff;
+        color: #1d4ed8;
+      }
+      h2 {
+        color: var(--navy);
+        margin: 12px 0 8px;
+        font-size: 30px;
+      }
+      p {
+        line-height: 1.6;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .info {
+        border-left: 5px solid var(--blue);
+        background: #f8fbff;
+        padding: 14px;
+        border-radius: 14px;
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 15px 0;
+      }
+      button {
+        border: 0;
+        border-radius: 13px;
+        padding: 11px 15px;
+        font-weight: 800;
+        cursor: pointer;
+        background: var(--navy);
+        color: white;
+      }
+      button.secondary {
+        background: #eef4ff;
+        color: var(--navy);
+        border: 1px solid #d8e7ff;
+      }
+      button.good {
+        background: var(--green);
+      }
+      button.warn {
+        background: var(--yellow);
+        color: #111827;
+      }
+      button.bad {
+        background: var(--red);
+      }
+      .activity {
+        border: 1px dashed #b8c9db;
+        background: #fbfdff;
+        border-radius: 20px;
+        padding: 18px;
+        margin: 18px 0;
+      }
+      .option {
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin: 8px 0;
+        background: white;
+        color: var(--ink);
+        border: 1px solid var(--line);
+      }
+      .option.selected {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      }
+      .option.correct {
+        border-color: var(--green);
+        background: #f0fdf4;
+      }
+      .option.wrong {
+        border-color: var(--red);
+        background: #fff1f2;
+      }
+      .feedback {
+        font-weight: 800;
+        margin-top: 8px;
+      }
+      .hotspots {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .hot {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 12px;
+        cursor: pointer;
+        min-height: 80px;
+      }
+      .hot.done {
+        border-color: var(--green);
+        background: #f0fdf4;
+      }
+      .badgeRow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .badge {
+        border-radius: 999px;
+        padding: 7px 10px;
+        font-size: 12px;
+        font-weight: 800;
+        border: 1px solid var(--line);
+      }
+      .radar {
+        width: 100%;
+        height: auto;
+      }
+      .dropzone {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .token {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 9px 10px;
+        cursor: grab;
+      }
+      .slot {
+        min-height: 42px;
+        min-width: 140px;
+        background: #f8fafc;
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 8px;
+      }
+      .slot.filled {
+        border-style: solid;
+        border-color: var(--blue);
+        background: #eff6ff;
+      }
+      .footer {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 20px;
+      }
+      @media (max-width: 900px) {
+        .wrap {
+          grid-template-columns: 1fr;
+        }
+        aside {
+          position: relative;
+        }
+        .hero,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .hotspots {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">ARPA</div>
+          <div>
+            <h1>STCW Mandatory: Radar & ARPA – Operational Navigation</h1>
+            <div class="sub">
+              Operational level • STCW A-II/1 • Navigation safety • COLREGS Rule
+              7
+            </div>
+          </div>
+        </div>
+        <div class="stats">
+          <span class="pill">XP: <span id="xp">0</span></span>
+          <span class="pill"
+            >Rank: <span id="rank">Trainee Watchkeeper</span></span
+          >
+          <span class="pill">Status: <span id="status">0%</span></span>
+        </div>
+      </div>
+    </header>
+    <div class="wrap">
+      <aside>
+        <div class="progressBox">
+          <b>Course Progress</b>
+          <div class="bar"><div class="fill" id="fill"></div></div>
+          <div class="sub">
+            Pass each mission quiz to unlock the next watchkeeping challenge.
+          </div>
+        </div>
+        <div class="modules" id="nav"></div>
+      </aside>
+      <main id="app"></main>
+    </div>
+    <script>
+      const course = [
+        {
+          title: "Radar is a Sensor, Not a Decision-Maker",
+          code: "Mission 1",
+          img: "radar",
+          brief:
+            "Radar helps you detect targets, measure range and bearing, monitor traffic and assess risk of collision. But radar echoes are not the sea itself. The officer of the watch must understand limitations, tune the display correctly, and verify information by all available means.",
+          facts: [
+            "Radar gives range and bearing, not intention.",
+            "A clean-looking screen may still hide clutter, blind sectors or weak targets.",
+            "Use radar as part of a proper lookout, not as a substitute.",
+          ],
+          activity: "hotspots",
+          quiz: {
+            q: "Which statement reflects safe radar use?",
+            a: [
+              "Radar replaces visual lookout in restricted visibility.",
+              "Radar information must be interpreted and checked with all available means.",
+              "If ARPA gives a CPA, the OOW no longer needs to monitor the target.",
+            ],
+            correct: 1,
+          },
+        },
+        {
+          title: "Set Up the Radar Before You Trust It",
+          code: "Mission 2",
+          img: "controls",
+          brief:
+            "A poorly tuned radar can mislead the bridge team. Before using radar for collision avoidance, the officer should select a suitable range scale, adjust gain, sea clutter and rain clutter, check heading and speed inputs, and confirm whether the display is head-up, north-up, course-up, relative motion or true motion.",
+          facts: [
+            "Wrong gain can remove small targets or create noise.",
+            "Sea clutter can hide close targets.",
+            "Incorrect heading or speed input affects trails, vectors and ARPA solutions.",
+          ],
+          activity: "sequence",
+          quiz: {
+            q: "Before relying on ARPA target data, what must be checked?",
+            a: [
+              "Only the brightness level.",
+              "Only whether the target name appears on AIS.",
+              "Sensor inputs, acquisition quality, range scale and display settings.",
+            ],
+            correct: 2,
+          },
+        },
+        {
+          title: "Range, Bearing and Manual Plotting",
+          code: "Mission 3",
+          img: "plot",
+          brief:
+            "Manual plotting remains vital because it builds understanding of relative motion. The OOW should know how to obtain target range and bearing, plot successive positions, determine CPA and TCPA, and decide whether risk of collision exists.",
+          facts: [
+            "EBL and VRM are basic tools for bearing and range.",
+            "Relative plot shows the target’s movement relative to own ship.",
+            "CPA and TCPA are decision-support values, not magic answers.",
+          ],
+          activity: "classify",
+          quiz: {
+            q: "What does CPA mean?",
+            a: [
+              "Closest Point of Approach.",
+              "Compass Plotting Angle.",
+              "Course Prediction Alarm.",
+            ],
+            correct: 0,
+          },
+        },
+        {
+          title: "ARPA Acquisition, Vectors and Trails",
+          code: "Mission 4",
+          img: "vectors",
+          brief:
+            "ARPA automatically tracks selected targets and calculates vectors, CPA and TCPA. Its output depends on target acquisition quality and correct own-ship inputs. A new ARPA track may require time to stabilise before the data is reliable.",
+          facts: [
+            "Relative vectors show motion relative to own ship.",
+            "True vectors show target movement over the ground or through water depending on input.",
+            "Trails help build a quick picture of traffic flow.",
+          ],
+          activity: "match",
+          quiz: {
+            q: "Why should an OOW be cautious with a newly acquired ARPA target?",
+            a: [
+             
+              "New ARPA targets are always more accurate than old tracks.",
+              "ARPA cannot track moving targets.", 
+              "The target may need time to stabilise before CPA/TCPA are reliable.",
+            ],
+            correct: 2,
+          },
+        },
+        {
+          title: "Risk of Collision and COLREGS Rule 7",
+          code: "Mission 5",
+          img: "collision",
+          brief:
+            "COLREGS Rule 7 requires every vessel to use all available means appropriate to the prevailing circumstances to determine if risk of collision exists. If there is any doubt, risk shall be deemed to exist. Radar plotting or equivalent systematic observation should be used when available.",
+          facts: [
+            "Small change in compass bearing with decreasing range is danger.",
+            "Do not make assumptions based on scanty information.",
+            "ARPA supports Rule 7 but does not replace judgment.",
+          ],
+          activity: "scenario",
+          quiz: {
+            q: "Under Rule 7, what should the OOW do when in doubt about risk of collision?",
+            a: [
+              "Assume no risk until ARPA alarms.",
+              "Treat the risk as existing and take proper action.",
+              "Wait for the other vessel to call on VHF.",
+            ],
+            correct: 1,
+          },
+        },
+        {
+          title: "Limitations, Errors and False Confidence",
+          code: "Mission 6",
+          img: "limitations",
+          brief:
+            "Radar has limitations: shadow sectors, blind arcs, side lobes, multiple echoes, rain and sea clutter, small weak targets, poor tuning, scanner issues, wrong stabilisation and over-reliance on AIS overlay. A competent officer recognises when the picture may be incomplete.",
+          facts: [
+            "AIS is identity data, not a collision-avoidance sensor.",
+            "Rain clutter may conceal vessels or buoys.",
+            "Radar horizon and target characteristics affect detection.",
+          ],
+          activity: "trafficLight",
+          quiz: {
+            q: "Which is a dangerous practice?",
+            a: [
+              "Cross-checking radar with visual lookout and AIS.",
+              "Increasing awareness in rain clutter.",
+              "Accepting AIS target information as proof that there is no collision risk.",
+            ],
+            correct: 2,
+          },
+        },
+        {
+          title: "Navigation in Restricted Visibility",
+          code: "Mission 7",
+          img: "fog",
+          brief:
+            "In restricted visibility, radar becomes central to safe navigation, but must be used with disciplined bridge procedures: proper lookout, safe speed, sound signals, engine readiness, plotting of targets, and early substantial action in accordance with COLREGS.",
+          facts: [
+            "Safe speed must reflect visibility, traffic density and manoeuvrability.",
+            "Plot targets systematically; do not react to alarms alone.",
+            "Avoid small alterations that are difficult for others to detect.",
+          ],
+          activity: "checklist",
+          quiz: {
+            q: "In fog, which action is most appropriate?",
+            a: [
+              "Maintain speed because radar is working.",
+              "Use safe speed, systematic radar observation and bridge team discipline.",
+              "Navigate only by AIS because radar clutter increases.",
+            ],
+            correct: 1,
+          },
+        },
+        {
+          title: "Integrated Bridge Practice",
+          code: "Final Mission",
+          img: "bridge",
+          brief:
+            "The competent OOW combines radar, ARPA, visual lookout, AIS, compass, echo sounder, ECDIS and good bridge resource management. The goal is not to operate equipment; the goal is to maintain a safe navigational watch.",
+          facts: [
+            "Radar/ARPA evidence supports SMS and bridge standing orders.",
+            "Good watchkeeping means anticipation, not reaction.",
+            "Technology assists; accountability remains with the officer.",
+          ],
+          activity: "final",
+          quiz: {
+            q: "What is the best description of radar and ARPA in watchkeeping?",
+            a: [
+              "They are aids that support a trained OOW’s situational awareness and decision-making.",
+              "They are automatic collision-avoidance systems.",
+              "They remove the need to understand COLREGS.",
+            ],
+            correct: 0,
+          },
+        },
+      ];
+      let state = JSON.parse(
+        localStorage.getItem("radarArpaState") ||
+          '{"completed":[],"xp":0,"active":0}',
+      );
+      function reportModuleComplete({ moduleIndex, moduleTitle, score, maxScore, passingScore, totalModules, completedModules }) {
+        const percentage = Math.round((score / maxScore) * 100);
+        const message = { type: "COURSE_MODULE_COMPLETE", source: "course", payload: { moduleIndex, moduleTitle, score, maxScore, percentage, status: percentage >= passingScore ? "passed" : "failed", totalModules, completedModules, allModulesComplete: completedModules === totalModules } };
+        if (window.parent && window.parent !== window) { window.parent.postMessage(message, "*"); }
+      }
+      function save() {
+        localStorage.setItem("radarArpaState", JSON.stringify(state));
+      }
+      function pct() {
+        return Math.round((state.completed.length / course.length) * 100);
+      }
+      function rank() {
+        let x = state.xp;
+        return x > 850
+          ? "Radar Mentor"
+          : x > 600
+            ? "ARPA Navigator"
+            : x > 350
+              ? "Safe Watchkeeper"
+              : x > 150
+                ? "Junior OOW"
+                : "Trainee Watchkeeper";
+      }
+      function updateStats() {
+        document.getElementById("xp").textContent = state.xp;
+        document.getElementById("rank").textContent = rank();
+        document.getElementById("status").textContent = pct() + "%";
+        document.getElementById("fill").style.width = pct() + "%";
+      }
+      function icon(i) {
+        return state.completed.includes(i)
+          ? "✅"
+          : i <= state.completed.length
+            ? "🔓"
+            : "🔒";
+      }
+      function renderNav() {
+        let nav = document.getElementById("nav");
+        nav.innerHTML = "";
+        course.forEach((m, i) => {
+          let b = document.createElement("button");
+          b.className =
+            "navbtn " +
+            (i === state.active ? "active " : "") +
+            (i > state.completed.length ? "locked" : "");
+          b.innerHTML = `<div class='navtitle'><span>${m.code}</span><span>${icon(i)}</span></div><div class='navsmall'>${m.title}</div>`;
+          b.onclick = () => {
+            if (i <= state.completed.length) {
+              state.active = i;
+              save();
+              render();
+            }
+          };
+          nav.appendChild(b);
+        });
+      }
+      function svg(type) {
+        const baseStart = `<svg class="radar" viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg"><rect width="640" height="360" rx="26" fill="#ffffff"/><rect x="18" y="18" width="604" height="324" rx="24" fill="#f8fbff" stroke="#dbe5f0"/>`;
+        const radar = `<circle cx="320" cy="200" r="120" fill="#ecfdf5" stroke="#16a34a" stroke-width="3"/><circle cx="320" cy="180" r="80" fill="none" stroke="#9ad4ad"/><circle cx="320" cy="180" r="40" fill="none" stroke="#9ad4ad"/><line x1="320" y1="180" x2="420" y2="115" stroke="#16a34a" stroke-width="5"><animateTransform attributeName="transform" type="rotate" from="0 320 180" to="360 320 180" dur="5s" repeatCount="indefinite"/></line><circle cx="440" cy="112" r="8" fill="#dc2626"/><circle cx="230" cy="220" r="7" fill="#f59e0b"/><circle cx="360" cy="260" r="6" fill="#2563eb"/><text x="44" y="62" fill="#12324a" font-size="22" font-weight="800">Radar picture: measure, verify, decide</text>`;
+        const controls = `<rect x="90" y="90" width="460" height="160" rx="22" fill="#12324a"/><circle cx="170" cy="170" r="44" fill="#fff"/><circle cx="300" cy="170" r="44" fill="#fff"/><circle cx="430" cy="170" r="44" fill="#fff"/><text x="145" y="175" font-size="18" fill="#12324a" font-weight="800">GAIN</text><text x="270" y="175" font-size="18" fill="#12324a" font-weight="800">SEA</text><text x="398" y="175" font-size="18" fill="#12324a" font-weight="800">RAIN</text><text x="112" y="287" fill="#12324a" font-size="20" font-weight="800">Tune before you trust</text>`;
+        const plot = `<line x1="100" y1="280" x2="540" y2="80" stroke="#cbd5e1" stroke-width="2"/><circle cx="170" cy="245" r="9" fill="#dc2626"/><circle cx="260" cy="205" r="9" fill="#f59e0b"/><circle cx="350" cy="165" r="9" fill="#16a34a"/><path d="M170 245 L350 165" stroke="#2563eb" stroke-width="4" marker-end="url(#arr)"/><defs><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/></marker></defs><text x="60" y="55" fill="#12324a" font-size="22" font-weight="800">Relative plot → CPA/TCPA</text>`;
+        const vectors = `<circle cx="220" cy="190" r="18" fill="#12324a"/><path d="M220 190 L380 120" stroke="#16a34a" stroke-width="6" marker-end="url(#a)"/><circle cx="420" cy="230" r="18" fill="#dc2626"/><path d="M420 230 L300 185" stroke="#dc2626" stroke-width="6" marker-end="url(#a)"/><defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#12324a"/></marker></defs><text x="70" y="65" fill="#12324a" font-size="22" font-weight="800">Vectors show movement and risk</text>`;
+        const collision = `<path d="M130 280 C260 120 380 120 520 280" fill="none" stroke="#dc2626" stroke-width="6"/><path d="M120 110 C260 250 380 250 520 110" fill="none" stroke="#2563eb" stroke-width="6"/><circle cx="320" cy="190" r="30" fill="#fff1f2" stroke="#dc2626" stroke-width="4"/><text x="246" y="196" fill="#dc2626" font-size="20" font-weight="900">CPA AREA</text><text x="70" y="65" fill="#12324a" font-size="22" font-weight="800">If in doubt, risk exists</text>`;
+        const limitations = `<rect x="120" y="90" width="400" height="190" rx="22" fill="#ecfdf5" stroke="#16a34a"/><path d="M320 185 L510 105 L510 265 Z" fill="#fff" opacity=".95"/><text x="360" y="186" fill="#dc2626" font-size="21" font-weight="900">SHADOW</text><circle cx="235" cy="170" r="8" fill="#dc2626"/><circle cx="280" cy="235" r="8" fill="#f59e0b"/><text x="72" y="65" fill="#12324a" font-size="22" font-weight="800">Blind sectors and clutter exist</text>`;
+        const fog = `<rect x="70" y="100" width="500" height="150" rx="30" fill="#e0f2fe"/><g opacity=".55"><path d="M90 145 H550" stroke="#94a3b8" stroke-width="12"/><path d="M80 190 H560" stroke="#94a3b8" stroke-width="12"/><path d="M100 235 H540" stroke="#94a3b8" stroke-width="12"/></g><path d="M210 220 L300 160 L430 220 Z" fill="#12324a"/><text x="70" y="65" fill="#12324a" font-size="22" font-weight="800">Restricted visibility: slow, plot, listen</text>`;
+        const bridge = `<rect x="80" y="220" width="480" height="60" rx="18" fill="#12324a"/><rect x="120" y="80" width="120" height="95" rx="18" fill="#eff6ff" stroke="#2563eb"/><rect x="260" y="80" width="120" height="95" rx="18" fill="#ecfdf5" stroke="#16a34a"/><rect x="400" y="80" width="120" height="95" rx="18" fill="#fffbeb" stroke="#f59e0b"/><text x="142" y="132" fill="#12324a" font-size="18" font-weight="800">RADAR</text><text x="296" y="132" fill="#12324a" font-size="18" font-weight="800">ECDIS</text><text x="438" y="132" fill="#12324a" font-size="18" font-weight="800">AIS</text><text x="92" y="320" fill="#12324a" font-size="22" font-weight="800">Bridge team integrates every source</text>`;
+        return (
+          baseStart +
+          ({
+            radar,
+            controls,
+            plot,
+            vectors,
+            collision,
+            limitations,
+            fog,
+            bridge,
+          }[type] || radar) +
+          `</svg>`
+        );
+      }
+      let selected = null;
+      function renderActivity(m, i) {
+        if (m.activity === "hotspots")
+          return `<div class="activity"><h3>Interactive radar sweep</h3><p>Tap all three watchkeeping checks before proceeding.</p><div class="hotspots"><div class="hot" onclick="hot(this)">Check range scale</div><div class="hot" onclick="hot(this)">Check clutter and gain</div><div class="hot" onclick="hot(this)">Verify by lookout/AIS/ECDIS</div></div><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "sequence")
+          return `<div class="activity"><h3>Put the setup steps in order</h3><p>Click the steps in the safest order.</p><div id="seq">${["Select suitable range", "Tune gain/clutter", "Check heading/speed inputs", "Acquire and monitor targets"].map((x) => `<button class="option" onclick="seqPick(this)">${x}</button>`).join("")}</div><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "classify")
+          return `<div class="activity"><h3>Choose the correct tool</h3><p>You need range and bearing of a target. What do you use?</p><button class="option" onclick="actAnswer(this,true)">VRM for range and EBL for bearing</button><button class="option" onclick="actAnswer(this,false)">Rain clutter control only</button><button class="option" onclick="actAnswer(this,false)">AIS name field only</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "match")
+          return `<div class="activity"><h3>Vector judgement</h3><p>Select the green, yellow or red response to a newly acquired crossing target with unstable CPA.</p><button class="option good" onclick="actAnswer(this,true)">GREEN: Monitor, wait for track to settle, verify visually</button><button class="option warn" onclick="actAnswer(this,false)">YELLOW: Ignore until alarm sounds</button><button class="option bad" onclick="actAnswer(this,false)">RED: Make a large alteration without assessment</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "scenario")
+          return `<div class="activity"><h3>Rule 7 scenario</h3><p>Target bearing nearly steady. Range is decreasing. ARPA CPA is small. Decide.</p><button class="option bad" onclick="actAnswer(this,false)">RED: Wait for VHF call</button><button class="option warn" onclick="actAnswer(this,false)">YELLOW: Make a small alteration and hope it helps</button><button class="option good" onclick="actAnswer(this,true)">GREEN: Risk exists; take early, positive action under COLREGS</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "trafficLight")
+          return `<div class="activity"><h3>Red / Yellow / Green Radar Practices</h3><button class="option bad" onclick="actAnswer(this,false)">RED: Trust AIS over radar plotting</button><button class="option warn" onclick="actAnswer(this,false)">YELLOW: Use radar without checking sea clutter</button><button class="option good" onclick="actAnswer(this,true)">GREEN: Cross-check radar, ARPA, AIS, visual lookout and compass</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        if (m.activity === "checklist")
+          return `<div class="activity"><h3>Fog checklist</h3><p>Tick all safe restricted-visibility actions.</p>${["Safe speed", "Engines ready", "Sound signals", "Systematic plotting"].map((x) => `<label class="option"><input type="checkbox" class="chk"> ${x}</label>`).join("")}<button onclick="checkList()">Submit checklist</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+        return `<div class="activity"><h3>Final bridge decision</h3><p>Build your bridge team callout.</p><button class="option good" onclick="actAnswer(this,true)">“Target acquired. CPA small. Bearing steady. I am reducing speed and calling Master as per standing orders.”</button><button class="option bad" onclick="actAnswer(this,false)">“ARPA will alarm if it becomes dangerous.”</button><div id="actmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshActivity()">Refresh Activity</button></div></div>`;
+      }
+      function renderQuiz(m, i) {
+        return `<div class="card"><h3>Mission Quiz</h3><p><b>${m.quiz.q}</b></p>${m.quiz.a.map((x, idx) => `<button class="option" onclick="quizPick(${idx},${i},this)">${x}</button>`).join("")}<div id="quizmsg" class="feedback"></div><div class="controls"><button class="secondary" onclick="refreshQuiz()">Refresh Quiz</button></div></div>`;
+      }
+      function render() {
+        updateStats();
+        renderNav();
+        let m = course[state.active],
+          i = state.active;
+        document.getElementById("app").innerHTML =
+          `<section class="hero"><div class="card"><span class="tag blue">${m.code}</span><h2>${m.title}</h2><p>${m.brief}</p><div class="badgeRow"><span class="tag red">Red: unsafe assumption</span><span class="tag yellow">Yellow: verify</span><span class="tag green">Green: safe practice</span></div><div class="controls"><button onclick="speak()">▶ Narration</button><button class="secondary" onclick="pauseSpeak()">Pause / Resume</button><button class="secondary" onclick="stopSpeak()">Stop</button></div></div><div class="card">${svg(m.img)}</div></section><div class="grid">${m.facts.map((f) => `<div class="info">${f}</div>`).join("")}</div>${renderActivity(m, i)}${renderQuiz(m, i)}<div class="footer">Training reference: STCW Convention and Code competence framework, Table A-II/1; IMO Model Course 1.07 on radar navigation, radar plotting and ARPA; COLREGS Rule 7 principles. This is a training prototype and must be aligned with flag-state approval requirements before certification use.</div>`;
+      }
+      function addXp(n) {
+        state.xp += n;
+        save();
+        updateStats();
+      }
+      function hot(el) {
+        el.classList.add("done");
+        if (
+          [...document.querySelectorAll(".hot")].every((x) =>
+            x.classList.contains("done"),
+          )
+        ) {
+          document.getElementById("actmsg").textContent =
+            "Good sweep. Radar information is only trusted after setup and cross-check.";
+          addXp(15);
+        }
+      }
+      let seq = [];
+      const seqCorrect = [
+        "Select suitable range",
+        "Tune gain/clutter",
+        "Check heading/speed inputs",
+        "Acquire and monitor targets",
+      ];
+      function seqPick(el) {
+        seq.push(el.textContent);
+        el.disabled = true;
+        el.classList.add("selected");
+        if (seq.length === 4) {
+          let ok = seq.every((x, i) => x === seqCorrect[i]);
+          document.getElementById("actmsg").textContent = ok
+            ? "Correct setup sequence."
+            : "Not quite. Refresh and try: range, tune, inputs, acquire.";
+          if (ok) addXp(20);
+        }
+      }
+      function actAnswer(el, ok) {
+        document
+          .querySelectorAll(".activity .option")
+          .forEach((b) => (b.disabled = true));
+        el.classList.add(ok ? "correct" : "wrong");
+        document.getElementById("actmsg").textContent = ok
+          ? "Correct. Safe watchkeeping is active, verified and timely."
+          : "Not safe. Radar/ARPA support judgement; they do not remove it.";
+        if (ok) addXp(20);
+      }
+      function checkList() {
+        let boxes = [...document.querySelectorAll(".chk")];
+        let ok = boxes.every((b) => b.checked);
+        document.getElementById("actmsg").textContent = ok
+          ? "Checklist complete. Restricted visibility requires disciplined bridge management."
+          : "Complete every fog action before proceeding.";
+        if (ok) addXp(20);
+      }
+      function quizPick(idx, i, el) {
+        let m = course[i],
+          ok = idx === m.quiz.correct;
+        document
+          .querySelectorAll("#app .card:last-of-type .option")
+          .forEach((b) => (b.disabled = true));
+        el.classList.add(ok ? "correct" : "wrong");
+        document.getElementById("quizmsg").textContent = ok
+          ? "Passed. Mission unlocked."
+          : "Review the briefing and refresh quiz.";
+        if (ok) {
+          if (!state.completed.includes(i)) {
+            state.completed.push(i);
+            state.completed.sort((a, b) => a - b);
+            addXp(100);
+            reportModuleComplete({ moduleIndex: i, moduleTitle: course[i].title, score: 1, maxScore: 1, passingScore: 80, totalModules: course.length, completedModules: state.completed.length });
+          }
+          if (i < course.length - 1) {
+            setTimeout(() => {
+              state.active = i + 1;
+              save();
+              render();
+            }, 700);
+          } else {
+            document.getElementById("quizmsg").innerHTML =
+              "Course complete. Certificate unlocked. <b>Radar & ARPA Safe Watchkeeper</b>";
+            save();
+            updateStats();
+            renderNav();
+          }
+        }
+      }
+      function refreshActivity() {
+        seq = [];
+        render();
+
+      }
+      function refreshQuiz() {
+        render();
+      }
+      let utt = null,
+        paused = false;
+      function speak() {
+        stopSpeak();
+        let m = course[state.active];
+        utt = new SpeechSynthesisUtterance(
+          `${m.code}. ${m.title}. ${m.brief} Key points. ${m.facts.join(". ")} Mission quiz follows.`,
+        );
+        utt.rate = 0.92;
+        utt.pitch = 1;
+        speechSynthesis.speak(utt);
+        addXp(5);
+      }
+      function pauseSpeak() {
+        if (speechSynthesis.speaking && !speechSynthesis.paused) {
+          speechSynthesis.pause();
+        } else {
+          speechSynthesis.resume();
+        }
+      }
+      function stopSpeak() {
+        speechSynthesis.cancel();
+      }
+      function resetCourse() {
+        localStorage.removeItem("radarArpaState");
+        location.reload();
+      }
+      render();
+    </script>
+  </body>
+</html>
