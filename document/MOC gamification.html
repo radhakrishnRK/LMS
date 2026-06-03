@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management of Change — Why It Matters Onboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .header h1 { font-size: 28px; margin-bottom: 10px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-box {
+            background: #f5f5f5;
+            border-left: 4px solid #2a5298;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .stat-box h3 { color: #2a5298; font-size: 24px; margin-bottom: 5px; }
+        .stat-box p { font-size: 12px; color: #666; }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .breadcrumbs {
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+        .breadcrumbs span { margin: 0 5px; }
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .module-card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .module-card:hover {
+            border-color: #2a5298;
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.15);
+        }
+        .module-card h3 { color: #2a5298; margin-bottom: 10px; }
+        .module-card p { font-size: 12px; color: #666; }
+        .module-card .status { margin-top: 10px; font-size: 11px; }
+        .module-card .status.completed { color: #4caf50; }
+        .module-card .status.pending { color: #ff9800; }
+        .content {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .content h2 { color: #2a5298; margin-bottom: 15px; font-size: 22px; }
+        .content p { margin-bottom: 15px; line-height: 1.8; }
+        .content ul { margin-left: 20px; margin-bottom: 15px; }
+        .content li { margin-bottom: 8px; }
+        .activity-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .activity-box h3 { color: #1976d2; margin-bottom: 15px; }
+        .activity-option {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .activity-option:hover {
+            border-color: #2a5298;
+            background: #f5f5f5;
+        }
+        .activity-option input[type="checkbox"],
+        .activity-option input[type="radio"] {
+            margin-right: 10px;
+        }
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        .feedback.show { display: block; }
+        .feedback.correct {
+            background: #c8e6c9;
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+        }
+        .feedback.incorrect {
+            background: #ffcdd2;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+        }
+        .feedback-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+        }
+        .feedback-item.correct { border-left: 3px solid #4caf50; }
+        .feedback-item.incorrect { border-left: 3px solid #f44336; }
+        .quiz-question {
+            background: #f9f9f9;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 4px;
+            border-left: 4px solid #2a5298;
+        }
+        .quiz-question h4 { color: #2a5298; margin-bottom: 15px; }
+        .quiz-option {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .quiz-option:hover { border-color: #2a5298; }
+        .quiz-option input { margin-right: 10px; }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: #2a5298;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        button:hover { background: #1e3c72; }
+        button.secondary {
+            background: #666;
+        }
+        button.secondary:hover { background: #444; }
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: #4caf50;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 5px;
+            font-weight: bold;
+        }
+        .certificate {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .certificate h2 { font-size: 32px; margin-bottom: 20px; }
+        .certificate p { font-size: 16px; margin: 10px 0; }
+        .results-box {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .results-box h2 { color: #2a5298; margin-bottom: 20px; }
+        .score-display {
+            font-size: 48px;
+            color: #4caf50;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .score-display.failed { color: #f44336; }
+        @media (max-width: 768px) {
+            .dashboard { grid-template-columns: repeat(2, 1fr); }
+            .module-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HERO SCREEN -->
+        <div id="hero" class="screen active">
+            <div class="header">
+                <h1>🔄 Management of Change</h1>
+                <p>Why It Matters Onboard — ISM & TMSA Element 7</p>
+            </div>
+            <div class="dashboard">
+                <div class="stat-box">
+                    <h3 id="xpDisplay">0</h3>
+                    <p>Experience Points</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="moduleProgress">0%</h3>
+                    <p>Progress</p>
+                </div>
+                <div id="progressBar" style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; margin: 10px 0; overflow: hidden;">
+                    <div id="progressFill" style="height: 100%; background: #2563eb; width: 0%; transition: width 0.3s ease;"></div>
+                </div>
+                <div class="stat-box">
+                    <h3 id="badgeCount">0</h3>
+                    <p>Badges Earned</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="status">Ready</h3>
+                    <p>Status</p>
+                </div>
+            </div>
+            <div class="content">
+                <h2>Welcome to Management of Change Training</h2>
+                <p>This course covers Management of Change (MOC) as a critical ISM and TMSA Element 7 requirement. You'll learn why MOC matters, how to identify changes, assess risks, and implement procedures safely onboard.</p>
+                <p><strong>What you'll learn:</strong></p>
+                <ul>
+                    <li>What constitutes a 'change' requiring MOC</li>
+                    <li>Why MOC is needed and how it prevents accidents</li>
+                    <li>The MOC process step-by-step</li>
+                    <li>Crew change as the highest-frequency MOC event</li>
+                    <li>Documentation and SIRE compliance</li>
+                    <li>Real maritime accident case studies</li>
+                </ul>
+                <p><strong>Duration:</strong> 50-70 minutes | <strong>Assessment:</strong> 20 questions | <strong>Passing Score:</strong> 70%</p>
+                <button onclick="go('modules')">Start Course →</button>
+            </div>
+        </div>
+
+        <!-- MODULES SCREEN -->
+        <div id="modules" class="screen">
+            <div class="breadcrumbs">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span>Modules</span>
+            </div>
+            <h2 style="color: #2a5298; margin-bottom: 20px;">Select a Module</h2>
+            <div class="module-grid">
+                <div class="module-card" onclick="go('m1')">
+                    <h3>📋 Module 1</h3>
+                    <p>What Constitutes a Change</p>
+                    <div class="status pending">Not Started</div>
+                </div>
+                <div class="module-card" onclick="go('m2')">
+                    <h3>⚠️ Module 2</h3>
+                    <p>Why MOC is Needed</p>
+                    <div class="status pending">Not Started</div>
+                </div>
+                <div class="module-card" onclick="go('m3')">
+                    <h3>🔧 Module 3</h3>
+                    <p>The MOC Process</p>
+                    <div class="status pending">Not Started</div>
+                </div>
+                <div class="module-card" onclick="go('m4')">
+                    <h3>👥 Module 4</h3>
+                    <p>Crew Change & Implementation</p>
+                    <div class="status pending">Not Started</div>
+                </div>
+                <div class="module-card" onclick="go('m5')">
+                    <h3>📚 Module 5</h3>
+                    <p>Documentation & Case Studies</p>
+                    <div class="status pending">Not Started</div>
+                </div>
+            </div>
+            <button class="secondary" onclick="go('hero')">← Back to Home</button>
+        </div>
+
+        <!-- MODULE 1 -->
+        <div id="m1" class="screen">
+            <div class="breadcrumbs">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span onclick="go('modules')" style="cursor: pointer; color: #2a5298;">Modules</span>
+                <span>›</span>
+                <span>Module 1</span>
+            </div>
+            <div class="content">
+                <h2>Module 1: What Constitutes a Change?</h2>
+                <p>A 'change' requiring MOC is any modification to the vessel, crew, procedures, or operations that introduces uncertainty and increases accident risk. Common changes include:</p>
+                <ul>
+                    <li><strong>Crew Changes:</strong> New officers, ratings, or specialists joining the vessel</li>
+                    <li><strong>New Equipment:</strong> Installation of new machinery, navigation systems, or safety equipment</li>
+                    <li><strong>New Procedures:</strong> Changes to SMS procedures, emergency procedures, or operational practices</li>
+                    <li><strong>New Trading Areas:</strong> Operating in new geographic regions with different regulations or hazards</li>
+                    <li><strong>SMS Revisions:</strong> Updates to the Safety Management System</li>
+                    <li><strong>Maintenance Bypasses:</strong> Temporary repairs or deferred maintenance affecting operations</li>
+                </ul>
+                <p>Each of these changes introduces uncertainty and requires a structured MOC process to manage risk.</p>
+            </div>
+
+            <div class="activity-box">
+                <h3>🎮 Interactive Activity: Change Identification</h3>
+                <p>Identify which scenarios require MOC:</p>
+                <div id="m1Activity"></div>
+                <button onclick="checkM1Activity()">Submit Answer</button>
+            </div>
+
+            <div id="m1Quiz"></div>
+
+            <div class="button-group">
+                <button class="secondary" onclick="go('modules')">← Back to Modules</button>
+                <button onclick="completeAndGo('m1', 'm2')">Next Module →</button>
+            </div>
+        </div>
+
+        <!-- MODULE 2 -->
+        <div id="m2" class="screen">
+            <div class="breadcrumbs">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span onclick="go('modules')" style="cursor: pointer; color: #2a5298;">Modules</span>
+                <span>›</span>
+                <span>Module 2</span>
+            </div>
+            <div class="content">
+                <h2>Module 2: Why MOC is Needed</h2>
+                <p>Change increases accident risk because it introduces uncertainty. When crew members don't understand a change or aren't prepared for it, they make mistakes. MOC is needed to:</p>
+                <ul>
+                    <li><strong>Identify Hazards:</strong> Understand what new risks the change introduces</li>
+                    <li><strong>Assess Impact:</strong> Evaluate how the change affects operations, safety, and compliance</li>
+                    <li><strong>Communicate:</strong> Ensure all crew members understand the change and their responsibilities</li>
+                    <li><strong>Prepare:</strong> Provide training and resources needed for the change</li>
+                    <li><strong>Monitor:</strong> Track the change implementation and identify problems early</li>
+                </ul>
+                <p>Maritime accidents are often caused by unmanaged change. A crew member joins without proper familiarisation, a new procedure isn't communicated, or equipment is installed without training.</p>
+            </div>
+
+            <div class="activity-box">
+                <h3>🎮 Interactive Activity: Risk Assessment</h3>
+                <p>Match the change to its primary risk:</p>
+                <div id="m2Activity"></div>
+                <button onclick="checkM2Activity()">Submit Answer</button>
+            </div>
+
+            <div id="m2Quiz"></div>
+
+            <div class="button-group">
+                <button class="secondary" onclick="go('m1')">← Previous Module</button>
+                <button onclick="completeAndGo('m2', 'm3')">Next Module →</button>
+            </div>
+        </div>
+
+        <!-- MODULE 3 -->
+        <div id="m3" class="screen">
+            <div class="breadcrumbs">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span onclick="go('modules')" style="cursor: pointer; color: #2a5298;">Modules</span>
+                <span>›</span>
+                <span>Module 3</span>
+            </div>
+            <div class="content">
+                <h2>Module 3: The MOC Process</h2>
+                <p>The MOC process is a structured approach to managing change safely:</p>
+                <ul>
+                    <li><strong>Step 1 - Identify the Change:</strong> Clearly define what is changing and why</li>
+                    <li><strong>Step 2 - Assess Risk:</strong> Identify hazards and potential consequences</li>
+                    <li><strong>Step 3 - Communicate:</strong> Inform all affected crew members and stakeholders</li>
+                    <li><strong>Step 4 - Update Procedures:</strong> Revise relevant SMS procedures and work instructions</li>
+                    <li><strong>Step 5 - Provide Training:</strong> Ensure crew has the knowledge and skills needed</li>
+                    <li><strong>Step 6 - Implement:</strong> Execute the change with appropriate controls</li>
+                    <li><strong>Step 7 - Monitor:</strong> Track implementation and identify issues early</li>
+                    <li><strong>Step 8 - Review:</strong> Assess effectiveness and make adjustments if needed</li>
+                </ul>
+                <p>This systematic approach ensures that changes are managed safely and that crew members are prepared.</p>
+            </div>
+
+            <div class="activity-box">
+                <h3>🎮 Interactive Activity: MOC Sequencing</h3>
+                <p>Arrange the MOC steps in the correct order:</p>
+                <div id="m3Activity"></div>
+                <button onclick="checkM3Activity()">Submit Answer</button>
+            </div>
+
+            <div id="m3Quiz"></div>
+
+            <div class="button-group">
+                <button class="secondary" onclick="go('m2')">← Previous Module</button>
+                <button onclick="completeAndGo('m3', 'm4')">Next Module →</button>
+            </div>
+        </div>
+
+        <!-- MODULE 4 -->
+        <div id="m4" class="screen">
+            <div class="breadcrumbs">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span onclick="go('modules')" style="cursor: pointer; color: #2a5298;">Modules</span>
+                <span>›</span>
+                <span>Module 4</span>
+            </div>
+            <div class="content">
+                <h2>Module 4: Crew Change & Implementation</h2>
+                <p>Crew change is the most frequent MOC event onboard. When new crew members join, they introduce uncertainty because they:</p>
+                <ul>
+                    <li>Don't know the vessel's layout, systems, and procedures</li>
+                    <li>May not be familiar with the company's SMS</li>
+                    <li>May have different training backgrounds and experience levels</li>
+                    <li>May speak different languages or have different cultural backgrounds</li>
+                </ul>
+                <p>The MOC process for crew change includes:</p>
+                <ul>
+                    <li><strong>Structured Familiarisation:</strong> Systematic introduction to the vessel and procedures</li>
+                    <li><strong>Handover Period:</strong> Overlap between old and new crew members</li>
+                    <li><strong>Mentoring:</strong> Senior officers guide new crew members</li>
+                    <li><strong>Competence Verification:</strong> Confirm new crew members can perform their duties</li>
+                    <li><strong>Sign-Off:</strong> Document completion of familiarisation and competence</li>
+                </ul>
+            </div>
+
+            <div class="activity-box">
+                <h3>🎮 Interactive Activity: Crew Change Scenarios</h3>
+                <p>Identify the correct MOC response for crew change scenarios:</p>
+                <div id="m4Activity"></div>
+                <button onclick="checkM4Activity()">Submit Answer</button>
+            </div>
+
+            <div id="m4Quiz"></div>
+
+            <div class="button-group">
+                <button class="secondary" onclick="go('m3')">← Previous Module</button>
+                <button onclick="completeAndGo('m4', 'm5')">Next Module →</button>
+            </div>
+        </div>
+
+        <!-- MODULE 5 -->
+        <div id="m5" class="screen">
+            <div class="breadcrumbs">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span onclick="go('modules')" style="cursor: pointer; color: #2a5298;">Modules</span>
+                <span>›</span>
+                <span>Module 5</span>
+            </div>
+            <div class="content">
+                <h2>Module 5: Documentation & Case Studies</h2>
+                <p><strong>MOC Documentation:</strong> SIRE inspectors look for evidence that MOC was managed properly:</p>
+                <ul>
+                    <li>MOC forms or records identifying the change</li>
+                    <li>Risk assessments documenting hazards and controls</li>
+                    <li>Communication records showing crew was informed</li>
+                    <li>Updated procedures and work instructions</li>
+                    <li>Training records confirming crew competence</li>
+                    <li>Implementation records showing the change was executed</li>
+                    <li>Monitoring and review records</li>
+                </ul>
+                <p><strong>Case Study - Unmanaged Equipment Change:</strong> A vessel installed new cargo handling equipment but didn't provide training. During the first operation, the crew made mistakes, damaging cargo and injuring a crew member. The accident investigation found that MOC was not followed.</p>
+                <p><strong>Case Study - Unmanaged Crew Change:</strong> A new Chief Officer joined without proper familiarisation. During a cargo operation, he made a critical error because he didn't understand the vessel's procedures. The near-miss was prevented by the quick action of an experienced crew member.</p>
+            </div>
+
+            <div class="activity-box">
+                <h3>🎮 Interactive Activity: MOC Compliance</h3>
+                <p>Identify which MOC documentation is missing:</p>
+                <div id="m5Activity"></div>
+                <button onclick="checkM5Activity()">Submit Answer</button>
+            </div>
+
+            <div id="m5Quiz"></div>
+
+            <div class="button-group">
+                <button class="secondary" onclick="go('m4')">← Previous Module</button>
+                <button onclick="go('assess')">Take Assessment →</button>
+            </div>
+        </div>
+
+        <!-- ASSESSMENT SCREEN -->
+        <div id="assess" class="screen">
+            <div class="breadcrumbs">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span>Assessment</span>
+            </div>
+            <h2 style="color: #2a5298; margin-bottom: 20px;">Final Assessment</h2>
+            <p style="margin-bottom: 20px;">Answer the following 20 questions. You need 70% (14 questions) to pass.</p>
+            <div id="assessmentContainer"></div>
+            <button onclick="submitAssessment()">Submit Assessment</button>
+            <button class="secondary" onclick="go('m5')">← Back</button>
+        </div>
+
+        <!-- RESULTS SCREEN -->
+        <div id="results" class="screen">
+            <div class="results-box">
+                <h2>Assessment Results</h2>
+                <div id="resultsContent"></div>
+            </div>
+            <div id="badgeDisplay"></div>
+            <button onclick="go('hero')">← Back to Home</button>
+            <button onclick="location.reload()">Restart Course</button>
+        </div>
+    </div>
+
+    <script>
+        // Course State
+        const courseState = {
+            currentScreen: 'hero',
+            xp: 0,
+            badges: [],
+            modulesCompleted: [],
+            quizScores: {},
+            assessmentScore: 0,
+            startTime: Date.now()
+        };
+
+        // Activities Data
+        const activities = {
+            m1: [
+                { text: 'New Chief Officer joins the vessel', correct: true, explanation: 'Crew changes require MOC because new crew members introduce uncertainty.' },
+                { text: 'Routine maintenance on the main engine', correct: false, explanation: 'Routine maintenance is planned and does not require MOC.' },
+                { text: 'Installation of new navigation system', correct: true, explanation: 'New equipment requires MOC because it changes operations and requires training.' },
+                { text: 'Daily engine room inspection', correct: false, explanation: 'Daily inspections are routine and do not require MOC.' },
+                { text: 'Change to SMS procedure for cargo operations', correct: true, explanation: 'SMS revisions require MOC to ensure crew understands the changes.' }
+            ],
+            m2: [
+                { text: 'New crew member joins', risk: 'Lack of familiarity with vessel and procedures', correct: true },
+                { text: 'New equipment installed', risk: 'Crew may not know how to operate it safely', correct: true },
+                { text: 'New procedure implemented', risk: 'Crew may not understand the new requirements', correct: true },
+                { text: 'New trading area', risk: 'Different regulations and hazards', correct: true }
+            ],
+            m3: [
+                { step: 'Identify the Change', order: 1 },
+                { step: 'Assess Risk', order: 2 },
+                { step: 'Communicate', order: 3 },
+                { step: 'Update Procedures', order: 4 },
+                { step: 'Provide Training', order: 5 },
+                { step: 'Implement', order: 6 },
+                { step: 'Monitor', order: 7 },
+                { step: 'Review', order: 8 }
+            ],
+            m4: [
+                { scenario: 'New 3rd Officer joins. What should happen first?', correct: 'Structured familiarisation with the vessel', explanation: 'New crew must be familiarised with the vessel before taking independent duties.' },
+                { scenario: 'During handover, what is the senior officer\'s role?', correct: 'Mentor and guide the new crew member', explanation: 'Senior officers guide new crew through MOC process.' },
+                { scenario: 'When can a new crew member take independent watch?', correct: 'After familiarisation is complete and signed off', explanation: 'Independent duties require completion of MOC process.' }
+            ],
+            m5: [
+                { text: 'MOC form identifying the change', required: true, explanation: 'Required to document what change is being managed.' },
+                { text: 'Risk assessment', required: true, explanation: 'Required to identify hazards and controls.' },
+                { text: 'Communication records', required: true, explanation: 'Required to show crew was informed.' },
+                { text: 'Updated procedures', required: true, explanation: 'Required to guide crew on new requirements.' },
+                { text: 'Training records', required: true, explanation: 'Required to confirm crew competence.' }
+            ]
+        };
+
+        // Quizzes Data
+        const quizzes = {
+            m1: [
+                { question: 'What is a "change" requiring MOC?', options: ['Any modification that introduces uncertainty', 'Only equipment changes', 'Only crew changes'], correct: 0 },
+                { question: 'Which is NOT a type of change requiring MOC?', options: ['New crew member', 'Routine maintenance', 'New trading area'], correct: 1 }
+            ],
+            m2: [
+                { question: 'Why is MOC needed?', options: ['To reduce accident risk from uncertainty', 'To comply with regulations', 'Both A and B'], correct: 2 },
+                { question: 'What is the primary risk of unmanaged change?', options: ['Crew confusion and mistakes', 'Regulatory violations', 'Both A and B'], correct: 2 }
+            ],
+            m3: [
+                { question: 'How many steps are in the MOC process?', options: ['5 steps', '8 steps', '10 steps'], correct: 1 },
+                { question: 'What is the first step in MOC?', options: ['Assess Risk', 'Identify the Change', 'Communicate'], correct: 1 }
+            ],
+            m4: [
+                { question: 'What is the most frequent MOC event onboard?', options: ['Equipment changes', 'Crew changes', 'Procedure changes'], correct: 1 },
+                { question: 'What is required before a new crew member takes independent duties?', options: ['Familiarisation and sign-off', 'One week on board', 'Master approval only'], correct: 0 }
+            ],
+            m5: [
+                { question: 'What documentation do SIRE inspectors look for?', options: ['MOC forms and risk assessments', 'Training records and communication', 'All of the above'], correct: 2 },
+                { question: 'What causes most maritime accidents related to MOC?', options: ['Unmanaged crew changes', 'Unmanaged equipment changes', 'Unmanaged procedure changes'], correct: 0 }
+            ]
+        };
+
+        // Assessment Questions
+        const assessmentQuestions = [
+            { question: 'What constitutes a change requiring MOC?', options: ['New crew, equipment, procedures, trading areas', 'Only major equipment changes', 'Only crew changes'], correct: 0 },
+            { question: 'Why does change increase accident risk?', options: ['It introduces uncertainty', 'It requires more paperwork', 'It delays operations'], correct: 0 },
+            { question: 'What is the first step in the MOC process?', options: ['Communicate', 'Identify the Change', 'Assess Risk'], correct: 1 },
+            { question: 'How many steps are in the MOC process?', options: ['5', '8', '10'], correct: 1 },
+            { question: 'What is the most frequent MOC event onboard?', options: ['Equipment changes', 'Crew changes', 'Procedure changes'], correct: 1 },
+            { question: 'What must happen before a new crew member takes independent duties?', options: ['Familiarisation and sign-off', 'One week on board', 'Master approval'], correct: 0 },
+            { question: 'What is the role of senior officers in crew change MOC?', options: ['Mentoring and guidance', 'Paperwork only', 'Nothing'], correct: 0 },
+            { question: 'What documentation is required for MOC?', options: ['MOC forms and risk assessments', 'Training records', 'All of the above'], correct: 2 },
+            { question: 'What is the purpose of MOC monitoring?', options: ['To track implementation and identify issues', 'To comply with regulations', 'To create paperwork'], correct: 0 },
+            { question: 'What causes most maritime accidents related to MOC?', options: ['Unmanaged crew changes', 'Unmanaged equipment changes', 'Unmanaged procedure changes'], correct: 0 },
+            { question: 'How should new procedures be communicated?', options: ['Email only', 'Structured communication to all crew', 'Posted on the notice board'], correct: 1 },
+            { question: 'What is the handover period for crew change?', options: ['No overlap needed', 'Overlap between old and new crew', 'One week minimum'], correct: 1 },
+            { question: 'Who is responsible for MOC implementation?', options: ['Only management', 'All crew members', 'Only the Master'], correct: 1 },
+            { question: 'What should be included in MOC risk assessment?', options: ['Hazards and potential consequences', 'Only financial impact', 'Only regulatory requirements'], correct: 0 },
+            { question: 'What is the purpose of MOC review?', options: ['To assess effectiveness and make adjustments', 'To create more paperwork', 'To delay operations'], correct: 0 },
+            { question: 'When should MOC be initiated?', options: ['Before the change is implemented', 'After the change is implemented', 'Only if an accident occurs'], correct: 0 },
+            { question: 'What is the connection between MOC and STCW?', options: ['STCW requires watchkeeping familiarisation', 'MOC supports STCW compliance', 'No connection'], correct: 1 },
+            { question: 'What is the connection between MOC and ISM Code?', options: ['ISM Code requires MOC procedures', 'MOC is part of SMS', 'Both A and B'], correct: 2 },
+            { question: 'What is TMSA Element 7?', options: ['Safety culture', 'Management of Change', 'Crew competence'], correct: 1 },
+            { question: 'What should happen if MOC implementation reveals problems?', options: ['Ignore and continue', 'Adjust the change and communicate', 'Stop operations'], correct: 1 }
+        ];
+
+        // Navigation
+        function go(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screen).classList.add('active');
+            courseState.currentScreen = screen;
+            if (screen === 'assess') renderAssessment();
+            window.scrollTo(0, 0);
+        }
+
+        function completeAndGo(module, nextScreen) {
+            if (!courseState.modulesCompleted.includes(module)) {
+                courseState.modulesCompleted.push(module);
+                awardXP(50);
+                checkBadges();
+                updateDashboard();
+            }
+            go(nextScreen);
+        }
+
+        // Activities
+        function renderActivities() {
+            // M1 Activity
+            let m1Html = '';
+            activities.m1.forEach((item, i) => {
+                m1Html += `<label class="activity-option"><input type="checkbox" id="m1_${i}"> ${item.text}</label>`;
+            });
+            document.getElementById('m1Activity').innerHTML = m1Html;
+
+            // M2 Activity
+            let m2Html = '';
+            activities.m2.forEach((item, i) => {
+                m2Html += `<div class="activity-option"><strong>${item.text}</strong><br><select id="m2_${i}"><option value="">Select Risk...</option><option value="0">Lack of familiarity</option><option value="1">Crew may not know how to operate</option><option value="2">Crew may not understand requirements</option><option value="3">Different regulations and hazards</option></select></div>`;
+            });
+            document.getElementById('m2Activity').innerHTML = m2Html;
+
+            // M3 Activity
+            let m3Html = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">';
+            activities.m3.forEach((item, i) => {
+                m3Html += `<div class="activity-option"><strong>${item.step}</strong><br><input type="number" id="m3_${i}" min="1" max="8" placeholder="Order"></div>`;
+            });
+            m3Html += '</div>';
+            document.getElementById('m3Activity').innerHTML = m3Html;
+
+            // M4 Activity
+            let m4Html = '';
+            activities.m4.forEach((item, i) => {
+                m4Html += `<div class="activity-option"><strong>${item.scenario}</strong><br><select id="m4_${i}"><option value="">Select Response...</option><option value="0">Structured familiarisation</option><option value="1">Mentor and guide</option><option value="2">After familiarisation is complete and signed off</option></select></div>`;
+            });
+            document.getElementById('m4Activity').innerHTML = m4Html;
+
+            // M5 Activity
+            let m5Html = '';
+            activities.m5.forEach((item, i) => {
+                m5Html += `<label class="activity-option"><input type="checkbox" id="m5_${i}"> ${item.text}</label>`;
+            });
+            document.getElementById('m5Activity').innerHTML = m5Html;
+        }
+
+        function checkM1Activity() {
+            let correct = 0;
+            let feedback = '<div class="feedback show correct"><strong>✓ Activity Feedback:</strong>';
+            activities.m1.forEach((item, i) => {
+                const checked = document.getElementById(`m1_${i}`).checked;
+                if (checked === item.correct) {
+                    correct++;
+                    feedback += `<div class="feedback-item correct">✓ ${item.text}<br><em>${item.explanation}</em></div>`;
+                } else {
+                    feedback += `<div class="feedback-item incorrect">✗ ${item.text}<br><em>Correct: ${item.correct ? 'Should be checked' : 'Should NOT be checked'}</em><br><em>${item.explanation}</em></div>`;
+                }
+            });
+            const score = Math.round((correct / activities.m1.length) * 100);
+            feedback += `<br><strong>Activity Score: ${score}%</strong></div>`;
+            document.getElementById('m1Activity').parentElement.innerHTML += feedback;
+            awardXP(Math.round(25 * (score / 100)));
+        }
+
+        function checkM2Activity() {
+            let correct = 0;
+            let feedback = '<div class="feedback show correct"><strong>✓ Activity Feedback:</strong>';
+            activities.m2.forEach((item, i) => {
+                const selected = document.getElementById(`m2_${i}`).value;
+                if (selected !== '') {
+                    feedback += `<div class="feedback-item correct">✓ ${item.text}<br><em>Risk: ${item.risk}</em></div>`;
+                    correct++;
+                }
+            });
+            const score = Math.round((correct / activities.m2.length) * 100);
+            feedback += `<br><strong>Activity Score: ${score}%</strong></div>`;
+            document.getElementById('m2Activity').parentElement.innerHTML += feedback;
+            awardXP(Math.round(25 * (score / 100)));
+        }
+
+        function checkM3Activity() {
+            let correct = 0;
+            let feedback = '<div class="feedback show correct"><strong>✓ Activity Feedback:</strong>';
+            activities.m3.forEach((item, i) => {
+                const entered = parseInt(document.getElementById(`m3_${i}`).value);
+                if (entered === item.order) {
+                    correct++;
+                    feedback += `<div class="feedback-item correct">✓ ${item.step} - Position ${item.order}</div>`;
+                } else {
+                    feedback += `<div class="feedback-item incorrect">✗ ${item.step}<br><em>Correct position: ${item.order}</em></div>`;
+                }
+            });
+            const score = Math.round((correct / activities.m3.length) * 100);
+            feedback += `<br><strong>Activity Score: ${score}%</strong></div>`;
+            document.getElementById('m3Activity').parentElement.innerHTML += feedback;
+            awardXP(Math.round(25 * (score / 100)));
+        }
+
+        function checkM4Activity() {
+            let correct = 0;
+            let feedback = '<div class="feedback show correct"><strong>✓ Activity Feedback:</strong>';
+            activities.m4.forEach((item, i) => {
+                const selected = document.getElementById(`m4_${i}`).value;
+                if (selected === '0' || selected === '1' || selected === '2') {
+                    correct++;
+                    feedback += `<div class="feedback-item correct">✓ ${item.scenario}<br><em>${item.explanation}</em></div>`;
+                }
+            });
+            const score = Math.round((correct / activities.m4.length) * 100);
+            feedback += `<br><strong>Activity Score: ${score}%</strong></div>`;
+            document.getElementById('m4Activity').parentElement.innerHTML += feedback;
+            awardXP(Math.round(25 * (score / 100)));
+        }
+
+        function checkM5Activity() {
+            let correct = 0;
+            let feedback = '<div class="feedback show correct"><strong>✓ Activity Feedback:</strong>';
+            activities.m5.forEach((item, i) => {
+                const checked = document.getElementById(`m5_${i}`).checked;
+                if (checked === item.required) {
+                    correct++;
+                    feedback += `<div class="feedback-item correct">✓ ${item.text}<br><em>${item.explanation}</em></div>`;
+                }
+            });
+            const score = Math.round((correct / activities.m5.length) * 100);
+            feedback += `<br><strong>Activity Score: ${score}%</strong></div>`;
+            document.getElementById('m5Activity').parentElement.innerHTML += feedback;
+            awardXP(Math.round(25 * (score / 100)));
+        }
+
+        // Quizzes
+        function renderQuizzes() {
+            Object.keys(quizzes).forEach(module => {
+                let html = '<div style="margin-top: 30px;">';
+                quizzes[module].forEach((q, i) => {
+                    html += `<div class="quiz-question"><h4>Quiz Question ${i + 1}: ${q.question}</h4>`;
+                    q.options.forEach((opt, j) => {
+                        html += `<label class="quiz-option"><input type="radio" name="${module}_q${i}" value="${j}"> ${opt}</label>`;
+                    });
+                    html += '</div>';
+                });
+                html += `<button onclick="submitQuiz('${module}')">Submit Quiz</button></div>`;
+                document.getElementById(`${module}Quiz`).innerHTML = html;
+            });
+        }
+
+        function submitQuiz(module) {
+            let correct = 0;
+            quizzes[module].forEach((q, i) => {
+                const selected = document.querySelector(`input[name="${module}_q${i}"]:checked`);
+                if (selected && parseInt(selected.value) === q.correct) correct++;
+            });
+            const score = Math.round((correct / quizzes[module].length) * 100);
+            courseState.quizScores[module] = score;
+            awardXP(Math.round(30 * (score / 100)));
+            alert(`Quiz Score: ${score}%\nCorrect: ${correct}/${quizzes[module].length}`);
+        }
+
+        // Assessment
+        function renderAssessment() {
+            let html = '';
+            assessmentQuestions.forEach((q, i) => {
+                html += `<div class="quiz-question"><h4>${i + 1}. ${q.question}</h4>`;
+                q.options.forEach((opt, j) => {
+                    html += `<label class="quiz-option"><input type="radio" name="assess_q${i}" value="${j}"> ${opt}</label>`;
+                });
+                html += '</div>';
+            });
+            document.getElementById('assessmentContainer').innerHTML = html;
+        }
+
+        function submitAssessment() {
+            let correct = 0;
+            assessmentQuestions.forEach((q, i) => {
+                const selected = document.querySelector(`input[name="assess_q${i}"]:checked`);
+                if (selected && parseInt(selected.value) === q.correct) correct++;
+            });
+            const score = Math.round((correct / assessmentQuestions.length) * 100);
+            const passed = score >= 70;
+            courseState.assessmentScore = score;
+            
+            let resultsHtml = `<h3>${passed ? '✓ PASSED' : '✗ FAILED'}</h3>`;
+            resultsHtml += `<div class="score-display ${passed ? '' : 'failed'}">${score}%</div>`;
+            resultsHtml += `<p>Correct Answers: ${correct}/${assessmentQuestions.length}</p>`;
+            resultsHtml += `<p>Passing Score: 70%</p>`;
+            
+            if (passed) {
+                resultsHtml += `<div class="certificate"><h2>🎓 Certificate of Completion</h2><p>This certifies that you have successfully completed the Management of Change course.</p><p>Score: ${score}%</p><p>Date: ${new Date().toLocaleDateString()}</p></div>`;
+                awardXP(100);
+                checkBadges();
+            }
+            
+            document.getElementById('resultsContent').innerHTML = resultsHtml;
+            sendLMSCompletion();
+            go('results');
+        }
+
+        // Gamification
+        function awardXP(points) {
+            courseState.xp += points;
+            updateDashboard();
+        }
+
+        function checkBadges() {
+            if (courseState.xp >= 300 && !courseState.badges.includes('Course Master')) {
+                courseState.badges.push('Course Master');
+            }
+            if (courseState.xp >= 500 && !courseState.badges.includes('XP Champion')) {
+                courseState.badges.push('XP Champion');
+            }
+            if (courseState.modulesCompleted.length === 5 && !courseState.badges.includes('On Fire')) {
+                courseState.badges.push('On Fire');
+            }
+        }
+
+        function updateDashboard() {
+            document.getElementById('xpDisplay').textContent = courseState.xp;
+            document.getElementById('moduleProgress').textContent = Math.round((courseState.modulesCompleted.length / 5) * 100) + '%';
+            document.getElementById('badgeCount').textContent = courseState.badges.length;
+            
+            let badgeHtml = courseState.badges.map(b => `<span class="badge">🏅 ${b}</span>`).join('');
+            const badgeDisplay = document.getElementById('badgeDisplay');
+            if (badgeDisplay) badgeDisplay.innerHTML = badgeHtml;
+        }
+
+        // LMS Integration
+        function sendLMSCompletion() {
+            const completionData = {
+                courseId: 'management-of-change-001',
+                courseName: 'Management of Change — Why It Matters Onboard',
+                completionStatus: courseState.assessmentScore >= 70 ? 'PASSED' : 'FAILED',
+                score: courseState.assessmentScore,
+                passingScore: 70,
+                totalXP: courseState.xp,
+                badges: courseState.badges,
+                modulesCompleted: courseState.modulesCompleted,
+                completionTime: Math.round((Date.now() - courseState.startTime) / 1000),
+                timestamp: new Date().toISOString()
+            };
+
+            // PostMessage API (iframe-based LMS)
+            try {
+                window.parent.postMessage({ type: 'COURSE_COMPLETED', data: completionData }, '*');
+            } catch (e) {}
+
+            // localStorage (offline persistence)
+            localStorage.setItem('courseCompletion', JSON.stringify(completionData));
+
+            // REST API (custom LMS)
+            try {
+                fetch('/api/course-completion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(completionData)
+                }).catch(() => {});
+            } catch (e) {}
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            renderActivities();
+            renderQuizzes();
+            updateDashboard();
+        });
+    </script>
+</body>
+</html>

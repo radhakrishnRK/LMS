@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISPS Code and Ship Security Plan — What Every Officer Must Know</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .breadcrumb {
+            background: #f5f5f5;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        .progress-container {
+            margin-bottom: 25px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #2d5a7b 0%, #3d7a9b 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: #666;
+            text-align: right;
+        }
+
+        .gamification-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: #f9f9f9;
+            border: 2px solid #2d5a7b;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2d5a7b;
+        }
+
+        .badge-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .badge {
+            background: #ffd700;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .content-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .content-section h2 {
+            color: #1a3a52;
+            margin-bottom: 15px;
+            font-size: 22px;
+            border-bottom: 3px solid #2d5a7b;
+            padding-bottom: 10px;
+        }
+
+        .content-section h3 {
+            color: #2d5a7b;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .content-section p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .content-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .content-section li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .highlight-box {
+            background: #e8f4f8;
+            border-left: 4px solid #2d5a7b;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .highlight-box strong {
+            color: #1a3a52;
+        }
+
+        .interactive-activity {
+            background: #f0f8ff;
+            border: 2px dashed #2d5a7b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .activity-title {
+            color: #1a3a52;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .activity-item {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: #f5f5f5;
+            border-color: #2d5a7b;
+        }
+
+        .activity-item input[type="radio"],
+        .activity-item input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .activity-item.selected {
+            background: #e8f4f8;
+            border-color: #2d5a7b;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        button {
+            background: #2d5a7b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #1a3a52;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .secondary-btn {
+            background: #666;
+        }
+
+        .secondary-btn:hover {
+            background: #444;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .quiz-question {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question h4 {
+            color: #1a3a52;
+            margin-bottom: 15px;
+        }
+
+        .quiz-option {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: #f0f8ff;
+            border-color: #2d5a7b;
+        }
+
+        .quiz-option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .certificate {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border: 3px solid #1a3a52;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .certificate h2 {
+            color: #1a3a52;
+            font-size: 32px;
+            margin-bottom: 20px;
+            border: none;
+            padding: 0;
+        }
+
+        .certificate p {
+            color: #333;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .certificate .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a3a52;
+            margin: 20px 0;
+        }
+
+        .results-summary {
+            background: #f9f9f9;
+            border: 2px solid #2d5a7b;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .results-summary h3 {
+            color: #1a3a52;
+            margin-bottom: 15px;
+        }
+
+        .results-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .results-item:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 20px;
+            }
+
+            .gamification-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .certificate {
+                padding: 20px;
+            }
+
+            .certificate h2 {
+                font-size: 24px;
+            }
+        }
+
+        .security-level-indicator {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+            font-size: 13px;
+        }
+
+        .level-1 {
+            background: #90EE90;
+            color: #1a3a52;
+        }
+
+        .level-2 {
+            background: #FFD700;
+            color: #1a3a52;
+        }
+
+        .level-3 {
+            background: #FF6B6B;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔒 ISPS Code and Ship Security Plan</h1>
+            <p>What Every Officer Must Know</p>
+        </header>
+
+        <!-- HERO SCREEN -->
+        <div id="hero" class="screen active">
+            <div class="content-section">
+                <h2>Welcome to Maritime Security Training</h2>
+                <p>This comprehensive course covers the International Ship and Port Facility Security (ISPS) Code and Ship Security Plan procedures that every officer must understand.</p>
+                
+                <div class="highlight-box">
+                    <strong>Course Overview:</strong><br>
+                    Learn about ISPS Code obligations, security levels, Ship Security Plans, access control, security drills, and maritime cyber security. This training ensures compliance with STCW A-VI/5 and A-VI/6 requirements.
+                </div>
+
+                <h3>What You'll Learn:</h3>
+                <ul>
+                    <li><strong>Module 1:</strong> ISPS Code Purpose & Structure</li>
+                    <li><strong>Module 2:</strong> Security Levels (MARSEC 1, 2, 3) & Required Actions</li>
+                    <li><strong>Module 3:</strong> Ship Security Plan & SSO Responsibilities</li>
+                    <li><strong>Module 4:</strong> Access Control, Drills & Incident Reporting</li>
+                    <li><strong>Module 5:</strong> Port Facilities & Cyber Security</li>
+                </ul>
+
+                <h3>Course Features:</h3>
+                <ul>
+                    <li>5 comprehensive modules with interactive activities</li>
+                    <li>10 module quizzes with immediate feedback</li>
+                    <li>25-question final assessment (70% passing score)</li>
+                    <li>Gamification with XP, badges, and progress tracking</li>
+                    <li>Complete offline capability</li>
+                    <li>LMS integration ready</li>
+                </ul>
+
+                <div class="button-group">
+                    <button onclick="go('m1')">Start Course →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 1: ISPS CODE PURPOSE & STRUCTURE -->
+        <div id="m1" class="screen">
+            <div class="breadcrumb">
+                <span>Course</span> <span>›</span> <span>Module 1</span> <span>›</span> <span>ISPS Code Purpose & Structure</span>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 20%;"></div>
+                </div>
+                <div class="progress-text">Module 1 of 5 (20%)</div>
+            </div>
+
+            <div class="gamification-panel">
+                <div class="stat-box">
+                    <div class="stat-label">Current XP</div>
+                    <div class="stat-value" id="xp-display">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Badges Earned</div>
+                    <div class="stat-value" id="badge-count">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Modules Completed</div>
+                    <div class="stat-value" id="modules-completed">0</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Module 1: ISPS Code Purpose & Structure</h2>
+                
+                <h3>What is the ISPS Code?</h3>
+                <p>The International Ship and Port Facility Security (ISPS) Code is a comprehensive set of measures to enhance the security of ships and port facilities. It was adopted following the 9/11 attacks and became mandatory under the International Convention for the Safety of Life at Sea (SOLAS).</p>
+
+                <h3>Purpose of ISPS Code:</h3>
+                <ul>
+                    <li>Establish an international framework for maritime security</li>
+                    <li>Prevent unlawful acts against ships and port facilities</li>
+                    <li>Protect crew, cargo, and port workers</li>
+                    <li>Ensure continuity of maritime commerce</li>
+                    <li>Provide early detection and response to security threats</li>
+                </ul>
+
+                <h3>Structure of ISPS Code:</h3>
+                <p>The ISPS Code consists of two parts:</p>
+                <ul>
+                    <li><strong>Part A (Mandatory):</strong> Establishes security requirements and objectives</li>
+                    <li><strong>Part B (Recommended):</strong> Provides guidance on implementation</li>
+                </ul>
+
+                <h3>Key Principles:</h3>
+                <ul>
+                    <li>Risk-based approach to security</li>
+                    <li>Proportionate response to threats</li>
+                    <li>Cooperation between ships and port facilities</li>
+                    <li>Information sharing and communication</li>
+                    <li>Continuous assessment and improvement</li>
+                </ul>
+
+                <div class="interactive-activity">
+                    <div class="activity-title">🎮 Interactive Activity: ISPS Code Knowledge Check</div>
+                    <p>Select the correct statements about ISPS Code:</p>
+                    <div id="m1-activity"></div>
+                    <div class="button-group">
+                        <button onclick="checkM1Activity()">Submit Answer</button>
+                    </div>
+                </div>
+
+                <div id="m1-quiz-container"></div>
+
+                <div class="button-group">
+                    <button onclick="go('hero')" class="secondary-btn">← Back</button>
+                    <button onclick="completeAndGo('m1', 'm2')">Next Module →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 2: SECURITY LEVELS -->
+        <div id="m2" class="screen">
+            <div class="breadcrumb">
+                <span>Course</span> <span>›</span> <span>Module 2</span> <span>›</span> <span>Security Levels & Actions</span>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 40%;"></div>
+                </div>
+                <div class="progress-text">Module 2 of 5 (40%)</div>
+            </div>
+
+            <div class="gamification-panel">
+                <div class="stat-box">
+                    <div class="stat-label">Current XP</div>
+                    <div class="stat-value" id="xp-display">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Badges Earned</div>
+                    <div class="stat-value" id="badge-count">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Modules Completed</div>
+                    <div class="stat-value" id="modules-completed">0</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Module 2: Security Levels (MARSEC 1, 2, 3)</h2>
+                
+                <h3>Understanding Maritime Security Levels:</h3>
+                <p>The ISPS Code defines three security levels that reflect the degree of risk of a security incident. These levels determine the security measures that must be implemented on the ship.</p>
+
+                <h3>MARSEC Level 1 (Green) - Normal Operations</h3>
+                <div class="highlight-box">
+                    <strong>Baseline security measures are in place</strong>
+                    <ul style="margin-top: 10px;">
+                        <li>Normal port operations</li>
+                        <li>Standard access control procedures</li>
+                        <li>Routine security awareness</li>
+                        <li>Regular security patrols</li>
+                        <li>Identification checks at gangway</li>
+                    </ul>
+                </div>
+
+                <h3>MARSEC Level 2 (Yellow) - Heightened Readiness</h3>
+                <div class="highlight-box">
+                    <strong>Enhanced security measures implemented</strong>
+                    <ul style="margin-top: 10px;">
+                        <li>Increased surveillance and monitoring</li>
+                        <li>Restricted access to designated areas</li>
+                        <li>Enhanced crew briefings</li>
+                        <li>Increased security patrols</li>
+                        <li>Verification of all persons boarding</li>
+                        <li>Search of baggage and cargo</li>
+                    </ul>
+                </div>
+
+                <h3>MARSEC Level 3 (Red) - Maximum Security</h3>
+                <div class="highlight-box">
+                    <strong>Maximum security measures implemented</strong>
+                    <ul style="margin-top: 10px;">
+                        <li>Continuous surveillance</li>
+                        <li>Severe restrictions on access</li>
+                        <li>Mandatory crew assembly</li>
+                        <li>Full inspection of all persons and cargo</li>
+                        <li>Possible relocation or rerouting</li>
+                        <li>Coordination with authorities</li>
+                    </ul>
+                </div>
+
+                <div class="interactive-activity">
+                    <div class="activity-title">🎮 Interactive Activity: Match Security Measures to Levels</div>
+                    <p>Drag or select the correct security level for each measure:</p>
+                    <div id="m2-activity"></div>
+                    <div class="button-group">
+                        <button onclick="checkM2Activity()">Submit Answer</button>
+                    </div>
+                </div>
+
+                <div id="m2-quiz-container"></div>
+
+                <div class="button-group">
+                    <button onclick="go('m1')" class="secondary-btn">← Back</button>
+                    <button onclick="completeAndGo('m2', 'm3')">Next Module →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 3: SHIP SECURITY PLAN & SSO -->
+        <div id="m3" class="screen">
+            <div class="breadcrumb">
+                <span>Course</span> <span>›</span> <span>Module 3</span> <span>›</span> <span>Ship Security Plan & SSO</span>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 60%;"></div>
+                </div>
+                <div class="progress-text">Module 3 of 5 (60%)</div>
+            </div>
+
+            <div class="gamification-panel">
+                <div class="stat-box">
+                    <div class="stat-label">Current XP</div>
+                    <div class="stat-value" id="xp-display">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Badges Earned</div>
+                    <div class="stat-value" id="badge-count">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Modules Completed</div>
+                    <div class="stat-value" id="modules-completed">0</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Module 3: Ship Security Plan & SSO Responsibilities</h2>
+                
+                <h3>Ship Security Plan (SSP):</h3>
+                <p>Every ship must have a Ship Security Plan that outlines the security measures to be implemented on board. The SSP is confidential and must be kept secure.</p>
+
+                <h3>Contents of a Ship Security Plan:</h3>
+                <ul>
+                    <li>Ship and company identification</li>
+                    <li>Ship Security Officer (SSO) details</li>
+                    <li>Company Security Officer (CSO) details</li>
+                    <li>Identification of restricted areas</li>
+                    <li>Access control procedures</li>
+                    <li>Cargo and baggage handling procedures</li>
+                    <li>Crew identification and verification</li>
+                    <li>Visitor management procedures</li>
+                    <li>Delivery of supplies and provisions</li>
+                    <li>Security incident reporting procedures</li>
+                    <li>Security drill and training procedures</li>
+                    <li>Cyber security measures</li>
+                </ul>
+
+                <h3>Ship Security Officer (SSO) Role:</h3>
+                <p>The SSO is responsible for implementing and maintaining the Ship Security Plan on board. Key responsibilities include:</p>
+                <ul>
+                    <li>Conducting security assessments</li>
+                    <li>Implementing security measures</li>
+                    <li>Training and awareness programs</li>
+                    <li>Coordinating with port facilities</li>
+                    <li>Reporting security incidents</li>
+                    <li>Maintaining security records</li>
+                    <li>Conducting security drills</li>
+                    <li>Liaison with authorities</li>
+                </ul>
+
+                <h3>SSO Qualifications:</h3>
+                <ul>
+                    <li>Appropriate maritime training and experience</li>
+                    <li>STCW A-VI/5 certification</li>
+                    <li>Knowledge of ISPS Code</li>
+                    <li>Understanding of threat assessment</li>
+                    <li>Communication and leadership skills</li>
+                </ul>
+
+                <div class="interactive-activity">
+                    <div class="activity-title">🎮 Interactive Activity: SSO Decision Scenarios</div>
+                    <p>Select the correct action for each security scenario:</p>
+                    <div id="m3-activity"></div>
+                    <div class="button-group">
+                        <button onclick="checkM3Activity()">Submit Answer</button>
+                    </div>
+                </div>
+
+                <div id="m3-quiz-container"></div>
+
+                <div class="button-group">
+                    <button onclick="go('m2')" class="secondary-btn">← Back</button>
+                    <button onclick="completeAndGo('m3', 'm4')">Next Module →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 4: ACCESS CONTROL & DRILLS -->
+        <div id="m4" class="screen">
+            <div class="breadcrumb">
+                <span>Course</span> <span>›</span> <span>Module 4</span> <span>›</span> <span>Access Control & Drills</span>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 80%;"></div>
+                </div>
+                <div class="progress-text">Module 4 of 5 (80%)</div>
+            </div>
+
+            <div class="gamification-panel">
+                <div class="stat-box">
+                    <div class="stat-label">Current XP</div>
+                    <div class="stat-value" id="xp-display">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Badges Earned</div>
+                    <div class="stat-value" id="badge-count">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Modules Completed</div>
+                    <div class="stat-value" id="modules-completed">0</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Module 4: Access Control, Drills & Incident Reporting</h2>
+                
+                <h3>Access Control Procedures:</h3>
+                <p>Effective access control is fundamental to ship security. All persons boarding the ship must be identified and verified.</p>
+
+                <h3>Gangway Management:</h3>
+                <ul>
+                    <li>Gangway watch 24/7 when in port</li>
+                    <li>Identification of all persons boarding</li>
+                    <li>Verification against crew lists</li>
+                    <li>Visitor passes and escort procedures</li>
+                    <li>Removal of passes upon departure</li>
+                    <li>Recording of all persons on board</li>
+                </ul>
+
+                <h3>Restricted Areas:</h3>
+                <ul>
+                    <li>Engine room</li>
+                    <li>Bridge</li>
+                    <li>Cargo holds</li>
+                    <li>Communication equipment areas</li>
+                    <li>Clearly marked with warning signs</li>
+                    <li>Access restricted to authorized personnel</li>
+                </ul>
+
+                <h3>Security Drills:</h3>
+                <p>Regular security drills are mandatory to ensure crew readiness and familiarity with procedures.</p>
+                <ul>
+                    <li><strong>Frequency:</strong> At least once every 3 months</li>
+                    <li><strong>Content:</strong> Simulated security incidents</li>
+                    <li><strong>Participation:</strong> All crew members</li>
+                    <li><strong>Documentation:</strong> Drill records and observations</li>
+                    <li><strong>Improvements:</strong> Lessons learned and corrective actions</li>
+                </ul>
+
+                <h3>Security Incident Reporting:</h3>
+                <ul>
+                    <li>Any suspicious activity must be reported immediately</li>
+                    <li>Report to SSO or Master</li>
+                    <li>Notify port state authorities if required</li>
+                    <li>Document all details of the incident</li>
+                    <li>Preserve evidence</li>
+                    <li>Cooperate with investigations</li>
+                </ul>
+
+                <div class="interactive-activity">
+                    <div class="activity-title">🎮 Interactive Activity: Incident Response Protocol</div>
+                    <p>Arrange the correct sequence of actions for a security incident:</p>
+                    <div id="m4-activity"></div>
+                    <div class="button-group">
+                        <button onclick="checkM4Activity()">Submit Answer</button>
+                    </div>
+                </div>
+
+                <div id="m4-quiz-container"></div>
+
+                <div class="button-group">
+                    <button onclick="go('m3')" class="secondary-btn">← Back</button>
+                    <button onclick="completeAndGo('m4', 'm5')">Next Module →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 5: PORT FACILITIES & CYBER SECURITY -->
+        <div id="m5" class="screen">
+            <div class="breadcrumb">
+                <span>Course</span> <span>›</span> <span>Module 5</span> <span>›</span> <span>Port Facilities & Cyber Security</span>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+                <div class="progress-text">Module 5 of 5 (100%)</div>
+            </div>
+
+            <div class="gamification-panel">
+                <div class="stat-box">
+                    <div class="stat-label">Current XP</div>
+                    <div class="stat-value" id="xp-display">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Badges Earned</div>
+                    <div class="stat-value" id="badge-count">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Modules Completed</div>
+                    <div class="stat-value" id="modules-completed">0</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Module 5: Port Facilities & Maritime Cyber Security</h2>
+                
+                <h3>Interaction with Port Facilities:</h3>
+                <p>Ships must coordinate security measures with port facilities to ensure comprehensive security coverage.</p>
+
+                <h3>Declaration of Security (DoS):</h3>
+                <ul>
+                    <li>Document exchanged between ship and port facility</li>
+                    <li>Confirms security measures are in place</li>
+                    <li>Required when ship is at security level 2 or 3</li>
+                    <li>Signed by Master and Port Facility Security Officer</li>
+                    <li>Kept on file for audit purposes</li>
+                </ul>
+
+                <h3>Port State Control (PSC):</h3>
+                <ul>
+                    <li>Inspections by port state authorities</li>
+                    <li>Verification of ISPS Code compliance</li>
+                    <li>Review of Ship Security Plan</li>
+                    <li>Inspection of security measures</li>
+                    <li>Deficiencies must be corrected</li>
+                </ul>
+
+                <h3>Maritime Cyber Security:</h3>
+                <p>Cyber security is now an integral part of the Ship Security Plan. Modern ships rely on digital systems for navigation, communication, and cargo management.</p>
+
+                <h3>Cyber Security Threats:</h3>
+                <ul>
+                    <li>Unauthorized access to ship systems</li>
+                    <li>Malware and ransomware attacks</li>
+                    <li>Data theft and espionage</li>
+                    <li>Disruption of critical systems</li>
+                    <li>Communication interception</li>
+                </ul>
+
+                <h3>Cyber Security Measures:</h3>
+                <ul>
+                    <li>Firewalls and intrusion detection systems</li>
+                    <li>Strong password policies</li>
+                    <li>Regular software updates and patches</li>
+                    <li>Network segmentation</li>
+                    <li>Crew training on cyber awareness</li>
+                    <li>Incident response procedures</li>
+                    <li>Backup and recovery systems</li>
+                </ul>
+
+                <h3>Officer Responsibilities:</h3>
+                <ul>
+                    <li>Maintain awareness of cyber threats</li>
+                    <li>Report suspicious activity immediately</li>
+                    <li>Follow password and access control procedures</li>
+                    <li>Participate in cyber security training</li>
+                    <li>Protect sensitive information</li>
+                </ul>
+
+                <div class="interactive-activity">
+                    <div class="activity-title">🎮 Interactive Activity: Cyber Security Best Practices</div>
+                    <p>Identify the correct cyber security practices:</p>
+                    <div id="m5-activity"></div>
+                    <div class="button-group">
+                        <button onclick="checkM5Activity()">Submit Answer</button>
+                    </div>
+                </div>
+
+                <div id="m5-quiz-container"></div>
+
+                <div class="button-group">
+                    <button onclick="go('m4')" class="secondary-btn">← Back</button>
+                    <button onclick="completeAndGo('m5', 'assess')">Take Assessment →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ASSESSMENT SCREEN -->
+        <div id="assess" class="screen">
+            <div class="breadcrumb">
+                <span>Course</span> <span>›</span> <span>Final Assessment</span>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+                <div class="progress-text">Final Assessment</div>
+            </div>
+
+            <div class="content-section">
+                <h2>Final Assessment: ISPS Code & Ship Security</h2>
+                <p>Complete this 25-question assessment to demonstrate your understanding of ISPS Code and Ship Security Plan procedures. You need 70% (18 questions) to pass.</p>
+
+                <div id="assessment-container"></div>
+
+                <div class="button-group">
+                    <button onclick="go('m5')" class="secondary-btn">← Back</button>
+                    <button onclick="submitAssessment()">Submit Assessment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS SCREEN -->
+        <div id="results" class="screen">
+            <div class="content-section">
+                <h2>Assessment Results</h2>
+                <div id="results-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== COURSE STATE ====================
+        window.courseState = {
+            currentScreen: 'hero',
+            totalXP: 0,
+            badges: [],
+            modulesCompleted: [],
+            quizScores: {},
+            assessmentScore: 0,
+            assessmentAnswers: {},
+            startTime: Date.now(),
+            completionTime: 0
+        };
+
+        // ==================== NAVIGATION ====================
+        function go(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            courseState.currentScreen = screenId;
+            window.scrollTo(0, 0);
+        }
+
+        function completeAndGo(moduleId, nextScreenId) {
+            if (!courseState.modulesCompleted.includes(moduleId)) {
+                courseState.modulesCompleted.push(moduleId);
+                awardXP(50);
+                updateModuleStats();
+            }
+            go(nextScreenId);
+        }
+
+        // ==================== GAMIFICATION ====================
+        function awardXP(points) {
+            courseState.totalXP += points;
+            document.getElementById('xp-display').textContent = courseState.totalXP;
+            checkBadges();
+        }
+
+        function checkBadges() {
+            const badges = [];
+            if (courseState.modulesCompleted.length === 5) {
+                badges.push('🏅 Course Master');
+            }
+            if (courseState.totalXP >= 300) {
+                badges.push('⭐ XP Champion');
+            }
+            if (courseState.totalXP >= 500) {
+                badges.push('🔥 On Fire');
+            }
+            courseState.badges = badges;
+            document.getElementById('badge-count').textContent = badges.length;
+        }
+
+        function updateProgress() {
+            const progress = (courseState.modulesCompleted.length / 5) * 100;
+            document.querySelectorAll('.progress-fill').forEach(bar => {
+                bar.style.width = progress + '%';
+            });
+        }
+
+        function updateModuleStats() {
+            document.querySelectorAll('#modules-completed').forEach(el => {
+                el.textContent = courseState.modulesCompleted.length;
+            });
+            updateProgress();
+        }
+
+        // ==================== MODULE 1 ACTIVITY ====================
+        function renderM1Activity() {
+            const container = document.getElementById('m1-activity');
+            const statements = [
+                { text: 'ISPS Code was adopted after 9/11 attacks', correct: true },
+                { text: 'ISPS Code applies only to cargo ships', correct: false },
+                { text: 'The purpose is to prevent unlawful acts against ships', correct: true }
+            ];
+
+            container.innerHTML = statements.map((stmt, idx) => `
+                <label class="activity-item">
+                    <input type="checkbox" value="${idx}" data-correct="${stmt.correct}">
+                    ${stmt.text}
+                </label>
+            `).join('');
+        }
+
+        function checkM1Activity() {
+            const selected = Array.from(document.querySelectorAll('#m1-activity input:checked'));
+            let correct = 0;
+            selected.forEach(input => {
+                if (input.dataset.correct === 'true') correct++;
+            });
+            if (correct >= 2) {
+                awardXP(20);
+                alert('✅ Correct! You earned 20 XP');
+                renderM1Quiz();
+            } else {
+                alert('❌ Incorrect. Please review the material and try again.');
+            }
+        }
+
+        // ==================== MODULE 2 ACTIVITY ====================
+        function renderM2Activity() {
+            const container = document.getElementById('m2-activity');
+            const measures = [
+                { text: 'Increased surveillance and monitoring', level: 'Level 2' },
+                { text: 'Continuous surveillance', level: 'Level 3' },
+                { text: 'Standard access control procedures', level: 'Level 1' }
+            ];
+
+            container.innerHTML = measures.map((measure, idx) => `
+                <div class="activity-item">
+                    <strong>${measure.text}</strong><br>
+                    <label style="margin-right: 20px;">
+                        <input type="radio" name="measure${idx}" value="Level 1" data-correct="${measure.level === 'Level 1' ? 'true' : 'false'}">
+                        Level 1
+                    </label>
+                    <label style="margin-right: 20px;">
+                        <input type="radio" name="measure${idx}" value="Level 2" data-correct="${measure.level === 'Level 2' ? 'true' : 'false'}">
+                        Level 2
+                    </label>
+                    <label>
+                        <input type="radio" name="measure${idx}" value="Level 3" data-correct="${measure.level === 'Level 3' ? 'true' : 'false'}">
+                        Level 3
+                    </label>
+                </div>
+            `).join('');
+        }
+
+        function checkM2Activity() {
+            const selected = Array.from(document.querySelectorAll('#m2-activity input:checked'));
+            let correct = 0;
+            selected.forEach(input => {
+                if (input.dataset.correct === 'true') correct++;
+            });
+            if (correct === 3) {
+                awardXP(20);
+                alert('✅ Perfect! You earned 20 XP');
+                renderM2Quiz();
+            } else {
+                alert('❌ Some answers are incorrect. Try again.');
+            }
+        }
+
+        // ==================== MODULE 3 ACTIVITY ====================
+        function renderM3Activity() {
+            const container = document.getElementById('m3-activity');
+            const scenarios = [
+                { scenario: 'An unknown person attempts to board the ship', action: 'Request identification and verify against crew list', correct: true },
+                { scenario: 'Suspicious package found on deck', action: 'Ignore it and continue work', correct: false },
+                { scenario: 'Crew member reports unusual activity', action: 'Report to SSO immediately', correct: true }
+            ];
+
+            container.innerHTML = scenarios.map((s, idx) => `
+                <div class="activity-item" style="margin-bottom: 15px;">
+                    <strong>Scenario ${idx + 1}:</strong> ${s.scenario}<br>
+                    <label style="margin-top: 10px;">
+                        <input type="radio" name="scenario${idx}" value="correct" data-correct="${s.correct}">
+                        ${s.action}
+                    </label>
+                </div>
+            `).join('');
+        }
+
+        function checkM3Activity() {
+            const selected = Array.from(document.querySelectorAll('#m3-activity input:checked'));
+            let correct = 0;
+            selected.forEach(input => {
+                if (input.dataset.correct === 'true') correct++;
+            });
+            if (correct >= 2) {
+                awardXP(20);
+                alert('✅ Good job! You earned 20 XP');
+                renderM3Quiz();
+            } else {
+                alert('❌ Review the scenarios and try again.');
+            }
+        }
+
+        // ==================== MODULE 4 ACTIVITY ====================
+        function renderM4Activity() {
+            const container = document.getElementById('m4-activity');
+            const steps = [
+                'Report to SSO or Master',
+                'Document all details',
+                'Preserve evidence',
+                'Notify port state authorities if required'
+            ];
+
+            container.innerHTML = `
+                <p>Arrange these steps in the correct order:</p>
+                <div id="m4-steps">
+                    ${steps.map((step, idx) => `
+                        <div class="activity-item" draggable="true" data-step="${idx}" style="cursor: move;">
+                            ${step}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function checkM4Activity() {
+            awardXP(20);
+            alert('✅ Sequence noted! You earned 20 XP');
+            renderM4Quiz();
+        }
+
+        // ==================== MODULE 5 ACTIVITY ====================
+        function renderM5Activity() {
+            const container = document.getElementById('m5-activity');
+            const practices = [
+                { text: 'Use strong, unique passwords', correct: true },
+                { text: 'Share passwords with colleagues', correct: false },
+                { text: 'Keep software updated', correct: true },
+                { text: 'Report suspicious emails', correct: true }
+            ];
+
+            container.innerHTML = practices.map((practice, idx) => `
+                <label class="activity-item">
+                    <input type="checkbox" value="${idx}" data-correct="${practice.correct}">
+                    ${practice.text}
+                </label>
+            `).join('');
+        }
+
+        function checkM5Activity() {
+            const selected = Array.from(document.querySelectorAll('#m5-activity input:checked'));
+            let correct = 0;
+            selected.forEach(input => {
+                if (input.dataset.correct === 'true') correct++;
+            });
+            if (correct >= 3) {
+                awardXP(20);
+                alert('✅ Excellent! You earned 20 XP');
+                renderM5Quiz();
+            } else {
+                alert('❌ Review cyber security practices and try again.');
+            }
+        }
+
+        // ==================== QUIZZES ====================
+        const quizzes = {
+            m1: [
+                { question: 'What does ISPS stand for?', options: ['International Ship and Port Facility Security', 'Internal Security Protocol System', 'International Safety and Port Security'], correct: 0 },
+                { question: 'In what year did ISPS Code become mandatory?', options: ['2001', '2004', '2006'], correct: 1 }
+            ],
+            m2: [
+                { question: 'At which security level are visitors allowed on board?', options: ['Level 1 only', 'Level 1 and 2', 'All levels with proper procedures'], correct: 2 },
+                { question: 'What is the color code for MARSEC Level 3?', options: ['Green', 'Yellow', 'Red'], correct: 2 }
+            ],
+            m3: [
+                { question: 'Who is responsible for implementing the Ship Security Plan?', options: ['Master', 'Ship Security Officer', 'Port Authority'], correct: 1 },
+                { question: 'What certification is required for SSO?', options: ['STCW A-VI/5', 'STCW A-VI/2', 'STCW A-VI/1'], correct: 0 }
+            ],
+            m4: [
+                { question: 'How often must security drills be conducted?', options: ['Monthly', 'Quarterly', 'Annually'], correct: 1 },
+                { question: 'Who should be notified of a security incident?', options: ['Port Police', 'SSO or Master', 'Insurance Company'], correct: 1 }
+            ],
+            m5: [
+                { question: 'What is a Declaration of Security?', options: ['A crew safety document', 'A ship-port facility security agreement', 'A cyber security certificate'], correct: 1 },
+                { question: 'Which is NOT a cyber security threat?', options: ['Malware', 'Ransomware', 'Weather'], correct: 2 }
+            ]
+        };
+
+        function renderQuiz(moduleId) {
+            const quiz = quizzes[moduleId];
+            const container = document.getElementById(`${moduleId}-quiz-container`);
+            
+            container.innerHTML = `
+                <div class="highlight-box">
+                    <strong>Module Quiz:</strong>
+                </div>
+                ${quiz.map((q, idx) => `
+                    <div class="quiz-question">
+                        <h4>Question ${idx + 1}: ${q.question}</h4>
+                        ${q.options.map((opt, optIdx) => `
+                            <label class="quiz-option">
+                                <input type="radio" name="${moduleId}-q${idx}" value="${optIdx}" data-correct="${optIdx === q.correct}">
+                                ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                `).join('')}
+                <button onclick="submitQuiz('${moduleId}')">Submit Quiz</button>
+            `;
+        }
+
+        function renderM1Quiz() { renderQuiz('m1'); }
+        function renderM2Quiz() { renderQuiz('m2'); }
+        function renderM3Quiz() { renderQuiz('m3'); }
+        function renderM4Quiz() { renderQuiz('m4'); }
+        function renderM5Quiz() { renderQuiz('m5'); }
+
+        function submitQuiz(moduleId) {
+            const quiz = quizzes[moduleId];
+            let score = 0;
+            quiz.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="${moduleId}-q${idx}"]:checked`);
+                if (selected && selected.dataset.correct === 'true') {
+                    score++;
+                }
+            });
+            const percentage = Math.round((score / quiz.length) * 100);
+            courseState.quizScores[moduleId] = percentage;
+            awardXP(score * 10);
+            alert(`Quiz Score: ${score}/${quiz.length} (${percentage}%)\nYou earned ${score * 10} XP!`);
+        }
+
+        // ==================== ASSESSMENT ====================
+        const assessmentQuestions = [
+            { question: 'What is the primary purpose of the ISPS Code?', options: ['Reduce shipping costs', 'Prevent unlawful acts against ships', 'Improve crew comfort'], correct: 1 },
+            { question: 'How many security levels are defined in ISPS Code?', options: ['2', '3', '4'], correct: 1 },
+            { question: 'What does MARSEC stand for?', options: ['Maritime Security', 'Marine Security', 'Maritime Safety'], correct: 0 },
+            { question: 'At MARSEC Level 3, what action is NOT required?', options: ['Continuous surveillance', 'Full inspection of cargo', 'Casual visitor access'], correct: 2 },
+            { question: 'Who must sign the Declaration of Security?', options: ['Master and Port Facility Security Officer', 'Captain and Crew', 'Owner and Operator'], correct: 0 },
+            { question: 'What is the minimum frequency for security drills?', options: ['Monthly', 'Quarterly', 'Annually'], correct: 1 },
+            { question: 'Which area is typically NOT a restricted area?', options: ['Engine room', 'Crew mess', 'Bridge'], correct: 1 },
+            { question: 'What must be kept confidential on board?', options: ['Crew list', 'Ship Security Plan', 'Port schedule'], correct: 1 },
+            { question: 'What is the SSO responsible for?', options: ['Cargo operations', 'Implementing the Ship Security Plan', 'Navigation'], correct: 1 },
+            { question: 'Which certification is required for SSO?', options: ['STCW A-VI/5', 'STCW A-VI/2', 'STCW A-VI/1'], correct: 0 },
+            { question: 'What should be done with a suspicious package?', options: ['Ignore it', 'Report to SSO immediately', 'Move it to cargo hold'], correct: 1 },
+            { question: 'How should visitor identification be handled?', options: ['Trust their word', 'Verify against visitor list', 'No verification needed'], correct: 1 },
+            { question: 'What is NOT a cyber security threat?', options: ['Malware', 'Ransomware', 'Strong passwords'], correct: 2 },
+            { question: 'Who should be notified of a security incident?', options: ['Insurance company', 'SSO or Master', 'Shipping agent'], correct: 1 },
+            { question: 'What is the passing score for this assessment?', options: ['60%', '70%', '80%'], correct: 1 },
+            { question: 'How often should the Ship Security Plan be reviewed?', options: ['Annually', 'Every 2 years', 'As required by regulations'], correct: 2 },
+            { question: 'What is the purpose of security drills?', options: ['Waste time', 'Ensure crew readiness', 'Satisfy insurance'], correct: 1 },
+            { question: 'Which is a key principle of ISPS Code?', options: ['Maximum security always', 'Risk-based approach', 'No security needed'], correct: 1 },
+            { question: 'What should crew do if they notice suspicious activity?', options: ['Investigate alone', 'Report to SSO', 'Ignore it'], correct: 1 },
+            { question: 'What is Port State Control?', options: ['Port police', 'Inspections by port state authorities', 'Shipping company'], correct: 1 },
+            { question: 'At MARSEC Level 1, what is required?', options: ['Maximum security', 'Baseline security measures', 'No security measures'], correct: 1 },
+            { question: 'What must be documented for security drills?', options: ['Nothing', 'Drill records and observations', 'Only failures'], correct: 1 },
+            { question: 'Who is the Company Security Officer?', options: ['Port authority', 'Shore-based security officer', 'Crew member'], correct: 1 },
+            { question: 'What is a key cyber security measure?', options: ['Sharing passwords', 'Regular software updates', 'Disabling firewalls'], correct: 1 },
+            { question: 'What should be done with security incident evidence?', options: ['Destroy it', 'Preserve it', 'Give it to crew'], correct: 1 }
+        ];
+
+        function renderAssessment() {
+            const container = document.getElementById('assessment-container');
+            container.innerHTML = assessmentQuestions.map((q, idx) => `
+                <div class="quiz-question">
+                    <h4>Question ${idx + 1}: ${q.question}</h4>
+                    ${q.options.map((opt, optIdx) => `
+                        <label class="quiz-option">
+                            <input type="radio" name="assess-q${idx}" value="${optIdx}" data-correct="${optIdx === q.correct}">
+                            ${opt}
+                        </label>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        function submitAssessment() {
+            let score = 0;
+            assessmentQuestions.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="assess-q${idx}"]:checked`);
+                if (selected && selected.dataset.correct === 'true') {
+                    score++;
+                }
+            });
+
+            const percentage = Math.round((score / assessmentQuestions.length) * 100);
+            const passed = percentage >= 70;
+            courseState.assessmentScore = percentage;
+            courseState.completionTime = Math.round((Date.now() - courseState.startTime) / 1000);
+
+            if (passed) {
+                awardXP(100);
+                sendLMSCompletion(true, percentage);
+            } else {
+                sendLMSCompletion(false, percentage);
+            }
+
+            displayResults(score, percentage, passed);
+        }
+
+        function displayResults(score, percentage, passed) {
+            const resultsContainer = document.getElementById('results-content');
+            const certificateHTML = passed ? `
+                <div class="certificate">
+                    <h2>🎓 Certificate of Completion</h2>
+                    <p>This certifies that you have successfully completed</p>
+                    <p><strong>ISPS Code and Ship Security Plan — What Every Officer Must Know</strong></p>
+                    <p>with a score of <span class="score">${percentage}%</span></p>
+                    <p>Date: ${new Date().toLocaleDateString()}</p>
+                </div>
+            ` : '';
+
+            resultsContainer.innerHTML = `
+                <div class="results-summary">
+                    <h3>${passed ? '✅ Assessment Passed!' : '❌ Assessment Not Passed'}</h3>
+                    <div class="results-item">
+                        <strong>Your Score:</strong>
+                        <strong>${score}/${assessmentQuestions.length} (${percentage}%)</strong>
+                    </div>
+                    <div class="results-item">
+                        <strong>Passing Score:</strong>
+                        <strong>70%</strong>
+                    </div>
+                    <div class="results-item">
+                        <strong>Total XP Earned:</strong>
+                        <strong>${courseState.totalXP}</strong>
+                    </div>
+                    <div class="results-item">
+                        <strong>Badges Earned:</strong>
+                        <strong>${courseState.badges.join(', ') || 'None yet'}</strong>
+                    </div>
+                    <div class="results-item">
+                        <strong>Modules Completed:</strong>
+                        <strong>${courseState.modulesCompleted.length}/5</strong>
+                    </div>
+                    <div class="results-item">
+                        <strong>Time Spent:</strong>
+                        <strong>${Math.floor(courseState.completionTime / 60)} minutes</strong>
+                    </div>
+                </div>
+                ${certificateHTML}
+                <div class="button-group">
+                    <button onclick="go('hero')" class="secondary-btn">← Return to Home</button>
+                    ${!passed ? '<button onclick="go(\'assess\')">Retake Assessment</button>' : ''}
+                </div>
+            `;
+
+            go('results');
+        }
+
+        // ==================== LMS INTEGRATION ====================
+        function sendLMSCompletion(passed, score) {
+            const completionData = {
+                courseId: 'isps-code-security-001',
+                courseName: 'ISPS Code and Ship Security Plan',
+                completionStatus: passed ? 'PASSED' : 'FAILED',
+                score: score,
+                passingScore: 70,
+                totalXP: courseState.totalXP,
+                badges: courseState.badges,
+                modulesCompleted: courseState.modulesCompleted,
+                completionTime: courseState.completionTime,
+                timestamp: new Date().toISOString()
+            };
+
+            // Store in localStorage for offline persistence
+            localStorage.setItem('courseCompletion', JSON.stringify(completionData));
+
+            // Try PostMessage API (iframe-based LMS)
+            try {
+                window.parent.postMessage(completionData, '*');
+            } catch (e) {
+                console.log('PostMessage not available');
+            }
+
+            // Try REST API (custom LMS)
+            try {
+                fetch('/api/course-completion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(completionData)
+                }).catch(() => console.log('REST API not available'));
+            } catch (e) {
+                console.log('REST API not available');
+            }
+        }
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            renderM1Activity();
+            renderM2Activity();
+            renderM3Activity();
+            renderM4Activity();
+            renderM5Activity();
+            renderAssessment();
+            updateModuleStats();
+        });
+    </script>
+</body>
+</html>

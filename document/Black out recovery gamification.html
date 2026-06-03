@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackout Recovery — Emergency Generator and Power Restoration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .breadcrumbs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .breadcrumbs span {
+            color: #1e3c72;
+            font-weight: bold;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            border: 2px solid #1e3c72;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box h3 {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-box .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Hero Screen */
+        .hero-content {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hero-content h2 {
+            font-size: 2.5em;
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(30, 60, 114, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .module-card {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .module-card:hover {
+            border-color: #1e3c72;
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .module-card h3 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+
+        .module-card p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .module-content {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .module-content h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #1e3c72;
+            padding-bottom: 10px;
+        }
+
+        .module-content p {
+            margin-bottom: 15px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .activity-section {
+            background: white;
+            border: 3px dashed #1e3c72;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .activity-section h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .activity-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .option-btn:hover {
+            border-color: #1e3c72;
+            background: #f0f4ff;
+        }
+
+        .option-btn.selected {
+            background: #1e3c72;
+            color: white;
+            border-color: #1e3c72;
+        }
+
+        .feedback {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+
+        .feedback-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .feedback-item.correct {
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+        }
+
+        .feedback-item.incorrect {
+            border-left: 4px solid #f44336;
+            color: #c62828;
+        }
+
+        .quiz-section {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .quiz-section h3 {
+            color: #e65100;
+            margin-bottom: 15px;
+        }
+
+        .quiz-question {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .quiz-question p {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            background: #e8e8e8;
+        }
+
+        .quiz-option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .assessment-section {
+            background: #f3e5f5;
+            border: 2px solid #9c27b0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .assessment-section h2 {
+            color: #6a1b9a;
+            margin-bottom: 20px;
+        }
+
+        .assessment-question {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #9c27b0;
+        }
+
+        .assessment-question p {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .results-section {
+            text-align: center;
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .results-section h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #4caf50;
+            margin: 20px 0;
+        }
+
+        .score-display.fail {
+            color: #f44336;
+        }
+
+        .certificate {
+            background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
+            border: 3px solid #ffd700;
+            padding: 40px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .certificate.show {
+            display: block;
+        }
+
+        .certificate h3 {
+            color: #b8860b;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .certificate p {
+            color: #666;
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .badge-display {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .badge {
+            background: #ffd700;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero-content h2 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Screen -->
+        <div id="hero" class="screen active">
+            <div class="header">
+                <h1>⚡ Blackout Recovery</h1>
+                <p>Emergency Generator and Power Restoration</p>
+            </div>
+
+            <div class="hero-content">
+                <h2>Master Emergency Power Restoration</h2>
+                <p>Learn how to recognize blackout causes, operate emergency generators, and restore main power safely and efficiently. This course covers SOLAS requirements, decision-making procedures, and team coordination during critical power emergencies.</p>
+                <button class="btn" onclick="go('modules')">Start Course</button>
+            </div>
+        </div>
+
+        <!-- Modules Screen -->
+        <div id="modules" class="screen">
+            <div class="breadcrumbs">
+                <span>Home</span> / <span>Modules</span>
+            </div>
+
+            <div class="dashboard">
+                <div class="stat-box">
+                    <h3>Progress</h3>
+                    <div class="value" id="progressPercent">0%</div>
+                    <div id="progressBar" class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <h3>XP Earned</h3>
+                    <div class="value" id="xpDisplay">0</div>
+                </div>
+                <div class="stat-box">
+                    <h3>Modules Done</h3>
+                    <div class="value" id="modulesCompleted">0/5</div>
+                </div>
+                <div class="stat-box">
+                    <h3>Badges</h3>
+                    <div class="value" id="badgeCount">0</div>
+                    <div id="badgeDisplay"></div>
+                </div>
+            </div>
+
+            <div class="modules-grid">
+                <div class="module-card" onclick="go('m1')">
+                    <h3>📚 Module 1</h3>
+                    <p>Blackout Causes & Immediate Consequences</p>
+                </div>
+                <div class="module-card" onclick="go('m2')">
+                    <h3>⚙️ Module 2</h3>
+                    <p>Emergency Generator Operation</p>
+                </div>
+                <div class="module-card" onclick="go('m3')">
+                    <h3>🔌 Module 3</h3>
+                    <p>Power Restoration Sequence</p>
+                </div>
+                <div class="module-card" onclick="go('m4')">
+                    <h3>📡 Module 4</h3>
+                    <p>Bridge-ER Communication & Coordination</p>
+                </div>
+                <div class="module-card" onclick="go('m5')">
+                    <h3>✅ Module 5</h3>
+                    <p>SIRE Compliance & Testing Records</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn" onclick="go('assess')">Take Assessment</button>
+            </div>
+        </div>
+
+        <!-- Module 1 -->
+        <div id="m1" class="screen">
+            <div class="breadcrumbs">
+                <span>Home</span> / <span>Modules</span> / <span>Module 1</span>
+            </div>
+
+            <div class="module-content">
+                <h2>📚 Module 1: Blackout Causes & Immediate Consequences</h2>
+                <p><strong>Duration:</strong> 10-12 minutes | <strong>XP:</strong> 50 points</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">Common Causes of Blackout</h3>
+                <p><strong>Overload:</strong> Excessive electrical load exceeds generator capacity, causing automatic shutdown.</p>
+                <p><strong>Governor Failure:</strong> Loss of speed control leads to frequency instability and protective shutdown.</p>
+                <p><strong>Fuel Fault:</strong> Fuel supply interruption, contamination, or pressure loss stops engine.</p>
+                <p><strong>Human Error:</strong> Incorrect switchboard operation, maintenance mistakes, or improper load management.</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">Immediate Consequences of Blackout</h3>
+                <p><strong>Loss of Propulsion:</strong> Main engine loses power, vessel loses steerage and speed.</p>
+                <p><strong>Loss of Steering:</strong> Hydraulic steering systems fail without electrical power.</p>
+                <p><strong>Loss of Lighting:</strong> Navigation lights, deck lights, and interior lighting fail.</p>
+                <p><strong>Loss of Navigation Aids:</strong> Radar, GPS, and electronic chart displays go dark.</p>
+
+                <div class="activity-section">
+                    <h3>🎮 Interactive Activity: Cause-Consequence Matching</h3>
+                    <p>Match each blackout cause to its primary consequence:</p>
+                    <div id="m1Activity"></div>
+                    <button class="btn" onclick="checkM1Activity()">Submit Answer</button>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>❓ Module Quiz</h3>
+                    <div id="m1Quiz"></div>
+                    <button class="btn" onclick="submitQuiz('m1')">Submit Quiz</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('modules')">Back to Modules</button>
+                    <button class="btn" onclick="go('m2')">Next Module</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 2 -->
+        <div id="m2" class="screen">
+            <div class="breadcrumbs">
+                <span>Home</span> / <span>Modules</span> / <span>Module 2</span>
+            </div>
+
+            <div class="module-content">
+                <h2>⚙️ Module 2: Emergency Generator Operation</h2>
+                <p><strong>Duration:</strong> 12-14 minutes | <strong>XP:</strong> 50 points</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">SOLAS Automatic Start Requirements</h3>
+                <p>Emergency generators must automatically start within 45 seconds of main power loss (SOLAS Chapter II-1, Regulation 42).</p>
+                <p><strong>Automatic Starting System:</strong> Pressure switch detects low pressure, triggers starter motor.</p>
+                <p><strong>Fuel Supply:</strong> Automatic fuel valve opens; fuel pressure and temperature monitored.</p>
+                <p><strong>Load Shedding:</strong> Non-essential loads automatically disconnected to reduce startup load.</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">Manual Start Procedure</h3>
+                <p><strong>Step 1:</strong> Check fuel level and pressure.</p>
+                <p><strong>Step 2:</strong> Verify cooling water circulation.</p>
+                <p><strong>Step 3:</strong> Engage starter motor (manual push-button or key switch).</p>
+                <p><strong>Step 4:</strong> Monitor engine parameters (RPM, temperature, pressure).</p>
+                <p><strong>Step 5:</strong> Once running at rated speed, close fuel isolation valve on main engine.</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">Load Management</h3>
+                <p><strong>Essential Services Priority:</strong> Lighting, navigation aids, steering, communication.</p>
+                <p><strong>Gradual Load Addition:</strong> Add loads incrementally to avoid overload.</p>
+                <p><strong>Monitor Frequency:</strong> Maintain 50 Hz (or 60 Hz) ±2% during load pickup.</p>
+
+                <div class="activity-section">
+                    <h3>🎮 Interactive Activity: Emergency Generator Startup Sequence</h3>
+                    <p>Arrange the steps in correct order for emergency generator startup:</p>
+                    <div id="m2Activity"></div>
+                    <button class="btn" onclick="checkM2Activity()">Submit Answer</button>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>❓ Module Quiz</h3>
+                    <div id="m2Quiz"></div>
+                    <button class="btn" onclick="submitQuiz('m2')">Submit Quiz</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('m1')">Previous Module</button>
+                    <button class="btn" onclick="go('m3')">Next Module</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 3 -->
+        <div id="m3" class="screen">
+            <div class="breadcrumbs">
+                <span>Home</span> / <span>Modules</span> / <span>Module 3</span>
+            </div>
+
+            <div class="module-content">
+                <h2>🔌 Module 3: Power Restoration Sequence</h2>
+                <p><strong>Duration:</strong> 14-16 minutes | <strong>XP:</strong> 50 points</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">Emergency Switchboard Essential Services</h3>
+                <p>Emergency switchboard supplies critical loads when main power fails:</p>
+                <p><strong>Priority 1 (Immediate):</strong> Navigation lights, steering, emergency lighting.</p>
+                <p><strong>Priority 2 (Within 30 sec):</strong> Communication systems, radar, GPS.</p>
+                <p><strong>Priority 3 (Within 2 min):</strong> Cargo heating, ventilation, auxiliary systems.</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">Main Switchboard Restoration Sequence</h3>
+                <p><strong>Step 1:</strong> Emergency generator running at rated speed and frequency.</p>
+                <p><strong>Step 2:</strong> Verify emergency switchboard voltage and frequency stable.</p>
+                <p><strong>Step 3:</strong> Check main engine fuel supply and cooling systems.</p>
+                <p><strong>Step 4:</strong> Start main engine (if fuel fault cleared).</p>
+                <p><strong>Step 5:</strong> Synchronize main generator with emergency generator.</p>
+                <p><strong>Step 6:</strong> Transfer loads gradually from emergency to main switchboard.</p>
+                <p><strong>Step 7:</strong> Stop emergency generator once main power fully restored.</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">Parallel Running & Load Sharing</h3>
+                <p><strong>Synchronization Check:</strong> Voltage, frequency, and phase angle must match within limits.</p>
+                <p><strong>Load Sharing:</strong> Adjust governor and voltage regulator for equal load distribution.</p>
+                <p><strong>Monitoring:</strong> Watch for circulating currents and unequal load distribution.</p>
+
+                <div class="activity-section">
+                    <h3>🎮 Interactive Activity: Power Restoration Decision Scenarios</h3>
+                    <p>Choose the correct action for each scenario:</p>
+                    <div id="m3Activity"></div>
+                    <button class="btn" onclick="checkM3Activity()">Submit Answer</button>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>❓ Module Quiz</h3>
+                    <div id="m3Quiz"></div>
+                    <button class="btn" onclick="submitQuiz('m3')">Submit Quiz</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('m2')">Previous Module</button>
+                    <button class="btn" onclick="go('m4')">Next Module</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 4 -->
+        <div id="m4" class="screen">
+            <div class="breadcrumbs">
+                <span>Home</span> / <span>Modules</span> / <span>Module 4</span>
+            </div>
+
+            <div class="module-content">
+                <h2>📡 Module 4: Bridge-ER Communication & Coordination</h2>
+                <p><strong>Duration:</strong> 10-12 minutes | <strong>XP:</strong> 50 points</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">Communication During Blackout</h3>
+                <p><strong>Immediate Bridge Notification:</strong> Chief Engineer reports blackout to Master immediately.</p>
+                <p><strong>Status Updates:</strong> Provide regular updates on generator status and restoration progress.</p>
+                <p><strong>Estimated Time to Restore:</strong> Inform bridge of expected restoration time.</p>
+                <p><strong>Propulsion Status:</strong> Confirm when main engine can be restarted.</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">Bridge Actions During Blackout</h3>
+                <p><strong>Announce Blackout:</strong> Master announces "Blackout" on all communication systems.</p>
+                <p><strong>Manual Steering:</strong> Prepare for manual steering if hydraulic power lost.</p>
+                <p><strong>Reduce Speed:</strong> Reduce engine load to assist emergency generator startup.</p>
+                <p><strong>Monitor Position:</strong> Use GPS backup or celestial navigation if available.</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">Engine Room Team Coordination</h3>
+                <p><strong>Chief Engineer:</strong> Directs emergency response and restoration sequence.</p>
+                <p><strong>2nd Engineer:</strong> Operates emergency generator and monitors parameters.</p>
+                <p><strong>ETO/3rd Engineer:</strong> Assists with switchboard operations and load management.</p>
+                <p><strong>Clear Communication:</strong> Use standard terminology and confirm all instructions.</p>
+
+                <div class="activity-section">
+                    <h3>🎮 Interactive Activity: Communication Protocol Sequencing</h3>
+                    <p>Arrange the communication steps in correct order during blackout:</p>
+                    <div id="m4Activity"></div>
+                    <button class="btn" onclick="checkM4Activity()">Submit Answer</button>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>❓ Module Quiz</h3>
+                    <div id="m4Quiz"></div>
+                    <button class="btn" onclick="submitQuiz('m4')">Submit Quiz</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('m3')">Previous Module</button>
+                    <button class="btn" onclick="go('m5')">Next Module</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 5 -->
+        <div id="m5" class="screen">
+            <div class="breadcrumbs">
+                <span>Home</span> / <span>Modules</span> / <span>Module 5</span>
+            </div>
+
+            <div class="module-content">
+                <h2>✅ Module 5: SIRE Compliance & Testing Records</h2>
+                <p><strong>Duration:</strong> 10-12 minutes | <strong>XP:</strong> 50 points</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">SOLAS Emergency Generator Testing Requirements</h3>
+                <p><strong>Weekly Test:</strong> Full load test for at least 2 hours under realistic conditions.</p>
+                <p><strong>Load Transfer Test:</strong> Verify automatic load transfer from main to emergency generator.</p>
+                <p><strong>Manual Start Test:</strong> Confirm manual start procedure works correctly.</p>
+                <p><strong>Fuel Supply Test:</strong> Check fuel pressure and flow during operation.</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">Record-Keeping Requirements</h3>
+                <p><strong>SOLAS Log Entries:</strong> Record all generator tests, maintenance, and repairs.</p>
+                <p><strong>Test Parameters:</strong> Document voltage, frequency, load, temperature, and pressure.</p>
+                <p><strong>Defects & Repairs:</strong> Note any defects found and corrective actions taken.</p>
+                <p><strong>Crew Participation:</strong> Record which crew members participated in testing.</p>
+
+                <h3 style="color: #1e3c72; margin-top: 20px;">SIRE Inspector Checks</h3>
+                <p><strong>Testing Records:</strong> Inspectors verify weekly testing records are complete and accurate.</p>
+                <p><strong>Equipment Condition:</strong> Physical inspection of emergency generator and switchboard.</p>
+                <p><strong>Crew Competency:</strong> Questions about blackout procedures and emergency response.</p>
+                <p><strong>Compliance Evidence:</strong> Certificates of competency and training records reviewed.</p>
+
+                <div class="activity-section">
+                    <h3>🎮 Interactive Activity: SIRE Compliance Checklist</h3>
+                    <p>Identify which items are required for SIRE compliance:</p>
+                    <div id="m5Activity"></div>
+                    <button class="btn" onclick="checkM5Activity()">Submit Answer</button>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>❓ Module Quiz</h3>
+                    <div id="m5Quiz"></div>
+                    <button class="btn" onclick="submitQuiz('m5')">Submit Quiz</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('m4')">Previous Module</button>
+                    <button class="btn" onclick="go('assess')">Take Assessment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assessment Screen -->
+        <div id="assess" class="screen">
+            <div class="breadcrumbs">
+                <span>Home</span> / <span>Assessment</span>
+            </div>
+
+            <div class="assessment-section">
+                <h2>📋 Final Assessment: Blackout Recovery</h2>
+                <p style="margin-bottom: 20px;"><strong>Instructions:</strong> Answer all 25 questions. You must score 70% or higher to pass. This assessment evaluates your understanding of blackout causes, emergency procedures, and SIRE compliance.</p>
+
+                <div id="assessmentContainer"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('m5')">Back</button>
+                    <button class="btn" onclick="submitAssessment()">Submit Assessment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="screen">
+            <div class="breadcrumbs">
+                <span>Home</span> / <span>Results</span>
+            </div>
+
+            <div class="results-section">
+                <h2>🎉 Course Complete!</h2>
+                <div class="score-display" id="scoreDisplay">0%</div>
+                <p id="statusMessage" style="font-size: 1.3em; color: #666;"></p>
+
+                <div id="badgeDisplayResults" class="badge-display"></div>
+
+                <div id="certificateContainer" class="certificate">
+                    <h3>🏆 Certificate of Completion</h3>
+                    <p>This certifies that you have successfully completed</p>
+                    <p style="font-weight: bold; font-size: 1.2em;">Blackout Recovery — Emergency Generator and Power Restoration</p>
+                    <p>with a score of <span id="finalScore">0</span>%</p>
+                    <p style="margin-top: 20px; font-size: 0.9em; color: #999;">Date: <span id="completionDate"></span></p>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('modules')">Back to Modules</button>
+                    <button class="btn" onclick="go('hero')">Start Over</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Course State
+        const courseState = {
+            currentScreen: 'hero',
+            xp: 0,
+            badges: [],
+            modulesCompleted: [],
+            quizScores: {},
+            assessmentScore: 0,
+            startTime: Date.now()
+        };
+
+        // Activities Data
+        const activities = {
+            m1: {
+                title: 'Cause-Consequence Matching',
+                items: [
+                    { cause: 'Overload', consequence: 'Automatic shutdown', correct: true },
+                    { cause: 'Governor Failure', consequence: 'Frequency instability', correct: true },
+                    { cause: 'Fuel Fault', consequence: 'Engine stops', correct: true },
+                    { cause: 'Human Error', consequence: 'Improper load management', correct: true },
+                    { cause: 'Overload', consequence: 'Frequency instability', correct: false }
+                ]
+            },
+            m2: {
+                title: 'Emergency Generator Startup Sequence',
+                items: [
+                    { step: 1, action: 'Check fuel level and pressure', correct: true },
+                    { step: 2, action: 'Verify cooling water circulation', correct: true },
+                    { step: 3, action: 'Engage starter motor', correct: true },
+                    { step: 4, action: 'Monitor engine parameters', correct: true },
+                    { step: 5, action: 'Close fuel isolation valve on main engine', correct: true }
+                ]
+            },
+            m3: {
+                title: 'Power Restoration Decision Scenarios',
+                items: [
+                    { scenario: 'Emergency generator running, main engine won\'t start', decision: 'Continue on emergency power', correct: true },
+                    { scenario: 'Main engine restarted, frequency stable', decision: 'Synchronize generators', correct: true },
+                    { scenario: 'Circulating current detected', decision: 'Adjust voltage regulator', correct: true },
+                    { scenario: 'Main switchboard fully restored', decision: 'Stop emergency generator', correct: true }
+                ]
+            },
+            m4: {
+                title: 'Communication Protocol Sequencing',
+                items: [
+                    { step: 1, action: 'Chief Engineer reports blackout to Master', correct: true },
+                    { step: 2, action: 'Master announces blackout on all systems', correct: true },
+                    { step: 3, action: 'Provide status updates to bridge', correct: true },
+                    { step: 4, action: 'Confirm propulsion restoration time', correct: true }
+                ]
+            },
+            m5: {
+                title: 'SIRE Compliance Checklist',
+                items: [
+                    { item: 'Weekly full load test', required: true, correct: true },
+                    { item: 'SOLAS log entries', required: true, correct: true },
+                    { item: 'Test parameters documented', required: true, correct: true },
+                    { item: 'Crew participation recorded', required: true, correct: true },
+                    { item: 'Equipment certificates', required: true, correct: true }
+                ]
+            }
+        };
+
+        // Quizzes Data
+        const quizzes = {
+            m1: [
+                { question: 'What is the primary consequence of governor failure?', answers: ['Loss of propulsion', 'Frequency instability', 'Fuel leak'], correct: 1 },
+                { question: 'Which system fails first during blackout?', answers: ['Steering', 'Propulsion', 'All simultaneously'], correct: 2 }
+            ],
+            m2: [
+                { question: 'What is the SOLAS requirement for emergency generator startup?', answers: ['30 seconds', '45 seconds', '60 seconds'], correct: 1 },
+                { question: 'What is the first step in manual startup?', answers: ['Engage starter', 'Check fuel level', 'Monitor RPM'], correct: 1 }
+            ],
+            m3: [
+                { question: 'What is the correct frequency tolerance?', answers: ['±1%', '±2%', '±5%'], correct: 1 },
+                { question: 'When should emergency generator be stopped?', answers: ['After 5 minutes', 'After main power restored', 'Immediately'], correct: 1 }
+            ],
+            m4: [
+                { question: 'Who directs emergency response in engine room?', answers: ['2nd Engineer', 'Chief Engineer', 'ETO'], correct: 1 },
+                { question: 'What is the first bridge action during blackout?', answers: ['Reduce speed', 'Announce blackout', 'Prepare manual steering'], correct: 1 }
+            ],
+            m5: [
+                { question: 'How often must emergency generator be tested?', answers: ['Daily', 'Weekly', 'Monthly'], correct: 1 },
+                { question: 'What must be recorded in SOLAS log?', answers: ['Only defects', 'All tests and maintenance', 'Nothing'], correct: 1 }
+            ]
+        };
+
+        // Assessment Questions
+        const assessmentQuestions = [
+            { question: 'What are the four common causes of blackout?', answers: ['Overload, Governor failure, Fuel fault, Human error', 'Weather, Age, Corrosion, Vibration', 'Noise, Heat, Pressure, Speed'], correct: 0 },
+            { question: 'What is the immediate consequence of loss of steering?', answers: ['Loss of speed', 'Vessel cannot maneuver', 'Loss of lighting'], correct: 1 },
+            { question: 'SOLAS requires emergency generator to start within:', answers: ['30 seconds', '45 seconds', '60 seconds'], correct: 1 },
+            { question: 'What is the first step in manual emergency generator startup?', answers: ['Engage starter', 'Check fuel level and pressure', 'Monitor temperature'], correct: 1 },
+            { question: 'Which loads have Priority 1 on emergency switchboard?', answers: ['Cargo heating', 'Navigation lights, steering, emergency lighting', 'Ventilation'], correct: 1 },
+            { question: 'What must be verified before synchronizing generators?', answers: ['Voltage, frequency, phase angle', 'Temperature and pressure', 'Fuel level and oil'], correct: 0 },
+            { question: 'Who should be notified immediately of a blackout?', answers: ['Chief Engineer only', 'Master immediately', 'Crew on standby'], correct: 1 },
+            { question: 'What is the correct frequency tolerance during operation?', answers: ['±1%', '±2%', '±5%'], correct: 1 },
+            { question: 'When should emergency generator be stopped?', answers: ['After 10 minutes', 'After main power fully restored', 'Immediately'], correct: 1 },
+            { question: 'What is required in SOLAS log for emergency generator tests?', answers: ['Only pass/fail', 'All parameters and defects', 'Nothing'], correct: 1 },
+            { question: 'What indicates load shedding during emergency startup?', answers: ['Generator running slow', 'Non-essential loads disconnected', 'Main engine restarted'], correct: 1 },
+            { question: 'How long should weekly emergency generator test run?', answers: ['30 minutes', '1 hour', 'At least 2 hours'], correct: 2 },
+            { question: 'What is the role of the 2nd Engineer during blackout recovery?', answers: ['Directs response', 'Operates emergency generator', 'Manages bridge communication'], correct: 1 },
+            { question: 'What must be checked before restarting main engine?', answers: ['Bridge notification', 'Fuel supply and cooling systems', 'Generator frequency'], correct: 1 },
+            { question: 'What is a circulating current during parallel running?', answers: ['Unequal load distribution', 'Generator overload', 'Frequency mismatch'], correct: 0 },
+            { question: 'What does SIRE inspector check regarding emergency generator?', answers: ['Only records', 'Records, equipment, and crew competency', 'Nothing'], correct: 1 },
+            { question: 'What is the consequence of overload on main generator?', answers: ['Slow running', 'Automatic shutdown', 'Increased frequency'], correct: 1 },
+            { question: 'How should loads be added during power restoration?', answers: ['All at once', 'Gradually to avoid overload', 'Slowly over 1 hour'], correct: 1 },
+            { question: 'What is essential for bridge-ER communication during blackout?', answers: ['Written messages', 'Standard terminology and confirmation', 'Shouting'], correct: 1 },
+            { question: 'What indicates successful emergency generator startup?', answers: ['Engine noise', 'Rated speed and frequency achieved', 'No alarms'], correct: 1 },
+            { question: 'What is the purpose of load shedding?', answers: ['Save fuel', 'Reduce startup load on generator', 'Prevent overheating'], correct: 1 },
+            { question: 'When must crew be trained on blackout procedures?', answers: ['Only during SIRE inspection', 'Regularly as part of SMS', 'Never'], correct: 1 },
+            { question: 'What is the correct sequence for main switchboard restoration?', answers: ['Start main engine, synchronize, transfer loads', 'Transfer loads, synchronize, start engine', 'Synchronize, start engine, transfer loads'], correct: 0 },
+            { question: 'What must be verified before load transfer?', answers: ['Bridge ready', 'Main switchboard voltage and frequency stable', 'Generator age'], correct: 1 },
+            { question: 'What is the final step after main power restoration?', answers: ['Increase load', 'Stop emergency generator', 'Restart main engine'], correct: 1 }
+        ];
+
+        // Render Activities
+        function renderActivities() {
+            renderActivity('m1');
+            renderActivity('m2');
+            renderActivity('m3');
+            renderActivity('m4');
+            renderActivity('m5');
+        }
+
+        function renderActivity(module) {
+            const activity = activities[module];
+            const container = document.getElementById(`${module}Activity`);
+            let html = '';
+
+            activity.items.forEach((item, idx) => {
+                html += `<div style="margin: 10px 0;">
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="checkbox" id="${module}_item_${idx}" style="margin-right: 10px;">
+                        <span>${item.cause || item.step || item.scenario || item.item || ''} → ${item.consequence || item.action || item.decision || item.required ? 'Required' : 'Optional'}</span>
+                    </label>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Check Activities
+        function checkM1Activity() {
+            const activity = activities.m1;
+            let correct = 0;
+            let feedback = '<div class="feedback show">';
+
+            activity.items.forEach((item, idx) => {
+                const checked = document.getElementById(`m1_item_${idx}`).checked;
+                const isCorrect = checked === item.correct;
+                if (isCorrect) correct++;
+
+                feedback += `<div class="feedback-item ${isCorrect ? 'correct' : 'incorrect'}">
+                    ${isCorrect ? '✓' : '✗'} ${item.cause} → ${item.consequence}
+                    <br><small>${isCorrect ? 'Correct!' : 'Incorrect. Correct answer: ' + item.consequence}</small>
+                </div>`;
+            });
+
+            feedback += '</div>';
+            const score = Math.round((correct / activity.items.length) * 100);
+            feedback += `<p style="text-align: center; font-weight: bold; margin-top: 15px;">Activity Score: ${score}%</p>`;
+
+            document.querySelector('#m1 .activity-section').innerHTML += feedback;
+            awardXP(25);
+            courseState.modulesCompleted.push('m1');
+            updateDashboard();
+        }
+
+        function checkM2Activity() {
+            const activity = activities.m2;
+            let correct = 0;
+            let feedback = '<div class="feedback show">';
+
+            activity.items.forEach((item, idx) => {
+                const checked = document.getElementById(`m2_item_${idx}`).checked;
+                const isCorrect = checked === item.correct;
+                if (isCorrect) correct++;
+
+                feedback += `<div class="feedback-item ${isCorrect ? 'correct' : 'incorrect'}">
+                    ${isCorrect ? '✓' : '✗'} Step ${item.step}: ${item.action}
+                    <br><small>${isCorrect ? 'Correct!' : 'Incorrect. Correct sequence required.'}</small>
+                </div>`;
+            });
+
+            feedback += '</div>';
+            const score = Math.round((correct / activity.items.length) * 100);
+            feedback += `<p style="text-align: center; font-weight: bold; margin-top: 15px;">Activity Score: ${score}%</p>`;
+
+            document.querySelector('#m2 .activity-section').innerHTML += feedback;
+            awardXP(25);
+            courseState.modulesCompleted.push('m2');
+            updateDashboard();
+        }
+
+        function checkM3Activity() {
+            const activity = activities.m3;
+            let correct = 0;
+            let feedback = '<div class="feedback show">';
+
+            activity.items.forEach((item, idx) => {
+                const checked = document.getElementById(`m3_item_${idx}`).checked;
+                const isCorrect = checked === item.correct;
+                if (isCorrect) correct++;
+
+                feedback += `<div class="feedback-item ${isCorrect ? 'correct' : 'incorrect'}">
+                    ${isCorrect ? '✓' : '✗'} ${item.scenario}
+                    <br><small>${isCorrect ? 'Correct decision!' : 'Incorrect. Correct action: ' + item.decision}</small>
+                </div>`;
+            });
+
+            feedback += '</div>';
+            const score = Math.round((correct / activity.items.length) * 100);
+            feedback += `<p style="text-align: center; font-weight: bold; margin-top: 15px;">Activity Score: ${score}%</p>`;
+
+            document.querySelector('#m3 .activity-section').innerHTML += feedback;
+            awardXP(25);
+            courseState.modulesCompleted.push('m3');
+            updateDashboard();
+        }
+
+        function checkM4Activity() {
+            const activity = activities.m4;
+            let correct = 0;
+            let feedback = '<div class="feedback show">';
+
+            activity.items.forEach((item, idx) => {
+                const checked = document.getElementById(`m4_item_${idx}`).checked;
+                const isCorrect = checked === item.correct;
+                if (isCorrect) correct++;
+
+                feedback += `<div class="feedback-item ${isCorrect ? 'correct' : 'incorrect'}">
+                    ${isCorrect ? '✓' : '✗'} Step ${item.step}: ${item.action}
+                    <br><small>${isCorrect ? 'Correct!' : 'Incorrect. Correct sequence required.'}</small>
+                </div>`;
+            });
+
+            feedback += '</div>';
+            const score = Math.round((correct / activity.items.length) * 100);
+            feedback += `<p style="text-align: center; font-weight: bold; margin-top: 15px;">Activity Score: ${score}%</p>`;
+
+            document.querySelector('#m4 .activity-section').innerHTML += feedback;
+            awardXP(25);
+            courseState.modulesCompleted.push('m4');
+            updateDashboard();
+        }
+
+        function checkM5Activity() {
+            const activity = activities.m5;
+            let correct = 0;
+            let feedback = '<div class="feedback show">';
+
+            activity.items.forEach((item, idx) => {
+                const checked = document.getElementById(`m5_item_${idx}`).checked;
+                const isCorrect = checked === item.correct;
+                if (isCorrect) correct++;
+
+                feedback += `<div class="feedback-item ${isCorrect ? 'correct' : 'incorrect'}">
+                    ${isCorrect ? '✓' : '✗'} ${item.item} - ${item.required ? 'Required' : 'Optional'}
+                    <br><small>${isCorrect ? 'Correct!' : 'Incorrect. This is ' + (item.required ? 'required' : 'optional')}</small>
+                </div>`;
+            });
+
+            feedback += '</div>';
+            const score = Math.round((correct / activity.items.length) * 100);
+            feedback += `<p style="text-align: center; font-weight: bold; margin-top: 15px;">Activity Score: ${score}%</p>`;
+
+            document.querySelector('#m5 .activity-section').innerHTML += feedback;
+            awardXP(25);
+            courseState.modulesCompleted.push('m5');
+            updateDashboard();
+        }
+
+        // Render Quizzes
+        function renderQuizzes() {
+            Object.keys(quizzes).forEach(module => {
+                const quiz = quizzes[module];
+                const container = document.getElementById(`${module}Quiz`);
+                let html = '';
+
+                quiz.forEach((q, idx) => {
+                    html += `<div class="quiz-question">
+                        <p>${idx + 1}. ${q.question}</p>
+                        <div class="quiz-options">`;
+
+                    q.answers.forEach((answer, aIdx) => {
+                        html += `<label class="quiz-option">
+                            <input type="radio" name="${module}_q${idx}" value="${aIdx}">
+                            ${answer}
+                        </label>`;
+                    });
+
+                    html += `</div></div>`;
+                });
+
+                container.innerHTML = html;
+            });
+        }
+
+        // Submit Quiz
+        function submitQuiz(module) {
+            const quiz = quizzes[module];
+            let correct = 0;
+
+            quiz.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="${module}_q${idx}"]:checked`);
+                if (selected && parseInt(selected.value) === q.correct) {
+                    correct++;
+                }
+            });
+
+            const score = Math.round((correct / quiz.length) * 100);
+            courseState.quizScores[module] = score;
+            awardXP(15);
+
+            alert(`Quiz Score: ${score}%\n${correct}/${quiz.length} correct`);
+        }
+
+        // Render Assessment
+        function renderAssessment() {
+            const container = document.getElementById('assessmentContainer');
+            let html = '';
+
+            assessmentQuestions.forEach((q, idx) => {
+                html += `<div class="assessment-question">
+                    <p>${idx + 1}. ${q.question}</p>
+                    <div class="quiz-options">`;
+
+                q.answers.forEach((answer, aIdx) => {
+                    html += `<label class="quiz-option">
+                        <input type="radio" name="assess_q${idx}" value="${aIdx}">
+                        ${answer}
+                    </label>`;
+                });
+
+                html += `</div></div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Submit Assessment
+        function submitAssessment() {
+            let correct = 0;
+
+            assessmentQuestions.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="assess_q${idx}"]:checked`);
+                if (selected && parseInt(selected.value) === q.correct) {
+                    correct++;
+                }
+            });
+
+            const score = Math.round((correct / assessmentQuestions.length) * 100);
+            courseState.assessmentScore = score;
+
+            displayResults(score);
+            sendLMSCompletion(score);
+        }
+
+        // Display Results
+        function displayResults(score) {
+            const passed = score >= 70;
+            document.getElementById('scoreDisplay').textContent = score + '%';
+            document.getElementById('scoreDisplay').classList.toggle('fail', !passed);
+            document.getElementById('statusMessage').textContent = passed ? '✓ PASSED' : '✗ FAILED';
+            document.getElementById('statusMessage').style.color = passed ? '#4caf50' : '#f44336';
+
+            if (passed) {
+                document.getElementById('certificateContainer').classList.add('show');
+                document.getElementById('finalScore').textContent = score;
+                document.getElementById('completionDate').textContent = new Date().toLocaleDateString();
+                checkBadges();
+                awardXP(100);
+            }
+
+            go('results');
+        }
+
+        // Award XP
+        function awardXP(points) {
+            courseState.xp += points;
+            updateDashboard();
+        }
+
+        // Check Badges
+        function checkBadges() {
+            if (courseState.xp >= 300 && !courseState.badges.includes('🏅 Course Master')) {
+                courseState.badges.push('🏅 Course Master');
+            }
+            if (courseState.xp >= 250 && !courseState.badges.includes('⭐ XP Champion')) {
+                courseState.badges.push('⭐ XP Champion');
+            }
+            if (courseState.assessmentScore >= 90 && !courseState.badges.includes('🔥 On Fire')) {
+                courseState.badges.push('🔥 On Fire');
+            }
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const progress = Math.round((courseState.modulesCompleted.length / 5) * 100);
+            document.getElementById('progressPercent').textContent = progress + '%';
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('xpDisplay').textContent = courseState.xp;
+            document.getElementById('modulesCompleted').textContent = courseState.modulesCompleted.length + '/5';
+            document.getElementById('badgeCount').textContent = courseState.badges.length;
+
+            let badgeHtml = '';
+            courseState.badges.forEach(badge => {
+                badgeHtml += `<div class="badge">${badge}</div>`;
+            });
+            document.getElementById('badgeDisplay').innerHTML = badgeHtml;
+            document.getElementById('badgeDisplayResults').innerHTML = badgeHtml;
+        }
+
+        // Navigation
+        function go(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screen).classList.add('active');
+            courseState.currentScreen = screen;
+            updateDashboard();
+        }
+
+        function completeAndGo(screen) {
+            courseState.modulesCompleted.push(screen);
+            go(screen);
+        }
+
+        // LMS Completion
+        function sendLMSCompletion(score) {
+            const completionData = {
+                courseId: 'blackout-recovery-001',
+                courseName: 'Blackout Recovery — Emergency Generator and Power Restoration',
+                completionStatus: score >= 70 ? 'PASSED' : 'FAILED',
+                score: score,
+                passingScore: 70,
+                totalXP: courseState.xp,
+                badges: courseState.badges,
+                modulesCompleted: courseState.modulesCompleted,
+                completionTime: Math.round((Date.now() - courseState.startTime) / 1000),
+                timestamp: new Date().toISOString()
+            };
+
+            // PostMessage API (iframe-based LMS)
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'courseCompletion',
+                    data: completionData
+                }, '*');
+            }
+
+            // localStorage (offline persistence)
+            localStorage.setItem('courseCompletion_blackout', JSON.stringify(completionData));
+
+            // REST API (custom LMS)
+            fetch('/api/course-completion', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(completionData)
+            }).catch(() => {});
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            renderActivities();
+            renderQuizzes();
+            renderAssessment();
+            updateDashboard();
+        });
+    </script>
+</body>
+</html>

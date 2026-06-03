@@ -1,0 +1,1420 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vessel Familiarisation on Joining — A Structured Approach</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #ffffff;
+        color: #333;
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .screen {
+        display: none;
+        min-height: 100vh;
+      }
+      .screen.active {
+        display: block;
+      }
+
+      /* Hero Screen */
+      #hero {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 100vh;
+      }
+      #hero h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+      }
+      #hero p {
+        font-size: 1.2em;
+        margin-bottom: 30px;
+        max-width: 600px;
+      }
+
+      /* Dashboard */
+      .dashboard {
+        background: #f5f5f5;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+      }
+      .stat-box {
+        background: white;
+        padding: 15px;
+        border-radius: 6px;
+        text-align: center;
+        border-left: 4px solid #2a5298;
+      }
+      .stat-box h3 {
+        color: #2a5298;
+        font-size: 1.8em;
+      }
+      .stat-box p {
+        color: #666;
+        font-size: 0.9em;
+      }
+
+      /* Buttons */
+      button {
+        background: #2a5298;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1em;
+        margin: 10px 5px;
+        transition: background 0.3s;
+      }
+      button:hover {
+        background: #1e3c72;
+      }
+
+      /* Module Grid */
+      .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+      }
+      .module-card {
+        background: white;
+        border: 2px solid #e0e0e0;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .module-card:hover {
+        border-color: #2a5298;
+        box-shadow: 0 4px 12px rgba(42, 82, 152, 0.2);
+      }
+      .module-card h3 {
+        color: #2a5298;
+        margin-bottom: 10px;
+      }
+
+      /* Content Sections */
+      .content {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+      .content h2 {
+        color: #2a5298;
+        margin-bottom: 15px;
+      }
+      .content p {
+        margin-bottom: 15px;
+        line-height: 1.8;
+      }
+
+      /* Activity Styles */
+      .activity-container {
+        background: #f9f9f9;
+        border: 2px dashed #2a5298;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+      .activity-item {
+        background: white;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 6px;
+        border-left: 4px solid #2a5298;
+      }
+      .activity-item input[type="radio"],
+      .activity-item input[type="checkbox"] {
+        margin-right: 10px;
+      }
+
+      /* Feedback Styles */
+      .feedback {
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 6px;
+        display: none;
+      }
+      .feedback.correct {
+        background: #d4edda;
+        border-left: 4px solid #28a745;
+        color: #155724;
+        display: block;
+      }
+      .feedback.incorrect {
+        background: #f8d7da;
+        border-left: 4px solid #dc3545;
+        color: #721c24;
+        display: block;
+      }
+
+      /* Quiz Styles */
+      .quiz-question {
+        background: white;
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 6px;
+        border-left: 4px solid #2a5298;
+      }
+      .quiz-question h4 {
+        margin-bottom: 15px;
+        color: #2a5298;
+      }
+      .quiz-option {
+        padding: 10px;
+        margin: 8px 0;
+        background: #f5f5f5;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .quiz-option input {
+        margin-right: 10px;
+      }
+
+      /* Assessment Styles */
+      .assessment-question {
+        background: white;
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 6px;
+        border-left: 4px solid #dc3545;
+      }
+
+      /* Results Screen */
+      #results {
+        text-align: center;
+        padding: 40px;
+      }
+      .certificate {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 8px;
+        margin: 20px 0;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+      .certificate h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+      }
+
+      /* Breadcrumbs */
+      .breadcrumbs {
+        padding: 10px 0;
+        margin-bottom: 20px;
+        font-size: 0.9em;
+        color: #666;
+      }
+      .breadcrumbs a {
+        color: #2a5298;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .breadcrumbs a:hover {
+        text-decoration: underline;
+      }
+
+      /* Progress Bar */
+      .progress-bar {
+        background: #e0e0e0;
+        height: 8px;
+        border-radius: 4px;
+        margin: 20px 0;
+        overflow: hidden;
+      }
+      .progress-fill {
+        background: #28a745;
+        height: 100%;
+        transition: width 0.3s;
+      }
+
+      /* Badge Display */
+      .badge-display {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 15px 0;
+      }
+      .badge {
+        background: #ffc107;
+        color: #333;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: bold;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .dashboard {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .modules-grid {
+          grid-template-columns: 1fr;
+        }
+        #hero h1 {
+          font-size: 1.8em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Hero Screen -->
+      <div id="hero" class="screen active">
+        <h1>🚢 Vessel Familiarisation on Joining</h1>
+        <p>A Structured Approach to Safe and Compliant Onboarding</p>
+        <p style="font-size: 1em; color: rgba(255, 255, 255, 0.9)">
+          Learn the essential procedures for familiarising yourself with your
+          new vessel
+        </p>
+        <button onclick="go('modules')">Start Course</button>
+      </div>
+
+      <!-- Modules Screen -->
+      <div id="modules" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('hero')">Home</a> / Modules
+        </div>
+        <div class="dashboard">
+          <div class="stat-box">
+            <h3 id="xpDisplay">0</h3>
+            <p>XP Earned</p>
+          </div>
+          <div class="stat-box">
+            <h3 id="progressDisplay">0%</h3>
+            <p>Progress</p>
+          </div>
+          <div class="stat-box">
+            <h3 id="modulesDisplay">0/5</h3>
+            <p>Modules Done</p>
+          </div>
+          <div class="stat-box">
+            <h3 id="badgeCount">0</h3>
+            <p>Badges Earned</p>
+          </div>
+        </div>
+        <div id="badgeDisplay" class="badge-display"></div>
+        <div class="progress-bar">
+          <div id="progressBar" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <h2>Select a Module</h2>
+        <div class="modules-grid">
+          <div class="module-card" onclick="go('m1')">
+            <h3>📋 Module 1</h3>
+            <p>Why Familiarisation Matters</p>
+          </div>
+          <div class="module-card" onclick="go('m2')">
+            <h3>✅ Module 2</h3>
+            <p>Familiarisation Checklist</p>
+          </div>
+          <div class="module-card" onclick="go('m3')">
+            <h3>👥 Module 3</h3>
+            <p>Rank-Specific Requirements</p>
+          </div>
+          <div class="module-card" onclick="go('m4')">
+            <h3>📝 Module 4</h3>
+            <p>Handover Period & Sign-Off</p>
+          </div>
+          <div class="module-card" onclick="go('m5')">
+            <h3>🔄 Module 5</h3>
+            <p>MOC & SIRE Compliance</p>
+          </div>
+        </div>
+        <button onclick="go('assess')" style="width: 100%; margin-top: 30px">
+          Take Final Assessment
+        </button>
+      </div>
+
+      <!-- Module 1 -->
+      <div id="m1" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('modules')">Modules</a> / Module 1
+        </div>
+        <div class="content">
+          <h2>📋 Module 1: Why Familiarisation Matters</h2>
+          <p>
+            <strong>STCW Watchkeeping Obligation:</strong> You must not take
+            over a watch until you are fully familiarised with the vessel, its
+            systems, and emergency procedures.
+          </p>
+          <p>
+            <strong>SIRE 2.0 Inspector Questions:</strong> Inspectors ask every
+            crew member about their familiarisation experience. This is a key
+            compliance indicator.
+          </p>
+          <p>
+            <strong>ISM Code Requirement:</strong> Structured familiarisation is
+            part of the vessel's Safety Management System (SMS).
+          </p>
+          <p>
+            <strong>Why It Matters:</strong> Proper familiarisation prevents
+            accidents, ensures compliance, and builds crew confidence.
+          </p>
+
+          <h3 style="margin-top: 20px; color: #2a5298">
+            Interactive Activity: Familiarisation Purpose Matching
+          </h3>
+          <div class="activity-container">
+            <p style="margin-bottom: 15px">
+              <strong>Match each purpose with the correct reason:</strong>
+            </p>
+            <div id="m1Activity"></div>
+            <button onclick="checkM1Activity()">Submit Answer</button>
+            <div id="m1Feedback" class="feedback"></div>
+          </div>
+
+          <h3 style="margin-top: 20px; color: #2a5298">Module Quiz</h3>
+          <div id="m1Quiz"></div>
+          <button onclick="submitQuiz('m1')">Submit Quiz</button>
+          <div id="m1QuizFeedback" class="feedback"></div>
+        </div>
+        <button onclick="completeAndGo('m1', 'modules')">
+          Complete Module & Return
+        </button>
+      </div>
+
+      <!-- Module 2 -->
+      <div id="m2" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('modules')">Modules</a> / Module 2
+        </div>
+        <div class="content">
+          <h2>✅ Module 2: Familiarisation Checklist Content</h2>
+          <p><strong>Essential Checklist Items:</strong></p>
+          <ul style="margin-left: 20px; margin-bottom: 15px">
+            <li>
+              Safety equipment locations (lifeboats, life jackets, emergency
+              exits)
+            </li>
+            <li>Emergency duties and muster stations</li>
+            <li>Key vessel systems (propulsion, steering, power)</li>
+            <li>Company SMS procedures and policies</li>
+            <li>Vessel-specific procedures and standing orders</li>
+            <li>Communication systems and alarm signals</li>
+          </ul>
+
+          <h3 style="margin-top: 20px; color: #2a5298">
+            Interactive Activity: Checklist Sequencing
+          </h3>
+          <div class="activity-container">
+            <p style="margin-bottom: 15px">
+              <strong
+                >Arrange the familiarisation items in the correct priority
+                order:</strong
+              >
+            </p>
+            <div id="m2Activity"></div>
+            <button onclick="checkM2Activity()">Submit Answer</button>
+            <div id="m2Feedback" class="feedback"></div>
+          </div>
+
+          <h3 style="margin-top: 20px; color: #2a5298">Module Quiz</h3>
+          <div id="m2Quiz"></div>
+          <button onclick="submitQuiz('m2')">Submit Quiz</button>
+          <div id="m2QuizFeedback" class="feedback"></div>
+        </div>
+        <button onclick="completeAndGo('m2', 'modules')">
+          Complete Module & Return
+        </button>
+      </div>
+
+      <!-- Module 3 -->
+      <div id="m3" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('modules')">Modules</a> / Module 3
+        </div>
+        <div class="content">
+          <h2>👥 Module 3: Rank-Specific Familiarisation Requirements</h2>
+          <p>
+            <strong>Master:</strong> Vessel operation, company procedures,
+            regulatory compliance, crew management.
+          </p>
+          <p>
+            <strong>Deck Officers:</strong> Bridge systems, navigation
+            equipment, cargo operations, safety procedures.
+          </p>
+          <p>
+            <strong>Engineers:</strong> Engine room systems, propulsion, power
+            generation, maintenance procedures.
+          </p>
+          <p>
+            <strong>Ratings:</strong> Safety equipment, emergency procedures,
+            work station locations, basic vessel systems.
+          </p>
+
+          <h3 style="margin-top: 20px; color: #2a5298">
+            Interactive Activity: Rank-Specific Scenarios
+          </h3>
+          <div class="activity-container">
+            <p style="margin-bottom: 15px">
+              <strong
+                >Match each scenario to the appropriate rank's familiarisation
+                focus:</strong
+              >
+            </p>
+            <div id="m3Activity"></div>
+            <button onclick="checkM3Activity()">Submit Answer</button>
+            <div id="m3Feedback" class="feedback"></div>
+          </div>
+
+          <h3 style="margin-top: 20px; color: #2a5298">Module Quiz</h3>
+          <div id="m3Quiz"></div>
+          <button onclick="submitQuiz('m3')">Submit Quiz</button>
+          <div id="m3QuizFeedback" class="feedback"></div>
+        </div>
+        <button onclick="completeAndGo('m3', 'modules')">
+          Complete Module & Return
+        </button>
+      </div>
+
+      <!-- Module 4 -->
+      <div id="m4" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('modules')">Modules</a> / Module 4
+        </div>
+        <div class="content">
+          <h2>📝 Module 4: Handover Period & Sign-Off</h2>
+          <p>
+            <strong>Handover Period Duration:</strong> Typically 2-4 weeks
+            depending on rank and vessel type.
+          </p>
+          <p>
+            <strong>What Must Be Covered:</strong> All checklist items must be
+            completed and signed off before independent duties.
+          </p>
+          <p>
+            <strong>Signing the Checklist:</strong> Both the new crew member and
+            the responsible officer must sign and date the familiarisation
+            checklist.
+          </p>
+          <p>
+            <strong>Legal Requirement:</strong> STCW requires that watchkeeping
+            personnel are not to take over a watch until familiarised.
+          </p>
+
+          <h3 style="margin-top: 20px; color: #2a5298">
+            Interactive Activity: Sign-Off Procedure
+          </h3>
+          <div class="activity-container">
+            <p style="margin-bottom: 15px">
+              <strong
+                >Arrange the sign-off procedure in the correct order:</strong
+              >
+            </p>
+            <div id="m4Activity"></div>
+            <button onclick="checkM4Activity()">Submit Answer</button>
+            <div id="m4Feedback" class="feedback"></div>
+          </div>
+
+          <h3 style="margin-top: 20px; color: #2a5298">Module Quiz</h3>
+          <div id="m4Quiz"></div>
+          <button onclick="submitQuiz('m4')">Submit Quiz</button>
+          <div id="m4QuizFeedback" class="feedback"></div>
+        </div>
+        <button onclick="completeAndGo('m4', 'modules')">
+          Complete Module & Return
+        </button>
+      </div>
+
+      <!-- Module 5 -->
+      <div id="m5" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('modules')">Modules</a> / Module 5
+        </div>
+        <div class="content">
+          <h2>🔄 Module 5: MOC & SIRE Compliance</h2>
+          <p>
+            <strong>Management of Change (MOC):</strong> New crew joining is a
+            change that requires managed familiarisation.
+          </p>
+          <p>
+            <strong>MOC Process:</strong> Identify the change (new crew), assess
+            risks, implement controls (familiarisation), verify effectiveness.
+          </p>
+          <p>
+            <strong>SIRE Expectations:</strong> Inspectors expect to see
+            documented familiarisation procedures and completion records.
+          </p>
+          <p>
+            <strong>Records:</strong> Keep signed and dated familiarisation
+            checklists as evidence of compliance.
+          </p>
+
+          <h3 style="margin-top: 20px; color: #2a5298">
+            Interactive Activity: MOC & Compliance Scenarios
+          </h3>
+          <div class="activity-container">
+            <p style="margin-bottom: 15px">
+              <strong
+                >Identify the correct MOC and compliance action for each
+                scenario:</strong
+              >
+            </p>
+            <div id="m5Activity"></div>
+            <button onclick="checkM5Activity()">Submit Answer</button>
+            <div id="m5Feedback" class="feedback"></div>
+          </div>
+
+          <h3 style="margin-top: 20px; color: #2a5298">Module Quiz</h3>
+          <div id="m5Quiz"></div>
+          <button onclick="submitQuiz('m5')">Submit Quiz</button>
+          <div id="m5QuizFeedback" class="feedback"></div>
+        </div>
+        <button onclick="completeAndGo('m5', 'modules')">
+          Complete Module & Return
+        </button>
+      </div>
+
+      <!-- Assessment Screen -->
+      <div id="assess" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('modules')">Modules</a> / Assessment
+        </div>
+        <div class="content">
+          <h2>📊 Final Assessment</h2>
+          <p>Answer all 25 questions. You need 70% (18 questions) to pass.</p>
+          <div id="assessmentContainer"></div>
+          <button
+            onclick="submitAssessment()"
+            style="width: 100%; margin-top: 20px"
+          >
+            Submit Assessment
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Screen -->
+      <div id="results" class="screen">
+        <div class="breadcrumbs">
+          <a onclick="go('modules')">Modules</a> / Results
+        </div>
+        <h1>🎉 Course Complete!</h1>
+        <div class="certificate">
+          <h2>Certificate of Completion</h2>
+          <p>This certifies that you have successfully completed</p>
+          <h3>Vessel Familiarisation on Joining — A Structured Approach</h3>
+          <p style="margin-top: 20px">
+            <strong>Final Score: <span id="finalScore">0</span>%</strong>
+          </p>
+          <p style="margin-top: 20px">
+            <strong>Total XP Earned: <span id="totalXP">0</span></strong>
+          </p>
+          <p style="margin-top: 20px">
+            <strong>Badges Earned: <span id="totalBadges">0</span></strong>
+          </p>
+        </div>
+        <button onclick="go('modules')">Return to Modules</button>
+      </div>
+    </div>
+
+    <script>
+      const courseState = {
+        currentScreen: "hero",
+        xp: 0,
+        badges: [],
+        modulesCompleted: [],
+        quizScores: {},
+        assessmentScore: 0,
+        startTime: Date.now(),
+      };
+
+      const activities = {
+        m1: [
+          { item: "Prevents accidents", correct: "Safety" },
+          { item: "Ensures STCW compliance", correct: "Compliance" },
+          { item: "Builds crew confidence", correct: "Confidence" },
+          { item: "Meets ISM Code requirement", correct: "Compliance" },
+          { item: "Enables independent duties", correct: "Competence" },
+        ],
+        m2: [
+          { item: "Safety equipment locations", priority: 1 },
+          { item: "Emergency procedures", priority: 2 },
+          { item: "Key vessel systems", priority: 3 },
+          { item: "Company SMS procedures", priority: 4 },
+          { item: "Vessel-specific procedures", priority: 5 },
+        ],
+        m3: [
+          { scenario: "Bridge systems and navigation", rank: "Deck Officer" },
+          { scenario: "Engine room and propulsion", rank: "Engineer" },
+          {
+            scenario: "Regulatory compliance and crew management",
+            rank: "Master",
+          },
+          { scenario: "Safety equipment and work stations", rank: "Rating" },
+          { scenario: "Cargo operations and safety", rank: "Deck Officer" },
+        ],
+        m4: [
+          { step: "Complete all checklist items", order: 1 },
+          { step: "New crew member signs checklist", order: 2 },
+          { step: "Responsible officer signs checklist", order: 3 },
+          { step: "Date the checklist", order: 4 },
+          { step: "File in crew record", order: 5 },
+        ],
+        m5: [
+          {
+            scenario: "New crew joining",
+            action: "Implement managed familiarisation",
+          },
+          {
+            scenario: "SIRE inspection",
+            action: "Provide signed familiarisation records",
+          },
+          {
+            scenario: "Crew unable to complete familiarisation",
+            action: "Delay independent duties until complete",
+          },
+          {
+            scenario: "New vessel system installed",
+            action: "Update familiarisation procedure",
+          },
+          {
+            scenario: "Crew member changes rank",
+            action: "Provide rank-specific familiarisation",
+          },
+        ],
+      };
+
+      const quizzes = {
+        m1: [
+          {
+            question: "What is the STCW requirement regarding familiarisation?",
+            options: [
+              "Optional for experienced crew",
+              "Must be completed before taking a watch",
+              "Only for new officers",
+              "Not required on modern vessels",
+            ],
+            correct: 1,
+          },
+          {
+            question: "Why do SIRE inspectors ask about familiarisation?",
+            options: [
+              "To waste time",
+              "It is a key compliance indicator",
+              "To check crew knowledge only",
+              "It is not important",
+            ],
+            correct: 1,
+          },
+        ],
+        m2: [
+          {
+            question: "What is the first priority in vessel familiarisation?",
+            options: [
+              "Company procedures",
+              "Safety equipment locations",
+              "Vessel systems",
+              "Emergency procedures",
+            ],
+            correct: 1,
+          },
+          {
+            question:
+              "Which item should be included in the familiarisation checklist?",
+            options: [
+              "Personal preferences",
+              "Emergency duties and muster stations",
+              "Crew gossip",
+              "Off-duty activities",
+            ],
+            correct: 1,
+          },
+        ],
+        m3: [
+          {
+            question: "What is the focus of a Deck Officer's familiarisation?",
+            options: [
+              "Engine room systems",
+              "Bridge systems and navigation",
+              "Catering procedures",
+              "Administrative tasks",
+            ],
+            correct: 1,
+          },
+          {
+            question: "What must an Engineer familiarise with?",
+            options: [
+              "Bridge operations",
+              "Propulsion and power systems",
+              "Cargo handling",
+              "Navigation",
+            ],
+            correct: 1,
+          },
+        ],
+        m4: [
+          {
+            question: "How long is a typical handover period?",
+            options: ["1 week", "2-4 weeks", "6 months", "1 day"],
+            correct: 1,
+          },
+          {
+            question: "Who must sign the familiarisation checklist?",
+            options: [
+              "Only the new crew member",
+              "Only the Master",
+              "Both the new crew member and responsible officer",
+              "The company office only",
+            ],
+            correct: 2,
+          },
+        ],
+        m5: [
+          {
+            question:
+              "What is Management of Change (MOC) in relation to new crew?",
+            options: [
+              "Not applicable",
+              "A managed process for crew joining",
+              "Only for senior officers",
+              "A company policy only",
+            ],
+            correct: 1,
+          },
+          {
+            question:
+              "What should be kept as evidence of familiarisation compliance?",
+            options: [
+              "Crew gossip",
+              "Signed and dated checklists",
+              "Informal notes",
+              "Nothing required",
+            ],
+            correct: 1,
+          },
+        ],
+      };
+
+      const assessmentQuestions = [
+        {
+          question:
+            "STCW requires watchkeeping personnel to be familiarised before taking a watch. True or False?",
+          options: ["True", "False"],
+          correct: 0,
+        },
+        {
+          question: "What is the primary purpose of vessel familiarisation?",
+          options: [
+            "To keep crew busy",
+            "To prevent accidents and ensure compliance",
+            "To meet paperwork requirements",
+            "To impress the Master",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Who conducts SIRE inspections that ask about familiarisation?",
+          options: [
+            "The crew",
+            "Port State Control inspectors",
+            "The company office",
+            "Insurance companies",
+          ],
+          correct: 1,
+        },
+        {
+          question: "What is the typical duration of a handover period?",
+          options: ["1 day", "2-4 weeks", "6 months", "1 year"],
+          correct: 1,
+        },
+        {
+          question:
+            "Which of the following is NOT a typical familiarisation checklist item?",
+          options: [
+            "Safety equipment locations",
+            "Emergency procedures",
+            "Crew member personal preferences",
+            "Key vessel systems",
+          ],
+          correct: 2,
+        },
+        {
+          question:
+            "What does ISM Code require regarding crew familiarisation?",
+          options: [
+            "Nothing",
+            "Structured familiarisation as part of SMS",
+            "Optional familiarisation",
+            "Informal familiarisation only",
+          ],
+          correct: 1,
+        },
+        {
+          question: "Who must sign the familiarisation checklist?",
+          options: [
+            "Only the new crew member",
+            "Only the Master",
+            "Both the new crew member and responsible officer",
+            "The company office only",
+          ],
+          correct: 2,
+        },
+        {
+          question: "What is Management of Change (MOC)?",
+          options: [
+            "A company policy",
+            "A process for managing changes like new crew joining",
+            "Not applicable to crew",
+            "Only for senior officers",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "How many questions must you answer correctly to pass this assessment?",
+          options: ["15 (60%)", "18 (70%)", "20 (80%)", "23 (92%)"],
+          correct: 1,
+        },
+        {
+          question:
+            "What should be done if a crew member cannot complete familiarisation on time?",
+          options: [
+            "Start independent duties anyway",
+            "Delay independent duties until complete",
+            "Reduce the checklist",
+            "Ignore the requirement",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Which rank requires familiarisation on bridge systems and navigation?",
+          options: ["Ratings", "Deck Officers", "Engineers", "Catering staff"],
+          correct: 1,
+        },
+        {
+          question:
+            "What is the consequence of not completing vessel familiarisation?",
+          options: [
+            "A warning",
+            "Violation of STCW requirements",
+            "No consequences",
+            "A pay reduction",
+          ],
+          correct: 1,
+        },
+        {
+          question: "How should familiarisation records be maintained?",
+          options: [
+            "Destroyed after 1 month",
+            "Kept in crew records for compliance evidence",
+            "Posted on the crew board",
+            "Sent to the company only",
+          ],
+          correct: 1,
+        },
+        {
+          question: "What does SIRE stand for?",
+          options: [
+            "Safety Inspection and Reporting Examination",
+            "Ship Inspection Report Entry",
+            "Systematic Inspection and Risk Evaluation",
+            "Safety and Integrity Review Examination",
+          ],
+          correct: 2,
+        },
+        {
+          question:
+            "Who is responsible for ensuring crew familiarisation is completed?",
+          options: [
+            "The crew member only",
+            "The responsible officer",
+            "Both the crew member and responsible officer",
+            "The company office only",
+          ],
+          correct: 2,
+        },
+        {
+          question: "What is the first step in the familiarisation process?",
+          options: [
+            "Sign the checklist",
+            "Identify all checklist items",
+            "Complete the handover period",
+            "Take independent duties",
+          ],
+          correct: 1,
+        },
+        {
+          question: "How often should familiarisation procedures be updated?",
+          options: [
+            "Never",
+            "Only when required by MOC",
+            "Annually",
+            "Every 5 years",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "What should happen if vessel systems change during the handover period?",
+          options: [
+            "Ignore the changes",
+            "Update familiarisation procedures and provide additional training",
+            "Reduce the handover period",
+            "Continue with original procedures",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Which of the following is a rank-specific familiarisation requirement?",
+          options: [
+            "All ranks learn identical procedures",
+            "Master learns bridge systems only",
+            "Each rank has specific focus areas",
+            "Ratings learn everything",
+          ],
+          correct: 2,
+        },
+        {
+          question:
+            "What is the purpose of dating the familiarisation checklist?",
+          options: [
+            "For record-keeping only",
+            "To establish when familiarisation was completed",
+            "To track crew age",
+            "No specific purpose",
+          ],
+          correct: 1,
+        },
+        {
+          question: "How does familiarisation relate to vessel safety?",
+          options: [
+            "No relation",
+            "Proper familiarisation prevents accidents and incidents",
+            "It only affects paperwork",
+            "It is purely administrative",
+          ],
+          correct: 1,
+        },
+        {
+          question: "What should be included in company SMS familiarisation?",
+          options: [
+            "Only safety procedures",
+            "Company policies, procedures, and safety systems",
+            "Only emergency procedures",
+            "Nothing specific",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Who is responsible for verifying that familiarisation is complete?",
+          options: [
+            "The crew member",
+            "The responsible officer",
+            "Both parties",
+            "The company office only",
+          ],
+          correct: 2,
+        },
+        {
+          question:
+            "What is an example of a Management of Change related to familiarisation?",
+          options: [
+            "Crew member taking a day off",
+            "New crew joining the vessel",
+            "Change in weather",
+            "Crew member's birthday",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "How should familiarisation be documented for SIRE compliance?",
+          options: [
+            "Informally",
+            "In signed and dated checklists kept in crew records",
+            "Verbally only",
+            "Not documented",
+          ],
+          correct: 1,
+        },
+      ];
+
+      function renderActivities() {
+        // Module 1 Activity
+        let m1Html = "";
+        activities.m1.forEach((act, idx) => {
+          m1Html += `
+    <div class="activity-item">
+      <p><strong>${act.item}</strong></p>
+
+      <label>
+        <input type="radio" name="m1_${idx}" value="Safety">
+        Safety
+      </label><br>
+
+      <label>
+        <input type="radio" name="m1_${idx}" value="Compliance">
+        Compliance
+      </label><br>
+
+      <label>
+        <input type="radio" name="m1_${idx}" value="Confidence">
+        Confidence
+      </label><br>
+
+      <label>
+        <input type="radio" name="m1_${idx}" value="Competence">
+        Competence
+      </label>
+    </div>
+  `;
+        });
+
+        document.getElementById("m1Activity").innerHTML = m1Html;
+        document.getElementById("m1Activity").innerHTML = m1Html;
+
+        // Module 2 Activity
+        let m2Html = "";
+        activities.m2.forEach((act, idx) => {
+          m2Html += `
+                    <div class="activity-item">
+                        <label>
+                            <input type="number" name="m2_${idx}" min="1" max="5" placeholder="Priority (1-5)"> ${act.item}
+                        </label>
+                    </div>
+                `;
+        });
+        document.getElementById("m2Activity").innerHTML = m2Html;
+
+        // Module 3 Activity
+        let m3Html = "";
+        activities.m3.forEach((act, idx) => {
+          m3Html += `
+                    <div class="activity-item">
+                        <label>
+                            <input type="radio" name="m3_${idx}" value="${act.rank}"> ${act.scenario}
+                        </label>
+                        <div style="margin-left: 20px; font-size: 0.9em; color: #666;">
+                            <small>Select: Master / Deck Officer / Engineer / Rating</small>
+                        </div>
+                    </div>
+                `;
+        });
+        document.getElementById("m3Activity").innerHTML = m3Html;
+
+        // Module 4 Activity
+        let m4Html = "";
+        activities.m4.forEach((act, idx) => {
+          m4Html += `
+                    <div class="activity-item">
+                        <label>
+                            <input type="number" name="m4_${idx}" min="1" max="5" placeholder="Order (1-5)"> ${act.step}
+                        </label>
+                    </div>
+                `;
+        });
+        document.getElementById("m4Activity").innerHTML = m4Html;
+
+        // Module 5 Activity
+        let m5Html = "";
+        activities.m5.forEach((act, idx) => {
+          m5Html += `
+                    <div class="activity-item">
+                        <label>
+                            <input type="radio" name="m5_${idx}" value="${act.action}"> ${act.scenario}
+                        </label>
+                        <div style="margin-left: 20px; font-size: 0.9em; color: #666;">
+                            <small>Select: Implement managed familiarisation / Provide records / Delay duties / Update procedure</small>
+                        </div>
+                    </div>
+                `;
+        });
+        document.getElementById("m5Activity").innerHTML = m5Html;
+      }
+
+      function renderQuizzes() {
+        Object.keys(quizzes).forEach((moduleId) => {
+          let quizHtml = "";
+          quizzes[moduleId].forEach((q, idx) => {
+            quizHtml += `
+                        <div class="quiz-question">
+                            <h4>Question ${idx + 1}: ${q.question}</h4>
+                            ${q.options
+                              .map(
+                                (opt, optIdx) => `
+                                <div class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="${moduleId}_q${idx}" value="${optIdx}"> ${opt}
+                                    </label>
+                                </div>
+                            `,
+                              )
+                              .join("")}
+                        </div>
+                    `;
+          });
+          document.getElementById(moduleId + "Quiz").innerHTML = quizHtml;
+        });
+      }
+
+      function renderAssessment() {
+        let assessHtml = "";
+        assessmentQuestions.forEach((q, idx) => {
+          assessHtml += `
+                    <div class="assessment-question">
+                        <h4>Question ${idx + 1}: ${q.question}</h4>
+                        ${q.options
+                          .map(
+                            (opt, optIdx) => `
+                            <div class="quiz-option">
+                                <label>
+                                    <input type="radio" name="assess_q${idx}" value="${optIdx}"> ${opt}
+                                </label>
+                            </div>
+                        `,
+                          )
+                          .join("")}
+                    </div>
+                `;
+        });
+        document.getElementById("assessmentContainer").innerHTML = assessHtml;
+      }
+
+      function checkM1Activity() {
+        let correct = 0;
+        activities.m1.forEach((act, idx) => {
+          const selected = document.querySelector(
+            `input[name="m1_${idx}"]:checked`,
+          );
+          if (selected && selected.value === act.correct) correct++;
+        });
+        const score = Math.round((correct / activities.m1.length) * 100);
+        const feedback = document.getElementById("m1Feedback");
+        feedback.className =
+          score >= 70 ? "feedback correct" : "feedback incorrect";
+        feedback.innerHTML = `<strong>Activity Score: ${score}%</strong><br>${score >= 70 ? "✓ Correct!" : "✗ Review the material and try again."}`;
+        if (score >= 70) awardXP(25);
+      }
+
+      function checkM2Activity() {
+        let correct = 0;
+        activities.m2.forEach((act, idx) => {
+          const selected = document.querySelector(`input[name="m2_${idx}"]`);
+          if (selected && parseInt(selected.value) === act.priority) correct++;
+        });
+        const score = Math.round((correct / activities.m2.length) * 100);
+        const feedback = document.getElementById("m2Feedback");
+        feedback.className =
+          score >= 70 ? "feedback correct" : "feedback incorrect";
+        feedback.innerHTML = `<strong>Activity Score: ${score}%</strong><br>${score >= 70 ? "✓ Correct!" : "✗ Review the material and try again."}`;
+        if (score >= 70) awardXP(25);
+      }
+
+      function checkM3Activity() {
+        let correct = 0;
+        activities.m3.forEach((act, idx) => {
+          const selected = document.querySelector(
+            `input[name="m3_${idx}"]:checked`,
+          );
+          if (selected && selected.value === act.rank) correct++;
+        });
+        const score = Math.round((correct / activities.m3.length) * 100);
+        const feedback = document.getElementById("m3Feedback");
+        feedback.className =
+          score >= 70 ? "feedback correct" : "feedback incorrect";
+        feedback.innerHTML = `<strong>Activity Score: ${score}%</strong><br>${score >= 70 ? "✓ Correct!" : "✗ Review the material and try again."}`;
+        if (score >= 70) awardXP(25);
+      }
+
+      function checkM4Activity() {
+        let correct = 0;
+        activities.m4.forEach((act, idx) => {
+          const selected = document.querySelector(`input[name="m4_${idx}"]`);
+          if (selected && parseInt(selected.value) === act.order) correct++;
+        });
+        const score = Math.round((correct / activities.m4.length) * 100);
+        const feedback = document.getElementById("m4Feedback");
+        feedback.className =
+          score >= 70 ? "feedback correct" : "feedback incorrect";
+        feedback.innerHTML = `<strong>Activity Score: ${score}%</strong><br>${score >= 70 ? "✓ Correct!" : "✗ Review the material and try again."}`;
+        if (score >= 70) awardXP(25);
+      }
+
+      function checkM5Activity() {
+        let correct = 0;
+        activities.m5.forEach((act, idx) => {
+          const selected = document.querySelector(
+            `input[name="m5_${idx}"]:checked`,
+          );
+          if (selected && selected.value === act.action) correct++;
+        });
+        const score = Math.round((correct / activities.m5.length) * 100);
+        const feedback = document.getElementById("m5Feedback");
+        feedback.className =
+          score >= 70 ? "feedback correct" : "feedback incorrect";
+        feedback.innerHTML = `<strong>Activity Score: ${score}%</strong><br>${score >= 70 ? "✓ Correct!" : "✗ Review the material and try again."}`;
+        if (score >= 70) awardXP(25);
+      }
+
+      function submitQuiz(moduleId) {
+        let correct = 0;
+        quizzes[moduleId].forEach((q, idx) => {
+          const selected = document.querySelector(
+            `input[name="${moduleId}_q${idx}"]:checked`,
+          );
+          if (selected && parseInt(selected.value) === q.correct) correct++;
+        });
+        const score = Math.round((correct / quizzes[moduleId].length) * 100);
+        courseState.quizScores[moduleId] = score;
+        const feedback = document.getElementById(moduleId + "QuizFeedback");
+        feedback.className =
+          score >= 70 ? "feedback correct" : "feedback incorrect";
+        feedback.innerHTML = `<strong>Quiz Score: ${score}%</strong><br>${score >= 70 ? "✓ Passed!" : "✗ Review and try again."}`;
+        if (score >= 70) awardXP(15);
+      }
+
+      function submitAssessment() {
+        let correct = 0;
+        assessmentQuestions.forEach((q, idx) => {
+          const selected = document.querySelector(
+            `input[name="assess_q${idx}"]:checked`,
+          );
+          if (selected && parseInt(selected.value) === q.correct) correct++;
+        });
+        const score = Math.round((correct / assessmentQuestions.length) * 100);
+        courseState.assessmentScore = score;
+
+        if (score >= 70) {
+          awardXP(50);
+          checkBadges();
+          const completionTime = Math.round(
+            (Date.now() - courseState.startTime) / 1000,
+          );
+          sendLMSCompletion(score, completionTime);
+          go("results");
+        } else {
+          alert(
+            `Assessment Score: ${score}%\n\nYou need 70% to pass. Please review the material and try again.`,
+          );
+        }
+      }
+
+      function awardXP(points) {
+        courseState.xp += points;
+        updateDashboard();
+      }
+
+      function checkBadges() {
+        const badges = [];
+        if (courseState.xp >= 100) badges.push("🏅 Course Master");
+        if (courseState.xp >= 150) badges.push("⭐ XP Champion");
+        if (courseState.assessmentScore >= 90) badges.push("🔥 On Fire");
+        courseState.badges = badges;
+      }
+
+      function updateDashboard() {
+        document.getElementById("xpDisplay").textContent = courseState.xp;
+        const progress = Math.round(
+          (courseState.modulesCompleted.length / 5) * 100,
+        );
+        document.getElementById("progressDisplay").textContent = progress + "%";
+        document.getElementById("modulesDisplay").textContent =
+          courseState.modulesCompleted.length + "/5";
+        document.getElementById("progressBar").style.width = progress + "%";
+        document.getElementById("badgeCount").textContent =
+          courseState.badges.length;
+
+        let badgeHtml = "";
+        courseState.badges.forEach((badge) => {
+          badgeHtml += `<div class="badge">${badge}</div>`;
+        });
+        document.getElementById("badgeDisplay").innerHTML = badgeHtml;
+      }
+
+      function completeAndGo(moduleId, screen) {
+        if (!courseState.modulesCompleted.includes(moduleId)) {
+          courseState.modulesCompleted.push(moduleId);
+          awardXP(10);
+        }
+        go(screen);
+      }
+
+      function go(screenId) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(screenId).classList.add("active");
+        courseState.currentScreen = screenId;
+        localStorage.setItem("courseState", JSON.stringify(courseState));
+      }
+
+      function sendLMSCompletion(score, completionTime) {
+        const completionData = {
+          courseId: "vessel-familiarisation-001",
+          courseName: "Vessel Familiarisation on Joining",
+          completionStatus: score >= 70 ? "PASSED" : "FAILED",
+          score: score,
+          passingScore: 70,
+          totalXP: courseState.xp,
+          badges: courseState.badges,
+          modulesCompleted: courseState.modulesCompleted,
+          completionTime: completionTime,
+          timestamp: new Date().toISOString(),
+        };
+
+        // PostMessage API for iframe-based LMS
+        if (window.parent !== window) {
+          window.parent.postMessage(completionData, "*");
+        }
+
+        // REST API for custom LMS
+        fetch("/api/lms/completion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(completionData),
+        }).catch(() => {});
+
+        // localStorage for offline persistence
+        localStorage.setItem(
+          "courseCompletion",
+          JSON.stringify(completionData),
+        );
+      }
+
+      // Initialize
+      window.addEventListener("load", () => {
+        const saved = localStorage.getItem("courseState");
+        if (saved) courseState = JSON.parse(saved);
+        renderActivities();
+        renderQuizzes();
+        renderAssessment();
+        updateDashboard();
+      });
+
+      // Restore state on page load
+      window.addEventListener("beforeunload", () => {
+        localStorage.setItem("courseState", JSON.stringify(courseState));
+      });
+    </script>
+  </body>
+</html>

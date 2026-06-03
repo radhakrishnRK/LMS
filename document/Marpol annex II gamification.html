@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>MARPOL Annex II — Noxious Liquid Substances on Tankers</title>
+<style>
+:root{--blue:#1d4ed8;--navy:#071733;--muted:#5b6b82;--border:#dfe7f2;--bg:#ffffff;--soft:#f8fbff;--red:#dc2626;--yellow:#eab308;--green:#16a34a;--shadow:0 18px 50px rgba(15,23,42,.08)}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:var(--navy);line-height:1.45} 
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:18px;box-shadow:0 3px 12px rgba(15,23,42,.04)}
+.brand{font-weight:900;letter-spacing:.05em;color:var(--blue)} .brand span{color:var(--green)} .progress{height:10px;background:#eef3f8;border-radius:99px;flex:1;overflow:hidden} #bar{height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--yellow),var(--green));transition:.35s} #pct{font-weight:800}
+main{max-width:980px;margin:0 auto;padding:28px 18px 70px} .screen{display:none} .screen.active{display:block;animation:fade .25s ease} @keyframes fade{from{opacity:.3;transform:translateY(5px)}to{opacity:1;transform:none}}
+.hero-card{border:1px solid var(--border);border-radius:28px;padding:34px;background:linear-gradient(135deg,#ffffff,#f8fbff);box-shadow:var(--shadow);display:flex;gap:24px;align-items:center} .hero-card.mini{padding:24px;margin-bottom:14px} .icon{font-size:64px;min-width:80px;text-align:center} 
+.kicker{text-transform:uppercase;font-size:13px;color:var(--blue);font-weight:900;letter-spacing:.12em;margin:0 0 8px} h1{font-size:clamp(30px,5vw,54px);line-height:1.02;margin:0 0 12px;letter-spacing:-.03em} h2{font-size:18px;text-transform:uppercase;letter-spacing:.11em;color:var(--blue)} h3{font-size:27px;line-height:1.25;margin:8px 0 20px} p{color:var(--muted);font-size:18px}
+.startgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:24px 0} .chip{border:1px solid var(--border);border-radius:18px;padding:18px;background:#fff} .chip b{display:block;font-size:18px} .chip span{color:var(--muted)}
+button{font:inherit;cursor:pointer} .primary,.navrow button,.narration button,.refresh{border:0;border-radius:16px;padding:14px 22px;font-weight:900;background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(29,78,216,.18)} .navrow button:first-child{background:#fff;color:var(--navy);border:1px solid var(--border);box-shadow:none} .narration{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 18px} .narration button{background:#0f172a;padding:10px 14px;border-radius:12px;font-size:14px} .refresh{background:#fff;color:var(--navy);border:1px solid var(--border);box-shadow:none;margin-top:18px}
+.card{background:#fff;border:1px solid var(--border);border-radius:24px;padding:28px;margin:18px 0;box-shadow:var(--shadow)} .svgbox{overflow:auto;border-radius:18px;border:1px solid var(--border);background:#f8fbff;margin:10px 0 20px} .svgbox svg{width:100%;min-width:600px;display:block}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px} .fact{border-left:7px solid var(--green);background:#f7fff9;padding:16px;border-radius:14px} .fact:nth-child(2){border-color:var(--yellow);background:#fffdf1} .fact:nth-child(3){border-color:var(--red);background:#fff7f7} .fact b{display:block;margin-bottom:5px} .fact span{color:#344256}
+.options{display:grid;gap:12px} .option{text-align:left;background:#fff;border:1.5px solid var(--border);border-radius:18px;padding:16px 20px;color:#152033;font-size:18px} .option:hover{border-color:var(--blue)} .option.correct{border-color:var(--green);background:#f0fdf4;color:#14532d} .option.wrong{border-color:var(--red);background:#fef2f2;color:#7f1d1d} .option[disabled]{cursor:default} .feedback{display:none;margin-top:14px;border-radius:16px;padding:14px 16px;font-weight:700} .feedback.ok{display:block;background:#f0fdf4;color:#14532d;border:1px solid #bbf7d0} .feedback.bad{display:block;background:#fef2f2;color:#7f1d1d;border:1px solid #fecaca}
+.crumbs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px} .crumbs button{border:1px solid var(--border);border-radius:99px;background:#fff;color:var(--muted);padding:8px 12px;font-weight:800} .crumbs .active{background:var(--blue);color:#fff} .crumbs .done{border-color:var(--green);color:var(--green)} .assesslink{margin-left:auto!important}
+.navrow{display:flex;justify-content:space-between;gap:12px;margin:24px 0} .aq{border-bottom:1px dashed var(--border);padding:16px 0} .result{display:none;text-align:center;padding:30px;border-radius:28px;border:1px solid var(--border);background:#f8fbff} .result.show{display:block} #score{font-size:58px;font-weight:900;color:var(--green)} .certificate{display:none;margin-top:20px;border:8px double var(--green);padding:26px;border-radius:18px;background:white} .certificate.show{display:block}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0} .legend span{padding:8px 12px;border-radius:99px;font-weight:900} .r{background:#fee2e2;color:#991b1b} .y{background:#fef9c3;color:#854d0e} .g{background:#dcfce7;color:#166534}
+@media(max-width:700px){.hero-card{display:block}.icon{text-align:left}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="brand">NLS <span>ANNEX II</span></div><div class="progress"><div id="bar"></div></div><div id="pct">0%</div></header>
+<main>
+<section class="screen active" id="start">
+<div class="hero-card">
+<div class="icon">🌊</div>
+<div>
+<p class="kicker">P2 Operations · Environmental</p>
+<h1>MARPOL Annex II — Noxious Liquid Substances on Tankers</h1>
+<p>P2 Operations · Environmental Interactive Course. A practical shipboard course for chemical/product tanker officers and crew involved in NLS cargo operations, tank cleaning, prewash, discharge control and documentation.</p>
+<div class="legend"><span class="r">Red: Stop</span><span class="y">Yellow: Verify</span><span class="g">Green: Proceed only when authorised</span></div>
+<button class="primary" onclick="goTo('m1')">Start Course →</button>
+</div>
+</div>
+<div class="startgrid"><div class="chip"><b>🧪 What Annex II Controls</b><span>Recognise when MARPOL Annex II applies and why NLS handling is different from oil cargo residues.</span></div><div class="chip"><b>🔴 NLS Categories X, Y, Z and OS</b><span>Understand the pollution meaning of Category X, Y, Z and Other Substances.</span></div><div class="chip"><b>📘 P&amp;A Manual and Cargo Record Book</b><span>Use the Procedures and Arrangements Manual and Cargo Record Book as operational control documents.</span></div><div class="chip"><b>🚢 Prewash, Stripping and Reception Facilities</b><span>Know when prewash is required and why efficient stripping matters.</span></div><div class="chip"><b>🌊 Discharge Criteria and Special Areas</b><span>Apply the basic no-discharge mindset and recognise when discharge is only allowed under strict conditions.</span></div><div class="chip"><b>🚨 Spill Prevention and Emergency Response</b><span>Control spills quickly and protect people, the ship and the environment.</span></div></div>
+</section>
+<section class="screen" id="m1">
+<div class="crumbs"><button class="active" onclick="goTo('m1')">M1</button><button class="" onclick="goTo('m2')">M2</button><button class="" onclick="goTo('m3')">M3</button><button class="" onclick="goTo('m4')">M4</button><button class="" onclick="goTo('m5')">M5</button><button class="" onclick="goTo('m6')">M6</button><button class="assesslink" onclick="goTo('assessment')">ASSESS</button></div>
+<div class="hero-card mini">
+<div class="icon">🧪</div>
+<div><p class="kicker">Module 1 of 6 · MARPOL Annex II · NLS operations</p><h1>What Annex II Controls</h1><p>Recognise when MARPOL Annex II applies and why NLS handling is different from oil cargo residues.</p></div>
+</div>
+<div class="narration">
+<button onclick="speakModule('m1')">▶ Play Narration</button><button onclick="pauseSpeech()">⏸ Pause / Resume</button><button onclick="stopSpeech()">■ Stop</button>
+</div>
+<div class="card">
+<h2>Visual briefing</h2>
+<div class="svgbox"><svg aria-label="training visual" role="img" viewbox="0 0 720 220">
+<rect fill="#e8f5e9" height="220" rx="22" width="720"></rect>
+<path d="M70 150 C130 95 210 95 270 150 S410 205 470 150 S610 95 670 150" fill="none" stroke="#94a3b8" stroke-linecap="round" stroke-width="10"></path>
+<rect fill="#fff" height="78" rx="18" stroke="#dbe4f0" stroke-width="3" width="530" x="95" y="55"></rect>
+<circle cx="180" cy="94" fill="#dc2626" r="34"></circle><text fill="#fff" font-size="34" font-weight="900" text-anchor="middle" x="180" y="103">!</text>
+<rect fill="#facc15" height="48" rx="12" width="110" x="250" y="70"></rect><text fill="#111827" font-size="18" font-weight="700" text-anchor="middle" x="305" y="100">Bulk cargo</text>
+<rect fill="#22c55e" height="48" rx="12" width="110" x="380" y="70"></rect><text fill="#052e16" font-size="18" font-weight="700" text-anchor="middle" x="435" y="100">IBC Code</text>
+<rect fill="#60a5fa" height="48" rx="12" width="90" x="510" y="70"></rect><text fill="#082f49" font-size="17" font-weight="700" text-anchor="middle" x="555" y="100">P&amp;A</text>
+<text fill="#334155" font-size="20" font-weight="700" text-anchor="middle" x="360" y="178">Stop · Verify · Record · Protect the sea</text>
+</svg></div>
+<div class="facts"><div class="fact"><b>Scope</b><span>MARPOL Annex II controls pollution from noxious liquid substances carried in bulk. On chemical and product tankers, the cargo category, P&amp;A Manual and IBC Code entry drive the correct operation.</span></div>
+<div class="fact"><b>Crew point</b><span>Do not guess from the cargo name alone. Check the cargo document, IBC Code entry, ship's Certificates and P&amp;A Manual before loading, tank cleaning or discharge.</span></div>
+<div class="fact"><b>Stop rule</b><span>If the cargo category, special requirements or discharge instructions are unclear, stop and ask the responsible officer before opening valves or starting pumps.</span></div></div>
+</div>
+<div class="card activity">
+<h2>Interactive activity</h2>
+<h3>The cargo is listed in the IBC Code and carried in bulk. What should a rating do before any tank washing line-up?</h3>
+<div class="options" id="m1-opts"><button class="option" onclick="answerActivity('m1',0)">Use the same line-up as the last voyage if the cargo looks similar.</button>
+<button class="option" onclick="answerActivity('m1',1)">Check the P&amp;A Manual instruction and follow the officer's tank cleaning plan.</button>
+<button class="option" onclick="answerActivity('m1',2)">Discharge washings directly overboard once the ship is at sea.</button>
+<button class="option" onclick="answerActivity('m1',3)">Rely only on the cargo MSDS and ignore MARPOL category.</button></div>
+<div class="feedback" id="m1-fb"></div>
+<button class="refresh" onclick="refreshActivity('m1')">↻ Refresh Activity</button>
+</div>
+<div class="card quiz">
+<h2>Module quiz</h2>
+<h3>Which shipboard document gives the approved operational method for tank washing and discharge arrangements for NLS cargo residues?</h3>
+<div class="options" id="m1-quiz-opts"><button class="option" onclick="answerQuiz('m1',0)">The crew mess notice board.</button>
+<button class="option" onclick="answerQuiz('m1',1)">The ship-specific Procedures and Arrangements Manual.</button>
+<button class="option" onclick="answerQuiz('m1',2)">Only the cargo hose pressure test certificate.</button>
+<button class="option" onclick="answerQuiz('m1',3)">Only the bunker delivery note.</button></div>
+<div class="feedback" id="m1-quiz-fb"></div>
+<button class="refresh" onclick="refreshQuiz('m1')">↻ Refresh Quiz</button>
+</div>
+<div class="navrow">
+<button onclick="goTo('start')">← Back</button>
+<button onclick="goTo('m2')">Next →</button>
+</div>
+</section>
+<section class="screen" id="m2">
+<div class="crumbs"><button class="done" onclick="goTo('m1')">M1</button><button class="active" onclick="goTo('m2')">M2</button><button class="" onclick="goTo('m3')">M3</button><button class="" onclick="goTo('m4')">M4</button><button class="" onclick="goTo('m5')">M5</button><button class="" onclick="goTo('m6')">M6</button><button class="assesslink" onclick="goTo('assessment')">ASSESS</button></div>
+<div class="hero-card mini">
+<div class="icon">🔴</div>
+<div><p class="kicker">Module 2 of 6 · MARPOL Annex II · NLS operations</p><h1>NLS Categories X, Y, Z and OS</h1><p>Understand the pollution meaning of Category X, Y, Z and Other Substances.</p></div>
+</div>
+<div class="narration">
+<button onclick="speakModule('m2')">▶ Play Narration</button><button onclick="pauseSpeech()">⏸ Pause / Resume</button><button onclick="stopSpeech()">■ Stop</button>
+</div>
+<div class="card">
+<h2>Visual briefing</h2>
+<div class="svgbox"><svg aria-label="training visual" role="img" viewbox="0 0 720 220">
+<rect fill="#fee2e2" height="220" rx="22" width="720"></rect>
+<path d="M70 150 C130 95 210 95 270 150 S410 205 470 150 S610 95 670 150" fill="none" stroke="#94a3b8" stroke-linecap="round" stroke-width="10"></path>
+<rect fill="#fff" height="78" rx="18" stroke="#dbe4f0" stroke-width="3" width="530" x="95" y="55"></rect>
+<circle cx="180" cy="94" fill="#dc2626" r="34"></circle><text fill="#fff" font-size="34" font-weight="900" text-anchor="middle" x="180" y="103">!</text>
+<rect fill="#facc15" height="48" rx="12" width="110" x="250" y="70"></rect><text fill="#111827" font-size="18" font-weight="700" text-anchor="middle" x="305" y="100">X Major</text>
+<rect fill="#22c55e" height="48" rx="12" width="110" x="380" y="70"></rect><text fill="#052e16" font-size="18" font-weight="700" text-anchor="middle" x="435" y="100">Y Limited</text>
+<rect fill="#60a5fa" height="48" rx="12" width="90" x="510" y="70"></rect><text fill="#082f49" font-size="17" font-weight="700" text-anchor="middle" x="555" y="100">Z / OS</text>
+<text fill="#334155" font-size="20" font-weight="700" text-anchor="middle" x="360" y="178">Stop · Verify · Record · Protect the sea</text>
+</svg></div>
+<div class="facts"><div class="fact"><b>Category X</b><span>Major hazard. Discharge into the marine environment is prohibited in normal residue operations and strict prewash/reception-facility handling normally applies at the unloading port.</span></div>
+<div class="fact"><b>Category Y</b><span>Hazard to marine resources or human health, or harm to amenities/legitimate sea uses. Discharge is limited by strict conditions.</span></div>
+<div class="fact"><b>Category Z / OS</b><span>Category Z presents a minor hazard with less stringent restrictions. OS are evaluated as outside X, Y and Z, but shipboard procedures and records still matter.</span></div></div>
+</div>
+<div class="card activity">
+<h2>Interactive activity</h2>
+<h3>Match the category with the safest crew mindset: Category X means...</h3>
+<div class="options" id="m2-opts"><button class="option" onclick="answerActivity('m2',0)">Treat as routine wash water.</button>
+<button class="option" onclick="answerActivity('m2',1)">Major hazard — do not discharge residues into sea; follow prewash/reception requirements.</button>
+<button class="option" onclick="answerActivity('m2',2)">Minor hazard — no record is required.</button>
+<button class="option" onclick="answerActivity('m2',3)">Other substance — no procedure is needed.</button></div>
+<div class="feedback" id="m2-fb"></div>
+<button class="refresh" onclick="refreshActivity('m2')">↻ Refresh Activity</button>
+</div>
+<div class="card quiz">
+<h2>Module quiz</h2>
+<h3>For a Category X substance after unloading, what is the safest Annex II understanding for crew?</h3>
+<div class="options" id="m2-quiz-opts"><button class="option" onclick="answerQuiz('m2',0)">It may be pumped overboard if the ship is outside port limits.</button>
+<button class="option" onclick="answerQuiz('m2',1)">It normally requires strict prewash and reception-facility handling as directed.</button>
+<button class="option" onclick="answerQuiz('m2',2)">It becomes harmless once diluted with seawater.</button>
+<button class="option" onclick="answerQuiz('m2',3)">It does not need Cargo Record Book entries.</button></div>
+<div class="feedback" id="m2-quiz-fb"></div>
+<button class="refresh" onclick="refreshQuiz('m2')">↻ Refresh Quiz</button>
+</div>
+<div class="navrow">
+<button onclick="goTo('m1')">← Back</button>
+<button onclick="goTo('m3')">Next →</button>
+</div>
+</section>
+<section class="screen" id="m3">
+<div class="crumbs"><button class="done" onclick="goTo('m1')">M1</button><button class="done" onclick="goTo('m2')">M2</button><button class="active" onclick="goTo('m3')">M3</button><button class="" onclick="goTo('m4')">M4</button><button class="" onclick="goTo('m5')">M5</button><button class="" onclick="goTo('m6')">M6</button><button class="assesslink" onclick="goTo('assessment')">ASSESS</button></div>
+<div class="hero-card mini">
+<div class="icon">📘</div>
+<div><p class="kicker">Module 3 of 6 · MARPOL Annex II · NLS operations</p><h1>P&amp;A Manual and Cargo Record Book</h1><p>Use the Procedures and Arrangements Manual and Cargo Record Book as operational control documents.</p></div>
+</div>
+<div class="narration">
+<button onclick="speakModule('m3')">▶ Play Narration</button><button onclick="pauseSpeech()">⏸ Pause / Resume</button><button onclick="stopSpeech()">■ Stop</button>
+</div>
+<div class="card">
+<h2>Visual briefing</h2>
+<div class="svgbox"><svg aria-label="training visual" role="img" viewbox="0 0 720 220">
+<rect fill="#eff6ff" height="220" rx="22" width="720"></rect>
+<path d="M70 150 C130 95 210 95 270 150 S410 205 470 150 S610 95 670 150" fill="none" stroke="#94a3b8" stroke-linecap="round" stroke-width="10"></path>
+<rect fill="#fff" height="78" rx="18" stroke="#dbe4f0" stroke-width="3" width="530" x="95" y="55"></rect>
+<circle cx="180" cy="94" fill="#dc2626" r="34"></circle><text fill="#fff" font-size="34" font-weight="900" text-anchor="middle" x="180" y="103">!</text>
+<rect fill="#facc15" height="48" rx="12" width="110" x="250" y="70"></rect><text fill="#111827" font-size="18" font-weight="700" text-anchor="middle" x="305" y="100">Plan</text>
+<rect fill="#22c55e" height="48" rx="12" width="110" x="380" y="70"></rect><text fill="#052e16" font-size="18" font-weight="700" text-anchor="middle" x="435" y="100">Operate</text>
+<rect fill="#60a5fa" height="48" rx="12" width="90" x="510" y="70"></rect><text fill="#082f49" font-size="17" font-weight="700" text-anchor="middle" x="555" y="100">Record</text>
+<text fill="#334155" font-size="20" font-weight="700" text-anchor="middle" x="360" y="178">Stop · Verify · Record · Protect the sea</text>
+</svg></div>
+<div class="facts"><div class="fact"><b>P&amp;A Manual</b><span>The Procedures and Arrangements Manual tells the ship how to unload, strip, prewash, tank clean and discharge residues for Annex II cargoes.</span></div>
+<div class="fact"><b>Cargo Record Book</b><span>The Cargo Record Book records loading, unloading, internal transfer, tank cleaning, prewash, discharge to reception facility, discharge to sea where permitted, and accidental releases.</span></div>
+<div class="fact"><b>Inspection mindset</b><span>A clean operation without correct entries can still become a deficiency. Documentation must match what actually happened.</span></div></div>
+</div>
+<div class="card activity">
+<h2>Interactive activity</h2>
+<h3>After a tank prewash and delivery of washings to a reception facility, what is the correct action?</h3>
+<div class="options" id="m3-opts"><button class="option" onclick="answerActivity('m3',0)">Make no entry unless the port asks.</button>
+<button class="option" onclick="answerActivity('m3',1)">Record the operation accurately in the Cargo Record Book as per the officer's instructions.</button>
+<button class="option" onclick="answerActivity('m3',2)">Record it only in the engine log book.</button>
+<button class="option" onclick="answerActivity('m3',3)">Wait until the next voyage to enter all records together.</button></div>
+<div class="feedback" id="m3-fb"></div>
+<button class="refresh" onclick="refreshActivity('m3')">↻ Refresh Activity</button>
+</div>
+<div class="card quiz">
+<h2>Module quiz</h2>
+<h3>Why must Annex II cargo operations be entered accurately in the Cargo Record Book?</h3>
+<div class="options" id="m3-quiz-opts"><button class="option" onclick="answerQuiz('m3',0)">Only to help the next watchkeeper remember the valve positions.</button>
+<button class="option" onclick="answerQuiz('m3',1)">Because it is the official record proving what operation was carried out, when and how.</button>
+<button class="option" onclick="answerQuiz('m3',2)">Because it replaces the P&amp;A Manual.</button>
+<button class="option" onclick="answerQuiz('m3',3)">Because entries are optional but useful for overtime records.</button></div>
+<div class="feedback" id="m3-quiz-fb"></div>
+<button class="refresh" onclick="refreshQuiz('m3')">↻ Refresh Quiz</button>
+</div>
+<div class="navrow">
+<button onclick="goTo('m2')">← Back</button>
+<button onclick="goTo('m4')">Next →</button>
+</div>
+</section>
+<section class="screen" id="m4">
+<div class="crumbs"><button class="done" onclick="goTo('m1')">M1</button><button class="done" onclick="goTo('m2')">M2</button><button class="done" onclick="goTo('m3')">M3</button><button class="active" onclick="goTo('m4')">M4</button><button class="" onclick="goTo('m5')">M5</button><button class="" onclick="goTo('m6')">M6</button><button class="assesslink" onclick="goTo('assessment')">ASSESS</button></div>
+<div class="hero-card mini">
+<div class="icon">🚢</div>
+<div><p class="kicker">Module 4 of 6 · MARPOL Annex II · NLS operations</p><h1>Prewash, Stripping and Reception Facilities</h1><p>Know when prewash is required and why efficient stripping matters.</p></div>
+</div>
+<div class="narration">
+<button onclick="speakModule('m4')">▶ Play Narration</button><button onclick="pauseSpeech()">⏸ Pause / Resume</button><button onclick="stopSpeech()">■ Stop</button>
+</div>
+<div class="card">
+<h2>Visual briefing</h2>
+<div class="svgbox"><svg aria-label="training visual" role="img" viewbox="0 0 720 220">
+<rect fill="#fff7ed" height="220" rx="22" width="720"></rect>
+<path d="M70 150 C130 95 210 95 270 150 S410 205 470 150 S610 95 670 150" fill="none" stroke="#94a3b8" stroke-linecap="round" stroke-width="10"></path>
+<rect fill="#fff" height="78" rx="18" stroke="#dbe4f0" stroke-width="3" width="530" x="95" y="55"></rect>
+<circle cx="180" cy="94" fill="#dc2626" r="34"></circle><text fill="#fff" font-size="34" font-weight="900" text-anchor="middle" x="180" y="103">!</text>
+<rect fill="#facc15" height="48" rx="12" width="110" x="250" y="70"></rect><text fill="#111827" font-size="18" font-weight="700" text-anchor="middle" x="305" y="100">Strip</text>
+<rect fill="#22c55e" height="48" rx="12" width="110" x="380" y="70"></rect><text fill="#052e16" font-size="18" font-weight="700" text-anchor="middle" x="435" y="100">Prewash</text>
+<rect fill="#60a5fa" height="48" rx="12" width="90" x="510" y="70"></rect><text fill="#082f49" font-size="17" font-weight="700" text-anchor="middle" x="555" y="100">Reception</text>
+<text fill="#334155" font-size="20" font-weight="700" text-anchor="middle" x="360" y="178">Stop · Verify · Record · Protect the sea</text>
+</svg></div>
+<div class="facts"><div class="fact"><b>Prewash</b><span>Prewash removes cargo residue before the vessel leaves the unloading port when required by category, cargo properties, port requirements or P&amp;A Manual instructions.</span></div>
+<div class="fact"><b>Stripping</b><span>Modern stripping is intended to minimise residue left in tanks and associated piping. Poor stripping increases pollution risk and tank cleaning burden.</span></div>
+<div class="fact"><b>Reception facility</b><span>Required residues and washings must be delivered ashore to a proper reception facility. Crew must not improvise a discharge route.</span></div></div>
+</div>
+<div class="card activity">
+<h2>Interactive activity</h2>
+<h3>During stripping, the cargo pump loses suction but cargo remains in low points. What is the best response?</h3>
+<div class="options" id="m4-opts"><button class="option" onclick="answerActivity('m4',0)">Declare the tank empty and start washing immediately.</button>
+<button class="option" onclick="answerActivity('m4',1)">Report to the officer and follow the approved stripping/ejector procedure.</button>
+<button class="option" onclick="answerActivity('m4',2)">Open the overboard valve to clear the line.</button>
+<button class="option" onclick="answerActivity('m4',3)">Ignore because small residue never matters.</button></div>
+<div class="feedback" id="m4-fb"></div>
+<button class="refresh" onclick="refreshActivity('m4')">↻ Refresh Activity</button>
+</div>
+<div class="card quiz">
+<h2>Module quiz</h2>
+<h3>Before a tank is accepted as stripped, what must the responsible team confirm?</h3>
+<div class="options" id="m4-quiz-opts"><button class="option" onclick="answerQuiz('m4',0)">That the pump has made noise for at least five minutes.</button>
+<button class="option" onclick="answerQuiz('m4',1)">That residues are removed to the required level using approved stripping arrangements.</button>
+<button class="option" onclick="answerQuiz('m4',2)">That the tank looks empty from the deck opening.</button>
+<button class="option" onclick="answerQuiz('m4',3)">That no one has complained about smell.</button></div>
+<div class="feedback" id="m4-quiz-fb"></div>
+<button class="refresh" onclick="refreshQuiz('m4')">↻ Refresh Quiz</button>
+</div>
+<div class="navrow">
+<button onclick="goTo('m3')">← Back</button>
+<button onclick="goTo('m5')">Next →</button>
+</div>
+</section>
+<section class="screen" id="m5">
+<div class="crumbs"><button class="done" onclick="goTo('m1')">M1</button><button class="done" onclick="goTo('m2')">M2</button><button class="done" onclick="goTo('m3')">M3</button><button class="done" onclick="goTo('m4')">M4</button><button class="active" onclick="goTo('m5')">M5</button><button class="" onclick="goTo('m6')">M6</button><button class="assesslink" onclick="goTo('assessment')">ASSESS</button></div>
+<div class="hero-card mini">
+<div class="icon">🌊</div>
+<div><p class="kicker">Module 5 of 6 · MARPOL Annex II · NLS operations</p><h1>Discharge Criteria and Special Areas</h1><p>Apply the basic no-discharge mindset and recognise when discharge is only allowed under strict conditions.</p></div>
+</div>
+<div class="narration">
+<button onclick="speakModule('m5')">▶ Play Narration</button><button onclick="pauseSpeech()">⏸ Pause / Resume</button><button onclick="stopSpeech()">■ Stop</button>
+</div>
+<div class="card">
+<h2>Visual briefing</h2>
+<div class="svgbox"><svg aria-label="training visual" role="img" viewbox="0 0 720 220">
+<rect fill="#f0fdf4" height="220" rx="22" width="720"></rect>
+<path d="M70 150 C130 95 210 95 270 150 S410 205 470 150 S610 95 670 150" fill="none" stroke="#94a3b8" stroke-linecap="round" stroke-width="10"></path>
+<rect fill="#fff" height="78" rx="18" stroke="#dbe4f0" stroke-width="3" width="530" x="95" y="55"></rect>
+<circle cx="180" cy="94" fill="#dc2626" r="34"></circle><text fill="#fff" font-size="34" font-weight="900" text-anchor="middle" x="180" y="103">!</text>
+<rect fill="#facc15" height="48" rx="12" width="110" x="250" y="70"></rect><text fill="#111827" font-size="18" font-weight="700" text-anchor="middle" x="305" y="100">Verify</text>
+<rect fill="#22c55e" height="48" rx="12" width="110" x="380" y="70"></rect><text fill="#052e16" font-size="18" font-weight="700" text-anchor="middle" x="435" y="100">Line-up</text>
+<rect fill="#60a5fa" height="48" rx="12" width="90" x="510" y="70"></rect><text fill="#082f49" font-size="17" font-weight="700" text-anchor="middle" x="555" y="100">Allowed?</text>
+<text fill="#334155" font-size="20" font-weight="700" text-anchor="middle" x="360" y="178">Stop · Verify · Record · Protect the sea</text>
+</svg></div>
+<div class="facts"><div class="fact"><b>Basic rule</b><span>Do not discharge NLS residues unless the responsible officer confirms that the cargo category, tank status, ship speed, distance from land, water depth, below-waterline outlet and P&amp;A Manual conditions are all satisfied.</span></div>
+<div class="fact"><b>Antarctic area</b><span>Annex II treats the Antarctic area as a special area with very strict controls. Crew must follow the voyage-specific environmental instructions.</span></div>
+<div class="fact"><b>Crew action</b><span>Valve line-up mistakes are among the fastest ways to create pollution. Verify every line-up before starting a discharge or transfer.</span></div></div>
+</div>
+<div class="card activity">
+<h2>Interactive activity</h2>
+<h3>You are asked to open an overboard discharge line, but the officer has not confirmed Annex II conditions. What should you do?</h3>
+<div class="options" id="m5-opts"><button class="option" onclick="answerActivity('m5',0)">Open it because the order came from a senior rating.</button>
+<button class="option" onclick="answerActivity('m5',1)">Stop and request confirmation from the responsible officer before operating the valve.</button>
+<button class="option" onclick="answerActivity('m5',2)">Open it slowly and watch for sheen.</button>
+<button class="option" onclick="answerActivity('m5',3)">Open it only at night.</button></div>
+<div class="feedback" id="m5-fb"></div>
+<button class="refresh" onclick="refreshActivity('m5')">↻ Refresh Activity</button>
+</div>
+<div class="card quiz">
+<h2>Module quiz</h2>
+<h3>Which condition must be confirmed before any Annex II discharge route is lined up?</h3>
+<div class="options" id="m5-quiz-opts"><button class="option" onclick="answerQuiz('m5',0)">That the ship is moving faster than the previous voyage.</button>
+<button class="option" onclick="answerQuiz('m5',1)">That MARPOL Annex II conditions and officer authorisation are satisfied.</button>
+<button class="option" onclick="answerQuiz('m5',2)">That the operation is being done during darkness.</button>
+<button class="option" onclick="answerQuiz('m5',3)">That the overboard valve handle is easy to reach.</button></div>
+<div class="feedback" id="m5-quiz-fb"></div>
+<button class="refresh" onclick="refreshQuiz('m5')">↻ Refresh Quiz</button>
+</div>
+<div class="navrow">
+<button onclick="goTo('m4')">← Back</button>
+<button onclick="goTo('m6')">Next →</button>
+</div>
+</section>
+<section class="screen" id="m6">
+<div class="crumbs"><button class="done" onclick="goTo('m1')">M1</button><button class="done" onclick="goTo('m2')">M2</button><button class="done" onclick="goTo('m3')">M3</button><button class="done" onclick="goTo('m4')">M4</button><button class="done" onclick="goTo('m5')">M5</button><button class="active" onclick="goTo('m6')">M6</button><button class="assesslink" onclick="goTo('assessment')">ASSESS</button></div>
+<div class="hero-card mini">
+<div class="icon">🚨</div>
+<div><p class="kicker">Module 6 of 6 · MARPOL Annex II · NLS operations</p><h1>Spill Prevention and Emergency Response</h1><p>Control spills quickly and protect people, the ship and the environment.</p></div>
+</div>
+<div class="narration">
+<button onclick="speakModule('m6')">▶ Play Narration</button><button onclick="pauseSpeech()">⏸ Pause / Resume</button><button onclick="stopSpeech()">■ Stop</button>
+</div>
+<div class="card">
+<h2>Visual briefing</h2>
+<div class="svgbox"><svg aria-label="training visual" role="img" viewbox="0 0 720 220">
+<rect fill="#fef2f2" height="220" rx="22" width="720"></rect>
+<path d="M70 150 C130 95 210 95 270 150 S410 205 470 150 S610 95 670 150" fill="none" stroke="#94a3b8" stroke-linecap="round" stroke-width="10"></path>
+<rect fill="#fff" height="78" rx="18" stroke="#dbe4f0" stroke-width="3" width="530" x="95" y="55"></rect>
+<circle cx="180" cy="94" fill="#dc2626" r="34"></circle><text fill="#fff" font-size="34" font-weight="900" text-anchor="middle" x="180" y="103">!</text>
+<rect fill="#facc15" height="48" rx="12" width="110" x="250" y="70"></rect><text fill="#111827" font-size="18" font-weight="700" text-anchor="middle" x="305" y="100">Alarm</text>
+<rect fill="#22c55e" height="48" rx="12" width="110" x="380" y="70"></rect><text fill="#052e16" font-size="18" font-weight="700" text-anchor="middle" x="435" y="100">Stop</text>
+<rect fill="#60a5fa" height="48" rx="12" width="90" x="510" y="70"></rect><text fill="#082f49" font-size="17" font-weight="700" text-anchor="middle" x="555" y="100">Contain</text>
+<text fill="#334155" font-size="20" font-weight="700" text-anchor="middle" x="360" y="178">Stop · Verify · Record · Protect the sea</text>
+</svg></div>
+<div class="facts"><div class="fact"><b>Immediate priority</b><span>Raise the alarm, stop the transfer if safe, close relevant valves, contain the spill, protect scuppers and inform the responsible officer.</span></div>
+<div class="fact"><b>Personal safety</b><span>NLS cargoes may be toxic, corrosive, flammable or reactive. Do not enter vapour clouds or attempt cleanup without PPE and instructions.</span></div>
+<div class="fact"><b>Reporting</b><span>Accidental discharge or spill response must be reported and documented. Never hide or dilute a spill.</span></div></div>
+</div>
+<div class="card activity">
+<h2>Interactive activity</h2>
+<h3>A hose flange starts leaking NLS cargo during transfer. What is the safest first action for crew nearby?</h3>
+<div class="options" id="m6-opts"><button class="option" onclick="answerActivity('m6',0)">Run closer and tighten the flange without PPE.</button>
+<button class="option" onclick="answerActivity('m6',1)">Raise alarm, move clear of exposure, and support stopping transfer/closing valves as directed.</button>
+<button class="option" onclick="answerActivity('m6',2)">Wash it overboard quickly.</button>
+<button class="option" onclick="answerActivity('m6',3)">Continue because small leaks are normal during cargo operations.</button></div>
+<div class="feedback" id="m6-fb"></div>
+<button class="refresh" onclick="refreshActivity('m6')">↻ Refresh Activity</button>
+</div>
+<div class="card quiz">
+<h2>Module quiz</h2>
+<h3>What should crew prioritise during an NLS cargo leak?</h3>
+<div class="options" id="m6-quiz-opts"><button class="option" onclick="answerQuiz('m6',0)">Taking photographs before informing anyone.</button>
+<button class="option" onclick="answerQuiz('m6',1)">Personal protection, alarm, stopping the source if directed, and pollution containment.</button>
+<button class="option" onclick="answerQuiz('m6',2)">Washing the spill to the nearest scupper.</button>
+<button class="option" onclick="answerQuiz('m6',3)">Continuing the transfer because delay may upset the terminal.</button></div>
+<div class="feedback" id="m6-quiz-fb"></div>
+<button class="refresh" onclick="refreshQuiz('m6')">↻ Refresh Quiz</button>
+</div>
+<div class="navrow">
+<button onclick="goTo('m5')">← Back</button>
+<button onclick="goTo('assessment')">Next →</button>
+</div>
+</section>
+<section class="screen" id="assessment">
+<div class="hero-card mini"><div class="icon">✅</div><div><p class="kicker">Final assessment</p><h1>Annex II Readiness Check</h1><p>Answer all questions. Pass mark for this course file is 80%.</p></div></div>
+<div class="card" id="assessbox"><div class="aq"><p><b>Q1.</b> Annex II mainly controls which cargo-related pollution risk?</p><div class="options"><button class="option" onclick="answerAssess(0,0)">Garbage thrown from accommodation</button><button class="option" onclick="answerAssess(0,1)">Noxious liquid substances carried in bulk</button><button class="option" onclick="answerAssess(0,2)">Sewage from toilets</button><button class="option" onclick="answerAssess(0,3)">Air emissions from the funnel</button></div></div><div class="aq"><p><b>Q2.</b> Which category represents the major hazard category?</p><div class="options"><button class="option" onclick="answerAssess(1,0)">OS</button><button class="option" onclick="answerAssess(1,1)">Z</button><button class="option" onclick="answerAssess(1,2)">Y</button><button class="option" onclick="answerAssess(1,3)">X</button></div></div><div class="aq"><p><b>Q3.</b> What document gives ship-specific procedures for Annex II cargo residue handling?</p><div class="options"><button class="option" onclick="answerAssess(2,0)">P&amp;A Manual</button><button class="option" onclick="answerAssess(2,1)">Muster list only</button><button class="option" onclick="answerAssess(2,2)">Compass deviation card</button><button class="option" onclick="answerAssess(2,3)">Garbage Management Plan</button></div></div><div class="aq"><p><b>Q4.</b> What must record tank cleaning, prewash and discharge operations?</p><div class="options"><button class="option" onclick="answerAssess(3,0)">Cargo Record Book</button><button class="option" onclick="answerAssess(3,1)">Deck overtime sheet</button><button class="option" onclick="answerAssess(3,2)">Medicine chest log</button><button class="option" onclick="answerAssess(3,3)">GMDSS log only</button></div></div><div class="aq"><p><b>Q5.</b> If the cargo category is unclear before tank cleaning, crew should:</p><div class="options"><button class="option" onclick="answerAssess(4,0)">Proceed using last voyage settings</button><button class="option" onclick="answerAssess(4,1)">Stop and ask responsible officer</button><button class="option" onclick="answerAssess(4,2)">Open overboard line first</button><button class="option" onclick="answerAssess(4,3)">Skip records</button></div></div><div class="aq"><p><b>Q6.</b> Category X residues generally require:</p><div class="options"><button class="option" onclick="answerAssess(5,0)">No control</button><button class="option" onclick="answerAssess(5,1)">Strict prewash/reception handling as applicable</button><button class="option" onclick="answerAssess(5,2)">Direct sea discharge at anchorage</button><button class="option" onclick="answerAssess(5,3)">Only a verbal note</button></div></div><div class="aq"><p><b>Q7.</b> Poor stripping can lead to:</p><div class="options"><button class="option" onclick="answerAssess(6,0)">Less residue and easier compliance</button><button class="option" onclick="answerAssess(6,1)">More residue, more washing and higher pollution risk</button><button class="option" onclick="answerAssess(6,2)">No effect on Annex II operations</button><button class="option" onclick="answerAssess(6,3)">Automatic exemption</button></div></div><div class="aq"><p><b>Q8.</b> Before operating an Annex II discharge line, crew must confirm:</p><div class="options"><button class="option" onclick="answerAssess(7,0)">Weather only</button><button class="option" onclick="answerAssess(7,1)">Officer's confirmed conditions and correct valve line-up</button><button class="option" onclick="answerAssess(7,2)">That nobody is watching</button><button class="option" onclick="answerAssess(7,3)">That records can be made later</button></div></div><div class="aq"><p><b>Q9.</b> During an NLS spill, the first priorities are:</p><div class="options"><button class="option" onclick="answerAssess(8,0)">Hide evidence</button><button class="option" onclick="answerAssess(8,1)">Raise alarm, stop source if safe, contain and report</button><button class="option" onclick="answerAssess(8,2)">Wash overboard</button><button class="option" onclick="answerAssess(8,3)">Continue cargo work</button></div></div><div class="aq"><p><b>Q10.</b> The safe crew mindset for Annex II is:</p><div class="options"><button class="option" onclick="answerAssess(9,0)">Guess, discharge, record later</button><button class="option" onclick="answerAssess(9,1)">Verify category, follow P&amp;A Manual, record accurately</button><button class="option" onclick="answerAssess(9,2)">Use Annex V rules instead</button><button class="option" onclick="answerAssess(9,3)">Treat all chemicals as non-polluting</button></div></div><button class="primary" onclick="submitAssessment()">Submit Assessment</button><button class="refresh" onclick="refreshAssessment()">↻ Refresh Assessment</button></div>
+<div class="result" id="result"><div id="score">0%</div><h2 id="verdict"></h2><p id="resultText"></p><div class="certificate" id="cert"><h1>Certificate of Completion</h1><p>MARPOL Annex II — Noxious Liquid Substances on Tankers</p><p id="certDate"></p></div><button class="primary" onclick="goTo('m1')">Review Course</button></div>
+</section>
+</main>
+<script>
+const DATA = {"modules": {"m1": {"title": "What Annex II Controls", "correct": 1, "feedback": "Annex II operations are category and procedure driven. The P&A Manual and officer's plan must be followed exactly.", "narration": "What Annex II Controls. Recognise when MARPOL Annex II applies and why NLS handling is different from oil cargo residues. Scope. MARPOL Annex II controls pollution from noxious liquid substances carried in bulk. On chemical and product tankers, the cargo category, P&A Manual and IBC Code entry drive the correct operation. Crew point. Do not guess from the cargo name alone. Check the cargo document, IBC Code entry, ship's Certificates and P&A Manual before loading, tank cleaning or discharge. Stop rule. If the cargo category, special requirements or discharge instructions are unclear, stop and ask the responsible officer before opening valves or starting pumps."}, "m2": {"title": "NLS Categories X, Y, Z and OS", "correct": 1, "feedback": "Category X is the highest pollution-risk category and demands strict control.", "narration": "NLS Categories X, Y, Z and OS. Understand the pollution meaning of Category X, Y, Z and Other Substances. Category X. Major hazard. Discharge into the marine environment is prohibited in normal residue operations and strict prewash/reception-facility handling normally applies at the unloading port. Category Y. Hazard to marine resources or human health, or harm to amenities/legitimate sea uses. Discharge is limited by strict conditions. Category Z / OS. Category Z presents a minor hazard with less stringent restrictions. OS are evaluated as outside X, Y and Z, but shipboard procedures and records still matter."}, "m3": {"title": "P&A Manual and Cargo Record Book", "correct": 1, "feedback": "Annex II compliance depends on accurate and timely Cargo Record Book entries.", "narration": "P&A Manual and Cargo Record Book. Use the Procedures and Arrangements Manual and Cargo Record Book as operational control documents. P&A Manual. The Procedures and Arrangements Manual tells the ship how to unload, strip, prewash, tank clean and discharge residues for Annex II cargoes. Cargo Record Book. The Cargo Record Book records loading, unloading, internal transfer, tank cleaning, prewash, discharge to reception facility, discharge to sea where permitted, and accidental releases. Inspection mindset. A clean operation without correct entries can still become a deficiency. Documentation must match what actually happened."}, "m4": {"title": "Prewash, Stripping and Reception Facilities", "correct": 1, "feedback": "Remaining residue affects Annex II compliance, tank cleaning and records.", "narration": "Prewash, Stripping and Reception Facilities. Know when prewash is required and why efficient stripping matters. Prewash. Prewash removes cargo residue before the vessel leaves the unloading port when required by category, cargo properties, port requirements or P&A Manual instructions. Stripping. Modern stripping is intended to minimise residue left in tanks and associated piping. Poor stripping increases pollution risk and tank cleaning burden. Reception facility. Required residues and washings must be delivered ashore to a proper reception facility. Crew must not improvise a discharge route."}, "m5": {"title": "Discharge Criteria and Special Areas", "correct": 1, "feedback": "Annex II discharge requires confirmed conditions and documented authority.", "narration": "Discharge Criteria and Special Areas. Apply the basic no-discharge mindset and recognise when discharge is only allowed under strict conditions. Basic rule. Do not discharge NLS residues unless the responsible officer confirms that the cargo category, tank status, ship speed, distance from land, water depth, below-waterline outlet and P&A Manual conditions are all satisfied. Antarctic area. Annex II treats the Antarctic area as a special area with very strict controls. Crew must follow the voyage-specific environmental instructions. Crew action. Valve line-up mistakes are among the fastest ways to create pollution. Verify every line-up before starting a discharge or transfer."}, "m6": {"title": "Spill Prevention and Emergency Response", "correct": 1, "feedback": "Alarm, stop/source control and containment come before cleanup.", "narration": "Spill Prevention and Emergency Response. Control spills quickly and protect people, the ship and the environment. Immediate priority. Raise the alarm, stop the transfer if safe, close relevant valves, contain the spill, protect scuppers and inform the responsible officer. Personal safety. NLS cargoes may be toxic, corrosive, flammable or reactive. Do not enter vapour clouds or attempt cleanup without PPE and instructions. Reporting. Accidental discharge or spill response must be reported and documented. Never hide or dilute a spill."}}, "assessment": [1, 3, 0, 0, 1, 1, 1, 1, 1, 1]};
+let state = JSON.parse(localStorage.getItem('annexII_nls_state') || '{"done":{},"score":null}');
+let assessAnswers = Array(DATA.assessment.length).fill(null);
+function save(){ localStorage.setItem('annexII_nls_state', JSON.stringify(state)); }
+function updateProgress(){
+  const doneCount = Object.keys(state.done).filter(k=>state.done[k]).length;
+  const pct = Math.round((doneCount/6)*100);
+  document.getElementById('bar').style.width = pct + '%';
+  document.getElementById('pct').textContent = pct + '%';
+}
+function goTo(id){
+  stopSpeech();
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  updateProgress();
+}
+function markDone(id){ state.done[id]=true; save(); updateProgress(); }
+function setAnswered(container, selected, correct){
+  const buttons = container.querySelectorAll('.option');
+  buttons.forEach((b,i)=>{ b.disabled=true; b.classList.remove('correct','wrong'); if(i===correct)b.classList.add('correct'); if(i===selected && selected!==correct)b.classList.add('wrong'); });
+}
+function answerActivity(id, selected){
+  const correct = DATA.modules[id].correct;
+  const fb = document.getElementById(id+'-fb');
+  setAnswered(document.getElementById(id+'-opts'), selected, correct);
+  if(selected===correct){ fb.className='feedback ok'; fb.textContent='Correct. '+DATA.modules[id].feedback; markDone(id); }
+  else { fb.className='feedback bad'; fb.textContent='Not safe. Review the red/yellow/green decision logic and try again after refresh.'; }
+}
+function answerQuiz(id, selected){
+  const correct = DATA.modules[id].correct;
+  const fb = document.getElementById(id+'-quiz-fb');
+  setAnswered(document.getElementById(id+'-quiz-opts'), selected, correct);
+  if(selected===correct){ fb.className='feedback ok'; fb.textContent='Correct. Module quiz passed.'; markDone(id); }
+  else { fb.className='feedback bad'; fb.textContent='Incorrect. Refresh the quiz and try again.'; }
+}
+function refreshActivity(id){ const box=document.getElementById(id+'-opts'); box.querySelectorAll('.option').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong')}); const fb=document.getElementById(id+'-fb'); fb.className='feedback'; fb.textContent=''; }
+function refreshQuiz(id){ const box=document.getElementById(id+'-quiz-opts'); box.querySelectorAll('.option').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong')}); const fb=document.getElementById(id+'-quiz-fb'); fb.className='feedback'; fb.textContent=''; }
+function speakModule(id){ stopSpeech(); const u = new SpeechSynthesisUtterance(DATA.modules[id].narration); u.rate=.92; u.pitch=1; speechSynthesis.speak(u); }
+function pauseSpeech(){ if(speechSynthesis.speaking){ speechSynthesis.paused ? speechSynthesis.resume() : speechSynthesis.pause(); } }
+function stopSpeech(){ if('speechSynthesis' in window) speechSynthesis.cancel(); }
+function answerAssess(q, selected){
+  assessAnswers[q]=selected;
+  const qbox = document.querySelectorAll('.aq')[q];
+  qbox.querySelectorAll('.option').forEach((b,i)=>{b.classList.remove('correct','wrong'); if(i===selected)b.classList.add('correct');});
+}
+function submitAssessment(){
+  let right=0;
+  document.querySelectorAll('.aq').forEach((qbox, q)=>{
+    const correct = DATA.assessment[q];
+    qbox.querySelectorAll('.option').forEach((b,i)=>{ b.disabled=true; b.classList.remove('correct','wrong'); if(i===correct)b.classList.add('correct'); if(i===assessAnswers[q] && i!==correct)b.classList.add('wrong'); });
+    if(assessAnswers[q]===correct) right++;
+  });
+  const pct=Math.round((right/DATA.assessment.length)*100);
+  document.getElementById('score').textContent=pct+'%';
+  document.getElementById('verdict').textContent=pct>=80?'Passed':'Review Required';
+  document.getElementById('resultText').textContent=pct>=80?'You have completed the Annex II NLS tanker course.':'Please review the modules and retake the assessment.';
+  document.getElementById('result').classList.add('show');
+  if(pct>=80){ document.getElementById('cert').classList.add('show'); document.getElementById('certDate').textContent='Completed on '+new Date().toLocaleDateString(); for(let i=1;i<=6;i++) state.done['m'+i]=true; save(); updateProgress(); }
+  document.getElementById('result').scrollIntoView({behavior:'smooth'});
+}
+function refreshAssessment(){ assessAnswers=Array(DATA.assessment.length).fill(null); document.querySelectorAll('#assessment .option').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong')}); document.getElementById('result').classList.remove('show'); document.getElementById('cert').classList.remove('show'); }
+updateProgress();
+</script>
+</body>
+</html>

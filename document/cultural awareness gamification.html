@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultural Awareness — Working in a Multinational Maritime Team</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .screen {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 60px 40px;
+        }
+        
+        .hero h1 {
+            color: #1a5490;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #1a5490;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            background: #0d3a63;
+        }
+        
+        .btn-secondary {
+            background: #666;
+        }
+        
+        .btn-secondary:hover {
+            background: #444;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+        }
+        
+        .btn-success:hover {
+            background: #1e8449;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #1a5490 0%, #0d3a63 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-box h3 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .stat-box p {
+            font-size: 0.9em;
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .module-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .module-card:hover {
+            border-color: #1a5490;
+            box-shadow: 0 4px 12px rgba(26, 84, 144, 0.2);
+        }
+        
+        .module-card h3 {
+            color: #1a5490;
+            margin-bottom: 10px;
+        }
+        
+        .module-card p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60 0%, #1a5490 100%);
+            transition: width 0.3s;
+        }
+        
+        .breadcrumbs {
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .breadcrumbs a {
+            color: #1a5490;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+        
+        .module-content {
+            margin-bottom: 30px;
+        }
+        
+        .module-content h2 {
+            color: #1a5490;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #1a5490;
+            padding-bottom: 10px;
+        }
+        
+        .module-content h3 {
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .module-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .module-content li {
+            margin-bottom: 8px;
+        }
+        
+        .activity-box {
+            background: #f0f7ff;
+            border-left: 4px solid #1a5490;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .activity-box h3 {
+            color: #1a5490;
+            margin-bottom: 15px;
+        }
+        
+        .activity-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .activity-item.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .activity-item.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .quiz-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .quiz-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .quiz-question {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .quiz-question p {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .quiz-option {
+            margin: 10px 0;
+        }
+        
+        .quiz-option input[type="radio"],
+        .quiz-option input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .assessment-box {
+            background: #e8f4f8;
+            border-left: 4px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .assessment-box h3 {
+            color: #0c5460;
+            margin-bottom: 15px;
+        }
+        
+        .assessment-question {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .assessment-question p {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .assessment-option {
+            margin: 12px 0;
+        }
+        
+        .assessment-option input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .results-box {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .results-box h2 {
+            color: #1a5490;
+            margin-bottom: 20px;
+        }
+        
+        .score-display {
+            font-size: 3em;
+            color: #27ae60;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        
+        .score-display.fail {
+            color: #e74c3c;
+        }
+        
+        .certificate {
+            background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
+            border: 3px solid #ffc107;
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .certificate h3 {
+            color: #856404;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        
+        .certificate-badge {
+            font-size: 3em;
+            margin: 20px 0;
+        }
+        
+        .badge-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .badge {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .badge.gold {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        }
+        
+        .badge.silver {
+            background: linear-gradient(135deg, #c0c0c0 0%, #a9a9a9 100%);
+        }
+        
+        .badge.bronze {
+            background: linear-gradient(135deg, #cd7f32 0%, #b87333 100%);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .modal-content h3 {
+            color: #1a5490;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        
+        .modal-content .score {
+            font-size: 2.5em;
+            color: #27ae60;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .modal-content .score.fail {
+            color: #e74c3c;
+        }
+        
+        .xp-display {
+            background: linear-gradient(135deg, #1a5490 0%, #0d3a63 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .xp-display strong {
+            font-size: 1.3em;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8em;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .screen {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Screen -->
+        <div id="hero" class="screen active">
+            <div class="hero">
+                <h1>🌍 Cultural Awareness</h1>
+                <h2>Working in a Multinational Maritime Team</h2>
+                <p>Master the skills to lead and communicate effectively across diverse maritime crews</p>
+                <p style="font-size: 0.95em; color: #999; margin-top: 20px;">Estimated duration: 60-75 minutes | 5 modules | Interactive scenarios</p>
+                <button class="btn" onclick="go('modules')">Start Course</button>
+            </div>
+        </div>
+        
+        <!-- Modules Screen -->
+        <div id="modules" class="screen">
+            <div class="breadcrumbs">
+                <a onclick="go('hero')">Home</a> > Modules
+            </div>
+            
+            <h1 style="color: #1a5490; margin-bottom: 30px;">📚 Course Modules</h1>
+            
+            <div class="dashboard">
+                <div class="stat-box">
+                    <h3 id="xpDisplay">0</h3>
+                    <p>Experience Points</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="moduleCount">0/5</h3>
+                    <p>Modules Completed</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="badgeCount">0</h3>
+                    <p>Badges Earned</p>
+                </div>
+            </div>
+            
+            <div class="modules-grid">
+                <div class="module-card" onclick="go('m1')">
+                    <h3>🌐 Module 1: Why Culture Matters</h3>
+                    <p>Understand how cultural differences impact communication, authority, risk perception, and team dynamics onboard.</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%;" id="m1Progress"></div>
+                    </div>
+                    <button class="btn" style="width: 100%;">Open Module</button>
+                </div>
+                
+                <div class="module-card" onclick="go('m2')">
+                    <h3>🗣️ Module 2: Communication Across Barriers</h3>
+                    <p>Learn strategies for clear communication, closed-loop confirmation, and avoiding misunderstandings in multicultural teams.</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%;" id="m2Progress"></div>
+                    </div>
+                    <button class="btn" style="width: 100%;">Open Module</button>
+                </div>
+                
+                <div class="module-card" onclick="go('m3')">
+                    <h3>📊 Module 3: Cultural Dimensions & Safety</h3>
+                    <p>Explore power distance, uncertainty avoidance, and individualism—and how they affect safety culture and decision-making.</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%;" id="m3Progress"></div>
+                    </div>
+                    <button class="btn" style="width: 100%;">Open Module</button>
+                </div>
+                
+                <div class="module-card" onclick="go('m4')">
+                    <h3>⚖️ Module 4: Managing Cultural Conflict</h3>
+                    <p>Recognize cultural conflict, de-escalate tensions, and create an inclusive team culture as a senior officer.</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%;" id="m4Progress"></div>
+                    </div>
+                    <button class="btn" style="width: 100%;">Open Module</button>
+                </div>
+                
+                <div class="module-card" onclick="go('m5')">
+                    <h3>📋 Module 5: Case Studies & MLC Compliance</h3>
+                    <p>Learn from real multicultural crew incidents and understand MLC 2006 anti-discrimination requirements.</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%;" id="m5Progress"></div>
+                    </div>
+                    <button class="btn" style="width: 100%;">Open Module</button>
+                </div>
+                
+                <div class="module-card" onclick="go('assess')" style="border-color: #17a2b8;">
+                    <h3>✅ Final Assessment</h3>
+                    <p>Test your understanding with a comprehensive 30-question assessment. Passing score: 70%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%; background: #17a2b8;" id="assessProgress"></div>
+                    </div>
+                    <button class="btn btn-success" style="width: 100%;">Take Assessment</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Module 1 -->
+        <div id="m1" class="screen">
+            <div class="breadcrumbs">
+                <a onclick="go('modules')">Modules</a> > Module 1: Why Culture Matters
+            </div>
+            
+            <div class="module-content">
+                <h2>🌐 Module 1: Why Culture Matters Onboard</h2>
+                
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand how culture influences communication styles and team dynamics</li>
+                    <li>Recognize different attitudes to authority and risk perception</li>
+                    <li>Appreciate diverse approaches to time and punctuality</li>
+                    <li>Recognize common national cultural patterns without stereotyping</li>
+                </ul>
+                
+                <h3>Why Culture Matters in Maritime Operations</h3>
+                <p>Maritime crews are among the most multicultural workforces globally. Crew members from different countries bring different values, communication styles, and approaches to work. Understanding these differences is critical for:</p>
+                <ul>
+                    <li><strong>Safety:</strong> Cultural differences in risk perception can affect safety compliance and incident reporting</li>
+                    <li><strong>Communication:</strong> Language barriers and different communication styles can lead to misunderstandings</li>
+                    <li><strong>Authority:</strong> Different cultures have different relationships with hierarchy and authority</li>
+                    <li><strong>Team Cohesion:</strong> Cultural awareness builds trust and reduces conflict</li>
+                </ul>
+                
+                <h3>Key Cultural Dimensions</h3>
+                <ul>
+                    <li><strong>Communication Styles:</strong> Direct vs. indirect, high-context vs. low-context</li>
+                    <li><strong>Attitudes to Authority:</strong> Hierarchical vs. egalitarian, formal vs. informal</li>
+                    <li><strong>Risk Perception:</strong> Risk-averse vs. risk-tolerant cultures</li>
+                    <li><strong>Time Orientation:</strong> Monochronic (punctual) vs. polychronic (flexible) time concepts</li>
+                    <li><strong>Individualism vs. Collectivism:</strong> Personal goals vs. group harmony</li>
+                </ul>
+            </div>
+            
+            <div class="activity-box">
+                <h3>🎯 Interactive Activity: Cultural Pattern Matching</h3>
+                <p>Match each cultural scenario to the most appropriate response. Select your answers and click "Submit Answer" to see detailed feedback.</p>
+                
+                <div id="m1Activity"></div>
+                
+                <button class="btn btn-success" onclick="checkM1Activity()">Submit Answer</button>
+            </div>
+            
+            <div class="quiz-box">
+                <h3>❓ Module Quiz: Why Culture Matters</h3>
+                <div id="m1Quiz"></div>
+                <button class="btn btn-success" onclick="submitQuiz('m1')">Submit Quiz</button>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="btn" onclick="go('m2')">Next Module →</button>
+                <button class="btn btn-secondary" onclick="go('modules')">Back to Modules</button>
+            </div>
+        </div>
+        
+        <!-- Module 2 -->
+        <div id="m2" class="screen">
+            <div class="breadcrumbs">
+                <a onclick="go('modules')">Modules</a> > Module 2: Communication Across Barriers
+            </div>
+            
+            <div class="module-content">
+                <h2>🗣️ Module 2: Communication Across Language Barriers</h2>
+                
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Master clear language techniques for multicultural communication</li>
+                    <li>Apply closed-loop confirmation procedures</li>
+                    <li>Avoid idioms and cultural misunderstandings</li>
+                    <li>Ensure critical safety information is understood</li>
+                </ul>
+                
+                <h3>Communication Strategies for Multicultural Teams</h3>
+                <ul>
+                    <li><strong>Use Simple, Clear Language:</strong> Avoid complex sentences, technical jargon, and idioms</li>
+                    <li><strong>Speak Slowly and Clearly:</strong> Give crew time to process information</li>
+                    <li><strong>Confirm Understanding:</strong> Use closed-loop communication (ask for feedback, have them repeat back)</li>
+                    <li><strong>Use Visual Aids:</strong> Diagrams, demonstrations, and written instructions</li>
+                    <li><strong>Avoid Idioms and Slang:</strong> "It's raining cats and dogs" means nothing to non-native speakers</li>
+                    <li><strong>Be Patient and Respectful:</strong> Allow time for questions and clarification</li>
+                </ul>
+                
+                <h3>Closed-Loop Communication Procedure</h3>
+                <p><strong>Step 1 - Sender:</strong> Clearly state the message</p>
+                <p><strong>Step 2 - Receiver:</strong> Repeat back what they understood</p>
+                <p><strong>Step 3 - Sender:</strong> Confirm accuracy or clarify further</p>
+                <p><strong>Step 4 - Documentation:</strong> Record critical communications</p>
+            </div>
+            
+            <div class="activity-box">
+                <h3>🎯 Interactive Activity: Communication Scenario Analysis</h3>
+                <p>Analyze each communication scenario and identify the best approach. Select your answers and click "Submit Answer".</p>
+                
+                <div id="m2Activity"></div>
+                
+                <button class="btn btn-success" onclick="checkM2Activity()">Submit Answer</button>
+            </div>
+            
+            <div class="quiz-box">
+                <h3>❓ Module Quiz: Communication Across Barriers</h3>
+                <div id="m2Quiz"></div>
+                <button class="btn btn-success" onclick="submitQuiz('m2')">Submit Quiz</button>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="btn" onclick="go('m3')">Next Module →</button>
+                <button class="btn btn-secondary" onclick="go('modules')">Back to Modules</button>
+            </div>
+        </div>
+        
+        <!-- Module 3 -->
+        <div id="m3" class="screen">
+            <div class="breadcrumbs">
+                <a onclick="go('modules')">Modules</a> > Module 3: Cultural Dimensions & Safety
+            </div>
+            
+            <div class="module-content">
+                <h2>📊 Module 3: Cultural Dimensions & Safety Culture</h2>
+                
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand Hofstede's cultural dimensions relevant to maritime safety</li>
+                    <li>Recognize how power distance affects authority and decision-making</li>
+                    <li>Understand uncertainty avoidance and risk perception</li>
+                    <li>Apply cultural awareness to safety management</li>
+                </ul>
+                
+                <h3>Power Distance (PD)</h3>
+                <p><strong>Definition:</strong> The degree to which less powerful members accept unequal power distribution.</p>
+                <ul>
+                    <li><strong>High PD Cultures:</strong> Respect hierarchy, follow orders without question, formal communication</li>
+                    <li><strong>Low PD Cultures:</strong> Question authority, expect explanations, informal communication</li>
+                    <li><strong>Maritime Impact:</strong> Affects incident reporting, safety suggestions, and bridge resource management</li>
+                </ul>
+                
+                <h3>Uncertainty Avoidance (UA)</h3>
+                <p><strong>Definition:</strong> The degree to which people feel threatened by ambiguous or unknown situations.</p>
+                <ul>
+                    <li><strong>High UA Cultures:</strong> Prefer rules and procedures, risk-averse, need clear guidelines</li>
+                    <li><strong>Low UA Cultures:</strong> Comfortable with ambiguity, risk-tolerant, flexible approach</li>
+                    <li><strong>Maritime Impact:</strong> Affects safety compliance, incident response, and emergency procedures</li>
+                </ul>
+                
+                <h3>Individualism vs. Collectivism (IDV)</h3>
+                <p><strong>Definition:</strong> Emphasis on personal goals vs. group harmony.</p>
+                <ul>
+                    <li><strong>Individualistic:</strong> Personal achievement, individual responsibility, direct feedback</li>
+                    <li><strong>Collectivistic:</strong> Group harmony, collective responsibility, indirect feedback</li>
+                    <li><strong>Maritime Impact:</strong> Affects teamwork, accountability, and conflict resolution</li>
+                </ul>
+            </div>
+            
+            <div class="activity-box">
+                <h3>🎯 Interactive Activity: Cultural Dimensions Scenario</h3>
+                <p>Identify the cultural dimension at play in each scenario. Select your answers and click "Submit Answer".</p>
+                
+                <div id="m3Activity"></div>
+                
+                <button class="btn btn-success" onclick="checkM3Activity()">Submit Answer</button>
+            </div>
+            
+            <div class="quiz-box">
+                <h3>❓ Module Quiz: Cultural Dimensions & Safety</h3>
+                <div id="m3Quiz"></div>
+                <button class="btn btn-success" onclick="submitQuiz('m3')">Submit Quiz</button>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="btn" onclick="go('m4')">Next Module →</button>
+                <button class="btn btn-secondary" onclick="go('modules')">Back to Modules</button>
+            </div>
+        </div>
+        
+        <!-- Module 4 -->
+        <div id="m4" class="screen">
+            <div class="breadcrumbs">
+                <a onclick="go('modules')">Modules</a> > Module 4: Managing Cultural Conflict
+            </div>
+            
+            <div class="module-content">
+                <h2>⚖️ Module 4: Managing Cultural Conflict</h2>
+                
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Recognize signs of cultural conflict</li>
+                    <li>Understand root causes of cultural misunderstandings</li>
+                    <li>Apply de-escalation techniques</li>
+                    <li>Create an inclusive team culture as a senior officer</li>
+                </ul>
+                
+                <h3>Recognizing Cultural Conflict</h3>
+                <p>Cultural conflicts often manifest as:</p>
+                <ul>
+                    <li>Misunderstandings due to communication styles</li>
+                    <li>Disagreements over authority and decision-making</li>
+                    <li>Conflicts about work pace, priorities, or procedures</li>
+                    <li>Tension between individualistic and collectivistic approaches</li>
+                    <li>Discrimination or exclusion (intentional or unintentional)</li>
+                </ul>
+                
+                <h3>De-escalation Techniques</h3>
+                <ul>
+                    <li><strong>Listen Actively:</strong> Understand the other person's perspective without judgment</li>
+                    <li><strong>Acknowledge Differences:</strong> Validate that cultural differences exist and are normal</li>
+                    <li><strong>Find Common Ground:</strong> Focus on shared maritime safety values</li>
+                    <li><strong>Use Neutral Language:</strong> Avoid accusatory or judgmental language</li>
+                    <li><strong>Involve Mediation:</strong> Bring in a neutral third party if needed</li>
+                    <li><strong>Document Issues:</strong> Keep records for HR and compliance</li>
+                </ul>
+                
+                <h3>Creating an Inclusive Team Culture</h3>
+                <p>As a senior officer, you can:</p>
+                <ul>
+                    <li>Lead by example in respecting cultural differences</li>
+                    <li>Ensure all crew members feel valued and heard</li>
+                    <li>Provide equal opportunities for advancement</li>
+                    <li>Address discrimination immediately and firmly</li>
+                    <li>Celebrate cultural diversity on the vessel</li>
+                    <li>Ensure MLC 2006 anti-discrimination policies are enforced</li>
+                </ul>
+            </div>
+            
+            <div class="activity-box">
+                <h3>🎯 Interactive Activity: Conflict Resolution Scenarios</h3>
+                <p>Choose the best response to resolve each cultural conflict scenario. Select your answers and click "Submit Answer".</p>
+                
+                <div id="m4Activity"></div>
+                
+                <button class="btn btn-success" onclick="checkM4Activity()">Submit Answer</button>
+            </div>
+            
+            <div class="quiz-box">
+                <h3>❓ Module Quiz: Managing Cultural Conflict</h3>
+                <div id="m4Quiz"></div>
+                <button class="btn btn-success" onclick="submitQuiz('m4')">Submit Quiz</button>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="btn" onclick="go('m5')">Next Module →</button>
+                <button class="btn btn-secondary" onclick="go('modules')">Back to Modules</button>
+            </div>
+        </div>
+        
+        <!-- Module 5 -->
+        <div id="m5" class="screen">
+            <div class="breadcrumbs">
+                <a onclick="go('modules')">Modules</a> > Module 5: Case Studies & MLC Compliance
+            </div>
+            
+            <div class="module-content">
+                <h2>📋 Module 5: Case Studies & MLC 2006 Compliance</h2>
+                
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Learn from real multicultural crew incidents</li>
+                    <li>Understand MLC 2006 anti-discrimination requirements</li>
+                    <li>Apply lessons learned to prevent similar incidents</li>
+                    <li>Ensure compliance with maritime labor standards</li>
+                </ul>
+                
+                <h3>Case Study 1: Communication Breakdown Leading to Safety Incident</h3>
+                <p><strong>Incident:</strong> A Filipino crew member did not report a hydraulic leak because they feared the Chief Engineer (from a high power-distance culture) would be angry. The leak went unnoticed and caused equipment failure during cargo operations.</p>
+                <p><strong>Root Cause:</strong> Power distance and communication style differences prevented incident reporting.</p>
+                <p><strong>Lesson:</strong> Create a reporting culture where crew members feel safe reporting issues regardless of cultural background.</p>
+                
+                <h3>Case Study 2: Cultural Misunderstanding in Decision-Making</h3>
+                <p><strong>Incident:</strong> A German officer (low power distance) asked for suggestions on bridge procedures. A Filipino crew member remained silent, interpreting the question as a test of the officer's authority. The officer felt disrespected; the crew member felt confused.</p>
+                <p><strong>Root Cause:</strong> Different cultural expectations about authority and participation.</p>
+                <p><strong>Lesson:</strong> Explicitly invite input and create psychological safety for all crew members to participate.</p>
+                
+                <h3>MLC 2006 Anti-Discrimination Requirements</h3>
+                <p>The Maritime Labour Convention 2006 requires:</p>
+                <ul>
+                    <li><strong>No Discrimination:</strong> Fair treatment regardless of nationality, race, color, sex, religion, political opinion, or social origin</li>
+                    <li><strong>Equal Opportunity:</strong> Equal access to employment and advancement</li>
+                    <li><strong>Grievance Procedures:</strong> Clear procedures for reporting discrimination</li>
+                    <li><strong>Training and Awareness:</strong> All crew must understand anti-discrimination policies</li>
+                    <li><strong>Documentation:</strong> Records of training and incidents</li>
+                </ul>
+            </div>
+            
+            <div class="activity-box">
+                <h3>🎯 Interactive Activity: Case Study Analysis</h3>
+                <p>Analyze each case study and identify the cultural factors and best response. Select your answers and click "Submit Answer".</p>
+                
+                <div id="m5Activity"></div>
+                
+                <button class="btn btn-success" onclick="checkM5Activity()">Submit Answer</button>
+            </div>
+            
+            <div class="quiz-box">
+                <h3>❓ Module Quiz: Case Studies & MLC Compliance</h3>
+                <div id="m5Quiz"></div>
+                <button class="btn btn-success" onclick="submitQuiz('m5')">Submit Quiz</button>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="btn btn-success" onclick="go('assess')">Take Final Assessment →</button>
+                <button class="btn btn-secondary" onclick="go('modules')">Back to Modules</button>
+            </div>
+        </div>
+        
+        <!-- Assessment Screen -->
+        <div id="assess" class="screen">
+            <div class="breadcrumbs">
+                <a onclick="go('modules')">Modules</a> > Final Assessment
+            </div>
+            
+            <h1 style="color: #17a2b8; margin-bottom: 20px;">✅ Final Assessment</h1>
+            <p style="margin-bottom: 20px; font-size: 1.05em;">Answer all 30 questions. You need 70% (21 questions) to pass. This is a formal evaluation of your knowledge.</p>
+            
+            <div class="assessment-box">
+                <div id="assessmentContent"></div>
+                <button class="btn btn-success" onclick="submitAssessment()" style="margin-top: 20px;">Submit Assessment</button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="results" class="screen">
+            <div class="results-box">
+                <h2>🎓 Course Completed!</h2>
+                <p id="resultStatus"></p>
+                <div class="score-display" id="scoreDisplay">0%</div>
+                
+                <div id="certificateDisplay"></div>
+                
+                <div class="badge-display" id="badgeDisplay"></div>
+                
+                <div class="xp-display">
+                    <p>Total Experience Points Earned</p>
+                    <strong id="totalXP">0 XP</strong>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn" onclick="go('modules')">Back to Modules</button>
+                    <button class="btn btn-secondary" onclick="go('hero')">Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+            <h3 id="feedbackTitle"></h3>
+            <p id="feedbackMessage"></p>
+            <div class="score" id="feedbackScore"></div>
+            <div class="xp-display" id="feedbackXP"></div>
+            <button class="btn" onclick="closeFeedback()">Continue</button>
+        </div>
+    </div>
+    
+    <script>
+        // Course State
+        const courseState = {
+            currentScreen: 'hero',
+            xp: 0,
+            badges: [],
+            modulesCompleted: [],
+            quizzes: {},
+            activities: {},
+            assessment: null,
+            startTime: Date.now()
+        };
+        
+        // Activity Data with Correct Answers
+        const activities = {
+            m1: [
+                {
+                    question: "A Filipino crew member remains silent during a safety meeting when asked for suggestions. What is the likely cultural factor?",
+                    options: [
+                        "High power distance - respects hierarchy and authority",
+                        "Low uncertainty avoidance - comfortable with ambiguity",
+                        "Individualistic culture - prefers personal goals",
+                        "Low context communication - prefers direct feedback"
+                    ],
+                    correct: 0,
+                    explanation: "High power distance cultures respect hierarchy. Crew members from these cultures may not speak up unless directly asked by someone of higher authority, as they view the officer's authority as sufficient."
+                },
+                {
+                    question: "A German officer asks 'Does anyone have concerns about this procedure?' A Norwegian crew member immediately raises a concern. What does this reflect?",
+                    options: [
+                        "Disrespect for authority",
+                        "Low power distance culture - comfortable questioning authority",
+                        "High uncertainty avoidance - worried about procedures",
+                        "Collectivistic culture - prioritizes group harmony"
+                    ],
+                    correct: 1,
+                    explanation: "Low power distance cultures (like Germany and Norway) are comfortable questioning authority and expect explanations. This is a sign of a healthy safety culture, not disrespect."
+                },
+                {
+                    question: "Why is understanding different time orientations important in maritime operations?",
+                    options: [
+                        "It helps with scheduling maintenance",
+                        "Monochronic cultures may be punctual while polychronic cultures are flexible - affecting safety procedures and watch-keeping",
+                        "It determines crew nationality",
+                        "It affects meal times on the vessel"
+                    ],
+                    correct: 1,
+                    explanation: "Different cultures have different time concepts. Monochronic cultures (like Germany, Switzerland) are very punctual and schedule-focused. Polychronic cultures (like India, Latin America) are more flexible. This affects safety procedures, watch-keeping, and operational discipline."
+                },
+                {
+                    question: "Which cultural dimension is most relevant to incident reporting in maritime safety?",
+                    options: [
+                        "Individualism vs. Collectivism",
+                        "Power distance - affects willingness to report to superiors",
+                        "Uncertainty avoidance",
+                        "Long-term vs. short-term orientation"
+                    ],
+                    correct: 1,
+                    explanation: "Power distance is critical for incident reporting. In high power-distance cultures, crew members may fear reporting incidents to superiors. Creating a safe reporting culture requires understanding this dimension."
+                },
+                {
+                    question: "What is the best approach to avoid cultural stereotyping while recognizing cultural patterns?",
+                    options: [
+                        "Treat all crew members identically regardless of background",
+                        "Recognize general patterns while understanding individual variation - not all individuals from a culture are the same",
+                        "Assume all crew members from the same country think alike",
+                        "Ignore cultural differences entirely"
+                    ],
+                    correct: 1,
+                    explanation: "Cultural awareness means recognizing general patterns while avoiding stereotypes. Individual variation is significant. A person's education, experience, and personality matter as much as their cultural background."
+                }
+            ],
+            m2: [
+                {
+                    question: "What is the primary benefit of closed-loop communication in multicultural teams?",
+                    options: [
+                        "It saves time",
+                        "It ensures the receiver understood the message correctly - critical for safety",
+                        "It reduces the need for written procedures",
+                        "It eliminates cultural differences"
+                    ],
+                    correct: 1,
+                    explanation: "Closed-loop communication (sender → receiver repeats back → sender confirms) ensures understanding. This is critical in multicultural teams where language barriers and communication style differences can cause misunderstandings."
+                },
+                {
+                    question: "Which of the following is an example of an idiom that should be avoided in multicultural communication?",
+                    options: [
+                        "'Please complete this task'",
+                        "'It's raining cats and dogs'",
+                        "'Check the pressure gauge'",
+                        "'Report to the bridge'"
+                    ],
+                    correct: 1,
+                    explanation: "'It's raining cats and dogs' is an idiom meaning heavy rain. Non-native speakers won't understand it. Use clear, literal language: 'It is raining very heavily.'"
+                },
+                {
+                    question: "When communicating critical safety information to a multicultural crew, what should you do?",
+                    options: [
+                        "Speak quickly to save time",
+                        "Use complex technical language to demonstrate expertise",
+                        "Speak slowly, clearly, use simple language, and confirm understanding",
+                        "Assume everyone understands English fluently"
+                    ],
+                    correct: 2,
+                    explanation: "Critical safety information requires clear communication. Speak slowly and clearly, use simple language, avoid idioms, and use closed-loop confirmation to ensure understanding."
+                },
+                {
+                    question: "What is the best way to handle a crew member who doesn't understand your instructions?",
+                    options: [
+                        "Repeat the same instructions louder",
+                        "Assume they're not paying attention",
+                        "Use visual aids, demonstrate, and ask them to repeat back what they understood",
+                        "Give up and assign someone else"
+                    ],
+                    correct: 2,
+                    explanation: "If someone doesn't understand, use different communication methods: visual aids, demonstrations, written instructions, and closed-loop confirmation. Patience and respect are essential."
+                },
+                {
+                    question: "Why is it important to document critical communications in multicultural teams?",
+                    options: [
+                        "It's required by company policy",
+                        "It provides evidence in case of disputes and ensures clarity for non-native speakers",
+                        "It wastes time",
+                        "It's not important"
+                    ],
+                    correct: 1,
+                    explanation: "Documentation of critical communications (especially safety-related) provides clarity, creates a record, and helps non-native speakers refer back to written instructions if needed."
+                }
+            ],
+            m3: [
+                {
+                    question: "In a high power-distance culture, how would crew members typically respond to a Chief Engineer's decision?",
+                    options: [
+                        "Question the decision and ask for justification",
+                        "Offer alternative suggestions",
+                        "Accept the decision without question - respect for authority",
+                        "Ignore the decision if they disagree"
+                    ],
+                    correct: 2,
+                    explanation: "In high power-distance cultures, crew members respect hierarchy and authority. They accept decisions from superiors without questioning, viewing this as proper respect for authority."
+                },
+                {
+                    question: "Which cultural dimension describes the fear of ambiguous or unknown situations?",
+                    options: [
+                        "Power distance",
+                        "Uncertainty avoidance - preference for rules, procedures, and clear guidelines",
+                        "Individualism",
+                        "Time orientation"
+                    ],
+                    correct: 1,
+                    explanation: "Uncertainty avoidance describes how threatened people feel by ambiguous situations. High UA cultures prefer clear rules, procedures, and guidelines. Low UA cultures are comfortable with ambiguity."
+                },
+                {
+                    question: "How does high uncertainty avoidance affect maritime safety culture?",
+                    options: [
+                        "It reduces safety compliance",
+                        "It has no effect on safety",
+                        "It increases preference for clear procedures, rules, and risk-averse behavior - generally positive for safety",
+                        "It encourages risk-taking"
+                    ],
+                    correct: 2,
+                    explanation: "High uncertainty avoidance cultures prefer clear procedures, rules, and guidelines. They are risk-averse and want to know exactly what to do. This is generally positive for maritime safety compliance."
+                },
+                {
+                    question: "In a collectivistic culture, how would a crew member respond to an error they made?",
+                    options: [
+                        "Immediately admit the error and take personal responsibility",
+                        "Blame someone else to protect the team",
+                        "May be reluctant to admit error publicly to avoid bringing shame to the team or department",
+                        "Ignore the error"
+                    ],
+                    correct: 2,
+                    explanation: "In collectivistic cultures, individuals prioritize group harmony. Admitting error publicly might bring shame to the team. This requires careful, private feedback to maintain group harmony while addressing the issue."
+                },
+                {
+                    question: "Why is understanding cultural dimensions important for senior officers?",
+                    options: [
+                        "It's not important",
+                        "It helps predict individual behavior and adapt leadership style to create a more effective and safe team",
+                        "It allows stereotyping of crew members",
+                        "It eliminates the need for clear communication"
+                    ],
+                    correct: 1,
+                    explanation: "Understanding cultural dimensions helps senior officers recognize patterns, adapt their leadership style, and create an inclusive culture where all crew members can contribute to safety and operations."
+                }
+            ],
+            m4: [
+                {
+                    question: "What is the first step in de-escalating cultural conflict?",
+                    options: [
+                        "Tell the crew member they're wrong",
+                        "Listen actively and try to understand their perspective",
+                        "Immediately involve HR",
+                        "Ignore the conflict"
+                    ],
+                    correct: 1,
+                    explanation: "Active listening is the first step. Understand the other person's perspective without judgment. This builds trust and often resolves misunderstandings before they escalate."
+                },
+                {
+                    question: "A crew member from a high power-distance culture seems upset but won't speak up in the team meeting. What should you do?",
+                    options: [
+                        "Force them to speak in the meeting",
+                        "Speak to them privately later - they may feel more comfortable discussing issues one-on-one",
+                        "Assume they have no concerns",
+                        "Discipline them for not participating"
+                    ],
+                    correct: 1,
+                    explanation: "Crew members from high power-distance cultures may not speak up publicly. Speaking to them privately shows respect for their culture and creates a safe space for them to share concerns."
+                },
+                {
+                    question: "How should you address discrimination or exclusion based on cultural background?",
+                    options: [
+                        "Ignore it - it's not a big deal",
+                        "Address it immediately and firmly, document it, and involve HR if needed - MLC 2006 requires this",
+                        "Only address it if the affected person complains",
+                        "Handle it informally without documentation"
+                    ],
+                    correct: 1,
+                    explanation: "Discrimination is a serious issue covered by MLC 2006. Address it immediately and firmly, document it, and involve HR. This protects the crew member and the vessel."
+                },
+                {
+                    question: "What is the best way to create an inclusive team culture as a senior officer?",
+                    options: [
+                        "Treat everyone the same regardless of background",
+                        "Lead by example, ensure all crew feel valued, address discrimination immediately, celebrate diversity",
+                        "Ignore cultural differences",
+                        "Promote only crew from your own culture"
+                    ],
+                    correct: 1,
+                    explanation: "Creating an inclusive culture means leading by example, ensuring all crew feel valued and heard, addressing discrimination immediately, and celebrating the diversity that strengthens the team."
+                },
+                {
+                    question: "When should you involve mediation in cultural conflicts?",
+                    options: [
+                        "Never - handle it yourself",
+                        "Only if the conflict is very serious",
+                        "When direct resolution hasn't worked or when a neutral third party could help - especially for sensitive cultural issues",
+                        "Always - even for minor issues"
+                    ],
+                    correct: 2,
+                    explanation: "Mediation can be helpful when direct resolution hasn't worked or when cultural sensitivities require a neutral perspective. A mediator can help both parties understand each other's cultural perspectives."
+                }
+            ],
+            m5: [
+                {
+                    question: "In the communication breakdown case study, what was the root cause of the safety incident?",
+                    options: [
+                        "The crew member was negligent",
+                        "Power distance and communication style differences prevented incident reporting",
+                        "The Chief Engineer was incompetent",
+                        "The vessel had poor maintenance"
+                    ],
+                    correct: 1,
+                    explanation: "The Filipino crew member from a high power-distance culture feared the Chief Engineer's reaction and didn't report the leak. This is a cultural communication issue, not negligence."
+                },
+                {
+                    question: "What lesson from the case studies is most important for preventing similar incidents?",
+                    options: [
+                        "Hire crew only from low power-distance cultures",
+                        "Create a reporting culture where crew members feel safe reporting issues regardless of cultural background",
+                        "Ignore cultural differences",
+                        "Discipline crew members who don't report issues"
+                    ],
+                    correct: 1,
+                    explanation: "The key lesson is creating a safety culture where crew members feel safe reporting issues. This requires understanding cultural differences and creating psychological safety for all crew members."
+                },
+                {
+                    question: "What does MLC 2006 require regarding discrimination?",
+                    options: [
+                        "It's optional",
+                        "Fair treatment regardless of nationality, race, color, sex, religion, or social origin - with clear grievance procedures",
+                        "Only applies to officers",
+                        "Only applies to certain countries"
+                    ],
+                    correct: 1,
+                    explanation: "MLC 2006 requires fair treatment of all crew members regardless of background, equal opportunity, clear grievance procedures, and training on anti-discrimination policies."
+                },
+                {
+                    question: "How should senior officers ensure MLC 2006 anti-discrimination compliance?",
+                    options: [
+                        "Post the policy on the bulletin board",
+                        "Train all crew, ensure equal opportunity, address discrimination immediately, document incidents, and maintain grievance procedures",
+                        "Only address discrimination if reported",
+                        "It's HR's responsibility, not the officer's"
+                    ],
+                    correct: 1,
+                    explanation: "Senior officers play a key role in MLC compliance: training crew, modeling inclusive behavior, addressing discrimination immediately, and ensuring grievance procedures are accessible."
+                },
+                {
+                    question: "What is the most important takeaway from this course?",
+                    options: [
+                        "All cultures are the same",
+                        "Cultural awareness and inclusive leadership create safer, more effective multicultural maritime teams",
+                        "Cultural differences should be ignored",
+                        "Senior officers don't need to understand culture"
+                    ],
+                    correct: 1,
+                    explanation: "Cultural awareness and inclusive leadership are essential for modern maritime operations. Understanding and respecting cultural differences creates safer, more cohesive, and more effective teams."
+                }
+            ]
+        };
+        
+        // Quiz Data
+        const quizzes = {
+            m1: [
+                {
+                    question: "What is the primary reason culture matters in maritime operations?",
+                    options: [
+                        "It determines crew nationality",
+                        "It affects communication, authority perception, risk awareness, and safety compliance",
+                        "It's not important",
+                        "It only matters for international crews"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is an example of a cultural dimension?",
+                    options: [
+                        "Ship size",
+                        "Power distance - attitudes to authority and hierarchy",
+                        "Engine type",
+                        "Cargo type"
+                    ],
+                    correct: 1
+                }
+            ],
+            m2: [
+                {
+                    question: "What is closed-loop communication?",
+                    options: [
+                        "Sending the same message twice",
+                        "Sender → Receiver repeats back → Sender confirms - ensures understanding",
+                        "Using only written communication",
+                        "Not using verbal communication"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Why should you avoid idioms in multicultural communication?",
+                    options: [
+                        "They're too formal",
+                        "Non-native speakers won't understand them - use clear, literal language",
+                        "They're too informal",
+                        "They waste time"
+                    ],
+                    correct: 1
+                }
+            ],
+            m3: [
+                {
+                    question: "What does 'power distance' refer to?",
+                    options: [
+                        "Physical distance between crew members",
+                        "The degree to which less powerful members accept unequal power distribution",
+                        "Distance between the bridge and engine room",
+                        "Distance traveled by the vessel"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "How does uncertainty avoidance affect maritime safety?",
+                    options: [
+                        "It has no effect",
+                        "High UA cultures prefer clear procedures and rules - generally positive for safety compliance",
+                        "It always reduces safety",
+                        "It only affects officers"
+                    ],
+                    correct: 1
+                }
+            ],
+            m4: [
+                {
+                    question: "What is the first step in de-escalating cultural conflict?",
+                    options: [
+                        "Discipline the crew member",
+                        "Listen actively and understand their perspective",
+                        "Ignore the conflict",
+                        "Immediately involve HR"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "How should discrimination based on cultural background be handled?",
+                    options: [
+                        "Ignore it",
+                        "Address it immediately and firmly, document it, and involve HR - MLC 2006 requirement",
+                        "Only address if reported",
+                        "Handle informally"
+                    ],
+                    correct: 1
+                }
+            ],
+            m5: [
+                {
+                    question: "What was the root cause of the communication breakdown case study?",
+                    options: [
+                        "Crew negligence",
+                        "Power distance and communication style differences prevented incident reporting",
+                        "Poor maintenance",
+                        "Officer incompetence"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "What does MLC 2006 require regarding crew treatment?",
+                    options: [
+                        "It's optional",
+                        "Fair treatment regardless of nationality, race, color, sex, religion, or social origin",
+                        "Only applies to officers",
+                        "Only applies to certain countries"
+                    ],
+                    correct: 1
+                }
+            ]
+        };
+        
+        // Assessment Questions
+        const assessmentQuestions = [
+            {
+                question: "Why is cultural awareness critical for maritime safety?",
+                options: [
+                    "It's not important",
+                    "Cultural differences in communication, risk perception, and authority affect safety compliance and incident reporting",
+                    "Only for international crews",
+                    "It's only for HR"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the primary benefit of closed-loop communication?",
+                options: [
+                    "It saves time",
+                    "It ensures the receiver understood the message correctly - critical for safety",
+                    "It reduces written procedures",
+                    "It eliminates cultural differences"
+                ],
+                correct: 1
+            },
+            {
+                question: "In a high power-distance culture, how would crew typically respond to a senior officer's decision?",
+                options: [
+                    "Question and debate it",
+                    "Accept it without question - respect for authority",
+                    "Ignore it",
+                    "Report it to HR"
+                ],
+                correct: 1
+            },
+            {
+                question: "What does 'uncertainty avoidance' mean?",
+                options: [
+                    "Avoiding uncertainty in scheduling",
+                    "The degree to which people feel threatened by ambiguous situations",
+                    "Avoiding risk-taking",
+                    "Avoiding new procedures"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which cultural dimension is most relevant to incident reporting?",
+                options: [
+                    "Individualism",
+                    "Time orientation",
+                    "Power distance - affects willingness to report to superiors",
+                    "Collectivism"
+                ],
+                correct: 2
+            },
+            {
+                question: "What should you do if a crew member from a high power-distance culture seems upset but won't speak in a team meeting?",
+                options: [
+                    "Force them to speak",
+                    "Speak to them privately - they may feel more comfortable one-on-one",
+                    "Assume they have no concerns",
+                    "Discipline them"
+                ],
+                correct: 1
+            },
+            {
+                question: "Why is it important to avoid idioms in multicultural communication?",
+                options: [
+                    "They're too formal",
+                    "Non-native speakers won't understand them",
+                    "They're unprofessional",
+                    "They waste time"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the first step in de-escalating cultural conflict?",
+                options: [
+                    "Tell them they're wrong",
+                    "Listen actively and understand their perspective",
+                    "Immediately involve HR",
+                    "Ignore it"
+                ],
+                correct: 1
+            },
+            {
+                question: "How does a collectivistic culture typically handle individual errors?",
+                options: [
+                    "Immediately admit and take responsibility",
+                    "May be reluctant to admit publicly to avoid bringing shame to the team",
+                    "Blame someone else",
+                    "Ignore the error"
+                ],
+                correct: 1
+            },
+            {
+                question: "What should you do to address discrimination based on cultural background?",
+                options: [
+                    "Ignore it",
+                    "Address immediately and firmly, document it, involve HR - MLC 2006 requirement",
+                    "Only address if reported",
+                    "Handle informally"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the best way to create an inclusive team culture?",
+                options: [
+                    "Treat everyone identically",
+                    "Lead by example, ensure all feel valued, address discrimination, celebrate diversity",
+                    "Ignore cultural differences",
+                    "Promote only from your culture"
+                ],
+                correct: 1
+            },
+            {
+                question: "In the communication breakdown case study, what prevented incident reporting?",
+                options: [
+                    "Crew negligence",
+                    "Power distance and communication style differences",
+                    "Poor maintenance",
+                    "Officer incompetence"
+                ],
+                correct: 1
+            },
+            {
+                question: "What does MLC 2006 require regarding crew treatment?",
+                options: [
+                    "It's optional",
+                    "Fair treatment regardless of nationality, race, color, sex, religion, or social origin",
+                    "Only for officers",
+                    "Only for certain countries"
+                ],
+                correct: 1
+            },
+            {
+                question: "How should senior officers ensure MLC 2006 compliance?",
+                options: [
+                    "Post the policy",
+                    "Train crew, ensure equal opportunity, address discrimination, document incidents",
+                    "Only address if reported",
+                    "It's HR's responsibility"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the most important takeaway about cultural awareness in maritime?",
+                options: [
+                    "All cultures are the same",
+                    "Cultural awareness and inclusive leadership create safer, more effective teams",
+                    "Cultural differences should be ignored",
+                    "Only officers need cultural training"
+                ],
+                correct: 1
+            },
+            {
+                question: "Why is understanding different time orientations important?",
+                options: [
+                    "It helps with scheduling",
+                    "Monochronic cultures are punctual; polychronic are flexible - affects safety procedures and watch-keeping",
+                    "It determines crew nationality",
+                    "It affects meal times"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the best approach to avoid stereotyping while recognizing cultural patterns?",
+                options: [
+                    "Treat all identically",
+                    "Recognize patterns while understanding individual variation - not all from same culture are the same",
+                    "Assume all from same country think alike",
+                    "Ignore cultural differences"
+                ],
+                correct: 1
+            },
+            {
+                question: "How does high uncertainty avoidance affect safety culture?",
+                options: [
+                    "Reduces compliance",
+                    "Has no effect",
+                    "Increases preference for clear procedures and rules - generally positive for safety",
+                    "Encourages risk-taking"
+                ],
+                correct: 2
+            },
+            {
+                question: "When should you involve mediation in cultural conflicts?",
+                options: [
+                    "Never",
+                    "Only for serious conflicts",
+                    "When direct resolution hasn't worked or when neutral perspective needed",
+                    "Always"
+                ],
+                correct: 2
+            },
+            {
+                question: "What communication technique should you use for critical safety information in multicultural teams?",
+                options: [
+                    "Speak quickly",
+                    "Use complex technical language",
+                    "Speak slowly, clearly, use simple language, confirm understanding",
+                    "Assume fluent English"
+                ],
+                correct: 2
+            },
+            {
+                question: "Why is documentation of critical communications important?",
+                options: [
+                    "Company policy",
+                    "Provides clarity, creates record, helps non-native speakers refer back",
+                    "Wastes time",
+                    "Not important"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the relationship between power distance and incident reporting?",
+                options: [
+                    "No relationship",
+                    "High power distance may prevent crew from reporting to superiors - affects safety",
+                    "Only affects officers",
+                    "Only affects communication"
+                ],
+                correct: 1
+            },
+            {
+                question: "How should you respond to a crew member who doesn't understand your instructions?",
+                options: [
+                    "Repeat louder",
+                    "Assume they're not paying attention",
+                    "Use visual aids, demonstrate, ask them to repeat back",
+                    "Give up"
+                ],
+                correct: 2
+            },
+            {
+                question: "What is individualism vs. collectivism in maritime context?",
+                options: [
+                    "Personal vs. group nationality",
+                    "Personal goals vs. group harmony - affects teamwork and accountability",
+                    "Officer vs. crew",
+                    "Bridge vs. engine room"
+                ],
+                correct: 1
+            },
+            {
+                question: "What should you do to ensure all crew understand anti-discrimination policies?",
+                options: [
+                    "Post on bulletin board",
+                    "Train all crew, ensure accessibility, address violations immediately",
+                    "Only for officers",
+                    "Not necessary"
+                ],
+                correct: 1
+            },
+            {
+                question: "How does cultural awareness improve maritime operations?",
+                options: [
+                    "It doesn't",
+                    "Better communication, safer incident reporting, stronger team cohesion, fewer conflicts",
+                    "Only for international crews",
+                    "Only for HR"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the role of a senior officer in creating inclusive culture?",
+                options: [
+                    "Not their responsibility",
+                    "Lead by example, ensure all feel valued, address discrimination, celebrate diversity",
+                    "Only HR's role",
+                    "Only for diversity training"
+                ],
+                correct: 1
+            },
+            {
+                question: "Why might a collectivistic crew member be reluctant to admit an error publicly?",
+                options: [
+                    "They're dishonest",
+                    "They fear bringing shame to the team - requires private feedback",
+                    "They don't care",
+                    "They're incompetent"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the key to successful communication in multicultural maritime teams?",
+                options: [
+                    "Everyone speaks English fluently",
+                    "Clear language, closed-loop confirmation, patience, respect for differences",
+                    "Use complex technical terms",
+                    "Assume understanding"
+                ],
+                correct: 1
+            },
+            {
+                question: "How should you handle a cultural misunderstanding between crew members?",
+                options: [
+                    "Ignore it",
+                    "Understand both perspectives, find common ground, use neutral language, document if needed",
+                    "Discipline both",
+                    "Take sides"
+                ],
+                correct: 1
+            }
+        ];
+        
+        // Navigation
+        function go(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screen).classList.add('active');
+            courseState.currentScreen = screen;
+            
+            if (screen === 'modules') {
+                updateDashboard();
+            } else if (screen === 'assess') {
+                renderAssessment();
+            }
+        }
+        
+        function completeAndGo(nextScreen) {
+            go(nextScreen);
+        }
+        
+        // Render Activities
+        function renderActivities() {
+            Object.keys(activities).forEach(module => {
+                const container = document.getElementById(module + 'Activity');
+                if (container) {
+                    container.innerHTML = activities[module].map((item, idx) => `
+                        <div class="activity-item">
+                            <p><strong>${idx + 1}. ${item.question}</strong></p>
+                            ${item.options.map((opt, optIdx) => `
+                                <div class="activity-item">
+                                    <label>
+                                        <input type="radio" name="${module}_${idx}" value="${optIdx}">
+                                        ${opt}
+                                    </label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `).join('');
+                }
+            });
+        }
+        
+        // Check Activities
+        function checkM1Activity() { checkActivity('m1'); }
+        function checkM2Activity() { checkActivity('m2'); }
+        function checkM3Activity() { checkActivity('m3'); }
+        function checkM4Activity() { checkActivity('m4'); }
+        function checkM5Activity() { checkActivity('m5'); }
+        
+        function checkActivity(module) {
+            const items = activities[module];
+            let correct = 0;
+            let html = '';
+            
+            items.forEach((item, idx) => {
+                const selected = document.querySelector(`input[name="${module}_${idx}"]:checked`);
+                if (!selected) return;
+                
+                const selectedIdx = parseInt(selected.value);
+                const isCorrect = selectedIdx === item.correct;
+                if (isCorrect) correct++;
+                
+                html += `
+                    <div class="activity-item ${isCorrect ? 'correct' : 'incorrect'}">
+                        <p><strong>${idx + 1}. ${item.question}</strong></p>
+                        <p>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</p>
+                        <p><strong>Correct Answer:</strong> ${item.options[item.correct]}</p>
+                        <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                            <strong>Explanation:</strong> ${item.explanation}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            const score = Math.round((correct / items.length) * 100);
+            const xpEarned = Math.round((correct / items.length) * 50);
+            
+            showFeedback(
+                `Activity Score: ${score}%`,
+                html,
+                score,
+                xpEarned,
+                module
+            );
+            
+            courseState.activities[module] = score;
+            courseState.xp += xpEarned;
+            updateDashboard();
+        }
+        
+        // Render Quizzes
+        function renderQuizzes() {
+            Object.keys(quizzes).forEach(module => {
+                const container = document.getElementById(module + 'Quiz');
+                if (container) {
+                    container.innerHTML = quizzes[module].map((q, idx) => `
+                        <div class="quiz-question">
+                            <p>${idx + 1}. ${q.question}</p>
+                            ${q.options.map((opt, optIdx) => `
+                                <div class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="${module}_quiz_${idx}" value="${optIdx}">
+                                        ${opt}
+                                    </label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `).join('');
+                }
+            });
+        }
+        
+        // Submit Quiz
+        function submitQuiz(module) {
+            const quiz = quizzes[module];
+            let correct = 0;
+            let html = '';
+            
+            quiz.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="${module}_quiz_${idx}"]:checked`);
+                if (!selected) return;
+                
+                const selectedIdx = parseInt(selected.value);
+                const isCorrect = selectedIdx === q.correct;
+                if (isCorrect) correct++;
+                
+                html += `
+                    <div class="activity-item ${isCorrect ? 'correct' : 'incorrect'}">
+                        <p><strong>${idx + 1}. ${q.question}</strong></p>
+                        <p>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</p>
+                        <p><strong>Correct Answer:</strong> ${q.options[q.correct]}</p>
+                    </div>
+                `;
+            });
+            
+            const score = Math.round((correct / quiz.length) * 100);
+            const xpEarned = Math.round((correct / quiz.length) * 25);
+            
+            showFeedback(
+                `Quiz Score: ${score}%`,
+                html,
+                score,
+                xpEarned,
+                module
+            );
+            
+            courseState.quizzes[module] = score;
+            courseState.xp += xpEarned;
+            updateDashboard();
+        }
+        
+        // Render Assessment
+        function renderAssessment() {
+            const container = document.getElementById('assessmentContent');
+            container.innerHTML = assessmentQuestions.map((q, idx) => `
+                <div class="assessment-question">
+                    <p>${idx + 1}. ${q.question}</p>
+                    ${q.options.map((opt, optIdx) => `
+                        <div class="assessment-option">
+                            <label>
+                                <input type="radio" name="assess_${idx}" value="${optIdx}">
+                                ${opt}
+                            </label>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+        
+        // Submit Assessment
+        function submitAssessment() {
+            let correct = 0;
+            
+            assessmentQuestions.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="assess_${idx}"]:checked`);
+                if (selected && parseInt(selected.value) === q.correct) {
+                    correct++;
+                }
+            });
+            
+            const score = Math.round((correct / assessmentQuestions.length) * 100);
+            const passed = score >= 70;
+            const xpEarned = Math.round((correct / assessmentQuestions.length) * 100);
+            
+            courseState.assessment = { score, passed };
+            courseState.xp += xpEarned;
+            
+            if (!courseState.modulesCompleted.includes('assess')) {
+                courseState.modulesCompleted.push('assess');
+            }
+            
+            checkBadges();
+            displayResults(score, passed);
+            sendLMSCompletion();
+        }
+        
+        // Display Results
+        function displayResults(score, passed) {
+            const container = document.getElementById('certificateDisplay');
+            const badgeContainer = document.getElementById('badgeDisplay');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const resultStatus = document.getElementById('resultStatus');
+            const totalXP = document.getElementById('totalXP');
+            
+            scoreDisplay.textContent = score + '%';
+            scoreDisplay.className = passed ? 'score-display' : 'score-display fail';
+            resultStatus.textContent = passed ? '🎉 Congratulations! You passed!' : '❌ Unfortunately, you did not pass. Please review the course and try again.';
+            totalXP.textContent = courseState.xp + ' XP';
+            
+            if (passed) {
+                container.innerHTML = `
+                    <div class="certificate">
+                        <h3>🏆 Certificate of Completion</h3>
+                        <p>This certifies that you have successfully completed</p>
+                        <h2>Cultural Awareness — Working in a Multinational Maritime Team</h2>
+                        <p>with a score of <strong>${score}%</strong></p>
+                        <p style="margin-top: 20px; font-size: 0.9em;">Date: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                `;
+            }
+            
+            badgeContainer.innerHTML = courseState.badges.map(badge => `
+                <div class="badge ${badge.type}">${badge.emoji} ${badge.name}</div>
+            `).join('');
+            
+            go('results');
+        }
+        
+        // Award XP
+        function awardXP(amount) {
+            courseState.xp += amount;
+            updateDashboard();
+        }
+        
+        // Check Badges
+        function checkBadges() {
+            if (courseState.xp >= 300 && !courseState.badges.find(b => b.name === 'Course Master')) {
+                courseState.badges.push({ name: 'Course Master', emoji: '🏅', type: 'gold' });
+            }
+            if (courseState.xp >= 250 && !courseState.badges.find(b => b.name === 'XP Champion')) {
+                courseState.badges.push({ name: 'XP Champion', emoji: '⭐', type: 'silver' });
+            }
+            if (courseState.assessment && courseState.assessment.score >= 90 && !courseState.badges.find(b => b.name === 'On Fire')) {
+                courseState.badges.push({ name: 'On Fire', emoji: '🔥', type: 'bronze' });
+            }
+        }
+        
+        // Update Dashboard
+        function updateDashboard() {
+            document.getElementById('xpDisplay').textContent = courseState.xp;
+            document.getElementById('moduleCount').textContent = courseState.modulesCompleted.length + '/5';
+            document.getElementById('badgeCount').textContent = courseState.badges.length;
+            
+            ['m1', 'm2', 'm3', 'm4', 'm5'].forEach(m => {
+                const progress = courseState.activities[m] ? courseState.activities[m] : 0;
+                document.getElementById(m + 'Progress').style.width = progress + '%';
+            });
+        }
+        
+        // Show Feedback Modal
+        function showFeedback(title, message, score, xp, module) {
+            document.getElementById('feedbackTitle').textContent = title;
+            document.getElementById('feedbackMessage').innerHTML = message;
+            document.getElementById('feedbackScore').textContent = score + '%';
+            document.getElementById('feedbackXP').innerHTML = `+${xp} XP Earned`;
+            document.getElementById('feedbackModal').classList.add('show');
+            
+            if (!courseState.modulesCompleted.includes(module)) {
+                courseState.modulesCompleted.push(module);
+            }
+        }
+        
+        // Close Feedback
+        function closeFeedback() {
+            document.getElementById('feedbackModal').classList.remove('show');
+        }
+        
+        // LMS Integration
+        function sendLMSCompletion() {
+            const completionData = {
+                courseId: 'cultural-awareness-maritime-001',
+                courseName: 'Cultural Awareness — Working in a Multinational Maritime Team',
+                completionStatus: courseState.assessment.passed ? 'PASSED' : 'FAILED',
+                score: courseState.assessment.score,
+                passingScore: 70,
+                totalXP: courseState.xp,
+                badges: courseState.badges.map(b => b.name),
+                modulesCompleted: courseState.modulesCompleted,
+                completionTime: Math.round((Date.now() - courseState.startTime) / 1000),
+                timestamp: new Date().toISOString()
+            };
+            
+            // PostMessage API (iframe-based LMS)
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'course-completion',
+                    data: completionData
+                }, '*');
+            }
+            
+            // localStorage (offline persistence)
+            localStorage.setItem('courseCompletion_' + completionData.courseId, JSON.stringify(completionData));
+            
+            // REST API (custom LMS) - uncomment and configure
+            // fetch('https://your-lms.com/api/course-completion', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(completionData)
+            // }).catch(err => console.log('LMS API unavailable (offline mode)'));
+        }
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            renderActivities();
+            renderQuizzes();
+            renderAssessment();
+            updateDashboard();
+        });
+    </script>
+</body>
+</html>

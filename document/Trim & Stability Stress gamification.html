@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trim, Stability and Stress — Tanker Loading Conditions</title>
+<style>
+/* ═══ OFFLINE — SYSTEM FONTS ONLY ═══ */
+:root{
+  --ff:"Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  --fm:ui-monospace,"Cascadia Code","Source Code Pro",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+  --bg:#f5f7fa;--bg2:#ffffff;--bg3:#eef1f6;--bg4:#e4e9f2;
+  --nv:#1a2744;--nv2:#243460;--nv3:#2e4080;
+  --bl:#1d4ed8;--bl-lt:#eff6ff;--bl-mid:#3b82f6;
+  --gr:#15803d;--gr-lt:#f0fdf4;--gr-mid:#22c55e;
+  --rd:#dc2626;--rd-lt:#fef2f2;--rd-mid:#ef4444;
+  --am:#d97706;--am-lt:#fffbeb;--am-mid:#f59e0b;
+  --pu:#7c3aed;--pu-lt:#f5f3ff;
+  --cy:#0891b2;--cy-lt:#ecfeff;
+  --bd:#e2e8f0;--bd2:#cbd5e1;--mu:#64748b;--mu2:#94a3b8;
+  --wh:#ffffff;--tx:#1e293b;--tx2:#475569;
+  --sh:0 1px 8px rgba(0,0,0,.08);--sh2:0 2px 16px rgba(0,0,0,.1);
+  --r:10px;--rs:7px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff);background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden;font-size:14px;line-height:1.6}
+
+#prg{position:fixed;top:0;left:0;right:0;height:3px;background:var(--bg4);z-index:300}
+#pb{height:100%;background:linear-gradient(90deg,var(--nv),var(--bl-mid));width:0%;transition:width .5s}
+
+nav{position:fixed;top:3px;left:0;right:0;height:50px;background:rgba(255,255,255,.97);border-bottom:1px solid var(--bd);z-index:299;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;box-shadow:var(--sh)}
+.nb_{display:flex;align-items:center;gap:10px}
+.nl{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--nv);letter-spacing:.04em}
+.nl em{font-style:normal;color:var(--bl)}
+.nbg{font-family:var(--fm);font-size:9px;color:var(--nv2);background:var(--bl-lt);border:1px solid rgba(29,78,216,.2);padding:2px 8px;border-radius:3px;letter-spacing:.06em}
+#nm{font-family:var(--fm);font-size:10px;color:var(--mu);letter-spacing:.04em}
+#npts{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--nv);background:var(--bl-lt);border:1px solid rgba(29,78,216,.15);padding:3px 12px;border-radius:20px}
+
+main{padding-top:53px;min-height:100vh}
+.screen{display:none}
+.screen.active{display:block;animation:up .35s ease}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+#screen-hero{min-height:calc(100vh - 53px);display:none;align-items:center;justify-content:center;background:var(--bg)}
+#screen-hero.active{display:flex}
+
+.hi{max-width:620px;margin:0 auto;padding:2rem 1.5rem;text-align:center}
+.hb{display:inline-block;background:var(--bl-lt);color:var(--bl);border:1px solid rgba(29,78,216,.2);font-family:var(--fm);font-size:10px;padding:5px 16px;border-radius:20px;letter-spacing:.08em;margin-bottom:1.5rem;text-transform:uppercase}
+.hic{font-size:72px;display:block;margin-bottom:1rem}
+.hi h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;color:var(--nv);line-height:1.05;margin-bottom:.5rem;letter-spacing:-.02em}
+.hi h1 em{font-style:normal;color:var(--bl)}
+.hdesc{font-size:13px;color:var(--mu);line-height:1.75;margin-bottom:1.5rem;max-width:480px;margin-left:auto;margin-right:auto}
+.href-box{font-family:var(--fm);font-size:11px;color:var(--nv2);background:var(--bl-lt);border:1px solid rgba(29,78,216,.15);padding:8px 16px;border-radius:var(--rs);margin:0 auto 2rem;display:inline-block}
+.hgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:480px;margin:0 auto 2rem}
+.hg{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rs);padding:10px 6px;cursor:pointer;transition:all .15s;text-align:center;box-shadow:var(--sh)}
+.hg:hover{border-color:var(--bl-mid);background:var(--bl-lt)}
+.hg.done{border-color:var(--gr-mid);background:var(--gr-lt)}
+.hg.done .hgn{color:var(--gr)}
+.hgi{font-size:20px;display:block;margin-bottom:3px}
+.hgn{font-family:var(--fm);font-size:9px;color:var(--bl);letter-spacing:.1em;margin-bottom:2px}
+.hgl{font-size:10px;color:var(--mu);line-height:1.3}
+.bgo{background:var(--nv);color:#fff;border:none;padding:12px 38px;border-radius:var(--rs);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.bgo:hover{background:var(--nv2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,39,68,.25)}
+
+.mw{max-width:780px;margin:0 auto;padding:1.5rem 1.5rem 5rem}
+.bcr{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center}
+.bc{font-family:var(--fm);font-size:9px;padding:4px 9px;border-radius:3px;border:1px solid var(--bd);color:var(--mu);cursor:pointer;background:var(--bg2);transition:all .12s;white-space:nowrap;box-shadow:var(--sh)}
+.bc:hover{border-color:var(--bl-mid);color:var(--bl)}
+.bc.active{background:var(--nv);border-color:var(--nv);color:#fff}
+.bc.done{background:var(--gr-lt);border-color:var(--gr-mid);color:var(--gr)}
+.mhdr{display:flex;align-items:flex-start;gap:1rem;background:var(--bg2);border:1px solid var(--bd);border-left:4px solid var(--nv);border-radius:0 var(--r) var(--r) 0;padding:1.1rem 1.4rem;margin-bottom:1.2rem;box-shadow:var(--sh)}
+.mhi{font-size:36px;flex-shrink:0}
+.mhch{font-family:var(--fm);font-size:9px;color:var(--bl);letter-spacing:.14em;text-transform:uppercase;margin-bottom:3px}
+.mhti{font-size:1.2rem;font-weight:700;color:var(--nv);line-height:1.2;letter-spacing:-.01em}
+.mhde{font-size:12px;color:var(--mu);margin-top:4px}
+
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:1.2rem;margin-bottom:1rem;box-shadow:var(--sh)}
+.cl{font-family:var(--fm);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.7rem;display:flex;align-items:center;gap:6px}
+.cl.read{color:var(--bl)}
+.cl.do{color:var(--am)}
+.cl.check{color:var(--pu)}
+.cq{font-size:14px;font-weight:600;color:var(--nv);margin-bottom:.85rem;line-height:1.45;letter-spacing:-.01em}
+
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:.7rem 0}
+.fc{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--rs);padding:.85rem;display:flex;gap:9px;align-items:flex-start}
+.fi{font-size:22px;flex-shrink:0}
+.ft{font-size:12px;color:var(--tx2);line-height:1.65}
+.ft strong{color:var(--nv);font-weight:600;display:block;margin-bottom:2px}
+.co{border-radius:var(--rs);padding:.8rem 1rem;margin:.7rem 0;font-size:12px;line-height:1.7;border-left:3px solid}
+.co.warn{background:var(--am-lt);border-color:var(--am);color:#7c2d12}
+.co.danger{background:var(--rd-lt);border-color:var(--rd);color:#7f1d1d}
+.co.tip{background:var(--gr-lt);border-color:var(--gr);color:#14532d}
+.co.info{background:var(--bl-lt);border-color:var(--bl);color:#1e3a8a}
+.co strong{font-weight:700}
+
+.dt{width:100%;border-collapse:collapse;font-size:12px;margin:.7rem 0}
+.dt th{background:var(--bg3);color:var(--mu);font-family:var(--fm);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:7px 11px;text-align:left;border-bottom:2px solid var(--bd2)}
+.dt td{padding:7px 11px;border-bottom:1px solid var(--bd);color:var(--tx2);line-height:1.5;vertical-align:top}
+.dt td:first-child{color:var(--nv);font-weight:500}
+.dt tr:hover td{background:var(--bg3)}
+.iref{font-family:var(--fm);font-size:9px;background:var(--bl-lt);color:var(--bl);border:1px solid rgba(29,78,216,.15);padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle}
+.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;font-family:var(--fm)}
+.tg{background:var(--gr-lt);color:var(--gr);border:1px solid rgba(21,128,61,.2)}
+.ta{background:var(--am-lt);color:var(--am);border:1px solid rgba(217,119,6,.2)}
+.tr_{background:var(--rd-lt);color:var(--rd);border:1px solid rgba(220,38,38,.2)}
+.tb{background:var(--bl-lt);color:var(--bl);border:1px solid rgba(29,78,216,.2)}
+
+/* ── SORT ── */
+.sl{display:flex;flex-direction:column;gap:6px;width:100%}
+.si{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1.5px solid var(--bd);border-radius:var(--rs);padding:9px 13px;cursor:grab;user-select:none;transition:all .12s;width:100%;color:var(--tx2) !important;font-size:12px;box-shadow:var(--sh)}
+.si:hover{border-color:var(--bl-mid);background:var(--bl-lt)}
+.si.over{border-color:var(--bl);background:var(--bl-lt);transform:scale(1.01)}
+.si.dragging{opacity:.3;border:1.5px dashed var(--bl)}
+.si.correct-item{background:var(--gr-lt) !important;border-color:var(--gr-mid) !important;color:var(--gr) !important;cursor:default}
+.sh_{color:var(--bd2);font-size:14px;flex-shrink:0}
+.sb{min-width:23px;height:23px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--mu);flex-shrink:0;font-family:var(--fm)}
+.correct-item .sb{background:var(--gr);color:#fff}
+.st{flex:1;line-height:1.45;color:var(--tx2) !important;min-width:0;word-break:break-word}
+.correct-item .st{color:var(--gr) !important}
+.sfb{margin-top:.65rem;font-size:12px;padding:9px 13px;border-radius:var(--rs);display:none;line-height:1.65;border-left:3px solid}
+.sfb.pass{display:block;background:var(--gr-lt);border-color:var(--gr);color:var(--gr);font-weight:600}
+.sfb.fail{display:block;background:var(--rd-lt);border-color:var(--rd);color:var(--rd)}
+
+/* ── MCQ ── */
+.mo{display:flex;flex-direction:column;gap:6px}
+.mb{display:flex;align-items:flex-start;gap:9px;background:var(--bg3);border:1.5px solid var(--bd);border-radius:var(--rs);padding:9px 13px;cursor:pointer;transition:all .12s;text-align:left;font-size:12px;color:var(--tx2) !important;line-height:1.5;font-family:var(--ff);width:100%;box-shadow:var(--sh)}
+.mb:hover:not([disabled]){border-color:var(--bl-mid);background:var(--bl-lt)}
+.ml{min-width:21px;height:21px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--mu);flex-shrink:0;margin-top:1px;font-family:var(--fm);transition:all .12s}
+.mb.correct-ans{background:var(--gr-lt) !important;border-color:var(--gr-mid) !important;color:var(--gr) !important}
+.mb.correct-ans .ml{background:var(--gr) !important;color:#fff !important}
+.mb.wrong-ans{background:var(--rd-lt) !important;border-color:var(--rd-mid) !important;color:var(--rd) !important}
+.mb.wrong-ans .ml{background:var(--rd) !important;color:#fff !important}
+.mb[disabled]{cursor:default}
+.mfb{font-size:11px;margin-top:.5rem;padding:7px 11px;border-radius:var(--rs);display:none;line-height:1.6;border-left:3px solid}
+.mfb.ok{display:block;background:var(--gr-lt);border-color:var(--gr);color:#14532d}
+.mfb.err{display:block;background:var(--rd-lt);border-color:var(--rd);color:#7f1d1d}
+.mfb.err::before{content:"⚠ Flagged — ";font-weight:700;color:var(--am)}
+
+/* ── MATCH ── */
+.mwg{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.mch{font-family:var(--fm);font-size:9px;font-weight:700;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.mc{display:flex;flex-direction:column;gap:5px}
+.mi{border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 11px;font-size:12px;cursor:pointer;transition:all .15s;background:var(--bg3);line-height:1.45;min-height:42px;display:flex;align-items:center;color:var(--tx2) !important;box-shadow:var(--sh)}
+.mi:hover:not(.matched-ok):not(.matched-err){border-color:var(--bl-mid);background:var(--bl-lt)}
+.mi.selected{border-color:var(--bl);background:var(--bl-lt);font-weight:600;color:var(--bl) !important}
+.mi.matched-ok{background:var(--gr-lt) !important;border-color:var(--gr-mid) !important;color:var(--gr) !important;cursor:default;font-weight:500}
+.mi.matched-err{background:var(--rd-lt) !important;border-color:var(--rd-mid) !important;color:var(--rd) !important;cursor:default}
+.mhint{font-family:var(--fm);font-size:10px;color:var(--mu);margin-top:.5rem;font-style:italic}
+.msc{font-size:12px;margin-top:.7rem;display:none;padding:7px 11px;border-radius:var(--rs);font-weight:600;border-left:3px solid}
+.msc.ok{display:block;background:var(--gr-lt);border-color:var(--gr);color:var(--gr)}
+
+/* ── FSC CALCULATOR ── */
+.calc{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:1.1rem;margin:.7rem 0;box-shadow:var(--sh)}
+.calc-hdr{font-family:var(--fm);font-size:9px;font-weight:700;color:var(--nv);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.85rem;display:flex;align-items:center;gap:8px}
+.calc-hdr::after{content:'';flex:1;height:1px;background:var(--bd2)}
+.calc-displays{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.calc-d{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rs);padding:.75rem;text-align:center;box-shadow:var(--sh)}
+.calc-val{font-size:1.5rem;font-weight:700;line-height:1;margin-bottom:3px;transition:color .3s;font-family:var(--fm)}
+.calc-unit{font-size:10px;color:var(--mu);margin-bottom:2px}
+.calc-lbl{font-size:9px;color:var(--mu);letter-spacing:.08em;text-transform:uppercase}
+.calc-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.calc-row label{font-size:11px;color:var(--mu);min-width:210px}
+.calc-row input[type=range]{flex:1;accent-color:var(--nv)}
+.calc-rv{font-size:11px;font-weight:700;min-width:75px;text-align:right;color:var(--nv);font-family:var(--fm)}
+.calc-formula{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rs);padding:.75rem 1rem;font-size:11px;color:var(--tx2);line-height:1.8;margin-top:.75rem;font-family:var(--fm)}
+.calc-formula strong{color:var(--nv);font-weight:700}
+.calc-result{margin-top:.75rem;font-size:12px;padding:9px 12px;border-radius:var(--rs);border-left:3px solid;display:none;line-height:1.55}
+.calc-result.show{display:block}
+.calc-result.ok{background:var(--gr-lt);border-color:var(--gr);color:#14532d}
+.calc-result.warn{background:var(--am-lt);border-color:var(--am);color:#7c2d12}
+.calc-result.alert{background:var(--rd-lt);border-color:var(--rd);color:#7f1d1d}
+
+/* ── STABILITY TREND CHART ── */
+.trend-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:1.1rem;margin:.7rem 0;box-shadow:var(--sh)}
+.trend-controls{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem}
+.tc-row{display:flex;align-items:center;gap:10px}
+.tc-row label{font-size:11px;color:var(--mu);min-width:180px}
+.tc-row input[type=range]{flex:1;accent-color:var(--nv)}
+.tc-val{font-size:11px;font-weight:700;min-width:75px;text-align:right;color:var(--nv);font-family:var(--fm)}
+.trend-status{margin-top:.75rem;font-size:12px;padding:9px 12px;border-radius:var(--rs);border-left:3px solid;line-height:1.55}
+.trend-status.ok{background:var(--gr-lt);border-color:var(--gr);color:#14532d}
+.trend-status.warn{background:var(--am-lt);border-color:var(--am);color:#7c2d12}
+.trend-status.crit{background:var(--rd-lt);border-color:var(--rd);color:#7f1d1d}
+
+/* ── BM/SF GAUGE ── */
+.gauge-wrap{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:1.1rem;margin:.7rem 0;box-shadow:var(--sh)}
+.gauge-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.gauge-lbl{font-family:var(--fm);font-size:10px;color:var(--mu);min-width:120px;letter-spacing:.04em}
+.gauge-bar-wrap{flex:1;background:var(--bg4);border-radius:4px;height:18px;overflow:hidden;position:relative;border:1px solid var(--bd)}
+.gauge-fill{height:100%;border-radius:4px;transition:width .4s,background .4s}
+.gauge-limit{position:absolute;top:0;bottom:0;width:2px;background:var(--rd);opacity:.5}
+.gauge-pct{font-family:var(--fm);font-size:11px;font-weight:700;min-width:50px;text-align:right}
+.gauge-controls{display:flex;flex-direction:column;gap:7px;margin-top:.75rem}
+.gauge-ctrl-row{display:flex;align-items:center;gap:10px}
+.gauge-ctrl-row label{font-size:11px;color:var(--mu);min-width:180px}
+.gauge-ctrl-row input[type=range]{flex:1;accent-color:var(--nv)}
+.gauge-rv{font-size:11px;font-weight:700;min-width:80px;text-align:right;font-family:var(--fm)}
+
+/* ── WORKED STEPPER ── */
+.stepper{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:1.1rem;margin:.7rem 0;box-shadow:var(--sh)}
+.step-progress{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.step-dot{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:10px;font-weight:700;color:var(--mu);cursor:pointer;transition:all .2s;flex-shrink:0;background:var(--bg2)}
+.step-dot.active{background:var(--nv);border-color:var(--nv);color:#fff}
+.step-dot.done{background:var(--gr-lt);border-color:var(--gr-mid);color:var(--gr)}
+.step-panel{display:none}
+.step-panel.show{display:block;animation:up .25s ease}
+.step-title{font-family:var(--fm);font-size:10px;font-weight:700;color:var(--nv);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem}
+.step-body{font-size:12px;color:var(--tx2);line-height:1.7}
+.step-body strong{color:var(--nv);font-weight:600}
+.step-calc{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rs);padding:.75rem 1rem;margin:.5rem 0;font-family:var(--fm);font-size:12px;color:var(--nv);line-height:1.8}
+.step-result{background:var(--nv);border-radius:var(--rs);padding:.65rem 1rem;margin-top:.5rem;font-family:var(--fm);font-size:13px;font-weight:700;color:#fff}
+.step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}
+.btn-step{background:var(--nv);color:#fff;border:none;padding:7px 18px;border-radius:var(--rs);font-size:11px;font-weight:700;cursor:pointer;transition:all .12s;font-family:var(--fm);letter-spacing:.04em}
+.btn-step:hover{background:var(--nv2)}
+.btn-step-prev{background:var(--bg2);border:1px solid var(--bd);color:var(--mu);padding:7px 14px;border-radius:var(--rs);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--fm)}
+.btn-step-prev:hover{border-color:var(--bl-mid);color:var(--bl)}
+
+/* ── SCENARIO ── */
+.scen{background:var(--am-lt);border:1px solid rgba(217,119,6,.25);border-left:4px solid var(--am);border-radius:0 var(--rs) var(--rs) 0;padding:.9rem 1.1rem;margin:.7rem 0}
+.sc-lbl{font-family:var(--fm);font-size:9px;font-weight:700;color:var(--am);letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px}
+.scen p{font-size:12px;line-height:1.75;color:var(--nv)}
+.scen p strong{color:#7c2d12;font-weight:600}
+.data-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:.75rem}
+.ds{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rs);padding:.6rem;text-align:center;box-shadow:var(--sh)}
+.ds-val{font-family:var(--fm);font-size:1rem;font-weight:700;color:var(--nv)}
+.ds-lbl{font-size:9px;color:var(--mu);margin-top:2px}
+
+/* ── SIRE CARD ── */
+.sire-card{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--rs);padding:.85rem 1rem;margin:.5rem 0;border-left:3px solid var(--nv)}
+.sire-q{font-family:var(--fm);font-size:10px;color:var(--nv);margin-bottom:.5rem;line-height:1.5}
+.sire-a{font-size:12px;color:var(--tx2);line-height:1.65}
+.sire-a strong{color:var(--nv);font-weight:600}
+
+/* ── FORMULA BOX ── */
+.formula{background:var(--nv);color:#e8f0ff;border-radius:var(--rs);padding:.85rem 1.1rem;margin:.7rem 0;font-family:var(--fm);font-size:12px;line-height:1.9}
+.formula .f-title{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#7eb3ff;margin-bottom:.5rem}
+.formula .f-eq{font-size:1rem;font-weight:700;color:#fff;margin-bottom:.25rem}
+.formula .f-note{font-size:10px;color:#94b8d8}
+
+/* ── BUTTONS ── */
+.bch{background:var(--pu);color:#fff;border:none;padding:8px 18px;border-radius:var(--rs);font-family:var(--fm);font-weight:700;font-size:10px;cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:5px;margin-top:.7rem;letter-spacing:.05em}
+.bch:hover{background:#6d28d9}
+.brs{background:var(--bg2);border:1px solid var(--bd);color:var(--mu);padding:8px 14px;border-radius:var(--rs);font-family:var(--fm);font-size:10px;cursor:pointer;transition:all .12s;margin-left:5px}
+.brs:hover{border-color:var(--bl-mid);color:var(--bl)}
+.bnx{background:var(--nv);color:#fff;border:none;padding:10px 22px;border-radius:var(--rs);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.bnx:hover{background:var(--nv2);transform:translateY(-1px)}
+.bpv{background:var(--bg2);border:1px solid var(--bd);color:var(--mu);padding:10px 18px;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--sh)}
+.bpv:hover{border-color:var(--bl-mid);color:var(--bl)}
+.mnav{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--bd)}
+
+/* ── ASSESSMENT ── */
+.ahdr{background:var(--bg2);border:1px solid var(--bd);border-top:4px solid var(--nv);border-radius:var(--r);padding:1.1rem 1.4rem;margin-bottom:1.4rem;box-shadow:var(--sh)}
+.ahdr h2{font-size:1.4rem;font-weight:700;color:var(--nv);margin-bottom:4px;letter-spacing:-.01em}
+.ameta{display:flex;gap:7px;flex-wrap:wrap;margin-top:.5rem}
+.ach{background:var(--bg3);border:1px solid var(--bd);border-radius:3px;font-family:var(--fm);font-size:9px;padding:2px 8px;color:var(--mu)}
+.tstr{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rs);padding:7px 13px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem;position:sticky;top:53px;z-index:10;box-shadow:var(--sh)}
+#a-timer{font-family:var(--fm);font-size:1.25rem;font-weight:700;color:var(--nv)}
+#a-timer.warn{color:var(--am)}
+#a-timer.danger{color:var(--rd);animation:pulse .6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+#a-qcount{font-family:var(--fm);font-size:10px;color:var(--mu)}
+.aq{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:1.1rem;margin-bottom:.85rem;box-shadow:var(--sh)}
+.aqn{font-family:var(--fm);font-size:9px;color:var(--pu);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.aqt{font-size:14px;font-weight:600;color:var(--nv);margin-bottom:.7rem;line-height:1.4;letter-spacing:-.01em}
+.bsub{width:100%;background:var(--nv);color:#fff;border:none;padding:12px;border-radius:var(--rs);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:.5rem}
+.bsub:hover:not(:disabled){background:var(--nv2)}
+.bsub:disabled{background:var(--bg4);cursor:not-allowed;color:var(--mu)}
+
+.rp{display:none;text-align:center;padding:2.5rem 1rem;animation:up .5s ease}
+.sring{width:140px;height:140px;border-radius:50%;margin:0 auto 1.4rem;display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid}
+.sring.pass{border-color:var(--gr);background:var(--gr-lt)}
+.sring.fail{border-color:var(--rd);background:var(--rd-lt)}
+.spc{font-size:2.8rem;font-weight:700;line-height:1;font-family:var(--fm)}
+.sring.pass .spc{color:var(--gr)}
+.sring.fail .spc{color:var(--rd)}
+.slb{font-family:var(--fm);font-size:10px;color:var(--mu)}
+.verd{font-size:1.4rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.01em;color:var(--nv)}
+.verdm{font-size:12px;color:var(--mu);max-width:480px;margin:0 auto 1.4rem;line-height:1.75}
+.bkd{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:1.1rem 0;max-width:420px;margin-left:auto;margin-right:auto}
+.bd{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rs);padding:.7rem;text-align:center;box-shadow:var(--sh)}
+.bds{font-size:1.6rem;font-weight:700;font-family:var(--fm)}
+.bd.good .bds{color:var(--gr)}
+.bd.bad .bds{color:var(--rd)}
+.bdl{font-family:var(--fm);font-size:9px;color:var(--mu);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+.cert{background:linear-gradient(135deg,var(--bl-lt),var(--bg2));border:1px solid rgba(29,78,216,.15);border-radius:var(--r);padding:1.4rem;margin:1.4rem auto;max-width:460px;text-align:center;display:none;box-shadow:var(--sh)}
+.cert.show{display:block;animation:up .6s ease}
+.cert-ic{font-size:44px;display:block;margin-bottom:.5rem}
+.cert h3{font-size:1.2rem;font-weight:700;color:var(--nv);margin-bottom:5px;letter-spacing:-.01em}
+.cert p{font-size:12px;color:var(--mu);line-height:1.6}
+.cert-n{font-family:var(--fm);font-size:10px;color:var(--bl);margin-top:.5rem;border-top:1px solid var(--bd);padding-top:.5rem}
+.rb{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:1.4rem}
+
+@media(max-width:560px){.fg,.mwg,.hgrid,.calc-displays,.data-strip,.bkd{grid-template-columns:1fr 1fr}}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+</style>
+</head>
+<body>
+<div id="prg"><div id="pb"></div></div>
+<nav>
+  <div class="nb_">
+    <div class="nl">Stability <em>&amp; Stress</em></div>
+    <div class="nbg">STCW A-II/2</div>
+  </div>
+  <div id="nm"></div>
+  <div id="npts">0 pts</div>
+</nav>
+<main>
+
+<!-- ══ HERO ══ -->
+<div class="screen" id="screen-hero">
+<div class="hi">
+  <div class="hb">Master · Chief Officer — P2 Operations</div>
+  <span class="hic">⚓</span>
+  <h1>Trim, Stability<br>and <em>Stress</em><br>— Tanker Loading</h1>
+  <p class="hdesc">Six modules covering the stability and structural challenges specific to tankers: free surface effects, slack tanks, partial loading stability, damage cases, bending moment limits, and loading computer use — with worked calculations throughout.</p>
+  <div class="href-box">STCW A-II/2 · A-V/1-1 · Stability Booklet · Offline-capable</div>
+  <div class="hgrid">
+    <div class="hg" id="mpill-m1" onclick="goTo('m1')"><span class="hgi">💧</span><div class="hgn">MOD 1</div><div class="hgl">Free Surface &amp; Slack Tanks</div></div>
+    <div class="hg" id="mpill-m2" onclick="goTo('m2')"><span class="hgi">📈</span><div class="hgn">MOD 2</div><div class="hgl">Partial Loading Stability</div></div>
+    <div class="hg" id="mpill-m3" onclick="goTo('m3')"><span class="hgi">⚙️</span><div class="hgn">MOD 3</div><div class="hgl">Bending Moment &amp; Shear</div></div>
+    <div class="hg" id="mpill-m4" onclick="goTo('m4')"><span class="hgi">🌊</span><div class="hgn">MOD 4</div><div class="hgl">Damage Stability</div></div>
+    <div class="hg" id="mpill-m5" onclick="goTo('m5')"><span class="hgi">💻</span><div class="hgn">MOD 5</div><div class="hgl">Loading Computer</div></div>
+    <div class="hg" id="mpill-m6" onclick="goTo('m6')"><span class="hgi">🔍</span><div class="hgn">MOD 6</div><div class="hgl">Inspector Expectations</div></div>
+  </div>
+  <button class="bgo" onclick="goTo('m1')">Begin training →</button>
+</div>
+</div>
+
+<!-- ══ M1: FREE SURFACE & SLACK TANKS ══ -->
+<div class="screen" id="screen-m1">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc active" onclick="goTo('m1')">M1</span>
+    <span class="bc" onclick="goTo('m2')">M2</span>
+    <span class="bc" onclick="goTo('m3')">M3</span>
+    <span class="bc" onclick="goTo('m4')">M4</span>
+    <span class="bc" onclick="goTo('m5')">M5</span>
+    <span class="bc" onclick="goTo('m6')">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(29,78,216,.3);color:var(--bl)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">💧</div>
+    <div>
+      <div class="mhch">Module 1 · Stability Booklet Ch.2</div>
+      <div class="mhti">Free Surface Effect and Slack Tank Management</div>
+      <div class="mhde">The single biggest tanker-specific stability hazard — and the one most often underestimated</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div class="fg">
+      <div class="fc"><div class="fi">🌊</div><div class="ft"><strong>What is free surface effect?</strong>When a tank is partially filled, the liquid surface is free to shift laterally as the vessel rolls. This shift moves the centre of gravity of the liquid toward the low side — effectively raising the vessel's G and reducing GM. The tank does not need to be nearly empty to have a significant effect — the maximum FSE occurs at approximately 50% tank capacity.</div></div>
+      <div class="fc"><div class="fi">📐</div><div class="ft"><strong>Free Surface Moment (FSM)</strong>The FSM is the product of the tank's second moment of area of its free surface (I) and the liquid density. The FSM is pre-calculated in the stability booklet for each tank at each filling level. The Free Surface Correction (FSC) is FSM ÷ vessel displacement. FSC is subtracted from solid GM to give effective GM.</div></div>
+      <div class="fc"><div class="fi">⚠️</div><div class="ft"><strong>Why tankers are critically exposed</strong>Tankers have very large cargo tanks — often 30m × 20m in plan. The second moment of area (I = L × B³/12) scales with the cube of tank breadth. A tank 20m wide has 8× the FSE of a 10m wide tank. A VLCC with 20 slack cargo tanks simultaneously can have a combined FSC exceeding 1.0m — sinking GM to negative.</div></div>
+      <div class="fc"><div class="fi">🎯</div><div class="ft"><strong>Slack tank management strategy</strong>The primary tactic: minimise the number of simultaneously slack tanks. Fill or empty each tank completely before moving to the next — avoid having many partially filled tanks at the same time. If slack tanks are unavoidable (during loading sequence), monitor GM continuously and do not depart for sea until all tanks are either full or empty.</div></div>
+    </div>
+
+    <div class="formula">
+      <div class="f-title">Free Surface Correction</div>
+      <div class="f-eq">FSC = FSM / Displacement = (ρ_cargo × i) / Δ</div>
+      <div class="f-note">Where i = second moment of area of free surface (L × B³/12) in m⁴ · Δ = displacement in tonnes · ρ = cargo density</div>
+    </div>
+    <div class="formula" style="margin-top:6px">
+      <div class="f-title">Effective GM</div>
+      <div class="f-eq">GM_eff = GM_solid − FSC_total</div>
+      <div class="f-note">Where FSC_total = sum of FSC for all slack tanks · Minimum required GM_eff per stability booklet</div>
+    </div>
+
+    <div class="co danger"><strong>The pocket tank trap:</strong> Small tanks — void spaces, slop tanks, ballast tanks — may seem unimportant, but if they are slack at departure they contribute FSE. A 3m × 3m bilge holding tank with free surface still contributes FSM. Always confirm slop tanks and off-spec tanks in the GM calculation.</div>
+  </div>
+
+  <!-- FSC CALCULATOR -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — free surface correction calculator</div>
+    <div class="cq">Adjust the tank dimensions, fill level, and cargo density. The calculator shows the free surface correction and its impact on effective GM. Observe how rapidly FSC changes with tank breadth.</div>
+    <div class="calc">
+      <div class="calc-hdr">TANK FREE SURFACE CORRECTION</div>
+      <div class="calc-displays">
+        <div class="calc-d">
+          <div class="calc-val" id="c-fsm" style="color:var(--nv)">1,440</div>
+          <div class="calc-unit">t·m</div>
+          <div class="calc-lbl">Free surface moment</div>
+        </div>
+        <div class="calc-d">
+          <div class="calc-val" id="c-fsc" style="color:var(--am)">0.192</div>
+          <div class="calc-unit">m</div>
+          <div class="calc-lbl">FSC (one tank)</div>
+        </div>
+        <div class="calc-d">
+          <div class="calc-val" id="c-gmeff" style="color:var(--gr)">0.808</div>
+          <div class="calc-unit">m</div>
+          <div class="calc-lbl">GM effective</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="calc-row">
+          <label>Tank length L (m)</label>
+          <input type="range" min="10" max="40" step="1" value="30" id="c-tl" oninput="updateFSC()">
+          <span class="calc-rv" id="c-tl-r">30 m</span>
+        </div>
+        <div class="calc-row">
+          <label>Tank breadth B (m)</label>
+          <input type="range" min="5" max="30" step="1" value="16" id="c-tb" oninput="updateFSC()">
+          <span class="calc-rv" id="c-tb-r">16 m</span>
+        </div>
+        <div class="calc-row">
+          <label>Cargo density (t/m³)</label>
+          <input type="range" min="0.75" max="1.05" step="0.01" value="0.85" id="c-dens" oninput="updateFSC()">
+          <span class="calc-rv" id="c-dens-r">0.85 t/m³</span>
+        </div>
+        <div class="calc-row">
+          <label>Vessel displacement (tonnes)</label>
+          <input type="range" min="30000" max="300000" step="1000" value="75000" id="c-disp" oninput="updateFSC()">
+          <span class="calc-rv" id="c-disp-r">75,000 t</span>
+        </div>
+        <div class="calc-row">
+          <label>Solid GM (m)</label>
+          <input type="range" min="0.3" max="3.0" step="0.05" value="1.0" id="c-gms" oninput="updateFSC()">
+          <span class="calc-rv" id="c-gms-r">1.00 m</span>
+        </div>
+      </div>
+      <div class="calc-formula" id="c-formula"></div>
+      <div class="calc-result" id="c-result"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m1-quiz"></div>
+  </div>
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('hero')">← Overview</button>
+    <button class="bnx" onclick="goTo('m2')">Module 2 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ M2: PARTIAL LOADING STABILITY ══ -->
+<div class="screen" id="screen-m2">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc done" onclick="goTo('m1')">M1</span>
+    <span class="bc active">M2</span>
+    <span class="bc" onclick="goTo('m3')">M3</span>
+    <span class="bc" onclick="goTo('m4')">M4</span>
+    <span class="bc" onclick="goTo('m5')">M5</span>
+    <span class="bc" onclick="goTo('m6')">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(29,78,216,.3);color:var(--bl)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">📈</div>
+    <div>
+      <div class="mhch">Module 2 · Stability Booklet Ch.3</div>
+      <div class="mhti">Partial Loading Conditions — Stability Throughout Loading</div>
+      <div class="mhde">Stability is not a final-condition check — it must be monitored and maintained throughout the entire loading sequence</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div class="fg">
+      <div class="fc"><div class="fi">📊</div><div class="ft"><strong>KG versus loading progress</strong>As cargo is loaded, the vessel's centre of gravity (KG) changes continuously. If cargo is loaded into high tanks first, KG rises rapidly. If low tanks are loaded first, KG rises more slowly. The loading sequence must be planned so that GM remains positive and above the minimum required value throughout — not just at completion.</div></div>
+      <div class="fc"><div class="fi">🔄</div><div class="ft"><strong>Critical intermediate conditions</strong>The most dangerous stability condition during loading is often in the middle of the sequence — when large tanks are partially filled and displacement is still relatively low. At low displacement, BM (metacentric radius) is reduced, while high FSE from multiple slack tanks may simultaneously push GZ curves to near-zero. This is the "stability trough."</div></div>
+      <div class="fc"><div class="fi">⚖️</div><div class="ft"><strong>MARPOL loading conditions</strong>The IMO/MARPOL requirements specify minimum stability criteria that must be met at all stages of any approved loading condition. Minimum requirements: GM ≥ 0.15m (or vessel-specific value), area under GZ curve ≥ 0.055 m·rad to 30°, maximum GZ ≥ 0.20m at or before 30°.</div></div>
+      <div class="fc"><div class="fi">📋</div><div class="ft"><strong>Approved loading conditions</strong>The stability booklet contains a finite set of approved loading conditions — partial load, full load, ballast, etc. The vessel must always operate in a condition that meets stability criteria. If the planned condition is not an approved case, it must be demonstrated to the loading computer that criteria are met before departure.</div></div>
+    </div>
+    <div class="co warn"><strong>Departure is a stability gate — not an arrival one.</strong> The stability booklet states that all criteria must be met before the vessel departs port. Relying on "the GM will improve once we get to sea and roll some cargo forward" is not acceptable. The condition must be demonstrated compliant before the pilot comes aboard.</div>
+  </div>
+
+  <!-- STABILITY TREND CHART -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — stability trend during loading</div>
+    <div class="cq">Adjust the loading scenario parameters. The chart tracks GM through the loading sequence. Watch for the "stability trough" in the middle of loading and identify the critical condition.</div>
+    <div class="trend-wrap">
+      <div class="trend-controls">
+        <div class="tc-row">
+          <label>Cargo loaded so far (% of total)</label>
+          <input type="range" min="0" max="100" step="5" value="40" id="t-load" oninput="updateTrend()">
+          <span class="tc-val" id="t-load-r">40%</span>
+        </div>
+        <div class="tc-row">
+          <label>Number of slack tanks</label>
+          <input type="range" min="0" max="16" step="1" value="6" id="t-slack" oninput="updateTrend()">
+          <span class="tc-val" id="t-slack-r">6 tanks</span>
+        </div>
+        <div class="tc-row">
+          <label>Ballast retained (tonnes)</label>
+          <input type="range" min="0" max="50000" step="1000" value="15000" id="t-ball" oninput="updateTrend()">
+          <span class="tc-val" id="t-ball-r">15,000 t</span>
+        </div>
+      </div>
+      <div id="t-svg-wrap" style="margin-top:.75rem;text-align:center"></div>
+      <div class="trend-status" id="t-status"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m2-quiz"></div>
+  </div>
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('m1')">← Module 1</button>
+    <button class="bnx" onclick="goTo('m3')">Module 3 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ M3: BENDING MOMENT & SHEAR FORCE ══ -->
+<div class="screen" id="screen-m3">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc done" onclick="goTo('m1')">M1</span>
+    <span class="bc done" onclick="goTo('m2')">M2</span>
+    <span class="bc active">M3</span>
+    <span class="bc" onclick="goTo('m4')">M4</span>
+    <span class="bc" onclick="goTo('m5')">M5</span>
+    <span class="bc" onclick="goTo('m6')">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(29,78,216,.3);color:var(--bl)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">⚙️</div>
+    <div>
+      <div class="mhch">Module 3 · Classification Rules · Loading Manual</div>
+      <div class="mhti">Bending Moment, Shear Force and Structural Limits</div>
+      <div class="mhde">Loading the cargo incorrectly can break the ship — knowing your structural limits is as important as knowing your stability limits</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div class="fg">
+      <div class="fc"><div class="fi">🏗️</div><div class="ft"><strong>Bending moment (BM)</strong>The hogging or sagging force acting along the ship's length due to the distribution of weight and buoyancy. Hogging: the midship section bends upward (cargo light amidships, heavy at ends). Sagging: midship bends downward (heavy cargo amidships). Excessive BM cracks the hull plating and longitudinal structure.</div></div>
+      <div class="fc"><div class="fi">✂️</div><div class="ft"><strong>Shear force (SF)</strong>The transverse force trying to "slide" one part of the ship vertically past an adjacent part. Maximum SF occurs at locations where weight distribution changes rapidly — typically at bulkhead positions between loaded and empty tanks. Excessive SF damages bulkheads and transverse structure.</div></div>
+      <div class="fc"><div class="fi">⚠️</div><div class="ft"><strong>Tanker-specific loading risk</strong>Tankers are particularly vulnerable to structural overloading because adjacent tanks may have very different fill levels — a completely full 8m deep centre tank next to an empty tank creates extreme local shear force. Never load adjacent tanks to maximum fill and minimum fill simultaneously without checking the loading computer.</div></div>
+      <div class="fc"><div class="fi">📊</div><div class="ft"><strong>Reading the loading computer output</strong>The loading computer outputs BM and SF as percentages of the allowable limit at each frame or section. Values must remain below 100% throughout the voyage — typically the computer flags values above 90% as a warning. The still water BM/SF must be within limits at all times — wave-induced loads are added by the classification rules margin.</div></div>
+    </div>
+    <div class="co danger"><strong>BM/SF limits are structural — not administrative.</strong> A vessel operating with BM at 105% of allowable is at immediate risk of hull failure. Unlike stability criteria (which have a time component), structural limits can be exceeded catastrophically with no recovery possible. Zero tolerance for limit exceedances in port or at sea.</div>
+  </div>
+
+  <!-- BM/SF GAUGE DISPLAY -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — loading computer structural output</div>
+    <div class="cq">Adjust cargo loading in the three main sections. The gauges show the resulting bending moment and shear force at the critical sections as a percentage of the allowable limit.</div>
+    <div class="gauge-wrap">
+      <div style="font-family:var(--fm);font-size:9px;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.85rem">BENDING MOMENT &amp; SHEAR FORCE — % OF ALLOWABLE LIMIT</div>
+      <div class="gauge-row">
+        <div class="gauge-lbl">Hogging BM (midship)</div>
+        <div class="gauge-bar-wrap"><div class="gauge-fill" id="g-bm-h" style="width:45%;background:var(--gr)"></div></div>
+        <div class="gauge-pct" id="g-bm-h-v" style="color:var(--gr)">45%</div>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge-lbl">Sagging BM (midship)</div>
+        <div class="gauge-bar-wrap"><div class="gauge-fill" id="g-bm-s" style="width:22%;background:var(--gr)"></div></div>
+        <div class="gauge-pct" id="g-bm-s-v" style="color:var(--gr)">22%</div>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge-lbl">SF (fwd bulkhead)</div>
+        <div class="gauge-bar-wrap"><div class="gauge-fill" id="g-sf-f" style="width:38%;background:var(--gr)"></div></div>
+        <div class="gauge-pct" id="g-sf-f-v" style="color:var(--gr)">38%</div>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge-lbl">SF (aft bulkhead)</div>
+        <div class="gauge-bar-wrap"><div class="gauge-fill" id="g-sf-a" style="width:28%;background:var(--gr)"></div></div>
+        <div class="gauge-pct" id="g-sf-a-v" style="color:var(--gr)">28%</div>
+      </div>
+      <div class="gauge-controls">
+        <div class="gauge-ctrl-row">
+          <label>Forward tanks fill (% capacity)</label>
+          <input type="range" min="0" max="100" step="5" value="95" id="g-fwd" oninput="updateGauge()">
+          <span class="gauge-rv" id="g-fwd-r" style="color:var(--nv)">95%</span>
+        </div>
+        <div class="gauge-ctrl-row">
+          <label>Midship tanks fill (% capacity)</label>
+          <input type="range" min="0" max="100" step="5" value="30" id="g-mid" oninput="updateGauge()">
+          <span class="gauge-rv" id="g-mid-r" style="color:var(--nv)">30%</span>
+        </div>
+        <div class="gauge-ctrl-row">
+          <label>Aft tanks fill (% capacity)</label>
+          <input type="range" min="0" max="100" step="5" value="90" id="g-aft" oninput="updateGauge()">
+          <span class="gauge-rv" id="g-aft-r" style="color:var(--nv)">90%</span>
+        </div>
+      </div>
+      <div class="calc-result show" id="g-result" style="margin-top:.75rem">— Adjust sliders to see structural load results —</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m3-quiz"></div>
+  </div>
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('m2')">← Module 2</button>
+    <button class="bnx" onclick="goTo('m4')">Module 4 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ M4: DAMAGE STABILITY ══ -->
+<div class="screen" id="screen-m4">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc done" onclick="goTo('m1')">M1</span>
+    <span class="bc done" onclick="goTo('m2')">M2</span>
+    <span class="bc done" onclick="goTo('m3')">M3</span>
+    <span class="bc active">M4</span>
+    <span class="bc" onclick="goTo('m5')">M5</span>
+    <span class="bc" onclick="goTo('m6')">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(29,78,216,.3);color:var(--bl)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">🌊</div>
+    <div>
+      <div class="mhch">Module 4 · MARPOL Annex I · SOLAS Ch. II-1</div>
+      <div class="mhti">Damage Stability Awareness</div>
+      <div class="mhde">Required residual stability after flooding — and why MARPOL damage cases must be understood, not just stored in a booklet</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div class="fg">
+      <div class="fc"><div class="fi">💥</div><div class="ft"><strong>Damage stability — what it means</strong>Damage stability is the residual buoyancy and stability that a vessel retains after flooding one or more compartments due to grounding, collision, or structural failure. MARPOL Annex I specifies damage cases for tankers — typically one or two compartment flooding in any location. The vessel must survive these cases with minimum residual GM and GZ values.</div></div>
+      <div class="fc"><div class="fi">📐</div><div class="ft"><strong>MARPOL damage requirements for tankers</strong>Under MARPOL Annex I Regulation 23, crude oil tankers ≥20,000 DWT must demonstrate survival after one compartment flooding with: positive GM throughout, GZ ≥ 0.10m at 20° minimum, range of positive stability ≥ 20°. These are minimum criteria — the stability booklet shows the actual required values for each damage case.</div></div>
+      <div class="fc"><div class="fi">⚠️</div><div class="ft"><strong>The loading condition connection</strong>Damage stability is not calculated for a fixed condition — it is checked for every approved loading condition. A loading condition that gives excellent intact stability may fail the damage case if the vessel is at an unfavourable KG. The approved loading conditions in the booklet already have this checked — do not deviate from them.</div></div>
+      <div class="fc"><div class="fi">🔢</div><div class="ft"><strong>Probabilistic vs deterministic</strong>Modern tankers use a probabilistic damage stability method (Part B of SOLAS Ch.II-1) which calculates an attained subdivision index A that must exceed the required index R. The required index is a function of vessel length. The loading computer checks A ≥ R automatically — but the officer must understand that varying from approved conditions invalidates this check.</div></div>
+    </div>
+    <div class="co warn"><strong>Flooding the ballast tank is not an approved damage case on many tankers.</strong> The ballast tanks on double-hull tankers are often assumed to be "non-critical." But a major collision or grounding can simultaneously flood both the ballast tank and the adjacent cargo tank — this is a two-compartment case. Always check the worst-case scenario for your actual loading condition.</div>
+  </div>
+
+  <!-- DAMAGE SCENARIO -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — damage stability decision</div>
+    <div class="scen">
+      <div class="sc-lbl">Scenario — post-grounding assessment</div>
+      <p>Your vessel has grounded in shallow water on a sandbar. Tanks 3S and 4S ballast wing tanks have been breached. The loading computer has crashed and cannot be restarted. Current condition before damage:</p>
+      <div class="data-strip">
+        <div class="ds"><div class="ds-val">1.42 m</div><div class="ds-lbl">Intact GM</div></div>
+        <div class="ds"><div class="ds-val">87,400 t</div><div class="ds-lbl">Displacement</div></div>
+        <div class="ds"><div class="ds-val">8.4°</div><div class="ds-lbl">Current list</div></div>
+        <div class="ds"><div class="ds-val">P side</div><div class="ds-lbl">List direction</div></div>
+      </div>
+    </div>
+    <div class="cq">The Master wants to refloat immediately by ballasting port tanks to correct the list. What considerations must come first?</div>
+    <div class="mo" id="m4-scen1"></div>
+    <div class="mfb" id="m4-scen1-fb"></div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m4-quiz"></div>
+  </div>
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('m3')">← Module 3</button>
+    <button class="bnx" onclick="goTo('m5')">Module 5 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ M5: LOADING COMPUTER ══ -->
+<div class="screen" id="screen-m5">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc done" onclick="goTo('m1')">M1</span>
+    <span class="bc done" onclick="goTo('m2')">M2</span>
+    <span class="bc done" onclick="goTo('m3')">M3</span>
+    <span class="bc done" onclick="goTo('m4')">M4</span>
+    <span class="bc active">M5</span>
+    <span class="bc" onclick="goTo('m6')">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(29,78,216,.3);color:var(--bl)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">💻</div>
+    <div>
+      <div class="mhch">Module 5 · Loading Computer Manual · Class Requirements</div>
+      <div class="mhti">Loading Computer Use and Manual Backup Calculations</div>
+      <div class="mhde">Using the loading computer correctly — and knowing what to do when it fails</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div class="fg">
+      <div class="fc"><div class="fi">📥</div><div class="ft"><strong>Input sequence — what the computer needs</strong>Every tank entry must be verified: tank number, liquid type (cargo/ballast/bunker/fresh water), fill level or sounding/ullage, and liquid density. Entering the wrong density is the most common error — cargo density changes between voyages and must come from the bill of lading or terminal certificate. Default densities are dangerous.</div></div>
+      <div class="fc"><div class="fi">📤</div><div class="ft"><strong>Output — what to verify</strong>Always check: (1) displacement matches expected, (2) KG and GM are reasonable, (3) BM and SF are within limits, (4) trim matches draughts on screen vs actual. If any output seems unexpected — investigate before accepting. The computer gives wrong answers when given wrong inputs.</div></div>
+      <div class="fc"><div class="fi">🔄</div><div class="ft"><strong>Verification against actual draughts</strong>Calculate expected draughts from the loading computer output and compare against actual gauge readings before departure. A difference of more than 3–5cm requires investigation — it indicates an input error, unaccounted mass (stores, crew, garbage), or incorrect density data.</div></div>
+      <div class="fc"><div class="fi">📝</div><div class="ft"><strong>Manual backup — when the computer fails</strong>The vessel must be capable of calculating stability manually from the stability booklet. Key manual process: determine displacement from draft marks → look up KM from hydrostatic tables → calculate GM from VCG (sum of moment/displacement) → subtract FSC from booklet tables. At minimum, the C/O must be able to determine if the condition is safe using manual tables.</div></div>
+    </div>
+    <div class="co info"><strong>Class requirement — type approval:</strong> The loading computer must have a current type approval certificate and must be verified annually against approved test conditions. If the test conditions are not on board or have not been run recently, the computer's output is not acceptable to Port State Control. Keep test condition printouts filed with the computer documentation.</div>
+  </div>
+
+  <!-- WORKED EXAMPLE STEPPER -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — manual GM calculation from draft marks</div>
+    <div class="cq">The loading computer has failed on departure day. Step through the manual method to determine if the vessel's GM meets minimum requirements.</div>
+    <div class="stepper">
+      <div class="step-progress" id="step-prog"></div>
+      <div id="step-content"></div>
+      <div class="step-nav">
+        <button class="btn-step-prev" id="step-prev" onclick="stepNav(-1)">← Previous</button>
+        <span id="step-counter" style="font-family:var(--fm);font-size:10px;color:var(--mu)"></span>
+        <button class="btn-step" id="step-next" onclick="stepNav(1)">Next step →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m5-quiz"></div>
+  </div>
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('m4')">← Module 4</button>
+    <button class="bnx" onclick="goTo('m6')">Module 6 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ M6: INSPECTOR EXPECTATIONS ══ -->
+<div class="screen" id="screen-m6">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc done" onclick="goTo('m1')">M1</span>
+    <span class="bc done" onclick="goTo('m2')">M2</span>
+    <span class="bc done" onclick="goTo('m3')">M3</span>
+    <span class="bc done" onclick="goTo('m4')">M4</span>
+    <span class="bc done" onclick="goTo('m5')">M5</span>
+    <span class="bc active">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(29,78,216,.3);color:var(--bl)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">🔍</div>
+    <div>
+      <div class="mhch">Module 6 · SIRE 2.0 · Paris MOU PSC</div>
+      <div class="mhti">Inspector Expectations — Stability Knowledge and Documentation</div>
+      <div class="mhde">What SIRE and PSC inspectors ask, what they look for, and what answers demonstrate real competency</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin:.7rem 0">
+      <div class="sire-card">
+        <div class="sire-q">SIRE 2.0 — "Does the C/O understand the vessel's stability limitations and the impact of free surface?"</div>
+        <div class="sire-a">Inspector will ask: What is the minimum required GM for this vessel? (<strong>State vessel-specific value from stability booklet</strong>). What is the current effective GM? (<strong>Solid GM minus total FSC from all slack tanks</strong>). How many slack tanks do you have now? (<strong>Know the exact number and their FSM contributions</strong>). What is the largest single FSC contribution? (<strong>Know the worst tank by name</strong>).</div>
+      </div>
+      <div class="sire-card">
+        <div class="sire-q">PSC — "Show me the stability calculation for departure."</div>
+        <div class="sire-a">Must produce: <strong>Stability printout from departure condition</strong>, signed by Master. <strong>All slack tanks at departure identified</strong> with FSC applied. <strong>GM meets or exceeds minimum required value</strong>. <strong>BM and SF within limits</strong>. <strong>Draft observations confirming the calculated condition</strong>. A missing or unsigned printout is a deficiency.</div>
+      </div>
+      <div class="sire-card">
+        <div class="sire-q">PSC — "Demonstrate a manual calculation of trim."</div>
+        <div class="sire-a">Process: Read mean draft → enter hydrostatic tables for <strong>TPC (tonnes per centimetre) and LCF (longitudinal centre of flotation)</strong> → for any added weight: <strong>Trim change = (w × d) / (TPC × LBP)</strong> × 100 cm, where d = distance of weight from LCF. Change in draught fwd = trim change × (LCF/LBP). Must be able to execute this from stability booklet without computer.</div>
+      </div>
+      <div class="sire-card">
+        <div class="sire-q">SIRE 2.0 — "What are the MARPOL damage stability requirements for this vessel?"</div>
+        <div class="sire-a">Must state: <strong>One compartment flooding in any location must be survived</strong>. <strong>Residual GM ≥ positive throughout damage</strong>. <strong>GZ ≥ 0.10m at 20° minimum</strong>. <strong>Range of positive stability ≥ 20°</strong>. Be able to locate the damage stability cases in the stability booklet and point to the worst case for the current loading condition.</div>
+      </div>
+    </div>
+    <div class="co tip"><strong>The SIRE inspector is not trying to catch you out — they want to know that you actually understand stability, not just operate the computer.</strong> Officers who can only read a printout but cannot explain what GM means or why FSE is dangerous are noted as a hazard observation. Know the concepts as well as the calculations.</div>
+  </div>
+
+  <!-- TRIM CALCULATION SORT -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — trim calculation sequence</div>
+    <div class="cq">A PSC inspector asks you to manually calculate the change in draught forward when 200 tonnes of fresh water is added to a forward tank 80m forward of the LCF. The vessel is at 40,000 t displacement. Drag the steps into the correct calculation sequence.</div>
+    <div class="sl" id="m6-sort"></div>
+    <div style="margin-top:.7rem">
+      <button class="bch" onclick="checkSort('m6-sort','m6-correct','m6-sfb')">✓ Check sequence</button>
+      <button class="brs" onclick="resetSort('m6-sort','m6-data')">Reset</button>
+    </div>
+    <div class="sfb" id="m6-sfb"></div>
+  </div>
+
+  <!-- MATCH: stability terms -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — match stability term to definition</div>
+    <div class="cq">Match each stability or structural term to its correct definition.</div>
+    <div class="mwg" id="m6-match">
+      <div><div class="mch">Term</div><div class="mc" id="m6-left"></div></div>
+      <div><div class="mch">Definition</div><div class="mc" id="m6-right"></div></div>
+    </div>
+    <div class="mhint">Tap left → tap right to match</div>
+    <div class="msc" id="m6-score"></div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m6-quiz"></div>
+  </div>
+  <div class="co tip" style="margin-top:1rem"><strong>All 6 modules complete.</strong> Final assessment: 18 questions, 75% pass mark. Refer to your vessel's stability booklet and loading computer manual for vessel-specific values.</div>
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('m5')">← Module 5</button>
+    <button class="bnx" style="background:var(--bl)" onclick="goTo('assess')">★ Assessment →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ ASSESSMENT ══ -->
+<div class="screen" id="screen-assess">
+<div class="mw">
+  <div class="ahdr">
+    <div style="font-size:28px;margin-bottom:5px">⚓</div>
+    <h2>Final Assessment — Trim, Stability and Stress</h2>
+    <p style="font-size:12px;color:var(--mu);margin-top:3px">STCW A-II/2 · A-V/1-1 · Master and Chief Officer</p>
+    <div class="ameta">
+      <span class="ach">18 QUESTIONS</span>
+      <span class="ach">PASS: 75% (14/18)</span>
+      <span class="ach">TIME: 20 MIN</span>
+      <span class="ach">ONE ATTEMPT</span>
+    </div>
+  </div>
+  <div class="tstr">
+    <span style="font-family:var(--fm);font-size:10px;color:var(--mu)">REMAINING</span>
+    <span id="a-timer">20:00</span>
+    <span id="a-qcount" style="font-family:var(--fm);font-size:10px;color:var(--mu)">0 / 18</span>
+  </div>
+  <div id="assess-qs"></div>
+  <button class="bsub" id="btn-sub" onclick="submitA()" disabled>SUBMIT ASSESSMENT</button>
+  <div class="rp" id="results">
+    <div class="sring" id="score-ring"><div class="spc" id="score-pct">—</div><div class="slb" id="score-lbl">—</div></div>
+    <div class="verd" id="verd">—</div>
+    <div class="verdm" id="verdm"></div>
+    <div class="bkd" id="breakdown"></div>
+    <div class="cert" id="cert">
+      <span class="cert-ic">🏅</span>
+      <h3>Assessment Passed</h3>
+      <p>Trim, Stability &amp; Stress — Tanker Loading · STCW A-II/2</p>
+      <div class="cert-n">Record in SMS training matrix. Always verify loading computer output against actual draft marks before departure.</div>
+    </div>
+    <div class="rb">
+      <button class="bgo" onclick="goTo('hero')">← Back to modules</button>
+      <button class="bpv" onclick="location.reload()">Retake</button>
+    </div>
+  </div>
+</div>
+</div>
+
+</main>
+<script>
+// ══════════════════════
+// SORT DATA
+// ══════════════════════
+var sortData={
+  'm6-data':[
+    {id:1,text:'Read the vessel\'s hydrostatic tables at current displacement (40,000 t) — find TPC and MCT (moment to change trim 1 cm)'},
+    {id:2,text:'Calculate the trimming moment: TM = w × d = 200 × 80 = 16,000 t·m (weight × distance from LCF)'},
+    {id:3,text:'Calculate total trim change: ΔTrim = TM / MCT (result in centimetres)'},
+    {id:4,text:'Identify the distance from LCF to forward draft mark (l_F) and vessel length between perpendiculars (L_BP)'},
+    {id:5,text:'Calculate change in forward draught: ΔTF = ΔTrim × (l_F / L_BP) — also add the bodily sinkage (w / TPC)'},
+    {id:6,text:'Apply sign: weight added forward of LCF trims the vessel by the head (ΔTF increases)'}
+  ]
+};
+var sortCorrect={'m6-correct':[1,2,3,4,5,6]};
+var sortCurrent={};
+var dragSrc=null;
+
+// ══════════════════════
+// MATCH DATA
+// ══════════════════════
+var matchData={
+  m6:{
+    left:['Free Surface Correction (FSC)','Metacentric height (GM)','Hogging','Shear force'],
+    right:['Transverse force trying to slide adjacent hull sections vertically past each other — maximum at bulkheads between loaded and empty tanks','The virtual rise of G due to liquid free surface — equals FSM divided by displacement','The vessel bends upward at the midship section — cargo light amidships, heavy at ends','The distance between the centre of gravity (G) and the metacentre (M) — the primary measure of initial transverse stability'],
+    pairs:[1,3,2,0]
+  }
+};
+var matchState={};
+
+// ══════════════════════
+// MCQ DATA
+// ══════════════════════
+var mcqData={
+  'm1-q1':{q:'Free surface effect (FSE) is at its maximum when a tank is:',opts:['Completely full','Approximately 50% full','Approximately 10% full','Completely empty'],a:1,fb:['Incorrect. A completely full tank has no free surface — the liquid cannot shift.','Correct. The free surface moment depends on the second moment of area of the free surface (L × B³/12). This is independent of depth of liquid — a tank at 50% fill has the same FSM as a tank at 10% fill or 90% fill, because the free surface dimensions are the same. However, in practice maximum FSE impact on stability is near 50% because both FSM and buoyancy considerations interact.','Incorrect. At 10% fill, the liquid layer is shallow but the free surface area — and therefore FSM — is the same as at 50%.','Incorrect. An empty tank has no free surface.']},
+  'm1-q2':{q:'A crude oil tanker has an intact GM (solid) of 1.20m. The total free surface correction from all slack tanks is 0.85m. What is the effective GM?',opts:['2.05 m','0.35 m','0.85 m','1.20 m'],a:1,fb:['Incorrect. FSC is subtracted from solid GM — not added.','Correct. Effective GM = Solid GM − FSC = 1.20 − 0.85 = 0.35 m. This is close to the typical minimum required value of 0.15–0.20 m and requires immediate attention — reduce slack tanks.','Incorrect. 0.85 m is the total FSC — it must be subtracted from, not used as, the effective GM.','Incorrect. 1.20 m is the solid GM before applying FSC.']},
+  'm1-q3':{q:'Why does tank breadth have a disproportionate effect on free surface moment?',opts:['Wider tanks are always fuller, creating more surface area','The second moment of area of the free surface includes breadth raised to the power of 3 (B³) — doubling tank breadth multiplies FSM by 8','Wider tanks have higher cargo density','Wider tanks have lower KG, which amplifies FSE'],a:1,fb:['Incorrect. Fill level does not determine the relationship — the formula does.','Correct. FSM = ρ × (L × B³/12). Since B is cubed, a tank twice as wide has 8 times the FSM. This is why large tanker cargo tanks are so significant — a 20m wide tank has (20/10)³ = 8 times the FSM of a 10m wide tank of equal length.','Incorrect. Cargo density is a factor in the FSM formula, but does not explain the breadth relationship.','Incorrect. KG of the tank is not the reason for the B³ relationship.']},
+  'm2-q1':{q:'The most dangerous stability condition during tanker loading typically occurs:',opts:['At the very start of loading — when the vessel is lightest','In the middle of the loading sequence — when multiple large tanks are partially filled and displacement is still relatively low','At the completion of loading — when all tanks are full','At the final ballast dewatering stage'],a:1,fb:['Incorrect. At the start of loading, few tanks are slack and the vessel may still be in ballast condition.','Correct. The "stability trough" occurs mid-loading when many tanks are simultaneously in their slack condition (maximum FSE) and displacement is not yet at its maximum (so BM is reduced). This is when effective GM is most likely to approach or violate minimum limits.','Incorrect. At completion, all tanks are full, FSE is minimal, and GM is typically at its best value.','Incorrect. Ballast dewatering happens before cargo loading, not during.']},
+  'm2-q2':{q:'MARPOL minimum intact stability criteria require (among other things) that the area under the GZ curve to 30° is at least:',opts:['0.030 m·rad','0.055 m·rad','0.090 m·rad','0.200 m·rad'],a:1,fb:['Incorrect. 0.030 m·rad is below the minimum IMO criterion.','Correct. IMO Resolution A.749 criteria include: area under GZ curve to 30° ≥ 0.055 m·rad; to 40° ≥ 0.090 m·rad; between 30° and 40° ≥ 0.030 m·rad; maximum GZ ≥ 0.20m at or before 30°; GM ≥ 0.15m.','Incorrect. 0.090 m·rad is the required minimum area to 40° — not to 30°.','Incorrect. 0.200 m is the required minimum GZ value (not area under the curve).']},
+  'm2-q3':{q:'An officer argues that departure stability can be achieved "once at sea" by pumping ballast. This is:',opts:['Correct — stability is dynamic and improving at sea is acceptable','Incorrect — departure criteria must be met before the vessel leaves port — the condition at sea cannot be predicted with certainty','Correct — Port State Control only checks at port, not at sea','Correct — MARPOL allows a 10% tolerance on departure stability criteria'],a:1,fb:['Incorrect. Stability criteria must be met at departure — not assumed to improve during the voyage.','Correct. STCW and the stability booklet require stability criteria to be met before departure. The assumption that ballasting at sea will improve stability is not acceptable — cargo movement, wave loading, and operational constraints may prevent this. Departure must be demonstrably safe.','Incorrect. PSC can board at sea in some jurisdictions, and more importantly, the legal responsibility is for the departure condition to be safe.','Incorrect. There is no 10% tolerance on departure stability criteria.']},
+  'm3-q1':{q:'A vessel is hogging. This means:',opts:['The midship section is bending downward — heavy cargo amidships','The midship section is bending upward — cargo light amidships and heavy at the ends','The vessel has a large trim by the stern','The shear force at the midship section is at maximum'],a:1,fb:['Incorrect. That is sagging — midship bending downward.','Correct. Hogging occurs when the buoyancy in the midship section exceeds the weight in that section — the ends are heavier, bending the vessel upward in the middle. This puts the main deck in tension and the keel in compression.','Incorrect. Trim is a separate condition related to the distribution of weight along the vessel\'s length.','Incorrect. Maximum shear force typically occurs at bulkhead locations — not at midship in hogging.']},
+  'm3-q2':{q:'Maximum shear force on a tanker typically occurs at:',opts:['The midship section of the vessel','Bulkhead positions between tanks with very different fill levels','The bow and stern extremities','The centreline of the ship between port and starboard tanks'],a:1,fb:['Incorrect. Maximum bending moment typically occurs at or near midship — shear force is different.','Correct. Shear force is the transverse force at any section. It peaks at locations where there is a sharp change in the load distribution — most commonly at bulkheads between full and empty tanks. Adjacent tanks loaded to opposite extremes create maximum shear at their shared bulkhead.','Incorrect. Bow and stern are typically load-free extremities — shear force is lower at the ends.','Incorrect. Shear force acts longitudinally — not across the centreline.']},
+  'm3-q3':{q:'The loading computer\'s BM output shows 94% of the allowable limit. The required action is:',opts:['No action — the limit is 100%','Investigate which tanks are causing the high loading and adjust the loading plan before 100% is reached','Accept — the computer adds a safety margin so 94% is actually at the limit','Sound the structural alarm and stop loading immediately'],a:1,fb:['Incorrect. 94% is a warning zone — investigation and plan adjustment are required before 100% is reached.','Correct. The computer typically flags values above 90% as a caution. At 94%, the C/O must identify which loading configuration is causing the high BM, determine the headroom before the limit, and adjust the loading sequence or distribution before the limit is reached.','Incorrect. The computer does not add an additional safety margin — it compares the calculated value to the design allowable directly.','Incorrect. 94% is a warning — not an alarm requiring immediate cessation. Structural alarm would be appropriate if limits were exceeded.']},
+  'm4-q1':{q:'MARPOL Annex I damage stability for crude oil tankers requires survival of:',opts:['Three simultaneous compartment flooding in any location','One compartment flooding in any location with minimum residual stability criteria','Two compartment flooding only at the midship section','Only ballast tank flooding is required to be survived'],a:1,fb:['Incorrect. Three compartment flooding is more stringent than MARPOL requires for tankers.','Correct. MARPOL Annex I Regulation 23 requires crude oil tankers ≥20,000 DWT to survive one compartment flooding anywhere in the vessel with residual GM positive, GZ ≥ 0.10m at 20°, and positive stability range ≥ 20°.','Incorrect. The flooding case applies to any location — not just the midship.','Incorrect. MARPOL damage cases include cargo tank flooding — not only ballast tanks.']},
+  'm4-q2':{q:'After a collision or grounding, immediate ballasting to correct a list should be considered carefully because:',opts:['Ballasting always makes the situation worse','Adding ballast to correct list may destabilize the vessel if the flooding has already reduced effective GM — the correct stability picture must be assessed first','Ballasting is not permitted without port state authority','Ballasting changes the vessel\'s draft, which requires notification to port authorities before any change'],a:1,fb:['Incorrect. Ballasting can be essential for list correction — but the stability situation must be understood first.','Correct. After flooding, the vessel\'s GM may already be significantly reduced. Adding ballast to the high side to correct a list may inadvertently make the vessel more vulnerable to capsize if a subsequent roll places it beyond the range of positive stability. The stability condition must be assessed before any action.','Incorrect. Ballasting for safety is always permitted — port state notification is a separate matter.','Incorrect. Draft change notification is a port operational matter — not a reason to delay safety action.']},
+  'm4-q3':{q:'Varying from a loading condition approved in the stability booklet:',opts:['Is permitted with C/O\'s approval','Invalidates the damage stability check — the condition must be verified by the loading computer against all criteria before departure','Is permitted in port as long as the condition is corrected before departure','Is automatically safe as long as GM remains positive'],a:1,fb:['Incorrect. C/O approval alone does not make a non-approved condition safe — it must be verified against stability criteria.','Correct. The approved loading conditions in the stability booklet have been pre-verified for both intact and damage stability. Deviating from an approved condition requires the loading computer to verify that all criteria — including damage stability — are met for the new condition.','Incorrect. If the condition is corrected before departure, it may be fine — but the point is that any deviation must be verified against all criteria, not just corrected to match the original plan.','Incorrect. Positive GM is necessary but not sufficient — MARPOL damage criteria and GZ curve area requirements must also be met.']},
+  'm5-q1':{q:'The most common input error in loading computers is:',opts:['Entering the wrong tank number','Using default or previous voyage cargo density instead of the actual density from the current BL/terminal certificate','Entering ullage instead of sounding','Forgetting to enter crew and stores weight'],a:1,fb:['Incorrect. Tank number errors are easily caught by mismatch with expected results.','Correct. Cargo density varies between voyages and between grades. Using the wrong density (even by 0.01 t/m³) changes every weight calculation in the computer. Density must always come from the current BL or terminal certificate — never from memory or previous voyage data.','Incorrect. Ullage/sounding entry is a potential error but the loading computer typically prompts for the input type.','Incorrect. Crew and stores are important but the magnitude of error is small compared to cargo density errors.']},
+  'm5-q2':{q:'Loading computer output must be verified against actual draft observations because:',opts:['Draft observations are required for port documentation','A discrepancy between calculated and actual drafts indicates an input error, unaccounted weight, or incorrect density data that must be resolved','Draft observations confirm the computer is turned on','Port state requires co-signature of draft and computer output'],a:1,fb:['Incorrect. Documentation is a reason for draft observation — but not the primary verification reason.','Correct. The draft marks are independent of the loading computer. If computed drafts and actual drafts disagree by more than 3–5cm, there is an unresolved discrepancy in the calculation. Common causes: wrong density, unrecorded tank, stores not entered. Must be investigated before departure.','Incorrect. Draft observation verifies the calculation — it does not confirm computer operation.','Incorrect. Co-signature is not typically a requirement — the verification itself is the requirement.']},
+  'm5-q3':{q:'To determine the vessel\'s KM for a manual stability calculation, you need to look up:',opts:['The stability booklet GZ curves','The hydrostatic tables at the current displacement or mean draft — KM (or KB + BM) is tabulated there','The damage stability booklet','The vessel\'s inclining experiment report'],a:1,fb:['Incorrect. GZ curves show stability levers at different angles — not KM.','Correct. Hydrostatic tables provide KM (or KB and BM separately) as a function of displacement or draft. This is the starting point for manual GM calculation: KM from tables, minus KG (calculated from weight distribution), equals GM.','Incorrect. The damage stability booklet shows residual stability after flooding — not intact KM.','Incorrect. The inclining experiment establishes the KG of the lightship — not the KM for operating conditions.']},
+  'm6-q1':{q:'When a SIRE inspector asks "what is your current effective GM?", the correct answer demonstrates:',opts:['Reading the number from the loading computer printout only','Knowledge of solid GM, total FSC from all slack tanks, and their difference — able to identify which tanks are contributing most to FSC','The GM displayed on the navigation bridge','An estimate based on how the vessel feels underway'],a:1,fb:['Incorrect. Reading a number from a printout without understanding it is noted as a competency gap.','Correct. The inspector wants to see that the C/O understands the components: solid GM from the loading computer, the FSC contributions from each slack tank, and the resulting effective GM. Being able to name the worst-contributing tank demonstrates real understanding.','Incorrect. Bridge display repeats a computer calculation — understanding the underlying components is what inspectors assess.','Incorrect. Subjective feeling is not a stability calculation.']},
+  'm6-q2':{q:'For a manual trim calculation, the trimming moment is defined as:',opts:['The total weight of cargo multiplied by the vessel\'s length','The added weight multiplied by its distance from the Longitudinal Centre of Flotation (LCF)','The difference in displacement between the forward and aft sections','The bending moment at the midship section'],a:1,fb:['Incorrect. Total cargo weight × vessel length is not the trimming moment formula.','Correct. Trimming moment = w × d, where w is the added (or removed) weight and d is its distance from the LCF. This moment is then divided by MCT (moments to change trim 1 cm) to give the total trim change in centimetres.','Incorrect. The displacement difference is related to shear force — not trimming moment.','Incorrect. Bending moment at midship is a structural calculation — separate from trim calculation.']},
+  'm6-q3':{q:'The loading computer\'s type approval certificate must be:',opts:['Current, and test conditions must be run and verified annually against approved test cases','Valid when the vessel was built — no further renewal is required','Verified by the Captain every voyage','Issued by the shipping company\'s technical department'],a:1,fb:['Incorrect. Annual re-verification is required — the original approval alone is not sufficient for ongoing operations.','Correct. The type approval certificate must be current. Additionally, the approved test loading conditions must be run on the computer and the results verified against the approval test figures annually. The test condition printouts must be available for PSC inspection.','Incorrect. Captain verification is a good practice but the formal requirement is annual test condition verification.','Incorrect. Type approval is issued by a classification society or flag state — not the shipping company.']}
+};
+
+// ══════════════════════
+// SCENARIO MCQ
+// ══════════════════════
+var scenMCQ={
+  'm4-scen1':{opts:['Immediately ballast port tanks to correct the list — speed is critical','First assess the current stability condition — check if flooding into cargo tanks has occurred, estimate residual GM from damage stability booklet, and only then determine if and how to ballast safely','Anchor immediately and call the port authority before taking any action','Discharge all cargo to lighten the vessel before attempting any correction'],a:1,fb:['Incorrect. Ballasting without assessing the post-damage stability picture risks making the situation worse. If GM is already critically reduced, adding ballast to the high side could reduce the range of positive stability and increase capsize risk.','Correct. Before any corrective action: (1) determine whether cargo tanks have been breached (changes the damage case significantly), (2) estimate current residual GM from the damage stability booklet for the one or two compartment flooded case, (3) only if GM is adequate and range of stability sufficient, carefully add ballast to the opposite side — monitoring the response. Notify MRCC and company simultaneously.','Incorrect. Anchoring may be appropriate if flooding is continuing — but stability assessment and safety action cannot wait for port authority approval.','Incorrect. Discharging cargo would change the loading condition dramatically and may worsen stability by raising KG. This cannot be done without a safe port connection.']}
+};
+
+// ══════════════════════
+// WORKED EXAMPLE STEPS
+// ══════════════════════
+var steps=[
+  {title:'Given situation — loading computer failure',body:'The vessel has just completed loading at a Ras Tanura. Loading computer has failed and cannot be restarted. Departure is in 4 hours.<br><br><strong>Known data:</strong><br>Draft fwd: 14.82m · Draft aft: 15.06m · Mean draft: 14.94m<br>Cargo loaded: 285,000 MT of Arabian Heavy crude (density 0.872 t/m³)<br>Ballast: 12,000 MT retained in fore peak<br>Bunkers: 3,200 MT<br>Constant: 1,800 MT<br><strong>Goal:</strong> Determine displacement, KG, and effective GM manually.',calc:'',result:''},
+  {title:'Step 1 — Determine displacement from mean draft',body:'Using the vessel\'s hydrostatic tables at mean draft 14.94 m:<br><br><strong>Displacement:</strong> From table → interpolate between 14.90m (302,100 t) and 15.00m (304,200 t):<br>Δ = 302,100 + (0.04/0.10) × 2,100 = 302,100 + 840 = <strong>302,940 t</strong><br><br><strong>KM from table at same draft:</strong> 23.84 m (from hydrostatic tables)',calc:'Displacement: 302,940 t\nKM from hydrostatic tables: 23.84 m',result:'Displacement = 302,940 t · KM = 23.84 m'},
+  {title:'Step 2 — Calculate total weight and KG moments',body:'To find KG, calculate the sum of (weight × KG) for each group and divide by total displacement:<br><br>Each weight group\'s KG comes from the loading plan or stability booklet tank tables.',calc:'Cargo:  285,000 t × KG 12.24 m = 3,488,400 t·m\nBallast: 12,000 t × KG  2.10 m =    25,200 t·m\nBunkers:  3,200 t × KG  1.80 m =     5,760 t·m\nConstant: 1,800 t × KG  8.50 m =    15,300 t·m\nLightship: 1,140 × 22.40 m =        25,536 t·m\n──────────────────────────────────────────────\nTotal moments = 3,560,196 t·m',result:'Total moments = 3,560,196 t·m'},
+  {title:'Step 3 — Calculate solid KG and solid GM',body:'Solid KG = Total moments / Total displacement<br><br>Note: Total displacement from stability = lightship + all loaded weights = 302,940 t (as verified from draft in Step 1)',calc:'Solid KG = 3,560,196 / 302,940 = 11.75 m\n\nSolid GM = KM − KG = 23.84 − 11.75 = 2.09 m',result:'Solid KG = 11.75 m · Solid GM = 2.09 m'},
+  {title:'Step 4 — Apply free surface correction',body:'From the stability booklet FSC tables, check all slack tanks at departure. In this case the fore peak (ballast) is at 45% fill:<br><br><strong>Fore peak FSM</strong> (from booklet at 45% fill): 8,450 t·m<br><strong>No slack cargo tanks</strong> — all fully loaded.<br><br>FSC = Total FSM / Displacement',calc:'FSC = 8,450 / 302,940 = 0.028 m\n\nEffective GM = Solid GM − FSC\n             = 2.09 − 0.028 = 2.062 m',result:'Effective GM = 2.062 m ✓ (well above minimum 0.15 m)'},
+  {title:'Step 5 — Verify against minimum and depart',body:'Effective GM = 2.062 m — substantially above the vessel\'s minimum required GM of 0.15 m (or vessel-specific value from stability booklet).<br><br><strong>Verification check:</strong> Cross-check that calculated displacement (302,940 t) matches sum of all weights. Confirm draft marks were read correctly. Document the manual calculation, sign it, have it countersigned by Master.<br><br>File as the departure stability record. This document replaces the loading computer printout for this departure.',calc:'Minimum required GM: 0.15 m (check vessel stability booklet)\nEffective GM:        2.062 m ✓\nMargin above minimum: 1.912 m ✓',result:'DEPARTURE AUTHORISED — manual stability record signed by C/O and Master'}
+];
+var stepIdx=0;
+
+// ══════════════════════
+// ASSESSMENT DATA
+// ══════════════════════
+var aData=[
+  {q:'Free surface effect is at its greatest when a tank is:',opts:['100% full','~50% full — liquid can shift maximally with the surface dimensions at maximum area','5% full','Completely empty'],a:1,cat:'m1',fb:['Incorrect. A full tank has no free surface — the liquid cannot shift.','Correct. Free surface moment = ρ × L × B³/12. This is independent of fill depth — the surface dimensions and therefore FSM are the same at any partial fill level.','Incorrect. FSM is unchanged by fill level — the free surface dimensions are the same.','Incorrect. An empty tank has no free surface.']},
+  {q:'If solid GM is 1.50m and total FSC from all slack tanks is 1.05m, effective GM is:',opts:['2.55 m','0.45 m','1.05 m','1.50 m'],a:1,cat:'m1',fb:['Incorrect. FSC is subtracted from solid GM.','Correct. Effective GM = Solid GM − FSC = 1.50 − 1.05 = 0.45 m. This is above 0.15m minimum but requires attention — any further increase in slack tanks could violate minimum criteria.','Incorrect. 1.05 m is the total FSC — not the effective GM.','Incorrect. 1.50 m is the solid GM before applying free surface correction.']},
+  {q:'Doubling a tank\'s breadth while keeping its length the same changes the free surface moment by a factor of:',opts:['2 (doubles)','8 (eightfold — because B³)','4 (fourfold)','0.5 (halves)'],a:1,cat:'m1',fb:['Incorrect. FSM includes B³ — doubling B increases FSM by 2³.','Correct. FSM = ρ × (L × B³/12). If B doubles, B³ increases by 2³ = 8. This is why wide cargo tanks have dramatically larger FSE than narrow tanks.','Incorrect. B² = 4 would apply if the formula contained B² — but it contains B³.','Incorrect. Doubling B always increases FSM.']},
+  {q:'The most dangerous stability condition during tanker cargo loading is:',opts:['At the start — when displacement is lowest','In the middle — many large tanks partially filled while displacement and BM are not yet at maximum','At completion — all tanks full','During ballast dewatering'],a:1,cat:'m2',fb:['Incorrect. At the start, few tanks are slack and the condition is typically close to the departure ballast condition.','Correct. The stability trough occurs mid-loading: multiple large slack tanks create maximum combined FSC while displacement (and therefore BM) is not yet at its highest. This is when effective GM is most likely to approach minimum limits.','Incorrect. At completion, tanks are full, FSE is minimal, and GM is typically at its best.','Incorrect. Ballast dewatering precedes cargo loading.']},
+  {q:'MARPOL minimum stability criteria require that the maximum GZ value must be at least:',opts:['0.10 m','0.20 m at or before 30°','0.30 m at 30°','0.055 m'],a:1,cat:'m2',fb:['Incorrect. 0.10 m is the damage stability residual GZ criterion — not the intact criterion.','Correct. IMO Resolution A.749: maximum GZ must be ≥ 0.20m and must occur at or before 30° of heel. Area under GZ to 30° must be ≥ 0.055 m·rad.','Incorrect. 0.30 m is not a standard minimum GZ criterion.','Incorrect. 0.055 m·rad is the minimum area under the GZ curve — not the GZ value itself.']},
+  {q:'An officer argues stability will be corrected "once at sea by ballasting." This is:',opts:['Acceptable with C/O signature on the departure plan','Unacceptable — departure stability criteria must be met before leaving port','Acceptable for voyages under 100nm','Acceptable if the terminal confirms the cargo is stable'],a:1,cat:'m2',fb:['Incorrect. C/O signature does not make an unsafe condition compliant.','Correct. Stability criteria must be demonstrably met before departure. Post-departure improvement plans do not satisfy STCW or stability booklet requirements.','Incorrect. Distance of voyage does not change departure stability requirements.','Incorrect. Terminal cargo stability confirmation refers to cargo physical state — not the vessel\'s stability criteria.']},
+  {q:'Hogging is the condition where:',opts:['The midship section bends downward — heavy cargo amidships','The midship section bends upward — cargo light amidships and heavy at the ends','The vessel trims by the stern','Maximum shear force occurs at midship'],a:1,cat:'m3',fb:['Incorrect. That is sagging.','Correct. Hogging: ends are heavier than the middle, buoyancy in the midship section lifts it relative to the ends. Puts the main deck in tension, keel in compression.','Incorrect. Trim is a separate condition.','Incorrect. Maximum shear force occurs at bulkheads between loaded and empty tanks.']},
+  {q:'Maximum shear force on a tanker typically occurs at:',opts:['The midship section','Bulkhead positions between tanks with very different fill levels','The extremities of the vessel','The vessel\'s neutral axis'],a:1,cat:'m3',fb:['Incorrect. Maximum bending moment is at or near midship — shear force peaks at bulkheads.','Correct. Shear force changes rapidly at bulkheads between full and empty tanks. A fully loaded tank next to an empty tank creates maximum shear at their shared bulkhead.','Incorrect. Extremities typically have low shear force as they carry little cargo weight.','Incorrect. The neutral axis is a structural concept for bending stress — not the location of maximum shear force.']},
+  {q:'The loading computer BM output reads 97% of the allowable limit. Required action:',opts:['No action — the limit is 100%','Investigate which loading configuration causes this and adjust the plan — do not allow 100% to be reached','Sound the structural alarm immediately','Accept — the computer includes a 10% safety margin so 97% is actually 87%'],a:1,cat:'m3',fb:['Incorrect. 97% is in the warning zone — action is required before 100%.','Correct. At 97% of allowable BM, there is very little headroom. The C/O must identify the cause, determine what loading adjustment will reduce BM, and implement it before reaching the limit.','Incorrect. A structural alarm would be appropriate at or above 100% — not at 97%.','Incorrect. The loading computer does not apply an additional 10% safety margin — the output percentage directly compares calculated value to the design allowable.']},
+  {q:'MARPOL damage stability for crude oil tankers ≥20,000 DWT requires survival of:',opts:['Three compartment flooding','One compartment flooding anywhere with specific residual stability criteria','Two compartment flooding at midship only','Only wing tank flooding cases'],a:1,cat:'m4',fb:['Incorrect. Three compartment flooding exceeds MARPOL Reg.23 requirements for tankers.','Correct. MARPOL Annex I Reg.23: one compartment flooding in any location, with residual GM positive, GZ ≥ 0.10m at 20°, and ≥20° range of positive stability.','Incorrect. The flooding case applies to any location.','Incorrect. All compartments — including cargo tanks — must be considered.']},
+  {q:'Corrective ballasting after damage (grounding/collision) should only be done after:',opts:['Immediate correction is always best — delay risks capsizing','First assessing the post-damage stability condition — residual GM and stability range — to ensure ballasting will not worsen the situation','Receiving instructions from the port authority','Consulting the P&I club surveyor'],a:1,cat:'m4',fb:['Incorrect. Correcting a list without knowing the residual stability picture can worsen the situation — particularly if the corrective action reduces the already-diminished range of positive stability.','Correct. Post-damage, the first step is to assess the actual stability condition (residual GM, range of positive stability) before any corrective action. Only then can a safe ballasting plan be developed.','Incorrect. Port authority notification is required, but safety assessment and action must proceed simultaneously — not wait for instructions.','Incorrect. P&I club is notified but their surveyor is not required before stability assessment and safety action.']},
+  {q:'Varying from an approved loading condition in the stability booklet:',opts:['Is acceptable with C/O written approval','Requires verification by the loading computer that all intact and damage stability criteria are met for the new condition','Is never permitted under any circumstances','Is acceptable as long as final GM is positive'],a:1,cat:'m4',fb:['Incorrect. C/O approval alone does not verify damage stability and GZ curve criteria.','Correct. Approved conditions are pre-verified for all criteria. Any deviation requires the loading computer to verify intact and damage stability, GZ curve criteria, and BM/SF limits for the new condition.','Incorrect. Deviations are permitted but must be verified — they cannot simply be prohibited.','Incorrect. Positive GM is necessary but not sufficient — damage criteria and GZ curve requirements must also be met.']},
+  {q:'The most common loading computer input error is:',opts:['Wrong tank number entry','Using wrong cargo density — from a previous voyage or default instead of the current BL/certificate','Forgetting to enter ballast tanks','Incorrect vessel lightship weight'],a:1,cat:'m5',fb:['Incorrect. Tank number errors are easily detected by checking totals.','Correct. Cargo density changes between voyages and between cargo grades. Using the wrong density, even by 0.01 t/m³, produces incorrect weight calculations for every cargo tank.','Incorrect. Ballast tanks are important but missing them creates an obvious displacement discrepancy.','Incorrect. Lightship weight is fixed data in the computer — not entered voyage-by-voyage.']},
+  {q:'A discrepancy between loading computer calculated drafts and actual observed drafts of more than 5cm indicates:',opts:['Normal measurement variation','An unresolved discrepancy — input error, unaccounted mass, or incorrect density — that must be investigated before departure','That the loading computer is calibrated differently from the draft marks','An acceptable allowance for sea conditions'],a:1,cat:'m5',fb:['Incorrect. 5cm is beyond normal measurement variation — it requires investigation.','Correct. Calculated and actual drafts should agree within 3–5cm. A larger discrepancy indicates something is wrong: missing tank entry, wrong density, unrecorded stores, or incorrect draft reading. All must be resolved before departure.','Incorrect. Loading computers are calibrated to agree with draft marks — persistent discrepancy is not a calibration issue.','Incorrect. At a loading berth in port, sea conditions are not a factor in draft readings.']},
+  {q:'To find KM for a manual stability calculation, you consult:',opts:['The GZ curves in the stability booklet','The hydrostatic tables at the vessel\'s current mean draft or displacement','The damage stability booklet','The inclining experiment report'],a:1,cat:'m5',fb:['Incorrect. GZ curves show stability levers — not KM values.','Correct. Hydrostatic tables provide KM (or KB and BM separately) as a function of draft or displacement. This is always the source for KM in a manual calculation.','Incorrect. Damage stability booklet shows residual stability after flooding.','Incorrect. The inclining experiment gives lightship KG — not KM for operating conditions.']},
+  {q:'When a SIRE inspector asks about effective GM, the competent officer should:',opts:['Read the number from the loading computer printout','State the solid GM, total FSC from all slack tanks, their difference, and name the largest contributing slack tank','Estimate based on the vessel\'s rolling period','Refer the inspector to the stability booklet'],a:1,cat:'m6',fb:['Incorrect. Reading without understanding is noted as a competency gap — inspectors expect officers to explain the components.','Correct. The inspector tests understanding: solid GM, FSC from each slack tank, effective GM result, and which tank contributes most. Being able to name the worst tank demonstrates genuine knowledge.','Incorrect. Rolling period estimation is an indirect method — not the expected demonstration of stability knowledge.','Incorrect. Referring to the booklet without explanation does not demonstrate competency.']},
+  {q:'The trimming moment for a manual calculation is:',opts:['Total cargo weight × vessel length','Added weight × its distance from the Longitudinal Centre of Flotation (LCF)','Bending moment at the midship section','Shear force at the forward bulkhead × vessel breadth'],a:1,cat:'m6',fb:['Incorrect. Total weight × vessel length is not the trimming moment formula.','Correct. Trimming moment = w × d, where d is the distance from the LCF. Dividing this by MCT gives the total trim change in centimetres.','Incorrect. Bending moment is a structural calculation — separate from trim.','Incorrect. Shear force and breadth are not part of the trim calculation.']},
+  {q:'The loading computer type approval certificate must be verified:',opts:['Once when the vessel is built','Annually by running approved test loading conditions and confirming results match approval figures','By the Master at each port','By the shipping company technical department quarterly'],a:1,cat:'m6',fb:['Incorrect. Initial approval alone is insufficient for ongoing compliance.','Correct. Type approval certification must be current, and approved test loading conditions must be run and results verified annually. Test printouts must be available for PSC inspection.','Incorrect. Annual class verification — not per-port Master verification.','Incorrect. Type approval is verified by classification society or flag state — not the shipping company.']}
+];
+
+// ══════════════════════
+// STATE
+// ══════════════════════
+var points=0,assessAnswers={},assessTimer=null,assessTimeLeft=1200;
+
+// ══════════════════════
+// NAV
+// ══════════════════════
+function goTo(dest){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  var el=document.getElementById('screen-'+dest);
+  if(el){el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+  var pm={hero:0,m1:12,m2:26,m3:42,m4:58,m5:74,m6:88,assess:100};
+  document.getElementById('pb').style.width=(pm[dest]||0)+'%';
+  var lm={hero:'Overview',m1:'M1 — Free Surface',m2:'M2 — Partial Loading',m3:'M3 — BM & Shear Force',m4:'M4 — Damage Stability',m5:'M5 — Loading Computer',m6:'M6 — Inspector Expectations',assess:'Final Assessment'};
+  document.getElementById('nm').textContent=lm[dest]||'';
+  if(dest==='assess'&&!assessTimer)startAssessTimer();
+  var mp=document.getElementById('mpill-'+dest);
+  if(mp)mp.classList.add('done');
+}
+function addPts(n){points+=n;document.getElementById('npts').textContent=points+' pts';}
+
+// ══════════════════════
+// FSC CALCULATOR
+// ══════════════════════
+function updateFSC(){
+  var L=parseInt(document.getElementById('c-tl').value);
+  var B=parseInt(document.getElementById('c-tb').value);
+  var dens=parseFloat(document.getElementById('c-dens').value);
+  var disp=parseInt(document.getElementById('c-disp').value);
+  var gms=parseFloat(document.getElementById('c-gms').value);
+
+  document.getElementById('c-tl-r').textContent=L+' m';
+  document.getElementById('c-tb-r').textContent=B+' m';
+  document.getElementById('c-dens-r').textContent=dens.toFixed(2)+' t/m³';
+  document.getElementById('c-disp-r').textContent=disp.toLocaleString()+' t';
+  document.getElementById('c-gms-r').textContent=gms.toFixed(2)+' m';
+
+  var i=L*Math.pow(B,3)/12;
+  var fsm=dens*i;
+  var fsc=fsm/disp;
+  var gmeff=gms-fsc;
+
+  document.getElementById('c-fsm').textContent=Math.round(fsm).toLocaleString();
+  document.getElementById('c-fsc').textContent=fsc.toFixed(3);
+  document.getElementById('c-gmeff').textContent=gmeff.toFixed(3);
+
+  var fscEl=document.getElementById('c-fsc');
+  var gmEl=document.getElementById('c-gmeff');
+  fscEl.style.color=fsc<0.3?'var(--gr)':fsc<0.6?'var(--am)':'var(--rd)';
+  gmEl.style.color=gmeff>0.5?'var(--gr)':gmeff>0.15?'var(--am)':'var(--rd)';
+
+  document.getElementById('c-formula').innerHTML=
+    '<strong>i = L × B³ / 12</strong> = '+L+' × '+B+'³ / 12 = '+Math.round(i).toLocaleString()+' m⁴<br>'+
+    '<strong>FSM = ρ × i</strong> = '+dens.toFixed(2)+' × '+Math.round(i).toLocaleString()+' = '+Math.round(fsm).toLocaleString()+' t·m<br>'+
+    '<strong>FSC = FSM / Δ</strong> = '+Math.round(fsm).toLocaleString()+' / '+disp.toLocaleString()+' = <strong>'+fsc.toFixed(3)+' m</strong><br>'+
+    '<strong>GM_eff = '+gms.toFixed(2)+' − '+fsc.toFixed(3)+' = '+gmeff.toFixed(3)+' m</strong>';
+
+  var result=document.getElementById('c-result');
+  result.className='calc-result show';
+  if(gmeff>0.5){result.className='calc-result show ok';result.textContent='✓ GM effective '+gmeff.toFixed(3)+'m — adequate margin above minimum (typically 0.15m). One slack tank of these dimensions at this displacement is manageable.';}
+  else if(gmeff>0.15){result.className='calc-result show warn';result.textContent='⚠ GM effective '+gmeff.toFixed(3)+'m — above minimum but with limited margin. Check how many other slack tanks exist — combined FSC could violate minimum. Consider filling this tank before departure.';}
+  else if(gmeff>0){result.className='calc-result show alert';result.textContent='✗ GM effective '+gmeff.toFixed(3)+'m — very close to or below minimum required (0.15m). Departure not permitted with this tank slack. Fill to minimum 90% or empty before sailing.';}
+  else{result.className='calc-result show alert';result.textContent='✗ GM effective '+gmeff.toFixed(3)+'m — NEGATIVE. This tank alone has eliminated positive stability. Departure is absolutely prohibited. Fill this tank immediately.';}
+}
+
+// ══════════════════════
+// STABILITY TREND
+// ══════════════════════
+function updateTrend(){
+  var load=parseInt(document.getElementById('t-load').value);
+  var slack=parseInt(document.getElementById('t-slack').value);
+  var ball=parseInt(document.getElementById('t-ball').value);
+
+  document.getElementById('t-load-r').textContent=load+'%';
+  document.getElementById('t-slack-r').textContent=slack+' tanks';
+  document.getElementById('t-ball-r').textContent=ball.toLocaleString()+' t';
+
+  // Simplified GM model
+  var baseDisp=80000+load*2200+(ball);
+  var solidGM=2.2-0.8*(Math.sin((load/100)*Math.PI))-0.3*(ball/50000);
+  var totalFSC=slack*0.08*(1+0.5*Math.sin((load/100)*Math.PI));
+  var gmEff=solidGM-totalFSC;
+  var minGM=0.15;
+
+  var W=480,H=180,pad=44;
+  var points=[];
+  for(var p=0;p<=20;p++){
+    var l2=p*5;
+    var sg=2.2-0.8*(Math.sin((l2/100)*Math.PI))-0.3*(ball/50000);
+    var fsc=slack*0.08*(1+0.5*Math.sin((l2/100)*Math.PI));
+    var gm=sg-fsc;
+    var x=pad+(l2/100)*(W-2*pad);
+    var y=H-pad-(Math.max(-0.3,Math.min(2.5,gm))/2.8)*(H-2*pad);
+    points.push({x:x,y:y,gm:gm});
+  }
+  var pathD=points.map(function(pt,i){return (i===0?'M':'L')+pt.x.toFixed(1)+','+pt.y.toFixed(1);}).join(' ');
+  var minY=H-pad-(minGM/2.8)*(H-2*pad);
+  var zeroY=H-pad;
+  var curX=pad+(load/100)*(W-2*pad);
+  var curPt=points[Math.min(20,Math.round(load/5))];
+
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto">'+
+    '<rect width="'+W+'" height="'+H+'" fill="'+( document.documentElement.style.getPropertyValue('--bg')||'#f5f7fa')+'"/>'+
+    // Zero line
+    '<line x1="'+pad+'" y1="'+zeroY+'" x2="'+(W-pad)+'" y2="'+zeroY+'" stroke="var(--rd)" stroke-width="1" opacity=".4" stroke-dasharray="4,3"/>'+
+    '<text x="'+(pad-3)+'" y="'+(zeroY+4)+'" text-anchor="end" font-size="9" fill="var(--rd)" font-family="monospace">0</text>'+
+    // Minimum GM line
+    '<line x1="'+pad+'" y1="'+minY+'" x2="'+(W-pad)+'" y2="'+minY+'" stroke="var(--am)" stroke-width="1.5" stroke-dasharray="6,3"/>'+
+    '<text x="'+(W-pad+3)+'" y="'+(minY+4)+'" font-size="9" fill="var(--am)" font-family="monospace">Min 0.15m</text>'+
+    // GM curve
+    '<path d="'+pathD+'" fill="none" stroke="var(--nv)" stroke-width="2.5"/>'+
+    // Current position
+    '<circle cx="'+curPt.x.toFixed(1)+'" cy="'+curPt.y.toFixed(1)+'" r="6" fill="'+(curPt.gm<minGM?'var(--rd)':curPt.gm<0.3?'var(--am)':'var(--gr)')+'" opacity=".9"/>'+
+    '<text x="'+curPt.x.toFixed(1)+'" y="'+(curPt.y-12)+'" text-anchor="middle" font-size="10" fill="var(--nv)" font-weight="bold" font-family="monospace">'+curPt.gm.toFixed(2)+'m</text>'+
+    // Axes
+    '<line x1="'+pad+'" y1="'+pad+'" x2="'+pad+'" y2="'+(H-pad)+'" stroke="var(--bd2)" stroke-width="1"/>'+
+    '<line x1="'+pad+'" y1="'+(H-pad)+'" x2="'+(W-pad)+'" y2="'+(H-pad)+'" stroke="var(--bd2)" stroke-width="1"/>'+
+    '<text x="'+(W/2)+'" y="'+(H-2)+'" text-anchor="middle" font-size="10" fill="var(--mu)" font-family="monospace">Loading progress (%)</text>'+
+    '<text transform="translate(11,'+(H/2)+') rotate(-90)" text-anchor="middle" font-size="10" fill="var(--mu)" font-family="monospace">GM effective (m)</text>'+
+    [0,25,50,75,100].map(function(v){return '<text x="'+(pad+v/100*(W-2*pad))+'" y="'+(H-pad+12)+'" text-anchor="middle" font-size="8" fill="var(--mu2)">'+v+'%</text>';}).join('')+
+  '</svg>';
+
+  document.getElementById('t-svg-wrap').innerHTML=svg;
+  var status=document.getElementById('t-status');
+  if(gmEff<0){status.className='trend-status crit';status.textContent='✗ NEGATIVE GM — '+gmEff.toFixed(2)+'m. Vessel will capsize. Immediate action required: fill slack tanks or discharge ballast to improve KM.';}
+  else if(gmEff<minGM){status.className='trend-status crit';status.textContent='✗ BELOW MINIMUM — GM '+gmEff.toFixed(2)+'m < required 0.15m. Departure prohibited. Reduce slack tanks from '+slack+' to maximum safe number.';}
+  else if(gmEff<0.3){status.className='trend-status warn';status.textContent='⚠ MARGINAL — GM '+gmEff.toFixed(2)+'m. Approaching minimum. With '+slack+' slack tanks, any additional FSE (e.g. bilge or slop tanks) may violate minimum criteria.';}
+  else{status.className='trend-status ok';status.textContent='✓ ADEQUATE — GM '+gmEff.toFixed(2)+'m with '+slack+' slack tanks at '+load+'% loading. Monitor continuously through the stability trough (typically 30–60% loading).';}
+}
+
+// ══════════════════════
+// BM/SF GAUGE
+// ══════════════════════
+function updateGauge(){
+  var fwd=parseInt(document.getElementById('g-fwd').value);
+  var mid=parseInt(document.getElementById('g-mid').value);
+  var aft=parseInt(document.getElementById('g-aft').value);
+
+  document.getElementById('g-fwd-r').textContent=fwd+'%';
+  document.getElementById('g-mid-r').textContent=mid+'%';
+  document.getElementById('g-aft-r').textContent=aft+'%';
+
+  var hogg=Math.round(Math.abs(((fwd+aft)/2-mid)*0.9));
+  var sagg=Math.round(Math.abs((mid-((fwd+aft)/2))*0.7));
+  var sfF=Math.round(Math.abs(fwd-mid)*0.65+15);
+  var sfA=Math.round(Math.abs(aft-mid)*0.55+10);
+
+  function setGauge(id,vid,val){
+    var fill=document.getElementById(id);
+    var pct=document.getElementById(vid);
+    var w=Math.min(100,val);
+    fill.style.width=w+'%';
+    fill.style.background=w<70?'var(--gr)':w<90?'var(--am)':'var(--rd)';
+    pct.textContent=w+'%';
+    pct.style.color=w<70?'var(--gr)':w<90?'var(--am)':'var(--rd)';
+  }
+  setGauge('g-bm-h','g-bm-h-v',hogg);
+  setGauge('g-bm-s','g-bm-s-v',sagg);
+  setGauge('g-sf-f','g-sf-f-v',sfF);
+  setGauge('g-sf-a','g-sf-a-v',sfA);
+
+  var max=Math.max(hogg,sagg,sfF,sfA);
+  var res=document.getElementById('g-result');
+  res.className='calc-result show';
+  if(max>=100){res.className='calc-result show alert';res.textContent='✗ STRUCTURAL LIMIT EXCEEDED at '+max+'% — loading must be adjusted immediately. Redistribute cargo or reduce fill in critical tanks before departure.';}
+  else if(max>=90){res.className='calc-result show warn';res.textContent='⚠ WARNING — highest value at '+max+'% of limit. Headroom is very limited. Adjust loading plan before final port departure — do not accept additional cargo or ballast change that increases loads.';}
+  else{res.className='calc-result show ok';res.textContent='✓ All structural values within limits — highest is '+max+'% of allowable. Normal monitoring applies. Recheck after each significant loading/ballasting step.';}
+}
+
+// ══════════════════════
+// SORT
+// ══════════════════════
+function initSort(listId,dataKey){
+  var data=sortData[dataKey].slice();shuffle(data);
+  sortCurrent[listId]=data.map(function(d){return d.id;});
+  renderSort(listId,data);
+}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}}
+function renderSort(listId,data){
+  var list=document.getElementById(listId);if(!list)return;
+  list.innerHTML='';
+  data.forEach(function(item,i){
+    var div=document.createElement('div');div.className='si';
+    div.draggable=true;div.dataset.id=item.id;
+    div.innerHTML='<span class="sh_">&#8942;</span><span class="sb">'+(i+1)+'</span><span class="st">'+item.text+'</span>';
+    div.addEventListener('dragstart',function(e){dragSrc=this;this.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+    div.addEventListener('dragend',function(){this.classList.remove('dragging');list.querySelectorAll('.si').forEach(function(el){el.classList.remove('over');});});
+    div.addEventListener('dragover',function(e){e.preventDefault();if(this!==dragSrc){list.querySelectorAll('.si').forEach(function(el){el.classList.remove('over');});this.classList.add('over');}});
+    div.addEventListener('drop',function(e){
+      e.stopPropagation();
+      if(this!==dragSrc){
+        var items=Array.from(list.querySelectorAll('.si'));
+        var si=items.indexOf(dragSrc),ti=items.indexOf(this);
+        var cur=sortCurrent[listId];
+        var tmp=cur[si];cur[si]=cur[ti];cur[ti]=tmp;
+        var allData=sortData[listId.replace('-sort','-data')];
+        var reordered=cur.map(function(id){return allData.find(function(d){return d.id===id;});});
+        renderSort(listId,reordered);
+      }
+    });
+    list.appendChild(div);
+  });
+}
+function resetSort(listId,dataKey){initSort(listId,dataKey);var fb=document.getElementById(listId.replace('-sort','-sfb'));if(fb)fb.className='sfb';}
+function checkSort(listId,correctKey,fbId){
+  var cur=sortCurrent[listId],cor=sortCorrect[correctKey];
+  var fb=document.getElementById(fbId);if(!fb)return;
+  if(JSON.stringify(cur)===JSON.stringify(cor)){
+    fb.className='sfb pass';fb.textContent='✓ Correct sequence. This is the manual trim calculation method that satisfies a PSC inspector\'s demonstration request.';
+    document.getElementById(listId).querySelectorAll('.si').forEach(function(el){el.classList.add('correct-item');});
+    addPts(8);
+  } else {
+    var allData=sortData[listId.replace('-sort','-data')];
+    var names=cor.map(function(id){return allData.find(function(d){return d.id===id;}).text;});
+    fb.className='sfb fail';
+    fb.innerHTML='Not quite. Correct sequence:<ol style="margin:7px 0 0 18px;line-height:2;font-size:11px">'+names.map(function(n){return '<li>'+n+'</li>';}).join('')+'</ol>';
+  }
+}
+
+// ══════════════════════
+// MATCH
+// ══════════════════════
+function initMatch(mid){
+  var data=matchData[mid];matchState[mid]={selected:null,matched:[]};
+  var leftEl=document.getElementById(mid+'-left'),rightEl=document.getElementById(mid+'-right');
+  if(!leftEl||!rightEl)return;
+  leftEl.innerHTML='';rightEl.innerHTML='';
+  var rs=data.right.slice();shuffle(rs);
+  data.left.forEach(function(txt,i){
+    var el=document.createElement('div');el.className='mi';el.textContent=txt;
+    el.addEventListener('click',function(){matchClick(mid,'left',i,this);});
+    leftEl.appendChild(el);
+  });
+  rs.forEach(function(txt){
+    var oi=data.right.indexOf(txt);
+    var el=document.createElement('div');el.className='mi';el.textContent=txt;
+    el.addEventListener('click',function(){matchClick(mid,'right',oi,this);});
+    rightEl.appendChild(el);
+  });
+}
+function matchClick(mid,side,idx,el){
+  var state=matchState[mid];
+  if(el.classList.contains('matched-ok')||el.classList.contains('matched-err'))return;
+  var data=matchData[mid];
+  if(!state.selected){
+    if(side==='left'){state.selected={side:side,idx:idx,el:el};el.classList.add('selected');}
+    else{el.style.outline='2px solid var(--am)';setTimeout(function(){el.style.outline='';},600);}
+    return;
+  }
+  if(state.selected.side===side){
+    state.selected.el.classList.remove('selected');
+    if(side==='left'){state.selected={side:side,idx:idx,el:el};el.classList.add('selected');}
+    else state.selected=null;
+    return;
+  }
+  var lEl=state.selected.el,rEl=el,lIdx=state.selected.idx,rIdx=idx;
+  lEl.classList.remove('selected');
+  var isMatch=data.pairs[lIdx]===rIdx;
+  if(isMatch){
+    lEl.classList.add('matched-ok');rEl.classList.add('matched-ok');
+    state.matched.push(lIdx);addPts(3);
+    if(state.matched.length===data.left.length){
+      var sc=document.getElementById(mid+'-score');
+      if(sc){sc.className='msc ok';sc.textContent='✓ All matched correctly.';}
+    }
+  } else {
+    lEl.classList.add('matched-err');rEl.classList.add('matched-err');
+    setTimeout(function(){lEl.classList.remove('matched-err');rEl.classList.remove('matched-err');},900);
+  }
+  state.selected=null;
+}
+
+// ══════════════════════
+// MCQ + SCENARIO
+// ══════════════════════
+function renderModuleQuiz(modId,qKeys){
+  var container=document.getElementById(modId+'-quiz');if(!container)return;
+  container.innerHTML='';
+  qKeys.forEach(function(key,i){
+    var data=mcqData[key];if(!data)return;
+    var div=document.createElement('div');
+    div.style.cssText='margin-bottom:1rem'+(i>0?';border-top:1px solid var(--bd);padding-top:1rem;margin-top:.5rem':'');
+    var opts='<div class="mo" id="opts-'+key+'">';
+    data.opts.forEach(function(opt,j){opts+='<button class="mb" onclick="selMCQ(\''+key+'\','+j+',this,3)"><span class="ml">'+['A','B','C','D'][j]+'</span>'+opt+'</button>';});
+    opts+='</div><div class="mfb" id="fb-'+key+'"></div>';
+    div.innerHTML='<div style="font-family:var(--fm);font-size:9px;color:var(--pu);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">Q'+(i+1)+'</div><div style="font-size:13px;font-weight:600;color:var(--nv);margin-bottom:.7rem;line-height:1.4;letter-spacing:-.01em">'+data.q+'</div>'+opts;
+    container.appendChild(div);
+  });
+}
+function selMCQ(key,idx,btn,pts){
+  var data=mcqData[key];if(!data)return;
+  var container=document.getElementById('opts-'+key);
+  var fb=document.getElementById('fb-'+key);
+  container.querySelectorAll('.mb').forEach(function(b){b.disabled=true;});
+  if(idx===data.a){btn.classList.add('correct-ans');if(fb){fb.className='mfb ok';fb.textContent=data.fb[idx];}addPts(pts||3);}
+  else{btn.classList.add('wrong-ans');container.querySelectorAll('.mb')[data.a].classList.add('correct-ans');if(fb){fb.className='mfb err';fb.textContent=data.fb[idx];}}
+}
+function renderScenMCQ(containerId,dataKey,onCorrect){
+  var data=scenMCQ[dataKey];if(!data)return;
+  var container=document.getElementById(containerId);if(!container)return;
+  container.innerHTML='';
+  data.opts.forEach(function(opt,i){
+    var btn=document.createElement('button');btn.className='mb';
+    btn.innerHTML='<span class="ml">'+['A','B','C','D'][i]+'</span>'+opt;
+    btn.addEventListener('click',(function(idx,b){return function(){
+      container.querySelectorAll('.mb').forEach(function(x){x.disabled=true;});
+      var fb=document.getElementById(dataKey+'-fb');
+      if(idx===data.a){b.classList.add('correct-ans');if(fb){fb.className='mfb ok';fb.textContent=data.fb[idx];}addPts(4);if(onCorrect)setTimeout(onCorrect,900);}
+      else{b.classList.add('wrong-ans');container.querySelectorAll('.mb')[data.a].classList.add('correct-ans');if(fb){fb.className='mfb err';fb.textContent=data.fb[idx];}}
+    };})(i,btn));
+    container.appendChild(btn);
+  });
+}
+
+// ══════════════════════
+// STEPPER
+// ══════════════════════
+function initStepper(){renderStepProgress();renderStepContent();}
+function renderStepProgress(){
+  var prog=document.getElementById('step-prog');if(!prog)return;
+  prog.innerHTML='';
+  steps.forEach(function(s,i){
+    var dot=document.createElement('div');
+    dot.className='step-dot'+(i===stepIdx?' active':i<stepIdx?' done':'');
+    dot.textContent=i+1;
+    dot.onclick=(function(idx){return function(){if(idx<=stepIdx){stepIdx=idx;renderStepProgress();renderStepContent();}}})(i);
+    prog.appendChild(dot);
+  });
+}
+function renderStepContent(){
+  var content=document.getElementById('step-content');
+  var counter=document.getElementById('step-counter');
+  var prevBtn=document.getElementById('step-prev');
+  var nextBtn=document.getElementById('step-next');
+  if(!content)return;
+  content.innerHTML='';
+  var s=steps[stepIdx];
+  var html='<div class="step-title">'+s.title+'</div><div class="step-body">'+s.body+'</div>';
+  if(s.calc)html+='<div class="step-calc">'+s.calc.replace(/\n/g,'<br>')+'</div>';
+  if(s.result)html+='<div class="step-result">'+s.result+'</div>';
+  var panel=document.createElement('div');panel.className='step-panel show';panel.innerHTML=html;
+  content.appendChild(panel);
+  counter.textContent='Step '+(stepIdx+1)+' of '+steps.length;
+  prevBtn.disabled=(stepIdx===0);
+  nextBtn.textContent=(stepIdx===steps.length-1)?'Complete ✓':'Next step →';
+  if(stepIdx===steps.length-1)addPts(5);
+}
+function stepNav(dir){var n=stepIdx+dir;if(n>=0&&n<steps.length){stepIdx=n;renderStepProgress();renderStepContent();}}
+
+// ══════════════════════
+// ASSESSMENT
+// ══════════════════════
+function renderAssessment(){
+  var container=document.getElementById('assess-qs');container.innerHTML='';
+  aData.forEach(function(q,qi){
+    var div=document.createElement('div');div.className='aq';div.id='aq'+qi;
+    var html='<div class="aqn">Question '+(qi+1)+' of 18</div><div class="aqt">'+q.q+'</div><div class="mo" id="aopts'+qi+'">';
+    q.opts.forEach(function(opt,oi){html+='<button class="mb" onclick="pickA('+qi+','+oi+',this)"><span class="ml">'+['A','B','C','D'][oi]+'</span>'+opt+'</button>';});
+    html+='</div>';div.innerHTML=html;container.appendChild(div);
+  });
+}
+function pickA(qi,oi,btn){
+  var parent=document.getElementById('aq'+qi);
+  parent.querySelectorAll('.mb').forEach(function(b){b.style.borderColor='';b.style.background='';});
+  btn.style.borderColor='var(--bl)';btn.style.background='var(--bl-lt)';
+  assessAnswers[qi]=oi;
+  var answered=Object.keys(assessAnswers).length;
+  document.getElementById('a-qcount').textContent=answered+' / 18';
+  document.getElementById('btn-sub').disabled=(answered<18);
+}
+function startAssessTimer(){
+  assessTimer=setInterval(function(){
+    assessTimeLeft--;
+    var m=Math.floor(assessTimeLeft/60),s=assessTimeLeft%60;
+    var el=document.getElementById('a-timer');
+    if(el){el.textContent=m+':'+(s<10?'0':'')+s;if(assessTimeLeft<=300)el.className='warn';if(assessTimeLeft<=60)el.className='danger';}
+    if(assessTimeLeft<=0){clearInterval(assessTimer);submitA();}
+  },1000);
+}
+function submitA(){
+  clearInterval(assessTimer);
+  document.getElementById('btn-sub').style.display='none';
+  document.querySelector('.tstr').style.display='none';
+  var correct=0,cats={m1:0,m2:0,m3:0,m4:0,m5:0,m6:0},catTot={m1:0,m2:0,m3:0,m4:0,m5:0,m6:0};
+  aData.forEach(function(q,qi){
+    var sel=assessAnswers[qi];catTot[q.cat]++;
+    var parent=document.getElementById('aq'+qi);
+    var opts=parent.querySelectorAll('.mb');
+    opts.forEach(function(b){b.disabled=true;b.style.borderColor='';b.style.background='';});
+    if(sel===q.a){correct++;cats[q.cat]++;if(opts[sel])opts[sel].classList.add('correct-ans');}
+    else{if(sel!==undefined&&opts[sel])opts[sel].classList.add('wrong-ans');if(opts[q.a])opts[q.a].classList.add('correct-ans');}
+    var fb=document.createElement('div');
+    fb.className='mfb '+(sel===q.a?'ok':'err');
+    fb.textContent=sel===undefined?'Not answered — correct answer shown above.':q.fb[sel];
+    parent.appendChild(fb);
+  });
+  var pct=Math.round((correct/18)*100),passed=pct>=75;
+  var panel=document.getElementById('results');panel.style.display='block';
+  var ring=document.getElementById('score-ring');ring.className='sring '+(passed?'pass':'fail');
+  document.getElementById('score-pct').textContent=pct+'%';
+  document.getElementById('score-lbl').textContent=correct+' / 18 correct';
+  var verd=document.getElementById('verd');
+  verd.textContent=passed?'Assessment passed':'Below pass threshold';
+  verd.style.color=passed?'var(--gr)':'var(--rd)';
+  document.getElementById('verdm').textContent=passed
+    ?'You have demonstrated competency in tanker stability and structural load management. Record in SMS training matrix. Always verify loading computer output against actual draft observations before departure.'
+    :'Score below 75%. Review flagged modules. Master and Chief Officer are personally responsible for ensuring departure stability criteria are met.';
+  var bd=document.getElementById('breakdown'),labels={m1:'Free Surface',m2:'Loading',m3:'BM & SF',m4:'Damage',m5:'Computer',m6:'Inspector'};
+  bd.innerHTML='';
+  ['m1','m2','m3','m4','m5','m6'].forEach(function(cat){
+    var r=cats[cat],t=catTot[cat];
+    var div=document.createElement('div');div.className='bd '+(r>=Math.ceil(t*.67)?'good':'bad');
+    div.innerHTML='<div class="bds">'+r+'/'+t+'</div><div class="bdl">'+labels[cat]+'</div>';
+    bd.appendChild(div);
+  });
+  if(passed)document.getElementById('cert').className='cert show';
+  panel.scrollIntoView({behavior:'smooth'});
+}
+
+// ══════════════════════
+// INIT
+// ══════════════════════
+document.addEventListener('DOMContentLoaded',function(){
+  goTo('hero');
+  initSort('m6-sort','m6-data');
+  initMatch('m6');
+  initStepper();
+  renderModuleQuiz('m1',['m1-q1','m1-q2','m1-q3']);
+  renderModuleQuiz('m2',['m2-q1','m2-q2','m2-q3']);
+  renderModuleQuiz('m3',['m3-q1','m3-q2','m3-q3']);
+  renderModuleQuiz('m4',['m4-q1','m4-q2','m4-q3']);
+  renderModuleQuiz('m5',['m5-q1','m5-q2','m5-q3']);
+  renderModuleQuiz('m6',['m6-q1','m6-q2','m6-q3']);
+  renderScenMCQ('m4-scen1','m4-scen1',null);
+  renderAssessment();
+  updateFSC();
+  updateTrend();
+  updateGauge();
+});
+</script>
+</body>
+</html>

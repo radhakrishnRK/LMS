@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cargo Measurement, Ullage and Quantity Calculations</title>
+<style>
+/* ═══ OFFLINE — SYSTEM FONTS ONLY ═══ */
+:root{
+  --ff:"Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  --fm:ui-monospace,"Cascadia Code","Source Code Pro",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+  --nb:#0a0f1e;--nb2:#0f1729;--nb3:#162040;--nb4:#1e2d52;
+  --gd:#b8922a;--gd-lt:rgba(184,146,42,.12);--gd-dim:#7a5e15;
+  --cy:#0891b2;--cy-lt:rgba(8,145,178,.1);
+  --gr:#16a34a;--gr-lt:rgba(22,163,74,.12);
+  --rd:#dc2626;--rd-lt:rgba(220,38,38,.12);
+  --am:#d97706;--am-lt:rgba(217,119,6,.12);
+  --pu:#7c3aed;--pu-lt:rgba(124,58,237,.1);
+  --wh:#e8f4ff;--mu:#6b7b99;--bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);
+  --r:10px;--rs:7px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff);background:var(--nb);color:#c8daf0;min-height:100vh;overflow-x:hidden;font-size:14px;line-height:1.6}
+
+/* ── PROGRESS ── */
+#prg{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(184,146,42,.15);z-index:300}
+#pb{height:100%;background:linear-gradient(90deg,var(--gd),#e6b84a);width:0%;transition:width .5s}
+
+/* ── NAV ── */
+nav{position:fixed;top:3px;left:0;right:0;height:50px;background:rgba(10,15,30,.97);border-bottom:1px solid var(--bd);z-index:299;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem}
+.nb_{display:flex;align-items:center;gap:10px}
+.nl{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--wh);letter-spacing:.05em}
+.nl em{font-style:normal;color:var(--gd)}
+.nbg{font-family:var(--fm);font-size:9px;color:var(--gd);background:var(--gd-lt);border:1px solid rgba(184,146,42,.25);padding:2px 8px;border-radius:3px;letter-spacing:.06em}
+#nm{font-family:var(--fm);font-size:10px;color:var(--mu);letter-spacing:.04em}
+#npts{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--gd);background:var(--gd-lt);border:1px solid rgba(184,146,42,.2);padding:3px 12px;border-radius:20px}
+
+main{padding-top:53px;min-height:100vh}
+.screen{display:none}
+.screen.active{display:block;animation:up .35s ease}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+#screen-hero{min-height:calc(100vh - 53px);display:none;align-items:center;justify-content:center}
+#screen-hero.active{display:flex}
+
+/* ── HERO ── */
+.hi{max-width:620px;margin:0 auto;padding:2rem 1.5rem;text-align:center}
+.hb{display:inline-block;background:var(--gd-lt);color:var(--gd);border:1px solid rgba(184,146,42,.25);font-family:var(--fm);font-size:10px;padding:5px 16px;border-radius:20px;letter-spacing:.08em;margin-bottom:1.5rem;text-transform:uppercase}
+.hic{font-size:72px;display:block;margin-bottom:1rem}
+.hi h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;color:var(--wh);line-height:1.05;margin-bottom:.5rem;letter-spacing:-.02em}
+.hi h1 em{font-style:normal;color:var(--gd)}
+.hdesc{font-size:13px;color:var(--mu);line-height:1.75;margin-bottom:1.5rem;max-width:480px;margin-left:auto;margin-right:auto}
+.href-box{font-family:var(--fm);font-size:11px;color:var(--gd);background:var(--gd-lt);border:1px solid rgba(184,146,42,.2);padding:8px 16px;border-radius:var(--rs);margin:0 auto 2rem;display:inline-block}
+.hgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:480px;margin:0 auto 2rem}
+.hg{background:var(--nb2);border:1px solid var(--bd);border-radius:var(--rs);padding:10px 6px;cursor:pointer;transition:all .15s;text-align:center}
+.hg:hover{border-color:rgba(184,146,42,.4);background:var(--gd-lt)}
+.hg.done{border-color:rgba(22,163,74,.4);background:var(--gr-lt)}
+.hg.done .hgn{color:var(--gr)}
+.hgi{font-size:20px;display:block;margin-bottom:3px}
+.hgn{font-family:var(--fm);font-size:9px;color:var(--gd);letter-spacing:.1em;margin-bottom:2px}
+.hgl{font-size:10px;color:var(--mu);line-height:1.3}
+.bgo{background:var(--gd);color:#0a0f1e;border:none;padding:12px 38px;border-radius:var(--rs);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.02em}
+.bgo:hover{background:#e6b84a;transform:translateY(-1px);box-shadow:0 4px 16px rgba(184,146,42,.35)}
+
+/* ── MOD WRAP ── */
+.mw{max-width:780px;margin:0 auto;padding:1.5rem 1.5rem 5rem}
+.bcr{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center}
+.bc{font-family:var(--fm);font-size:9px;padding:4px 9px;border-radius:3px;border:1px solid var(--bd);color:var(--mu);cursor:pointer;background:var(--nb2);transition:all .12s;white-space:nowrap}
+.bc:hover{border-color:rgba(184,146,42,.4);color:var(--gd)}
+.bc.active{background:var(--gd);border-color:var(--gd);color:#0a0f1e}
+.bc.done{background:var(--gr-lt);border-color:rgba(22,163,74,.4);color:var(--gr)}
+.mhdr{display:flex;align-items:flex-start;gap:1rem;background:var(--nb2);border:1px solid var(--bd);border-left:4px solid var(--gd);border-radius:0 var(--r) var(--r) 0;padding:1.1rem 1.4rem;margin-bottom:1.2rem}
+.mhi{font-size:36px;flex-shrink:0}
+.mhch{font-family:var(--fm);font-size:9px;color:var(--gd);letter-spacing:.14em;text-transform:uppercase;margin-bottom:3px}
+.mhti{font-size:1.2rem;font-weight:700;color:var(--wh);line-height:1.2;letter-spacing:-.01em}
+.mhde{font-size:12px;color:var(--mu);margin-top:4px}
+
+/* ── CARDS ── */
+.card{background:var(--nb2);border:1px solid var(--bd);border-radius:var(--r);padding:1.2rem;margin-bottom:1rem}
+.cl{font-family:var(--fm);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.7rem;display:flex;align-items:center;gap:6px}
+.cl.read{color:var(--cy)}
+.cl.do{color:var(--gd)}
+.cl.check{color:var(--pu)}
+.cq{font-size:14px;font-weight:600;color:var(--wh);margin-bottom:.85rem;line-height:1.45;letter-spacing:-.01em}
+
+/* ── FACT GRID ── */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:.7rem 0}
+.fc{background:var(--nb3);border:1px solid var(--bd);border-radius:var(--rs);padding:.85rem;display:flex;gap:9px;align-items:flex-start}
+.fi{font-size:22px;flex-shrink:0}
+.ft{font-size:12px;color:#8ba5c8;line-height:1.65}
+.ft strong{color:var(--wh);font-weight:600;display:block;margin-bottom:2px}
+.co{border-radius:var(--rs);padding:.8rem 1rem;margin:.7rem 0;font-size:12px;line-height:1.7;border-left:3px solid}
+.co.warn{background:var(--am-lt);border-color:var(--am);color:#fef3c7}
+.co.danger{background:var(--rd-lt);border-color:var(--rd);color:#fecaca}
+.co.tip{background:var(--gr-lt);border-color:var(--gr);color:#bbf7d0}
+.co.info{background:var(--cy-lt);border-color:var(--cy);color:#bae6fd}
+.co strong{font-weight:700}
+
+/* ── TABLE ── */
+.dt{width:100%;border-collapse:collapse;font-size:12px;margin:.7rem 0}
+.dt th{background:var(--nb3);color:var(--mu);font-family:var(--fm);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:7px 11px;text-align:left;border-bottom:1px solid var(--bd2)}
+.dt td{padding:7px 11px;border-bottom:1px solid var(--bd);color:#8ba5c8;line-height:1.5;vertical-align:top}
+.dt td:first-child{color:var(--wh);font-weight:500}
+.dt tr:hover td{background:var(--nb3)}
+.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;font-family:var(--fm)}
+.tg{background:var(--gr-lt);color:var(--gr);border:1px solid rgba(22,163,74,.2)}
+.ta{background:var(--am-lt);color:var(--am);border:1px solid rgba(217,119,6,.2)}
+.tr_{background:var(--rd-lt);color:var(--rd);border:1px solid rgba(220,38,38,.2)}
+.tb{background:var(--cy-lt);color:var(--cy);border:1px solid rgba(8,145,178,.2)}
+.tgo{background:var(--gd-lt);color:var(--gd);border:1px solid rgba(184,146,42,.2)}
+.iref{font-family:var(--fm);font-size:9px;background:var(--gd-lt);color:var(--gd);border:1px solid rgba(184,146,42,.2);padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle}
+
+/* ── SORT ── */
+.sl{display:flex;flex-direction:column;gap:6px;width:100%}
+.si{display:flex;align-items:center;gap:8px;background:var(--nb3);border:1.5px solid var(--bd);border-radius:var(--rs);padding:9px 13px;cursor:grab;user-select:none;transition:all .12s;width:100%;color:#8ba5c8 !important;font-size:12px}
+.si:hover{border-color:rgba(184,146,42,.4);background:var(--gd-lt)}
+.si.over{border-color:var(--gd);background:rgba(184,146,42,.08);transform:scale(1.01)}
+.si.dragging{opacity:.3;border:1.5px dashed var(--gd)}
+.si.correct-item{background:var(--gr-lt) !important;border-color:rgba(22,163,74,.5) !important;color:var(--gr) !important;cursor:default}
+.sh{color:var(--bd2);font-size:14px;flex-shrink:0}
+.sb{min-width:23px;height:23px;border-radius:50%;background:var(--nb4);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--mu);flex-shrink:0;font-family:var(--fm)}
+.correct-item .sb{background:var(--gr);color:#fff}
+.st{flex:1;line-height:1.45;color:#8ba5c8 !important;min-width:0;word-break:break-word}
+.correct-item .st{color:var(--gr) !important}
+.sfb{margin-top:.65rem;font-size:12px;padding:9px 13px;border-radius:var(--rs);display:none;line-height:1.65;border-left:3px solid}
+.sfb.pass{display:block;background:var(--gr-lt);border-color:var(--gr);color:var(--gr);font-weight:600}
+.sfb.fail{display:block;background:var(--rd-lt);border-color:var(--rd);color:#fca5a5}
+
+/* ── MCQ ── */
+.mo{display:flex;flex-direction:column;gap:6px}
+.mb{display:flex;align-items:flex-start;gap:9px;background:var(--nb3);border:1.5px solid var(--bd);border-radius:var(--rs);padding:9px 13px;cursor:pointer;transition:all .12s;text-align:left;font-size:12px;color:#8ba5c8 !important;line-height:1.5;font-family:var(--ff);width:100%}
+.mb:hover:not([disabled]){border-color:rgba(184,146,42,.4);background:var(--gd-lt)}
+.ml{min-width:21px;height:21px;border-radius:50%;background:var(--nb4);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--mu);flex-shrink:0;margin-top:1px;font-family:var(--fm);transition:all .12s}
+.mb.correct-ans{background:var(--gr-lt) !important;border-color:rgba(22,163,74,.5) !important;color:var(--gr) !important}
+.mb.correct-ans .ml{background:var(--gr) !important;color:#fff !important}
+.mb.wrong-ans{background:var(--rd-lt) !important;border-color:rgba(220,38,38,.5) !important;color:#fca5a5 !important}
+.mb.wrong-ans .ml{background:var(--rd) !important;color:#fff !important}
+.mb[disabled]{cursor:default}
+.mfb{font-size:11px;margin-top:.5rem;padding:7px 11px;border-radius:var(--rs);display:none;line-height:1.6;border-left:3px solid}
+.mfb.ok{display:block;background:var(--gr-lt);border-color:var(--gr);color:#bbf7d0}
+.mfb.err{display:block;background:var(--rd-lt);border-color:var(--rd);color:#fca5a5}
+.mfb.err::before{content:"⚠ Flagged — ";font-weight:700;color:var(--gd)}
+
+/* ── MATCH ── */
+.mwg{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.mch{font-family:var(--fm);font-size:9px;font-weight:700;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.mc{display:flex;flex-direction:column;gap:5px}
+.mi{border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 11px;font-size:12px;cursor:pointer;transition:all .15s;background:var(--nb3);line-height:1.45;min-height:42px;display:flex;align-items:center;color:#8ba5c8 !important}
+.mi:hover:not(.matched-ok):not(.matched-err){border-color:rgba(184,146,42,.4);background:var(--gd-lt)}
+.mi.selected{border-color:var(--gd);background:var(--gd-lt);font-weight:600;color:var(--gd) !important}
+.mi.matched-ok{background:var(--gr-lt) !important;border-color:rgba(22,163,74,.5) !important;color:var(--gr) !important;cursor:default;font-weight:500}
+.mi.matched-err{background:var(--rd-lt) !important;border-color:rgba(220,38,38,.5) !important;color:#fca5a5 !important;cursor:default}
+.mhint{font-family:var(--fm);font-size:10px;color:var(--mu);margin-top:.5rem;font-style:italic}
+.msc{font-size:12px;margin-top:.7rem;display:none;padding:7px 11px;border-radius:var(--rs);font-weight:600;border-left:3px solid}
+.msc.ok{display:block;background:var(--gr-lt);border-color:var(--gr);color:var(--gr)}
+
+/* ── CALCULATION DISPLAY ── */
+.calc{background:var(--nb);border:1px solid var(--bd2);border-radius:var(--r);padding:1.1rem;margin:.7rem 0;font-family:var(--fm)}
+.calc-hdr{font-size:9px;font-weight:700;color:var(--gd);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.85rem;display:flex;align-items:center;gap:8px}
+.calc-hdr::after{content:'';flex:1;height:1px;background:var(--bd2)}
+.calc-displays{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.calc-d{background:var(--nb2);border:1px solid var(--bd);border-radius:var(--rs);padding:.75rem;text-align:center}
+.calc-val{font-size:1.5rem;font-weight:700;line-height:1;margin-bottom:3px;transition:color .3s;color:var(--gd)}
+.calc-unit{font-size:10px;color:var(--mu);margin-bottom:2px}
+.calc-lbl{font-size:9px;color:var(--mu);letter-spacing:.08em;text-transform:uppercase}
+.calc-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.calc-row label{font-size:10px;color:var(--mu);min-width:190px}
+.calc-row input[type=range]{flex:1;accent-color:var(--gd)}
+.calc-rv{font-size:11px;font-weight:700;min-width:70px;text-align:right;color:var(--gd)}
+.calc-formula{background:var(--nb3);border-radius:var(--rs);padding:.75rem 1rem;font-size:11px;color:#8ba5c8;line-height:1.8;margin-top:.75rem}
+.calc-formula strong{color:var(--gd);font-weight:700}
+.calc-result{margin-top:.75rem;font-size:12px;padding:9px 12px;border-radius:var(--rs);border-left:3px solid;display:none;line-height:1.55}
+.calc-result.show{display:block}
+.calc-result.ok{background:var(--gr-lt);border-color:var(--gr);color:#bbf7d0}
+.calc-result.warn{background:var(--am-lt);border-color:var(--am);color:#fef3c7}
+.calc-result.alert{background:var(--rd-lt);border-color:var(--rd);color:#fecaca;animation:pulse .8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* ── WORKED EXAMPLE STEPPER ── */
+.stepper{background:var(--nb3);border:1px solid var(--bd);border-radius:var(--r);padding:1.1rem;margin:.7rem 0}
+.step-progress{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.step-dot{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:10px;font-weight:700;color:var(--mu);cursor:pointer;transition:all .2s;flex-shrink:0}
+.step-dot.active{background:var(--gd);border-color:var(--gd);color:#0a0f1e}
+.step-dot.done{background:var(--gr-lt);border-color:rgba(22,163,74,.5);color:var(--gr)}
+.step-content{min-height:120px}
+.step-panel{display:none}
+.step-panel.show{display:block;animation:up .25s ease}
+.step-title{font-family:var(--fm);font-size:10px;font-weight:700;color:var(--gd);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem}
+.step-body{font-size:12px;color:#8ba5c8;line-height:1.7}
+.step-body strong{color:var(--wh);font-weight:600}
+.step-calc{background:var(--nb);border-radius:var(--rs);padding:.75rem 1rem;margin:.5rem 0;font-family:var(--fm);font-size:12px;color:var(--gd);line-height:1.8}
+.step-result{background:var(--nb2);border:1px solid rgba(184,146,42,.25);border-radius:var(--rs);padding:.65rem 1rem;margin-top:.5rem;font-family:var(--fm);font-size:13px;font-weight:700;color:var(--gd)}
+.step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}
+.btn-step{background:var(--gd);color:#0a0f1e;border:none;padding:7px 18px;border-radius:var(--rs);font-size:11px;font-weight:700;cursor:pointer;transition:all .12s;font-family:var(--fm);letter-spacing:.04em}
+.btn-step:hover{background:#e6b84a}
+.btn-step:disabled{background:rgba(184,146,42,.2);color:var(--mu);cursor:not-allowed}
+.btn-step-prev{background:var(--nb4);border:1px solid var(--bd2);color:var(--mu);padding:7px 14px;border-radius:var(--rs);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--fm)}
+.btn-step-prev:hover{border-color:rgba(184,146,42,.4);color:var(--gd)}
+
+/* ── QUANTITY DIFFERENCE ANALYSER ── */
+.qda{background:var(--nb);border:1px solid var(--bd2);border-radius:var(--r);padding:1.1rem;margin:.7rem 0;font-family:var(--fm)}
+.qda-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.qda-field{background:var(--nb2);border:1px solid var(--bd2);border-radius:var(--rs);padding:.75rem}
+.qda-lbl{font-size:9px;font-weight:700;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.qda-inp{background:var(--nb);border:1px solid var(--bd2);border-radius:var(--rs);padding:6px 10px;font-size:14px;font-weight:700;color:var(--gd);font-family:var(--fm);width:100%;text-align:right}
+.qda-inp:focus{outline:none;border-color:rgba(184,146,42,.5)}
+.qda-unit{font-size:10px;color:var(--mu);margin-top:3px;text-align:right}
+.qda-result{margin-top:.75rem;border-radius:var(--rs);padding:1rem;display:none;border:1px solid}
+.qda-result.show{display:block;animation:up .3s ease}
+.qda-result.ok{background:var(--gr-lt);border-color:rgba(22,163,74,.3)}
+.qda-result.warn{background:var(--am-lt);border-color:rgba(217,119,6,.3)}
+.qda-result.alert{background:var(--rd-lt);border-color:rgba(220,38,38,.3)}
+.qda-pct{font-size:2rem;font-weight:700;line-height:1;margin-bottom:4px}
+.qda-result.ok .qda-pct{color:var(--gr)}
+.qda-result.warn .qda-pct{color:var(--am)}
+.qda-result.alert .qda-pct{color:var(--rd)}
+.qda-verdict{font-size:12px;margin-top:.5rem;line-height:1.7}
+.qda-result.ok .qda-verdict{color:#bbf7d0}
+.qda-result.warn .qda-verdict{color:#fef3c7}
+.qda-result.alert .qda-verdict{color:#fca5a5}
+
+/* ── SCENARIO ── */
+.scen{background:var(--nb3);border:1px solid rgba(184,146,42,.25);border-left:4px solid var(--gd);border-radius:0 var(--rs) var(--rs) 0;padding:.9rem 1.1rem;margin:.7rem 0}
+.sc-lbl{font-family:var(--fm);font-size:9px;font-weight:700;color:var(--gd);letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px}
+.scen p{font-size:12px;line-height:1.75;color:#c8daf0}
+.scen p strong{color:var(--gd);font-weight:600}
+.scen .data-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:.75rem}
+.dr{background:var(--nb2);border:1px solid var(--bd);border-radius:var(--rs);padding:.6rem;text-align:center}
+.dr-val{font-family:var(--fm);font-size:1rem;font-weight:700;color:var(--gd)}
+.dr-lbl{font-size:9px;color:var(--mu);margin-top:2px;letter-spacing:.04em}
+
+/* ── DOCUMENT CARD ── */
+.doc-card{background:var(--nb3);border:1px solid var(--bd);border-radius:var(--rs);padding:.85rem 1rem;margin:.5rem 0;cursor:pointer;transition:all .15s}
+.doc-card:hover{border-color:rgba(184,146,42,.3)}
+.doc-card.expanded{border-color:rgba(184,146,42,.4)}
+.doc-title{font-size:13px;font-weight:600;color:var(--wh);display:flex;align-items:center;justify-content:space-between}
+.doc-body{font-size:12px;color:#8ba5c8;line-height:1.65;margin-top:.6rem;display:none}
+.doc-card.expanded .doc-body{display:block}
+.doc-arrow{font-size:12px;color:var(--mu);transition:transform .2s}
+.doc-card.expanded .doc-arrow{transform:rotate(180deg)}
+
+/* ── BUTTONS ── */
+.bch{background:var(--pu);color:#fff;border:none;padding:8px 18px;border-radius:var(--rs);font-family:var(--fm);font-weight:700;font-size:10px;cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:5px;margin-top:.7rem;letter-spacing:.05em}
+.bch:hover{background:#6d28d9}
+.brs{background:var(--nb3);border:1px solid var(--bd);color:var(--mu);padding:8px 14px;border-radius:var(--rs);font-family:var(--fm);font-size:10px;cursor:pointer;transition:all .12s;margin-left:5px}
+.brs:hover{border-color:rgba(184,146,42,.4);color:var(--gd)}
+.bnx{background:var(--gd);color:#0a0f1e;border:none;padding:10px 22px;border-radius:var(--rs);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.bnx:hover{background:#e6b84a;transform:translateY(-1px)}
+.bpv{background:var(--nb3);border:1px solid var(--bd);color:var(--mu);padding:10px 18px;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:6px}
+.bpv:hover{border-color:rgba(184,146,42,.4);color:var(--gd)}
+.btn-calc{background:var(--gd);color:#0a0f1e;border:none;padding:8px 20px;border-radius:var(--rs);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--fm);letter-spacing:.04em;transition:all .12s;margin-top:.75rem}
+.btn-calc:hover{background:#e6b84a}
+.mnav{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--bd)}
+
+/* ── ASSESSMENT ── */
+.ahdr{background:var(--nb2);border:1px solid rgba(184,146,42,.2);border-top:4px solid var(--gd);border-radius:var(--r);padding:1.1rem 1.4rem;margin-bottom:1.4rem}
+.ahdr h2{font-size:1.4rem;font-weight:700;color:var(--wh);margin-bottom:4px;letter-spacing:-.01em}
+.ameta{display:flex;gap:7px;flex-wrap:wrap;margin-top:.5rem}
+.ach{background:var(--nb3);border:1px solid var(--bd);border-radius:3px;font-family:var(--fm);font-size:9px;padding:2px 8px;color:var(--mu)}
+.tstr{background:var(--nb2);border:1px solid var(--bd);border-radius:var(--rs);padding:7px 13px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem;position:sticky;top:53px;z-index:10}
+#a-timer{font-family:var(--fm);font-size:1.25rem;font-weight:700;color:var(--wh)}
+#a-timer.warn{color:var(--am)}
+#a-timer.danger{color:var(--rd);animation:pulse .6s infinite}
+#a-qcount{font-family:var(--fm);font-size:10px;color:var(--mu)}
+.aq{background:var(--nb2);border:1px solid var(--bd);border-radius:var(--r);padding:1.1rem;margin-bottom:.85rem}
+.aqn{font-family:var(--fm);font-size:9px;color:var(--pu);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.aqt{font-size:14px;font-weight:600;color:var(--wh);margin-bottom:.7rem;line-height:1.4;letter-spacing:-.01em}
+.bsub{width:100%;background:var(--gd);color:#0a0f1e;border:none;padding:12px;border-radius:var(--rs);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:.5rem;letter-spacing:.02em}
+.bsub:hover:not(:disabled){background:#e6b84a}
+.bsub:disabled{background:rgba(184,146,42,.2);cursor:not-allowed;color:var(--mu)}
+
+/* ── RESULTS ── */
+.rp{display:none;text-align:center;padding:2.5rem 1rem;animation:up .5s ease}
+.sring{width:140px;height:140px;border-radius:50%;margin:0 auto 1.4rem;display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid}
+.sring.pass{border-color:var(--gr);background:var(--gr-lt)}
+.sring.fail{border-color:var(--rd);background:var(--rd-lt)}
+.spc{font-size:2.8rem;font-weight:700;line-height:1}
+.sring.pass .spc{color:var(--gr)}
+.sring.fail .spc{color:var(--rd)}
+.slb{font-family:var(--fm);font-size:10px;color:var(--mu)}
+.verd{font-size:1.4rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.01em}
+.verdm{font-size:12px;color:var(--mu);max-width:480px;margin:0 auto 1.4rem;line-height:1.75}
+.bkd{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:1.1rem 0;max-width:420px;margin-left:auto;margin-right:auto}
+.bd{background:var(--nb3);border:1px solid var(--bd);border-radius:var(--rs);padding:.7rem;text-align:center}
+.bds{font-size:1.6rem;font-weight:700}
+.bd.good .bds{color:var(--gr)}
+.bd.bad .bds{color:var(--rd)}
+.bdl{font-family:var(--fm);font-size:9px;color:var(--mu);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+.cert{background:linear-gradient(135deg,var(--gd-lt),var(--nb2));border:1px solid rgba(184,146,42,.2);border-radius:var(--r);padding:1.4rem;margin:1.4rem auto;max-width:460px;text-align:center;display:none}
+.cert.show{display:block;animation:up .6s ease}
+.cert-ic{font-size:44px;display:block;margin-bottom:.5rem}
+.cert h3{font-size:1.2rem;font-weight:700;color:var(--wh);margin-bottom:5px;letter-spacing:-.01em}
+.cert p{font-size:12px;color:var(--mu);line-height:1.6}
+.cert-n{font-family:var(--fm);font-size:10px;color:var(--gd);margin-top:.5rem;border-top:1px solid var(--bd);padding-top:.5rem}
+.rb{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:1.4rem}
+
+@media(max-width:560px){.fg,.mwg,.hgrid,.calc-displays,.qda-inputs,.bkd{grid-template-columns:1fr 1fr}.calc-displays{grid-template-columns:repeat(3,1fr)}}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--nb)}
+::-webkit-scrollbar-thumb{background:var(--nb4);border-radius:3px}
+</style>
+</head>
+<body>
+<div id="prg"><div id="pb"></div></div>
+<nav>
+  <div class="nb_">
+    <div class="nl">Cargo <em>Measurement</em></div>
+    <div class="nbg">STCW A-V/1-1</div>
+  </div>
+  <div id="nm"></div>
+  <div id="npts">0 pts</div>
+</nav>
+<main>
+
+<!-- ══ HERO ══ -->
+<div class="screen" id="screen-hero">
+<div class="hi">
+  <div class="hb">Master · Chief Officer · Chief Engineer — P2 Operations</div>
+  <span class="hic">⚖️</span>
+  <h1>Cargo Measurement,<br><em>Ullage &amp; Quantity</em><br>Calculations</h1>
+  <p class="hdesc">Six modules covering the full cargo quantity determination chain — from closed gauging to Bill of Lading figures. Includes worked calculations, live correction tools, and ship-shore dispute analysis.</p>
+  <div class="href-box">OCIMF Cargo Measurement Guidelines · STCW A-V/1-1 · Offline-capable</div>
+  <div class="hgrid">
+    <div class="hg" id="mpill-m1" onclick="goTo('m1')"><span class="hgi">📏</span><div class="hgn">MOD 1</div><div class="hgl">Gauging Systems</div></div>
+    <div class="hg" id="mpill-m2" onclick="goTo('m2')"><span class="hgi">📐</span><div class="hgn">MOD 2</div><div class="hgl">Ullage Corrections</div></div>
+    <div class="hg" id="mpill-m3" onclick="goTo('m3')"><span class="hgi">🧮</span><div class="hgn">MOD 3</div><div class="hgl">Volume &amp; Density</div></div>
+    <div class="hg" id="mpill-m4" onclick="goTo('m4')"><span class="hgi">💧</span><div class="hgn">MOD 4</div><div class="hgl">Water, OBQ &amp; ROB</div></div>
+    <div class="hg" id="mpill-m5" onclick="goTo('m5')"><span class="hgi">⚖️</span><div class="hgn">MOD 5</div><div class="hgl">Ship-Shore Difference</div></div>
+    <div class="hg" id="mpill-m6" onclick="goTo('m6')"><span class="hgi">📄</span><div class="hgn">MOD 6</div><div class="hgl">Cargo Documents</div></div>
+  </div>
+  <button class="bgo" onclick="goTo('m1')">Begin training →</button>
+</div>
+</div>
+
+<!-- ══ M1: GAUGING SYSTEMS ══ -->
+<div class="screen" id="screen-m1">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc active" onclick="goTo('m1')">M1</span>
+    <span class="bc" onclick="goTo('m2')">M2</span>
+    <span class="bc" onclick="goTo('m3')">M3</span>
+    <span class="bc" onclick="goTo('m4')">M4</span>
+    <span class="bc" onclick="goTo('m5')">M5</span>
+    <span class="bc" onclick="goTo('m6')">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(184,146,42,.3);color:var(--gd)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">📏</div>
+    <div>
+      <div class="mhch">Module 1 · OCIMF Guidelines Ch.2</div>
+      <div class="mhti">Closed Gauging Systems and Measurement Methods</div>
+      <div class="mhde">How cargo quantity is physically measured — fixed systems, portable instruments, and their accuracy limits</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div class="fg">
+      <div class="fc"><div class="fi">🔒</div><div class="ft"><strong>Closed gauging — why it matters</strong>SOLAS requires closed gauging for toxic and volatile cargoes. The cargo tank is not opened — measurement is taken through a fixed penetration or vapour-tight portable device. This prevents vapour release, eliminates the static ignition risk of open gauging, and is required for MARPOL-restricted cargoes.</div></div>
+      <div class="fc"><div class="fi">📡</div><div class="ft"><strong>Fixed radar gauging (RTG)</strong>A microwave radar transmitter in the tank top measures ullage (space above cargo) continuously. Highly accurate (±1mm), not affected by vapour, no moving parts, continuous read-out. Tank calibration tables convert ullage to volume. The ship's primary gauging system.</div></div>
+      <div class="fc"><div class="fi">🎵</div><div class="ft"><strong>Fixed float gauging</strong>A float on the cargo surface transmits ullage mechanically or electronically to a deck indicator. Simpler and lower cost than radar. Accuracy typically ±5mm. Susceptible to turbulence during loading/discharge — read only in static conditions.</div></div>
+      <div class="fc"><div class="fi">📟</div><div class="ft"><strong>Portable MMC / UTI</strong>Multi-Meter Combination — measures ullage, temperature, and interface (water level) through a single deck penetration fitting. Industry standard for independent measurement and witness gauging. Accuracy ±1mm ullage, ±0.1°C temperature. Always the instrument an independent cargo surveyor uses.</div></div>
+      <div class="fc"><div class="fi">⚡</div><div class="ft"><strong>Electrostatic considerations</strong>All portable gauging equipment must be approved for use through vapour-tight fittings and must not generate electrostatic discharge. The MMC/UTI tape is coated and grounded. Gauging must not begin within 30 minutes of completing loading (static relaxation period).</div></div>
+      <div class="fc"><div class="fi">📋</div><div class="ft"><strong>Independent surveyor requirement</strong>For custody transfer (loading and discharge), both ship and terminal/surveyor measure independently. Significant discrepancy requires investigation before a Bill of Lading is issued. The ship's figures and surveyor's figures are both recorded — the BL is typically based on surveyor figures.</div></div>
+    </div>
+    <div class="co info"><strong>Ullage vs innage:</strong> Ullage is the distance from the datum point (reference gauge point) to the cargo surface — the empty space. Innage (dip) is the depth of cargo from the bottom of the tank. Most tanker systems use ullage. Tables are clearly marked for ullage or innage — using the wrong reading gives a completely wrong volume.</div>
+  </div>
+
+  <!-- MATCH: gauging system to characteristic -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — match gauging system to its key characteristic</div>
+    <div class="cq">Match each cargo measurement instrument or method to its defining characteristic.</div>
+    <div class="mwg" id="m1-match">
+      <div><div class="mch">Instrument / method</div><div class="mc" id="m1-left"></div></div>
+      <div><div class="mch">Key characteristic</div><div class="mc" id="m1-right"></div></div>
+    </div>
+    <div class="mhint">Tap left → tap right to match</div>
+    <div class="msc" id="m1-score"></div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m1-quiz"></div>
+  </div>
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('hero')">← Overview</button>
+    <button class="bnx" onclick="goTo('m2')">Module 2 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ M2: ULLAGE CORRECTIONS ══ -->
+<div class="screen" id="screen-m2">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc done" onclick="goTo('m1')">M1</span>
+    <span class="bc active">M2</span>
+    <span class="bc" onclick="goTo('m3')">M3</span>
+    <span class="bc" onclick="goTo('m4')">M4</span>
+    <span class="bc" onclick="goTo('m5')">M5</span>
+    <span class="bc" onclick="goTo('m6')">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(184,146,42,.3);color:var(--gd)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">📐</div>
+    <div>
+      <div class="mhch">Module 2 · OCIMF Guidelines Ch.3</div>
+      <div class="mhti">Ullage Corrections — Trim, List and Temperature</div>
+      <div class="mhde">A raw ullage reading is rarely the final figure — three corrections must always be applied</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div class="fg">
+      <div class="fc"><div class="fi">↕️</div><div class="ft"><strong>Trim correction</strong>When a vessel trims by the stern (common during loading/discharge), the cargo surface tilts relative to the tank, making the ullage at the forward end different from the aft end. The trim correction compensates for this using a trim correction table in the tank calibration tables. Applied to each tank individually.</div></div>
+      <div class="fc"><div class="fi">↔️</div><div class="ft"><strong>List correction</strong>When the vessel lists (heels to port or starboard), the cargo surface shifts laterally. Tanks on the low side show a lower ullage than true; tanks on the high side show higher. The list correction uses the vessel's list angle and the tank's transverse position. Applied per tank per list angle.</div></div>
+      <div class="fc"><div class="fi">🌡️</div><div class="ft"><strong>Temperature correction (VCF)</strong>Petroleum expands and contracts with temperature. A Volume Correction Factor (VCF) converts the Gross Observed Volume (GOV) — volume at actual cargo temperature — to Gross Standard Volume (GSV) — volume at the reference temperature of 15°C. This is the figure used for custody transfer.</div></div>
+      <div class="fc"><div class="fi">🔢</div><div class="ft"><strong>Corrected ullage sequence</strong>Take the raw ullage → apply trim correction → apply list correction → look up corrected ullage in calibration tables to get total observed volume (TOV) → subtract free water → apply VCF to get GSV. Every step in sequence, every time. No shortcuts.</div></div>
+    </div>
+    <table class="dt">
+      <thead><tr><th>Correction</th><th>What causes the error</th><th>Direction of effect</th><th>Source of correction data</th></tr></thead>
+      <tbody>
+        <tr><td>Trim correction</td><td>Vessel not on even keel — cargo tilts fore-aft</td><td>Reduces apparent ullage for stern trim (adds volume). Increases for bow trim.</td><td>Tank calibration tables — trim correction table per tank</td></tr>
+        <tr><td>List correction</td><td>Vessel heeled to one side — cargo shifts laterally</td><td>Low-side tanks: ullage too low (volume overstated). High-side: ullage too high.</td><td>Tank calibration tables — list correction per tank</td></tr>
+        <tr><td>VCF (temp correction)</td><td>Petroleum expands/contracts with temperature</td><td>Above 15°C: VCF &lt;1 (reduces volume). Below 15°C: VCF &gt;1 (increases volume).</td><td>ASTM Table 54B (crude) or 54C (refined products) using density at 15°C</td></tr>
+      </tbody>
+    </table>
+    <div class="co warn"><strong>Apply trim correction before looking up the calibration table.</strong> The corrected ullage (trim+list adjusted) is the value you enter into the tank calibration table — not the raw reading. Entering the raw reading and then applying a correction separately gives the wrong answer.</div>
+  </div>
+
+  <!-- ULLAGE CORRECTION CALCULATOR -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — ullage correction calculator</div>
+    <div class="cq">Enter the observed parameters. The calculator applies trim and temperature corrections to show the corrected volume.</div>
+    <div class="calc">
+      <div class="calc-hdr">TANK MEASUREMENT — CORRECTION CALCULATOR</div>
+      <div class="calc-displays">
+        <div class="calc-d">
+          <div class="calc-val" id="c-gov">12,480</div>
+          <div class="calc-unit">m³</div>
+          <div class="calc-lbl">GOV (observed)</div>
+        </div>
+        <div class="calc-d">
+          <div class="calc-val" id="c-vcf">0.9812</div>
+          <div class="calc-unit">factor</div>
+          <div class="calc-lbl">VCF at cargo temp</div>
+        </div>
+        <div class="calc-d">
+          <div class="calc-val" id="c-gsv">12,247</div>
+          <div class="calc-unit">m³</div>
+          <div class="calc-lbl">GSV at 15°C</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="calc-row">
+          <label>Raw ullage reading (mm)</label>
+          <input type="range" min="500" max="3000" step="10" value="1240" id="c-ull" oninput="updateCalc()">
+          <span class="calc-rv" id="c-ull-r">1,240 mm</span>
+        </div>
+        <div class="calc-row">
+          <label>Trim correction (mm)</label>
+          <input type="range" min="-80" max="0" step="5" value="-35" id="c-trim" oninput="updateCalc()">
+          <span class="calc-rv" id="c-trim-r">−35 mm</span>
+        </div>
+        <div class="calc-row">
+          <label>Cargo temperature (°C)</label>
+          <input type="range" min="15" max="65" step="1" value="38" id="c-temp" oninput="updateCalc()">
+          <span class="calc-rv" id="c-temp-r">38°C</span>
+        </div>
+        <div class="calc-row">
+          <label>Density at 15°C (kg/m³)</label>
+          <input type="range" min="820" max="970" step="1" value="865" id="c-dens" oninput="updateCalc()">
+          <span class="calc-rv" id="c-dens-r">865 kg/m³</span>
+        </div>
+      </div>
+      <div class="calc-formula" id="c-formula"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m2-quiz"></div>
+  </div>
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('m1')">← Module 1</button>
+    <button class="bnx" onclick="goTo('m3')">Module 3 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ M3: VOLUME & DENSITY ══ -->
+<div class="screen" id="screen-m3">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc done" onclick="goTo('m1')">M1</span>
+    <span class="bc done" onclick="goTo('m2')">M2</span>
+    <span class="bc active">M3</span>
+    <span class="bc" onclick="goTo('m4')">M4</span>
+    <span class="bc" onclick="goTo('m5')">M5</span>
+    <span class="bc" onclick="goTo('m6')">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(184,146,42,.3);color:var(--gd)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">🧮</div>
+    <div>
+      <div class="mhch">Module 3 · OCIMF Guidelines Ch.4</div>
+      <div class="mhti">Density, API Gravity, VCF and the GOV→GSV Chain</div>
+      <div class="mhde">The complete quantity calculation chain from observed ullage to metric tonnes on the Bill of Lading</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div class="fg">
+      <div class="fc"><div class="fi">⚗️</div><div class="ft"><strong>Density at 15°C</strong>The fundamental property used for all quantity conversions. Measured by the terminal laboratory on a representative sample. Expressed in kg/m³ or kg/L. Crude oil: typically 820–960 kg/m³. The density is used to: (a) select the correct ASTM VCF table, and (b) convert GSV to metric tonnes.</div></div>
+      <div class="fc"><div class="fi">🔢</div><div class="ft"><strong>API gravity</strong>An alternative scale for density used in the USA. API = (141.5 / specific gravity at 60°F) − 131.5. Light crude: ~35–45° API. Heavy crude: ~15–25° API. Higher API = lighter (less dense). API gravity tables link directly to ASTM VCF tables for US-system calculations.</div></div>
+      <div class="fc"><div class="fi">📊</div><div class="ft"><strong>Volume Correction Factor (VCF)</strong>Converts observed volume at actual temperature to standard volume at 15°C (or 60°F). Taken from ASTM Table 54B for crude oil or 54C for refined products. VCF depends on: (a) density at 15°C and (b) temperature of cargo at time of measurement. VCF &lt;1 for warm cargo; VCF &gt;1 for cold cargo.</div></div>
+      <div class="fc"><div class="fi">🔗</div><div class="ft"><strong>The calculation chain</strong>TOV (total observed volume) → subtract free water → GOV (gross observed volume) → multiply by VCF → GSV (gross standard volume) → multiply by density at 15°C → metric tonnes → minus water and sediment % → net standard volume / net tonnes for BL.</div></div>
+    </div>
+    <div class="co info"><strong>Reference temperature:</strong> 15°C is the standard in most of the world. The USA uses 60°F (15.56°C). When receiving a shore figure in barrels at 60°F, confirm the reference temperature before comparing with ship's m³ at 15°C — a direct comparison without temperature alignment gives a false discrepancy.</div>
+  </div>
+
+  <!-- WORKED EXAMPLE STEPPER -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — worked calculation: GOV to metric tonnes</div>
+    <div class="cq">Step through a complete cargo quantity calculation. A cargo of Arabian Light crude has just been measured. Click through each step to see how the Bill of Lading figure is derived.</div>
+    <div class="stepper">
+      <div class="step-progress" id="step-prog"></div>
+      <div class="step-content" id="step-content"></div>
+      <div class="step-nav">
+        <button class="btn-step-prev" id="step-prev" onclick="stepNav(-1)">← Previous</button>
+        <span id="step-counter" style="font-family:var(--fm);font-size:10px;color:var(--mu)"></span>
+        <button class="btn-step" id="step-next" onclick="stepNav(1)">Next step →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m3-quiz"></div>
+  </div>
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('m2')">← Module 2</button>
+    <button class="bnx" onclick="goTo('m4')">Module 4 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ M4: WATER, OBQ, ROB ══ -->
+<div class="screen" id="screen-m4">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc done" onclick="goTo('m1')">M1</span>
+    <span class="bc done" onclick="goTo('m2')">M2</span>
+    <span class="bc done" onclick="goTo('m3')">M3</span>
+    <span class="bc active">M4</span>
+    <span class="bc" onclick="goTo('m5')">M5</span>
+    <span class="bc" onclick="goTo('m6')">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(184,146,42,.3);color:var(--gd)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">💧</div>
+    <div>
+      <div class="mhch">Module 4 · OCIMF Guidelines Ch.5</div>
+      <div class="mhti">Water Content, OBQ and ROB</div>
+      <div class="mhde">Free water, on-board quantity before loading, and quantity remaining after discharge — the figures that protect the ship against quantity claims</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div class="fg">
+      <div class="fc"><div class="fi">💧</div><div class="ft"><strong>Free water measurement</strong>Free water settles at the bottom of cargo tanks and must be deducted from the total observed volume before calculating cargo quantity. Measured using water-finding paste on the UTI tape — the paste changes colour on contact with water. The interface depth reading gives free water volume from the interface table.</div></div>
+      <div class="fc"><div class="fi">📦</div><div class="ft"><strong>OBQ — On-Board Quantity</strong>The quantity remaining in the ship's cargo tanks from the previous voyage immediately before loading begins. Includes cargo residue, free water, and retained cargo. OBQ is measured and agreed with the terminal surveyor before loading. It is deducted from the loaded quantity for the Bill of Lading figure.</div></div>
+      <div class="fc"><div class="fi">🪣</div><div class="ft"><strong>ROB — Remaining On Board</strong>The quantity that cannot be discharged and remains in the tanks after discharge is complete. Includes clingage, sediment, and cargo in piping that cannot be stripped. ROB is measured and agreed with the terminal surveyor. Terminal deducts ROB from the discharged quantity when calculating what they received.</div></div>
+      <div class="fc"><div class="fi">🔄</div><div class="ft"><strong>Stripping</strong>After main discharge is complete, stripping pumps remove the final cargo from each tank — reducing ROB to its minimum. Effective stripping is important: unstripped cargo left on board reduces the quantity delivered to the terminal and increases apparent ship-shore quantity discrepancy.</div></div>
+    </div>
+    <div class="co warn"><strong>OBQ disputes are common.</strong> If the ship's pre-loading OBQ is not properly agreed and documented before loading begins, the terminal may later claim more cargo was loaded than the ship's figures show — with the unresolved OBQ as the discrepancy. Always complete OBQ measurement and get the surveyor's countersignature before first cargo flows.</div>
+  </div>
+
+  <!-- OBQ/ROB SCENARIO -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — pre-loading OBQ dispute scenario</div>
+    <div class="scen">
+      <div class="sc-lbl">Scenario — pre-loading measurement</div>
+      <p>Your vessel has arrived at the loading terminal after a ballast voyage. The terminal surveyor wants to commence loading in 30 minutes. You conduct pre-loading measurements and find the following OBQ:</p>
+      <div class="data-row">
+        <div class="dr"><div class="dr-val">182 m³</div><div class="dr-lbl">Ship's OBQ</div></div>
+        <div class="dr"><div class="dr-val">165 m³</div><div class="dr-lbl">Surveyor's OBQ</div></div>
+        <div class="dr"><div class="dr-val">17 m³</div><div class="dr-lbl">Difference</div></div>
+        <div class="dr"><div class="dr-val">9.3%</div><div class="dr-lbl">% of ship's figure</div></div>
+      </div>
+    </div>
+    <div class="cq">The difference is 17 m³ between ship and surveyor pre-loading measurement. The surveyor wants to proceed immediately using their lower figure. What do you do?</div>
+    <div class="mo" id="m4-scen1"></div>
+    <div class="mfb" id="m4-scen1-fb"></div>
+    <div id="m4-scen2-w" style="display:none;margin-top:1rem">
+      <div class="cq" style="margin-top:.5rem">After re-measurement, you agree on a figure of 178 m³. The surveyor countersigns. Loading is about to begin. What additional protection should you put in writing before loading starts?</div>
+      <div class="mo" id="m4-scen2"></div>
+      <div class="mfb" id="m4-scen2-fb"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m4-quiz"></div>
+  </div>
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('m3')">← Module 3</button>
+    <button class="bnx" onclick="goTo('m5')">Module 5 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ M5: SHIP-SHORE DIFFERENCE ══ -->
+<div class="screen" id="screen-m5">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc done" onclick="goTo('m1')">M1</span>
+    <span class="bc done" onclick="goTo('m2')">M2</span>
+    <span class="bc done" onclick="goTo('m3')">M3</span>
+    <span class="bc done" onclick="goTo('m4')">M4</span>
+    <span class="bc active">M5</span>
+    <span class="bc" onclick="goTo('m6')">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(184,146,42,.3);color:var(--gd)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">⚖️</div>
+    <div>
+      <div class="mhch">Module 5 · OCIMF Guidelines Ch.7</div>
+      <div class="mhti">Ship-Shore Quantity Difference and VEF</div>
+      <div class="mhde">Understanding why differences occur, what is acceptable, and how to respond to disputes</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div class="fg">
+      <div class="fc"><div class="fi">📊</div><div class="ft"><strong>Why differences always exist</strong>Ship and shore measurements are taken by different instruments at different locations at different times. Measurement uncertainty, pipe content volume, temperature differences between ship and shore, VCF table rounding, and OBQ/ROB measurement errors all contribute. A zero difference is actually a coincidence — not a sign of accuracy.</div></div>
+      <div class="fc"><div class="fi">🏭</div><div class="ft"><strong>Vessel Experience Factor (VEF)</strong>A statistical ratio comparing ship's quantity to shore quantity over a minimum of 6 cargo operations. VEF = sum of ship figures ÷ sum of shore figures. A VEF close to 1.000 indicates consistent ship measurement. Used by charterers to assess vessel measurement reliability. Maintained in the vessel's records.</div></div>
+      <div class="fc"><div class="fi">📏</div><div class="ft"><strong>Acceptable difference limits</strong>OCIMF and industry practice accept a ship-shore difference of up to ±0.5% as within normal measurement uncertainty. Between 0.5% and 0.7%: investigate but typically not disputed. Above 0.7%: requires investigation and possibly a letter of protest. Above 1%: serious investigation — possible mismeasurement, MARPOL issue, or theft.</div></div>
+      <div class="fc"><div class="fi">✍️</div><div class="ft"><strong>Letter of protest</strong>A formal written declaration that the ship disputes the shore measurement figures. Must be issued promptly after loading or discharge when: the difference exceeds acceptable limits, OBQ/ROB measurement is disputed, or conditions prevented accurate measurement. Preserves the ship's legal position.</div></div>
+    </div>
+    <div class="co danger"><strong>Never sign the terminal's figures under protest without understanding what you are signing.</strong> A "signed under protest" endorsement on a Bill of Lading or cargo receipt does not nullify the figures — it only records disagreement. Your best protection is accurate pre-loading OBQ documentation and a correctly executed voyage measurement record.</div>
+  </div>
+
+  <!-- QUANTITY DIFFERENCE ANALYSER -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — ship-shore quantity difference analyser</div>
+    <div class="cq">Enter the ship's and shore's quantity figures. The analyser calculates the difference percentage and gives the OCIMF-referenced assessment and required action.</div>
+    <div class="qda">
+      <div class="qda-inputs">
+        <div class="qda-field">
+          <div class="qda-lbl">Ship's figure (GSV)</div>
+          <input type="number" class="qda-inp" id="qda-ship" value="85420" min="1" max="500000" oninput="calcQDA()">
+          <div class="qda-unit">m³ at 15°C</div>
+        </div>
+        <div class="qda-field">
+          <div class="qda-lbl">Shore's figure (GSV)</div>
+          <input type="number" class="qda-inp" id="qda-shore" value="85640" min="1" max="500000" oninput="calcQDA()">
+          <div class="qda-unit">m³ at 15°C</div>
+        </div>
+      </div>
+      <div class="qda-result" id="qda-result">
+        <div class="qda-pct" id="qda-pct">—</div>
+        <div class="qda-verdict" id="qda-verdict"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SORT: dispute response sequence -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — quantity dispute response sequence</div>
+    <div class="cq">The ship-shore difference on a cargo discharge is 0.82%, ship's figures lower than shore's. What is the correct sequence of actions? Drag into order.</div>
+    <div class="sl" id="m5-sort"></div>
+    <div style="margin-top:.7rem">
+      <button class="bch" onclick="checkSort('m5-sort','m5-correct','m5-sfb')">✓ Check sequence</button>
+      <button class="brs" onclick="resetSort('m5-sort','m5-data')">Reset</button>
+    </div>
+    <div class="sfb" id="m5-sfb"></div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m5-quiz"></div>
+  </div>
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('m4')">← Module 4</button>
+    <button class="bnx" onclick="goTo('m6')">Module 6 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ M6: CARGO DOCUMENTS ══ -->
+<div class="screen" id="screen-m6">
+<div class="mw">
+  <div class="bcr">
+    <span class="bc done" onclick="goTo('m1')">M1</span>
+    <span class="bc done" onclick="goTo('m2')">M2</span>
+    <span class="bc done" onclick="goTo('m3')">M3</span>
+    <span class="bc done" onclick="goTo('m4')">M4</span>
+    <span class="bc done" onclick="goTo('m5')">M5</span>
+    <span class="bc active">M6</span>
+    <span class="bc" onclick="goTo('assess')" style="margin-left:auto;border-color:rgba(184,146,42,.3);color:var(--gd)">★ ASSESS</span>
+  </div>
+  <div class="mhdr">
+    <div class="mhi">📄</div>
+    <div>
+      <div class="mhch">Module 6 · OCIMF Guidelines Ch.8</div>
+      <div class="mhti">Cargo Documents — BL, Ullage Reports and Protests</div>
+      <div class="mhde">The documents that determine legal title, quantity, and the ship's liability — every signature matters</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl read">▶ READ</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin:.7rem 0">
+      <div class="doc-card" onclick="toggleDoc(this)">
+        <div class="doc-title">Bill of Lading (BL) <span class="doc-arrow">▾</span></div>
+        <div class="doc-body">The BL is the primary cargo document — it is a receipt for the cargo, a document of title (ownership), and evidence of the contract of carriage. The BL quantity is the quantity the shipowner is legally responsible for delivering. It is typically based on the shore surveyor's figures at the loading port. The Master signs the BL — this is a legal declaration of quantity received. Never sign a BL with a figure you have not verified or endorsed under protest where disputed.</div>
+      </div>
+      <div class="doc-card" onclick="toggleDoc(this)">
+        <div class="doc-title">Ullage Report (Ship's Measurement Record) <span class="doc-arrow">▾</span></div>
+        <div class="doc-body">The ship's formal record of all tank measurements — raw ullage, trim correction, list correction, corrected ullage, temperature, VCF, GOV, free water, and GSV for each tank. Prepared by the Chief Officer and signed by the attending surveyor. Must be completed contemporaneously (at time of measurement) — not reconstructed later. The ullage report is the primary evidence in any cargo dispute.</div>
+      </div>
+      <div class="doc-card" onclick="toggleDoc(this)">
+        <div class="doc-title">Notice of Readiness (NOR) <span class="doc-arrow">▾</span></div>
+        <div class="doc-body">Tendered by the Master when the vessel has arrived at the port and is ready in all respects to commence cargo operations. The NOR tender time starts the laytime clock — delay after NOR acceptance is demurrage (for which the charterer pays) or despatch (paid by the owner if loading/discharge is faster than agreed). NOR tendering time and conditions must be exactly per the charterparty — errors cost money.</div>
+      </div>
+      <div class="doc-card" onclick="toggleDoc(this)">
+        <div class="doc-title">Letter of Protest <span class="doc-arrow">▾</span></div>
+        <div class="doc-body">A formal written statement issued by the Master to place on record a disagreement with the terminal's figures, conditions, or procedures. Must be issued promptly — typically within 24 hours of the disputed event, or at the time of signing the BL if the figures are disputed. A letter of protest alone does not protect the ship unless it accurately and specifically describes the basis of the dispute.</div>
+      </div>
+      <div class="doc-card" onclick="toggleDoc(this)">
+        <div class="doc-title">Cargo Outturn Report <span class="doc-arrow">▾</span></div>
+        <div class="doc-body">Prepared at the discharge port comparing what was loaded at origin with what was measured on arrival. Includes the ship-shore quantity difference calculation, VEF, and all measurement data from both ports. The outturn report is what the receiver uses to determine if they have received the quantity they are owed. Significant differences trigger quantity claims against the shipowner or cargo insurer.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATCH: document to purpose -->
+  <div class="card">
+    <div class="cl do">⚡ Activity — match document to its legal purpose</div>
+    <div class="cq">Match each cargo document to its primary legal or commercial function.</div>
+    <div class="mwg" id="m6-match">
+      <div><div class="mch">Document</div><div class="mc" id="m6-left"></div></div>
+      <div><div class="mch">Primary function</div><div class="mc" id="m6-right"></div></div>
+    </div>
+    <div class="mhint">Tap left → tap right to match</div>
+    <div class="msc" id="m6-score"></div>
+  </div>
+
+  <div class="card">
+    <div class="cl check">▶ Module quiz</div>
+    <div id="m6-quiz"></div>
+  </div>
+
+  <div class="co tip" style="margin-top:1rem"><strong>All 6 modules complete.</strong> Final assessment: 18 questions, 75% pass mark. For live operations, always refer to your vessel's cargo measurement procedure and the applicable charterparty conditions.</div>
+
+  <div class="mnav">
+    <button class="bpv" onclick="goTo('m5')">← Module 5</button>
+    <button class="bnx" style="background:var(--am)" onclick="goTo('assess')">★ Assessment →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ ASSESSMENT ══ -->
+<div class="screen" id="screen-assess">
+<div class="mw">
+  <div class="ahdr">
+    <div style="font-size:28px;margin-bottom:5px">⚖️</div>
+    <h2>Final Assessment — Cargo Measurement &amp; Calculations</h2>
+    <p style="font-size:12px;color:var(--mu);margin-top:3px">STCW A-V/1-1 · OCIMF Cargo Measurement Guidelines · Senior Officers</p>
+    <div class="ameta">
+      <span class="ach">18 QUESTIONS</span>
+      <span class="ach">PASS: 75% (14/18)</span>
+      <span class="ach">TIME: 20 MIN</span>
+      <span class="ach">ONE ATTEMPT</span>
+    </div>
+  </div>
+  <div class="tstr">
+    <span style="font-family:var(--fm);font-size:10px;color:var(--mu)">REMAINING</span>
+    <span id="a-timer">20:00</span>
+    <span id="a-qcount" style="font-family:var(--fm);font-size:10px;color:var(--mu)">0 / 18</span>
+  </div>
+  <div id="assess-qs"></div>
+  <button class="bsub" id="btn-sub" onclick="submitA()" disabled>SUBMIT ASSESSMENT</button>
+  <div class="rp" id="results">
+    <div class="sring" id="score-ring"><div class="spc" id="score-pct">—</div><div class="slb" id="score-lbl">—</div></div>
+    <div class="verd" id="verd">—</div>
+    <div class="verdm" id="verdm"></div>
+    <div class="bkd" id="breakdown"></div>
+    <div class="cert" id="cert">
+      <span class="cert-ic">🏅</span>
+      <h3>Assessment Passed</h3>
+      <p>Cargo Measurement, Ullage &amp; Quantity Calculations · STCW A-V/1-1</p>
+      <div class="cert-n">Record in SMS training matrix. Refer to your vessel's cargo measurement procedure for ship-specific calibration tables and documentation requirements.</div>
+    </div>
+    <div class="rb">
+      <button class="bgo" onclick="goTo('hero')">← Back to modules</button>
+      <button class="bpv" onclick="location.reload()">Retake</button>
+    </div>
+  </div>
+</div>
+</div>
+
+</main>
+<script>
+// ══════════════════════════════════
+// SORT DATA
+// ══════════════════════════════════
+var sortData={
+  'm5-data':[
+    {id:1,text:'Review all ship\'s measurement records — verify every ullage, correction, and calculation is correct'},
+    {id:2,text:'Re-examine shore\'s figures — request the terminal\'s detailed measurement data (ullage, temperature, density)'},
+    {id:3,text:'Calculate the exact difference and percentage — confirm it exceeds the 0.7% investigation threshold'},
+    {id:4,text:'Issue a Letter of Protest to the terminal recording the dispute with all supporting figures'},
+    {id:5,text:'Notify the Master, owner, and P&I club — forward all measurement records immediately'},
+    {id:6,text:'Update the vessel\'s VEF record — document all figures for this cargo operation'}
+  ]
+};
+var sortCorrect={'m5-correct':[1,2,3,4,5,6]};
+var sortCurrent={};
+var dragSrc=null;
+
+// ══════════════════════════════════
+// MATCH DATA
+// ══════════════════════════════════
+var matchData={
+  m1:{
+    left:['Fixed radar tank gauging (RTG)','Portable MMC / UTI instrument','Float gauge','Closed gauging requirement'],
+    right:['SOLAS requirement for volatile and toxic cargoes — tank not opened during measurement','Independent witness gauging — measures ullage, temperature, and interface in one pass','Accurate to ±1mm — continuous read-out — primary shipboard system','Accuracy ±5mm — affected by cargo turbulence — read only in static conditions'],
+    pairs:[2,0,3,1]
+  },
+  m6:{
+    left:['Bill of Lading','Ullage report','Letter of protest','Notice of Readiness'],
+    right:['Starts laytime — formally notifies terminal vessel is ready for cargo operations','Document of title — receipt for cargo — determines quantity the owner is responsible to deliver','Ship\'s contemporaneous measurement record — primary evidence in any quantity dispute','Formal recorded disagreement with terminal figures — must be issued promptly'],
+    pairs:[1,2,3,0]
+  }
+};
+var matchState={};
+
+// ══════════════════════════════════
+// MCQ DATA
+// ══════════════════════════════════
+var mcqData={
+  'm1-q1':{q:'What is "ullage" in tanker measurement?',opts:['The total depth of cargo from tank bottom','The empty space from the reference gauge point down to the cargo surface','The density of the cargo at 15°C','The total observed volume in the tank'],a:1,fb:['Incorrect. That is "innage" or "dip" — the depth of cargo.','Correct. Ullage is the distance from the datum (reference gauge point) to the cargo surface — the empty space above the cargo. Converting to volume requires the tank calibration table for that ullage reading.','Incorrect. Density is a separate cargo property measured by the laboratory.','Incorrect. TOV is derived from the ullage reading — ullage itself is the raw distance measurement.']},
+  'm1-q2':{q:'Why is a 30-minute waiting period required before gauging a tank after loading is complete?',opts:['To allow the cargo to cool to ambient temperature','To allow electrostatic charges generated during loading to dissipate — opening the tank before this risks ignition','To allow the trim and list to stabilise','For customs documentation to be completed'],a:1,fb:['Incorrect. Temperature stabilisation takes hours, not 30 minutes — and is not the reason for this specific period.','Correct. Cargo flow generates static electricity in the tank. The 30-minute relaxation period allows this charge to dissipate before any fitting is opened — inserting a gauging tape before this period is an ignition risk.','Incorrect. Trim stabilisation is not the reason for the 30-minute period.','Incorrect. Customs documentation timing is not the reason for the gauging waiting period.']},
+  'm1-q3':{q:'At custody transfer, the Bill of Lading figure is typically based on:',opts:['The ship\'s fixed radar gauge readings only','The independent attending surveyor\'s measurement figures','An average of ship\'s and surveyor\'s figures','The terminal\'s shore tank measurement figures'],a:1,fb:['Incorrect. Ship\'s own fixed gauges are used for vessel records but the BL is based on independent measurement.','Correct. The attending independent surveyor measures with a portable MMC/UTI and their figures are the basis for the Bill of Lading — providing a neutral, independent verification acceptable to both parties.','Incorrect. Averaging is not standard practice — discrepancies require investigation, not averaging.','Incorrect. Shore tank figures are a separate measurement used to determine what the terminal received, not what was loaded.']},
+  'm2-q1':{q:'When applying a trim correction to an ullage reading, the corrected ullage is:',opts:['Added to the calibration table separately from the raw ullage','Used as the entry value for the tank calibration table to look up the total observed volume','Applied only if the trim exceeds 2 metres','Used to calculate the VCF directly'],a:1,fb:['Incorrect. You do not apply the trim correction separately from the calibration table — you enter the corrected ullage into the table.','Correct. The trim correction (and list correction) produces the corrected ullage. This corrected value is entered into the tank calibration table to determine the volume — not the raw ullage.','Incorrect. Trim correction is applied for all trim conditions — there is no minimum threshold before it applies.','Incorrect. VCF is derived from cargo temperature and density — not from the trim correction.']},
+  'm2-q2':{q:'If a vessel has a 2° list to starboard, which tanks show an artificially low ullage reading?',opts:['Starboard tanks — they are on the low side and the cargo shifts toward them','Port tanks — they are on the high side and appear to have more cargo','Centre tanks — list does not affect centreline tanks','All tanks equally — list does not affect ullage readings'],a:0,fb:['Correct. When the vessel lists to starboard, cargo shifts toward starboard. Starboard tanks on the low side have cargo shifted toward them — the ullage measurement point (at the tank top) reads a lower ullage (more cargo) than the true level. The list correction reduces the apparent volume for these tanks.','Incorrect. Port tanks are on the high side — cargo shifts away from them, showing a higher ullage (less cargo) than the true level. Port tanks would overstate ullage, not understate it.','Incorrect. Even centreline tanks can be affected by list — the cargo surface tilts and the measurement point may not be at the true midpoint.','Incorrect. List clearly affects ullage readings — this is why a list correction must be applied for any list condition.']},
+  'm2-q3':{q:'A cargo of crude oil is loaded at 42°C. The VCF from ASTM Table 54B at this temperature and density is 0.9762. This means:',opts:['The cargo has expanded by 2.38% compared to its volume at 15°C — the GSV is less than the GOV','The cargo has contracted by 2.38% — the GSV is more than the GOV','The cargo density has changed by 2.38%','No correction is needed as the VCF is close to 1.000'],a:0,fb:['Correct. VCF of 0.9762 means the observed volume at 42°C is 2.38% larger than it would be at 15°C (the reference temperature). Multiplying GOV × 0.9762 gives GSV — which is smaller than GOV. The GSV is what appears on the Bill of Lading.','Incorrect. Petroleum expands when warm — warm cargo has a higher observed volume than its standard volume. VCF less than 1 means GOV > GSV.','Incorrect. VCF is a volume correction factor — it corrects volume, not density.','Incorrect. A VCF of 0.9762 represents a significant 2.38% correction — on a 100,000 m³ cargo, this is 2,380 m³. It must always be applied.']},
+  'm3-q1':{q:'In the calculation chain TOV → GOV → GSV, what is deducted to go from TOV to GOV?',opts:['Water and sediment percentage (BS&W)','Free water measured at the bottom of the tank','Trim and list correction volume','The OBQ from the previous voyage'],a:1,fb:['Incorrect. BS&W is deducted later — from GSV — to get net standard volume. TOV to GOV specifically removes free water.','Correct. TOV (total observed volume) includes all liquid in the tank — including free water settled at the bottom. Deducting free water (from the interface measurement) gives GOV — the gross observed volume of cargo only.','Incorrect. Trim and list corrections are applied to the ullage reading before entering the calibration table — they are not deducted from volume at this stage.','Incorrect. OBQ is deducted from total loaded quantity to determine what was loaded on this voyage — it is not a step in the TOV to GOV chain.']},
+  'm3-q2':{q:'If the GSV is 85,000 m³ and the density at 15°C is 862 kg/m³, what is the cargo quantity in metric tonnes?',opts:['98,784 MT','85,000 MT','73,270 MT','862,000 MT'],a:2,fb:['Incorrect. 85,000 × 0.862 = 73,270 MT. This is the correct calculation.','Incorrect. 85,000 m³ is the volume — tonnes requires multiplication by density.','Correct. Metric tonnes = GSV × density at 15°C = 85,000 × 0.862 = 73,270 MT. Note: density must be in tonnes per cubic metre (i.e. divide kg/m³ by 1000 — 862 kg/m³ = 0.862 t/m³).','Incorrect. This would be the result of multiplying 1,000 m³ by 862 — misplacing the decimal.']},
+  'm3-q3':{q:'Which ASTM table is used to find the VCF for crude oil?',opts:['ASTM Table 54A','ASTM Table 54B','ASTM Table 54C','ASTM Table 60A'],a:1,fb:['Incorrect. Table 54A is used for generalised crude oils when density is not known precisely — 54B is used when density at 15°C is known.','Correct. ASTM Table 54B is used for crude oils where the density at 15°C is known. Table 54C is for refined products. Table 54D is for lubricating oils.','Incorrect. Table 54C is for refined petroleum products — not crude oil.','Incorrect. Table 60A relates to the 60°F reference temperature system used in the USA.']},
+  'm4-q1':{q:'What is OBQ and why must it be agreed before loading begins?',opts:['Overboard Quantity — cargo discharged to sea, agreed for MARPOL purposes','On-Board Quantity — residue remaining from the previous voyage, agreed before loading so it is not counted as part of the new cargo','Outstanding Bill Quantity — the difference between estimated and actual loaded quantity','Offshore Bunker Quantity — fuel remaining on board at port arrival'],a:1,fb:['Incorrect. Overboard discharge is a MARPOL violation and not what OBQ refers to.','Correct. OBQ is the quantity (cargo residue, water, slops) remaining on board from the previous voyage. It must be agreed and documented before loading because it is deducted from the total loaded quantity — failure to agree it creates an unresolved discrepancy that appears as a shortage on the Bill of Lading.','Incorrect. OBQ is a physical measurement, not an accounting term.','Incorrect. Bunker fuel has separate records — OBQ specifically refers to cargo residue.']},
+  'm4-q2':{q:'Free water in a cargo tank is measured using:',opts:['A portable hydrometer inserted through the ullage opening','Water-finding paste on the UTI tape — the depth at which the paste changes colour indicates the oil-water interface','A calibrated dip stick from the tank bottom','The pressure gauge at the bottom of the tank'],a:1,fb:['Incorrect. Hydrometers measure density — not water interface depth.','Correct. Water-finding paste (also called water-finding compound) is applied to the UTI tape. It changes colour on contact with water, revealing the oil-water interface depth. The corresponding volume from the interface table gives free water volume.','Incorrect. Dip sticks measure total depth — they do not identify the oil-water interface.','Incorrect. Pressure gauges are not used for measuring free water depth.']},
+  'm4-q3':{q:'After discharge, the residue that cannot be removed and remains in the tanks is called:',opts:['OBQ — On-Board Quantity','VEF — Vessel Experience Factor','ROB — Remaining On Board','BS&W — Bottom Sediment and Water'],a:2,fb:['Incorrect. OBQ is measured before loading — ROB is measured after discharge.','Incorrect. VEF is a statistical ratio of ship-to-shore figures — not a residue term.','Correct. ROB (Remaining On Board) is the quantity that cannot be discharged — clingage, sediment, pipeline contents, and cargo in deadspaces. It is measured after stripping is complete and agreed with the terminal surveyor.','Incorrect. BS&W is a quality measurement (water and sediment content as a percentage) — not the term for post-discharge residue.']},
+  'm5-q1':{q:'At what ship-shore quantity difference percentage does OCIMF guidance indicate a letter of protest is typically required?',opts:['More than 0.2%','More than 0.5%','More than 0.7%','More than 2%'],a:2,fb:['Incorrect. 0.2% is within normal measurement accuracy — no protest is required at this level.','Incorrect. 0.5% is the upper limit of "within normal uncertainty" — investigation starts between 0.5–0.7% but protest is not yet required.','Correct. OCIMF guidance: differences above 0.7% require investigation and a letter of protest. Above 1% triggers a serious investigation as possible mismeasurement or other issue.','Incorrect. By 2% the situation would be a major dispute — the protest should have been issued well before this point.']},
+  'm5-q2':{q:'The Vessel Experience Factor (VEF) is:',opts:['The vessel\'s maximum cargo capacity divided by actual cargo loaded','A statistical ratio comparing ship\'s quantity figures to shore\'s figures over a minimum of 6 cargo operations','The ratio of loaded quantity to discharged quantity','The correction factor for the vessel\'s trim applied to all cargo calculations'],a:1,fb:['Incorrect. Capacity utilisation is not the VEF.','Correct. VEF = sum of ship\'s GSV figures ÷ sum of corresponding shore GSV figures, calculated over a minimum of 6 cargo operations. A VEF consistently close to 1.000 indicates reliable ship measurement. It is used by charterers to assess vessel measurement performance.','Incorrect. Load-to-discharge ratio would be affected by BS&W and measurement differences — it is not the VEF.','Incorrect. Trim correction is applied to individual ullage readings — it is not the VEF.']},
+  'm5-q3':{q:'A ship-shore difference of zero is:',opts:['The target that all measurement procedures aim for','A coincidence rather than evidence of accuracy — some difference always exists between independent measurements','Grounds for accepting the shore figures without protest','Evidence that the cargo was measured twice at the same location'],a:1,fb:['Incorrect. A zero difference is not actually the goal — accurate, independent measurement is the goal, which will always produce some difference due to measurement uncertainty.','Correct. Zero difference is a statistical coincidence. Ships and terminals measure at different locations, at different times, with different instruments. Measurement uncertainty, pipe content differences, and rounding all produce differences. A consistent zero difference might actually indicate copied or fabricated figures.','Incorrect. A zero difference does not mean the shore figures are correct — it simply means the two independent measurements happen to agree.','Incorrect. Zero difference does not indicate that measurements were taken at the same location.']},
+  'm6-q1':{q:'The Bill of Lading is significant because:',opts:['It is only an internal ship document used for cargo planning','It is a document of title — the party holding the original BL has the right to take delivery of the cargo','It is issued by the terminal and the ship has no control over its contents','It can be amended at any time after loading to correct quantity errors'],a:1,fb:['Incorrect. The BL is a negotiable document traded internationally — it has major legal significance far beyond the ship.','Correct. The BL has three functions: receipt for cargo (evidence that the shipper handed over the cargo), document of title (legal ownership follows the BL), and evidence of the contract of carriage. The quantity stated on the BL is the quantity the shipowner is responsible to deliver.','Incorrect. The Master signs the BL — the ship has direct control and legal responsibility for what is signed.','Incorrect. Once a BL is signed and issued, its contents cannot be altered. The ship must issue a letter of protest before signing if the figures are disputed.']},
+  'm6-q2':{q:'A letter of protest must be issued:',opts:['Only after the cargo dispute has been formally submitted to arbitration','Promptly — typically at the time of signing a disputed BL or within 24 hours of the disputed event','After receiving legal advice from the P&I club','At the discharge port, not the loading port'],a:1,fb:['Incorrect. Waiting for formal arbitration is far too late — the letter of protest must be contemporaneous with the dispute.','Correct. A letter of protest must be issued promptly — at the time of signing a disputed BL or within 24 hours of the disputed event. A late protest may not be accepted as evidence and weakens the ship\'s legal position significantly.','Incorrect. A protest should not wait for P&I advice — it should be issued immediately and P&I notified simultaneously.','Incorrect. Letters of protest are issued at whichever port the disputed event occurs — loading port for loading discrepancies, discharge port for discharge discrepancies.']},
+  'm6-q3':{q:'The ullage report\'s primary function in a cargo dispute is:',opts:['To calculate the freight payable on the cargo','The contemporaneous measurement record — primary evidence showing how the quantity was calculated and when measurements were taken','To satisfy customs documentation requirements at the discharge port','To enable the terminal to issue the Bill of Lading correctly'],a:1,fb:['Incorrect. Freight calculation is separate from the ullage report.','Correct. The ullage report is the ship\'s real-time record of every measurement taken — ullage readings, corrections, temperatures, VCF, and resulting volumes. Because it is contemporaneous (prepared at the time of measurement), it is the primary evidence of the measurement process in any dispute.','Incorrect. Customs documentation uses the BL and commercial invoice — not the ullage report.','Incorrect. The terminal issues the BL based on their own surveyor\'s figures — the ship\'s ullage report is the ship\'s record, not the terminal\'s.']}
+};
+
+// ══════════════════════════════════
+// SCENARIO MCQ
+// ══════════════════════════════════
+var scenMCQ={
+  'm4-scen1':{opts:['Accept the surveyor\'s figure of 165 m³ and proceed — the difference is small','Refuse to allow loading to begin until a joint re-measurement is conducted and both parties agree on the OBQ figure','Accept the ship\'s figure of 182 m³ and proceed without the surveyor\'s agreement','Issue a letter of protest and allow loading to begin immediately on your figures'],a:1,fb:['Incorrect. The difference of 17 m³ (9.3%) is too large to accept without investigation. Accepting the surveyor\'s lower figure without resolution would mean 17 m³ of cargo residue is unaccounted for — this becomes a discrepancy loaded against the ship.','Correct. A 17 m³ (9.3%) difference on OBQ requires joint re-measurement before loading commences. Once cargo starts flowing, the pre-loading figure is fixed. This is the only moment to resolve it — both parties must agree the OBQ figure.','Incorrect. Proceeding on your own figures without the surveyor\'s agreement means the BL will not reflect agreed figures. The 17 m³ unresolved difference will reappear as a discharge discrepancy.','Incorrect. A letter of protest does not resolve the measurement discrepancy — it only records disagreement. The OBQ must be agreed before loading starts.']},
+  'm4-scen2':{opts:['Nothing further is required — the countersigned figure is sufficient','Issue a "Letter of Protest Under Protest" in addition to the agreed figure','Note in the remarks on the Bill of Lading that 178 m³ OBQ was on board before loading, countersigned by the attending surveyor, and retain the joint ullage report as evidence','Call the terminal manager to verbally confirm the OBQ figure'],a:2,fb:['Incorrect. The countersigned ullage report is essential but the BL also needs to explicitly state the OBQ so the quantity received (loaded minus OBQ) is clearly documented.','Incorrect. A protest on an agreed figure is contradictory and creates confusion. A letter of protest is appropriate for disputed figures — not for agreed ones.','Correct. The BL remarks must clearly state the OBQ on board before loading began, countersigned by the surveyor. This creates an unambiguous record that the ship\'s loaded quantity excludes the OBQ residue. Retain the joint ullage report as supporting evidence.','Incorrect. Verbal confirmation has no legal value. The BL remarks and signed ullage report are the required documentation.']}
+};
+
+// ══════════════════════════════════
+// WORKED EXAMPLE STEPS
+// ══════════════════════════════════
+var steps=[
+  {title:'Given data — Arabian Light crude at loading',body:'The attending surveyor has completed measurements on all cargo tanks. The following data has been agreed:<br><br><strong>Total tanks measured:</strong> 12 cargo tanks.<br><strong>Cargo type:</strong> Arabian Light crude oil.<br><strong>Density at 15°C (from lab certificate):</strong> 865 kg/m³<br><strong>Cargo temperature (average):</strong> 38°C<br><strong>Reference temperature:</strong> 15°C (ASTM standard)<br><br>We will work through one summary calculation.',calc:'',result:''},
+  {title:'Step 1 — Correct ullage for trim and list',body:'Each tank\'s raw ullage has trim and list corrections applied. For this example, the combined corrections for all tanks have been applied to produce corrected ullages for each tank.<br><br><strong>Raw ullage (example tank 1C):</strong> 1,240 mm<br><strong>Trim correction:</strong> −35 mm (vessel trimmed by stern)<br><strong>Corrected ullage:</strong> 1,240 − 35 = 1,205 mm<br><br>The corrected ullage (1,205 mm) is entered into the tank calibration table to determine tank volume.',calc:'Corrected ullage = Raw ullage + Trim correction\n= 1,240 mm + (−35 mm) = 1,205 mm',result:'Corrected ullage: 1,205 mm'},
+  {title:'Step 2 — Determine Total Observed Volume (TOV)',body:'Using the corrected ullage (1,205 mm) entered into the tank calibration table, the total observed volume for each tank is determined. Across all 12 tanks, the sum is:<br><br><strong>TOV (all tanks, from calibration tables):</strong> 85,420 m³<br><br>This is the total liquid volume in the ship\'s tanks at the time of measurement, at actual cargo temperature (38°C). It includes both cargo and any free water.',calc:'Sum of all tank volumes from calibration tables\nTOV = 85,420 m³ at 38°C',result:'TOV = 85,420 m³'},
+  {title:'Step 3 — Deduct free water to get GOV',body:'The UTI tape with water-finding paste was run to the bottom of each tank. The oil-water interface was found at an average equivalent to:<br><br><strong>Free water (all tanks):</strong> 42 m³<br><br>This free water is deducted from TOV to give the Gross Observed Volume (GOV) — the volume of cargo only, excluding free water.',calc:'GOV = TOV − Free water\nGOV = 85,420 − 42 = 85,378 m³',result:'GOV = 85,378 m³ at 38°C'},
+  {title:'Step 4 — Apply VCF to get GSV',body:'The Volume Correction Factor (VCF) converts the observed volume at 38°C to the standard volume at 15°C.<br><br><strong>Density at 15°C:</strong> 865 kg/m³<br><strong>Cargo temperature:</strong> 38°C<br><strong>VCF from ASTM Table 54B:</strong> 0.9812<br><br>Since the cargo is warm (38°C vs 15°C reference), it has expanded — VCF &lt;1 means the standard volume is less than the observed volume.',calc:'GSV = GOV × VCF\nGSV = 85,378 × 0.9812 = 83,773 m³ at 15°C',result:'GSV = 83,773 m³ at 15°C'},
+  {title:'Step 5 — Convert to metric tonnes',body:'The GSV (volume at standard temperature) is converted to metric tonnes using the density at 15°C.<br><br><strong>Density at 15°C:</strong> 865 kg/m³ = 0.865 t/m³<br><br>This gives the gross cargo weight before any water and sediment deduction.',calc:'Metric tonnes = GSV × Density (t/m³)\n= 83,773 × 0.865 = 72,464 MT (gross)',result:'Gross metric tonnes = 72,464 MT'},
+  {title:'Step 6 — Deduct BS&W for net tonnes (BL figure)',body:'The laboratory analysis of cargo samples gives the water and sediment content (BS&W — Bottom Sediment and Water) as a percentage of the cargo. For this parcel:<br><br><strong>BS&W:</strong> 0.10% (from lab certificate)<br><br>The net quantity is what appears on the Bill of Lading.',calc:'Net MT = Gross MT × (1 − BS&W%)\n= 72,464 × (1 − 0.001) = 72,464 × 0.999 = 72,391 MT',result:'BILL OF LADING FIGURE: 72,391 MT'},
+];
+var stepIdx=0;
+
+// ══════════════════════════════════
+// ASSESSMENT DATA
+// ══════════════════════════════════
+var aData=[
+  {q:'Ullage is defined as:',opts:['Total depth of cargo from tank bottom (innage)','Distance from reference gauge point to cargo surface — the empty space','Cargo density at 15°C','Total observed volume in the tank'],a:1,cat:'m1',fb:['Incorrect. That is innage or dip.','Correct. Ullage is the empty space from the datum down to the cargo surface.','Incorrect. Density is a cargo property, not an ullage measurement.','Incorrect. TOV is derived from the ullage — they are different things.']},
+  {q:'A 30-minute waiting period after loading before gauging is required to:',opts:['Allow cargo temperature to stabilise','Allow electrostatic charges to dissipate before opening tank fittings','Allow trim to stabilise','Complete documentation'],a:1,cat:'m1',fb:['Incorrect. Temperature stabilisation takes much longer.','Correct. Cargo flow generates static electricity. Waiting 30 minutes allows the charge to dissipate before opening any tank fitting — reducing ignition risk.','Incorrect. Trim stabilisation is not the specific reason for this waiting period.','Incorrect. Documentation can be completed at any time.']},
+  {q:'The BL figure at loading is typically based on:',opts:['Ship\'s fixed radar gauge figures only','The independent attending surveyor\'s measurement figures','An average of ship and shore figures','Shore tank measurement figures'],a:1,cat:'m1',fb:['Incorrect. Fixed gauges are ship records — the BL is based on independent measurement.','Correct. The attending surveyor\'s portable MMC/UTI figures form the basis for the Bill of Lading.','Incorrect. Averaging is not industry practice.','Incorrect. Shore tanks measure what was received, not what was loaded.']},
+  {q:'After applying trim and list corrections, the corrected ullage is used to:',opts:['Calculate the VCF directly','Enter the tank calibration table to determine tank volume','Apply the density correction','Determine free water volume'],a:1,cat:'m2',fb:['Incorrect. VCF uses cargo temperature and density — not the corrected ullage.','Correct. The corrected ullage (after trim and list adjustments) is the value entered into the calibration table to determine the volume.','Incorrect. Density is separate from the ullage correction.','Incorrect. Free water is determined from the interface measurement.']},
+  {q:'A 2° list to starboard causes the starboard tanks to show:',opts:['A higher ullage — less cargo appears to be present','A lower ullage — more cargo appears to be present due to cargo shifting toward them','No change — list only affects port tanks','An error in the temperature reading'],a:1,cat:'m2',fb:['Incorrect. On the low side (starboard in this case), cargo shifts toward the tank — the ullage appears lower, not higher.','Correct. Cargo shifts toward the low side. Starboard tanks show a lower ullage (more cargo apparent) than the true level. The list correction reduces the volume for these tanks.','Incorrect. List affects all tanks — both sides require correction.','Incorrect. List does not affect temperature readings.']},
+  {q:'A VCF of 0.9762 applied to a GOV of 100,000 m³ gives a GSV of:',opts:['102,381 m³','100,000 m³','97,620 m³','97,000 m³'],a:2,cat:'m2',fb:['Incorrect. 0.9762 is less than 1 — GSV must be less than GOV.','Incorrect. No correction has been applied.','Correct. GSV = GOV × VCF = 100,000 × 0.9762 = 97,620 m³. A VCF below 1.0 means the cargo is warm and has expanded — the standard volume at 15°C is smaller.','Incorrect. 97,000 × 0.9762 would not equal 100,000 × 0.9762.']},
+  {q:'In the calculation chain, free water is deducted from TOV to give:',opts:['GSV — Gross Standard Volume','GOV — Gross Observed Volume','MT — metric tonnes','Net Standard Volume'],a:1,cat:'m3',fb:['Incorrect. GSV is obtained later by applying VCF to GOV.','Correct. TOV − free water = GOV. Gross Observed Volume is the cargo volume only, at actual temperature, excluding free water.','Incorrect. Metric tonnes are derived from GSV × density.','Incorrect. Net standard volume is obtained after deducting BS&W from GSV.']},
+  {q:'If GSV is 80,000 m³ and density at 15°C is 850 kg/m³, the cargo in metric tonnes is:',opts:['94,117 MT','80,000 MT','68,000 MT','85,000 MT'],a:2,cat:'m3',fb:['Incorrect. 94,117 would result from dividing rather than multiplying.','Incorrect. Volume and mass are not equal.','Correct. MT = GSV × density (t/m³) = 80,000 × 0.850 = 68,000 MT. Density 850 kg/m³ = 0.850 t/m³.','Incorrect. 85,000 is not the result of 80,000 × 0.850.']},
+  {q:'ASTM Table 54B is used for VCF calculations for:',opts:['Refined petroleum products (gasoline, diesel)','Crude oil where density at 15°C is known','Lubricating oils','LNG and LPG cargoes'],a:1,cat:'m3',fb:['Incorrect. Refined products use Table 54C.','Correct. ASTM Table 54B is for crude oils where the density at 15°C is known. 54A is for crude when density is uncertain; 54C is for refined products.','Incorrect. Lubricating oils use Table 54D.','Incorrect. LNG and LPG have separate calculation methods.']},
+  {q:'OBQ must be agreed before loading because:',opts:['The terminal cannot start their pumps until OBQ is agreed','An unresolved OBQ creates a discrepancy loaded against the ship — the residue is counted as loaded cargo rather than pre-existing on-board quantity','OBQ affects the calculation of demurrage','Customs requires OBQ declaration before loading permits are issued'],a:1,cat:'m4',fb:['Incorrect. Terminal pump operations are not dependent on OBQ agreement.','Correct. If OBQ is not agreed before loading, the pre-existing cargo residue is included in the total loaded figure. This creates an apparent shortage on the BL — the ship appears to have received more than it actually loaded for this voyage.','Incorrect. OBQ does not directly affect laytime or demurrage.','Incorrect. Customs permits are not dependent on OBQ agreement.']},
+  {q:'Free water in cargo tanks is measured using:',opts:['A portable hydrometer','Water-finding paste on the UTI tape — colour change indicates the oil-water interface depth','A pressure gauge at the tank bottom','Visual inspection through the ullage port'],a:1,cat:'m4',fb:['Incorrect. Hydrometers measure liquid density.','Correct. Water-finding paste applied to the UTI tape changes colour on contact with water. The depth of colour change on the tape indicates the oil-water interface level, giving free water volume from the calibration table.','Incorrect. Pressure gauges are not used for interface measurement.','Incorrect. Open gauging (visual inspection) is not permitted for volatile cargoes.']},
+  {q:'ROB after discharge is the quantity that:',opts:['Was loaded at the origin port before this voyage','Cannot be discharged — clingage, sediment, pipeline contents — measured after stripping is complete','Is retained for the ship\'s own use as fuel','Remains as free water after cargo discharge'],a:1,cat:'m4',fb:['Incorrect. That is the OBQ from the previous voyage.','Correct. ROB (Remaining On Board) is measured after full discharge and stripping. It includes all cargo that cannot be removed: clingage, sediment, and dead-space content. It is agreed with the terminal surveyor and deducted from what the terminal claims to have received.','Incorrect. Cargo cannot be used as fuel without specific authority.','Incorrect. ROB includes all cargo residue, not just free water.']},
+  {q:'A ship-shore GSV difference of 0.82% indicates:',opts:['The cargo was measured accurately by both parties','A difference above the 0.7% threshold — investigation required and a letter of protest should be issued','The cargo may have been contaminated','The ship\'s VCF calculation is incorrect'],a:1,cat:'m5',fb:['Incorrect. 0.82% is above the OCIMF 0.7% threshold — further action is required.','Correct. OCIMF guidance: above 0.7% requires investigation and a letter of protest. The specific cause must be investigated — measurement error, OBQ/ROB dispute, pipeline contents, or other factor.','Incorrect. Contamination would be a quality issue, not a quantity discrepancy.','Incorrect. VCF errors are one possible cause but the difference first needs to be investigated generally.']},
+  {q:'The Vessel Experience Factor (VEF) compares:',opts:['Vessel capacity to cargo loaded per voyage','Ship\'s total quantity figures to shore\'s total quantity figures over minimum 6 cargo operations','Loading port figures to discharge port figures','Gross tonnes to net tonnes over multiple voyages'],a:1,cat:'m5',fb:['Incorrect. Capacity utilisation is not VEF.','Correct. VEF = sum of ship\'s GSV ÷ sum of shore GSV over a minimum of 6 operations. A VEF consistently near 1.000 indicates reliable ship measurement.','Incorrect. Load-to-discharge comparison is the outturn — not VEF.','Incorrect. Gross-to-net ratio is related to BS&W deduction — not VEF.']},
+  {q:'A zero ship-shore difference is best described as:',opts:['The target of accurate measurement practice','A statistical coincidence rather than evidence of accuracy','Grounds to accept shore figures without protest','Evidence of measurement at the same location'],a:1,cat:'m5',fb:['Incorrect. Perfect agreement between independent measurements is a coincidence, not the goal.','Correct. Zero difference between two independent measurement systems is coincidental. Consistent zero may actually indicate copied figures rather than genuine independent measurement.','Incorrect. Zero difference does not mean the figures are correct.','Incorrect. Ship and shore measure at different locations.']},
+  {q:'The Bill of Lading is legally significant primarily because:',opts:['It is an internal ship document for cargo planning','It is a document of title — the party holding the original BL has ownership rights to the cargo','It is issued by the terminal to the shipper','It can be amended if the quantity changes'],a:1,cat:'m6',fb:['Incorrect. The BL is a major commercial and legal document traded internationally.','Correct. The BL functions as: receipt for cargo, evidence of contract of carriage, and document of title. Ownership follows the original BL.','Incorrect. The Master signs the BL — the ship has control over what it signs.','Incorrect. Once issued, a BL cannot be amended — a letter of protest must be issued if figures are disputed before signing.']},
+  {q:'A letter of protest regarding a BL quantity dispute must be issued:',opts:['After arbitration proceedings begin','At or before the time of signing the disputed BL','After receiving P&I club legal advice','At the discharge port even if the dispute arose at loading'],a:1,cat:'m6',fb:['Incorrect. Waiting for arbitration is far too late.','Correct. The protest must be contemporaneous — at the time of signing or immediately after. A late protest significantly weakens the ship\'s legal position.','Incorrect. P&I club should be notified simultaneously — the protest should not wait for their advice.','Incorrect. The protest is issued at the port where the disputed event occurs.']},
+  {q:'The ullage report is the primary evidence in a cargo quantity dispute because:',opts:['It is prepared by the terminal and therefore independent','It is a contemporaneous record of all measurement steps taken at the time of gauging','It contains the legal freight calculation','It is signed by the Master and therefore legally binding'],a:1,cat:'m6',fb:['Incorrect. The ullage report is prepared by the ship — it is the ship\'s record.','Correct. The ullage report\'s value as evidence comes from being contemporaneous — prepared at the time of measurement, recording every raw ullage, correction, temperature, VCF, and resulting volume. This real-time record is far more credible than a reconstructed calculation.','Incorrect. Freight calculation is separate from the measurement record.','Incorrect. The Master\'s signature is important but the contemporaneous nature is the primary reason for its value as evidence.']}
+];
+
+// ══════════════════════════════════
+// STATE
+// ══════════════════════════════════
+var points=0,assessAnswers={},assessTimer=null,assessTimeLeft=1200;
+
+// ══════════════════════════════════
+// NAV
+// ══════════════════════════════════
+function goTo(dest){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  var el=document.getElementById('screen-'+dest);
+  if(el){el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+  var pm={hero:0,m1:12,m2:26,m3:42,m4:58,m5:74,m6:88,assess:100};
+  document.getElementById('pb').style.width=(pm[dest]||0)+'%';
+  var lm={hero:'Overview',m1:'M1 — Gauging Systems',m2:'M2 — Ullage Corrections',m3:'M3 — Volume & Density',m4:'M4 — Water, OBQ & ROB',m5:'M5 — Ship-Shore Difference',m6:'M6 — Cargo Documents',assess:'Final Assessment'};
+  document.getElementById('nm').textContent=lm[dest]||'';
+  if(dest==='assess'&&!assessTimer)startAssessTimer();
+  var mp=document.getElementById('mpill-'+dest);
+  if(mp)mp.classList.add('done');
+}
+function addPts(n){points+=n;document.getElementById('npts').textContent=points+' pts';}
+
+// ══════════════════════════════════
+// ULLAGE CORRECTION CALCULATOR
+// ══════════════════════════════════
+function updateCalc(){
+  var ull=parseInt(document.getElementById('c-ull').value);
+  var trim=parseInt(document.getElementById('c-trim').value);
+  var temp=parseInt(document.getElementById('c-temp').value);
+  var dens=parseInt(document.getElementById('c-dens').value);
+
+  document.getElementById('c-ull-r').textContent=ull.toLocaleString()+' mm';
+  document.getElementById('c-trim-r').textContent=(trim<0?'−':'')+Math.abs(trim)+' mm';
+  document.getElementById('c-temp-r').textContent=temp+'°C';
+  document.getElementById('c-dens-r').textContent=dens+' kg/m³';
+
+  var corrUll=ull+trim;
+  // Approximate volume from ullage (simplified linear for demo)
+  // Tank capacity approx 15000 m3, ullage 0=full, ullage 3000=empty
+  var TOV=Math.round(15000*(1-(corrUll/3000)));
+  var fw=Math.round(TOV*0.003);
+  var GOV=TOV-fw;
+  // VCF: simplified ASTM 54B approximation
+  var vcf=parseFloat((1-((temp-15)*0.000650*(dens/1000))).toFixed(4));
+  if(vcf<0.95)vcf=0.95;if(vcf>1.05)vcf=1.05;
+  var GSV=Math.round(GOV*vcf);
+
+  document.getElementById('c-gov').textContent=GOV.toLocaleString();
+  document.getElementById('c-vcf').textContent=vcf.toFixed(4);
+  document.getElementById('c-gsv').textContent=GSV.toLocaleString();
+
+  document.getElementById('c-formula').innerHTML=
+    '<strong>Step 1 — Corrected ullage:</strong> '+ull.toLocaleString()+' + ('+trim+') = '+corrUll.toLocaleString()+' mm<br>'+
+    '<strong>Step 2 — TOV from table:</strong> ~'+TOV.toLocaleString()+' m³ (calibration table for '+corrUll.toLocaleString()+'mm)<br>'+
+    '<strong>Step 3 — Deduct free water:</strong> '+TOV.toLocaleString()+' − '+fw+' = GOV '+GOV.toLocaleString()+' m³<br>'+
+    '<strong>Step 4 — VCF at '+temp+'°C, '+dens+' kg/m³:</strong> '+vcf.toFixed(4)+'<br>'+
+    '<strong>Step 5 — GSV = GOV × VCF:</strong> '+GOV.toLocaleString()+' × '+vcf.toFixed(4)+' = <strong>'+GSV.toLocaleString()+' m³ at 15°C</strong>';
+}
+
+// ══════════════════════════════════
+// QUANTITY DIFFERENCE ANALYSER
+// ══════════════════════════════════
+function calcQDA(){
+  var ship=parseFloat(document.getElementById('qda-ship').value)||0;
+  var shore=parseFloat(document.getElementById('qda-shore').value)||0;
+  if(!ship||!shore||ship<=0||shore<=0)return;
+  var diff=ship-shore;
+  var pct=Math.abs(diff/shore*100);
+  var result=document.getElementById('qda-result');
+  var pctEl=document.getElementById('qda-pct');
+  var verd=document.getElementById('qda-verdict');
+  result.className='qda-result show';
+  pctEl.textContent=(diff>=0?'+':'')+diff.toFixed(0)+' m³ ('+pct.toFixed(3)+'%)';
+  var direction=diff>=0?'ship higher than shore':'shore higher than ship';
+  if(pct<=0.3){
+    result.className='qda-result show ok';
+    verd.innerHTML='<strong>Within normal measurement accuracy.</strong> A '+pct.toFixed(3)+'% difference ('+direction+') is within ±0.3% — consistent with normal measurement uncertainty. No action required beyond recording in the voyage measurement record.';
+  } else if(pct<=0.5){
+    result.className='qda-result show ok';
+    verd.innerHTML='<strong>Acceptable — within ±0.5%.</strong> A '+pct.toFixed(3)+'% difference ('+direction+') is within industry-accepted limits. No protest required. Record in voyage measurement record and review all calculations for accuracy.';
+  } else if(pct<=0.7){
+    result.className='qda-result show warn';
+    verd.innerHTML='<strong>Above 0.5% — investigation recommended.</strong> A '+pct.toFixed(3)+'% difference ('+direction+') exceeds normal measurement accuracy. Review all ullage records, corrections, and VCF calculations. Check OBQ/ROB agreement. Consider issuing a letter of protest if cause cannot be identified.';
+  } else if(pct<=1.0){
+    result.className='qda-result show alert';
+    verd.innerHTML='<strong>Above 0.7% — investigation required, letter of protest should be issued.</strong> A '+pct.toFixed(3)+'% difference ('+direction+') exceeds the OCIMF investigation threshold. Issue letter of protest immediately. Notify Master, owners, and P&I club. Review all measurement records in detail.';
+  } else {
+    result.className='qda-result show alert';
+    verd.innerHTML='<strong>Above 1% — serious discrepancy requiring urgent investigation.</strong> A '+pct.toFixed(3)+'% difference ('+direction+') is significantly above normal limits. Possible causes: measurement error, OBQ/ROB dispute, pipeline contents, cargo theft, or MARPOL issue. Issue letter of protest. Notify P&I club urgently. Consider requesting seal inspection and joint re-measurement.';
+  }
+}
+
+// ══════════════════════════════════
+// SORT
+// ══════════════════════════════════
+function initSort(listId,dataKey){
+  var data=sortData[dataKey].slice();shuffle(data);
+  sortCurrent[listId]=data.map(function(d){return d.id;});
+  renderSort(listId,data);
+}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}}
+function renderSort(listId,data){
+  var list=document.getElementById(listId);if(!list)return;
+  list.innerHTML='';
+  data.forEach(function(item,i){
+    var div=document.createElement('div');div.className='si';
+    div.draggable=true;div.dataset.id=item.id;
+    div.innerHTML='<span class="sh">&#8942;</span><span class="sb">'+(i+1)+'</span><span class="st">'+item.text+'</span>';
+    div.addEventListener('dragstart',function(e){dragSrc=this;this.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+    div.addEventListener('dragend',function(){this.classList.remove('dragging');list.querySelectorAll('.si').forEach(function(el){el.classList.remove('over');});});
+    div.addEventListener('dragover',function(e){e.preventDefault();if(this!==dragSrc){list.querySelectorAll('.si').forEach(function(el){el.classList.remove('over');});this.classList.add('over');}});
+    div.addEventListener('drop',function(e){
+      e.stopPropagation();
+      if(this!==dragSrc){
+        var items=Array.from(list.querySelectorAll('.si'));
+        var si=items.indexOf(dragSrc),ti=items.indexOf(this);
+        var cur=sortCurrent[listId];
+        var tmp=cur[si];cur[si]=cur[ti];cur[ti]=tmp;
+        var allData=sortData[listId.replace('-sort','-data')];
+        var reordered=cur.map(function(id){return allData.find(function(d){return d.id===id;});});
+        renderSort(listId,reordered);
+      }
+    });
+    list.appendChild(div);
+  });
+}
+function resetSort(listId,dataKey){initSort(listId,dataKey);var fb=document.getElementById(listId.replace('-sort','-sfb'));if(fb)fb.className='sfb';}
+function checkSort(listId,correctKey,fbId){
+  var cur=sortCurrent[listId],cor=sortCorrect[correctKey];
+  var fb=document.getElementById(fbId);if(!fb)return;
+  if(JSON.stringify(cur)===JSON.stringify(cor)){
+    fb.className='sfb pass';fb.textContent='✓ Correct dispute response sequence. In a live situation, every minute of delay in issuing a letter of protest weakens the ship\'s position.';
+    document.getElementById(listId).querySelectorAll('.si').forEach(function(el){el.classList.add('correct-item');});
+    addPts(8);
+  } else {
+    var allData=sortData[listId.replace('-sort','-data')];
+    var names=cor.map(function(id){return allData.find(function(d){return d.id===id;}).text;});
+    fb.className='sfb fail';
+    fb.innerHTML='Not quite. Correct sequence:<ol style="margin:7px 0 0 18px;line-height:2;font-size:11px">'+names.map(function(n){return '<li>'+n+'</li>';}).join('')+'</ol>';
+  }
+}
+
+// ══════════════════════════════════
+// MATCH
+// ══════════════════════════════════
+function initMatch(mid){
+  var data=matchData[mid];matchState[mid]={selected:null,matched:[]};
+  var leftEl=document.getElementById(mid+'-left'),rightEl=document.getElementById(mid+'-right');
+  if(!leftEl||!rightEl)return;
+  leftEl.innerHTML='';rightEl.innerHTML='';
+  var rs=data.right.slice();shuffle(rs);
+  data.left.forEach(function(txt,i){
+    var el=document.createElement('div');el.className='mi';el.textContent=txt;
+    el.addEventListener('click',function(){matchClick(mid,'left',i,this);});
+    leftEl.appendChild(el);
+  });
+  rs.forEach(function(txt){
+    var oi=data.right.indexOf(txt);
+    var el=document.createElement('div');el.className='mi';el.textContent=txt;
+    el.addEventListener('click',function(){matchClick(mid,'right',oi,this);});
+    rightEl.appendChild(el);
+  });
+}
+function matchClick(mid,side,idx,el){
+  var state=matchState[mid];
+  if(el.classList.contains('matched-ok')||el.classList.contains('matched-err'))return;
+  var data=matchData[mid];
+  if(!state.selected){
+    if(side==='left'){state.selected={side:side,idx:idx,el:el};el.classList.add('selected');}
+    else{el.style.outline='2px solid var(--gd)';setTimeout(function(){el.style.outline='';},600);}
+    return;
+  }
+  if(state.selected.side===side){
+    state.selected.el.classList.remove('selected');
+    if(side==='left'){state.selected={side:side,idx:idx,el:el};el.classList.add('selected');}
+    else state.selected=null;
+    return;
+  }
+  var lEl=state.selected.el,rEl=el,lIdx=state.selected.idx,rIdx=idx;
+  lEl.classList.remove('selected');
+  var isMatch=data.pairs[lIdx]===rIdx;
+  if(isMatch){
+    lEl.classList.add('matched-ok');rEl.classList.add('matched-ok');
+    state.matched.push(lIdx);addPts(3);
+    if(state.matched.length===data.left.length){
+      var sc=document.getElementById(mid+'-score');
+      if(sc){sc.className='msc ok';sc.textContent='✓ All matched correctly.';}
+    }
+  } else {
+    lEl.classList.add('matched-err');rEl.classList.add('matched-err');
+    setTimeout(function(){lEl.classList.remove('matched-err');rEl.classList.remove('matched-err');},900);
+  }
+  state.selected=null;
+}
+
+// ══════════════════════════════════
+// MCQ & SCENARIO MCQ
+// ══════════════════════════════════
+function renderModuleQuiz(modId,qKeys){
+  var container=document.getElementById(modId+'-quiz');if(!container)return;
+  container.innerHTML='';
+  qKeys.forEach(function(key,i){
+    var data=mcqData[key];if(!data)return;
+    var div=document.createElement('div');
+    div.style.cssText='margin-bottom:1rem'+(i>0?';border-top:1px solid var(--bd);padding-top:1rem;margin-top:.5rem':'');
+    var opts='<div class="mo" id="opts-'+key+'">';
+    data.opts.forEach(function(opt,j){opts+='<button class="mb" onclick="selMCQ(\''+key+'\','+j+',this,3)"><span class="ml">'+['A','B','C','D'][j]+'</span>'+opt+'</button>';});
+    opts+='</div><div class="mfb" id="fb-'+key+'"></div>';
+    div.innerHTML='<div style="font-family:var(--fm);font-size:9px;color:var(--pu);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">Q'+(i+1)+'</div><div style="font-size:13px;font-weight:600;color:var(--wh);margin-bottom:.7rem;line-height:1.4;letter-spacing:-.01em">'+data.q+'</div>'+opts;
+    container.appendChild(div);
+  });
+}
+function selMCQ(key,idx,btn,pts){
+  var data=mcqData[key];if(!data)return;
+  var container=document.getElementById('opts-'+key);
+  var fb=document.getElementById('fb-'+key);
+  container.querySelectorAll('.mb').forEach(function(b){b.disabled=true;});
+  if(idx===data.a){btn.classList.add('correct-ans');if(fb){fb.className='mfb ok';fb.textContent=data.fb[idx];}addPts(pts||3);}
+  else{btn.classList.add('wrong-ans');container.querySelectorAll('.mb')[data.a].classList.add('correct-ans');if(fb){fb.className='mfb err';fb.textContent=data.fb[idx];}}
+}
+function renderScenMCQ(containerId,dataKey,onCorrect){
+  var data=scenMCQ[dataKey];if(!data)return;
+  var container=document.getElementById(containerId);if(!container)return;
+  container.innerHTML='';
+  data.opts.forEach(function(opt,i){
+    var btn=document.createElement('button');btn.className='mb';
+    btn.innerHTML='<span class="ml">'+['A','B','C','D'][i]+'</span>'+opt;
+    btn.addEventListener('click',(function(idx,b){return function(){
+      container.querySelectorAll('.mb').forEach(function(x){x.disabled=true;});
+      var fb=document.getElementById(dataKey+'-fb');
+      if(idx===data.a){b.classList.add('correct-ans');if(fb){fb.className='mfb ok';fb.textContent=data.fb[idx];}addPts(4);if(onCorrect)setTimeout(onCorrect,900);}
+      else{b.classList.add('wrong-ans');container.querySelectorAll('.mb')[data.a].classList.add('correct-ans');if(fb){fb.className='mfb err';fb.textContent=data.fb[idx];}}
+    };})(i,btn));
+    container.appendChild(btn);
+  });
+}
+
+// ══════════════════════════════════
+// WORKED EXAMPLE STEPPER
+// ══════════════════════════════════
+function initStepper(){
+  renderStepProgress();
+  renderStepContent();
+}
+function renderStepProgress(){
+  var prog=document.getElementById('step-prog');
+  if(!prog)return;
+  prog.innerHTML='';
+  steps.forEach(function(s,i){
+    var dot=document.createElement('div');
+    dot.className='step-dot'+(i===stepIdx?' active':i<stepIdx?' done':'');
+    dot.textContent=i+1;
+    dot.onclick=(function(idx){return function(){if(idx<=stepIdx){stepIdx=idx;renderStepProgress();renderStepContent();}}})(i);
+    prog.appendChild(dot);
+  });
+}
+function renderStepContent(){
+  var content=document.getElementById('step-content');
+  var counter=document.getElementById('step-counter');
+  var prevBtn=document.getElementById('step-prev');
+  var nextBtn=document.getElementById('step-next');
+  if(!content)return;
+  content.innerHTML='';
+  var s=steps[stepIdx];
+  var panel=document.createElement('div');
+  panel.className='step-panel show';
+  var html='<div class="step-title">'+s.title+'</div><div class="step-body">'+s.body+'</div>';
+  if(s.calc)html+='<div class="step-calc">'+s.calc.replace(/\n/g,'<br>')+'</div>';
+  if(s.result)html+='<div class="step-result">'+s.result+'</div>';
+  panel.innerHTML=html;
+  content.appendChild(panel);
+  counter.textContent='Step '+(stepIdx+1)+' of '+steps.length;
+  prevBtn.disabled=(stepIdx===0);
+  nextBtn.textContent=(stepIdx===steps.length-1)?'Complete ✓':'Next step →';
+  nextBtn.disabled=false;
+  if(stepIdx===steps.length-1)addPts(5);
+}
+function stepNav(dir){
+  var newIdx=stepIdx+dir;
+  if(newIdx>=0&&newIdx<steps.length){stepIdx=newIdx;renderStepProgress();renderStepContent();}
+}
+
+// ══════════════════════════════════
+// DOCUMENT TOGGLE
+// ══════════════════════════════════
+function toggleDoc(el){el.classList.toggle('expanded');}
+
+// ══════════════════════════════════
+// ASSESSMENT
+// ══════════════════════════════════
+function renderAssessment(){
+  var container=document.getElementById('assess-qs');container.innerHTML='';
+  aData.forEach(function(q,qi){
+    var div=document.createElement('div');div.className='aq';div.id='aq'+qi;
+    var html='<div class="aqn">Question '+(qi+1)+' of 18</div><div class="aqt">'+q.q+'</div><div class="mo" id="aopts'+qi+'">';
+    q.opts.forEach(function(opt,oi){html+='<button class="mb" onclick="pickA('+qi+','+oi+',this)"><span class="ml">'+['A','B','C','D'][oi]+'</span>'+opt+'</button>';});
+    html+='</div>';div.innerHTML=html;container.appendChild(div);
+  });
+}
+function pickA(qi,oi,btn){
+  var parent=document.getElementById('aq'+qi);
+  parent.querySelectorAll('.mb').forEach(function(b){b.style.borderColor='';b.style.background='';});
+  btn.style.borderColor='var(--gd)';btn.style.background='var(--gd-lt)';
+  assessAnswers[qi]=oi;
+  var answered=Object.keys(assessAnswers).length;
+  document.getElementById('a-qcount').textContent=answered+' / 18';
+  document.getElementById('btn-sub').disabled=(answered<18);
+}
+function startAssessTimer(){
+  assessTimer=setInterval(function(){
+    assessTimeLeft--;
+    var m=Math.floor(assessTimeLeft/60),s=assessTimeLeft%60;
+    var el=document.getElementById('a-timer');
+    if(el){el.textContent=m+':'+(s<10?'0':'')+s;if(assessTimeLeft<=300)el.className='warn';if(assessTimeLeft<=60)el.className='danger';}
+    if(assessTimeLeft<=0){clearInterval(assessTimer);submitA();}
+  },1000);
+}
+function submitA(){
+  clearInterval(assessTimer);
+  document.getElementById('btn-sub').style.display='none';
+  document.querySelector('.tstr').style.display='none';
+  var correct=0,cats={m1:0,m2:0,m3:0,m4:0,m5:0,m6:0},catTot={m1:0,m2:0,m3:0,m4:0,m5:0,m6:0};
+  aData.forEach(function(q,qi){
+    var sel=assessAnswers[qi];catTot[q.cat]++;
+    var parent=document.getElementById('aq'+qi);
+    var opts=parent.querySelectorAll('.mb');
+    opts.forEach(function(b){b.disabled=true;b.style.borderColor='';b.style.background='';});
+    if(sel===q.a){correct++;cats[q.cat]++;if(opts[sel])opts[sel].classList.add('correct-ans');}
+    else{if(sel!==undefined&&opts[sel])opts[sel].classList.add('wrong-ans');if(opts[q.a])opts[q.a].classList.add('correct-ans');}
+    var fb=document.createElement('div');
+    fb.className='mfb '+(sel===q.a?'ok':'err');
+    fb.textContent=sel===undefined?'Not answered — correct answer shown above.':q.fb[sel];
+    parent.appendChild(fb);
+  });
+  var pct=Math.round((correct/18)*100),passed=pct>=75;
+  var panel=document.getElementById('results');panel.style.display='block';
+  var ring=document.getElementById('score-ring');ring.className='sring '+(passed?'pass':'fail');
+  document.getElementById('score-pct').textContent=pct+'%';
+  document.getElementById('score-lbl').textContent=correct+' / 18 correct';
+  var verd=document.getElementById('verd');
+  verd.textContent=passed?'Assessment passed':'Below pass threshold';
+  verd.style.color=passed?'var(--gr)':'var(--rd)';
+  document.getElementById('verdm').textContent=passed
+    ?'You have demonstrated competency in cargo measurement and quantity calculations. Record in the SMS training matrix. Always refer to your vessel\'s calibration tables and the applicable charterparty for live operations.'
+    :'Score below 75%. Review the flagged modules. Measurement errors in live cargo operations have significant commercial and legal consequences.';
+  var bd=document.getElementById('breakdown'),labels={m1:'Gauging',m2:'Corrections',m3:'Volume',m4:'Water/OBQ',m5:'Difference',m6:'Documents'};
+  bd.innerHTML='';
+  ['m1','m2','m3','m4','m5','m6'].forEach(function(cat){
+    var r=cats[cat],t=catTot[cat];
+    var div=document.createElement('div');div.className='bd '+(r>=Math.ceil(t*.67)?'good':'bad');
+    div.innerHTML='<div class="bds">'+r+'/'+t+'</div><div class="bdl">'+labels[cat]+'</div>';
+    bd.appendChild(div);
+  });
+  if(passed)document.getElementById('cert').className='cert show';
+  panel.scrollIntoView({behavior:'smooth'});
+}
+
+// ══════════════════════════════════
+// INIT
+// ══════════════════════════════════
+document.addEventListener('DOMContentLoaded',function(){
+  goTo('hero');
+  initMatch('m1');
+  initMatch('m6');
+  initStepper();
+  initSort('m5-sort','m5-data');
+  renderModuleQuiz('m1',['m1-q1','m1-q2','m1-q3']);
+  renderModuleQuiz('m2',['m2-q1','m2-q2','m2-q3']);
+  renderModuleQuiz('m3',['m3-q1','m3-q2','m3-q3']);
+  renderModuleQuiz('m4',['m4-q1','m4-q2','m4-q3']);
+  renderModuleQuiz('m5',['m5-q1','m5-q2','m5-q3']);
+  renderModuleQuiz('m6',['m6-q1','m6-q2','m6-q3']);
+  renderScenMCQ('m4-scen1','m4-scen1',function(){document.getElementById('m4-scen2-w').style.display='block';renderScenMCQ('m4-scen2','m4-scen2',null);});
+  renderAssessment();
+  updateCalc();
+  calcQDA();
+});
+</script>
+</body>
+</html>

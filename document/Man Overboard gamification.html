@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Man Overboard — Recognition, Response and Recovery</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+        .screen.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .breadcrumb {
+            background: #f5f5f5;
+            padding: 12px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .breadcrumb span {
+            color: #c41e3a;
+            font-weight: bold;
+        }
+        .content-section {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .content-section h2 {
+            color: #c41e3a;
+            font-size: 24px;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #c41e3a;
+            padding-bottom: 10px;
+        }
+        .content-section h3 {
+            color: #333;
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .content-section p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        .content-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .content-section li {
+            margin-bottom: 8px;
+        }
+        .highlight-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .emergency-box {
+            background: #f8d7da;
+            border-left: 4px solid #c41e3a;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            color: #721c24;
+        }
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            color: #155724;
+        }
+        .gamification-panel {
+            background: #f9f9f9;
+            border: 2px solid #c41e3a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #c41e3a;
+        }
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #c41e3a 0%, #8b0000 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: #c41e3a;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #8b0000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .activity-container {
+            background: #f9f9f9;
+            border: 2px dashed #c41e3a;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .activity-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #c41e3a;
+            margin-bottom: 15px;
+        }
+        .scenario-box {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .scenario-box:hover {
+            background: #f0f0f0;
+            border-color: #c41e3a;
+        }
+        .scenario-box.selected {
+            background: #fff3cd;
+            border-color: #c41e3a;
+            border-width: 2px;
+        }
+        .quiz-option {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .quiz-option:hover {
+            border-color: #c41e3a;
+        }
+        .quiz-option.selected {
+            background: #e7f3ff;
+            border-color: #0066cc;
+        }
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #c41e3a;
+        }
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .certificate {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe6e6 100%);
+            border: 3px solid #c41e3a;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .certificate h2 {
+            color: #c41e3a;
+            font-size: 32px;
+            margin-bottom: 20px;
+            border: none;
+        }
+        .certificate-line {
+            margin: 20px 0;
+            font-size: 16px;
+        }
+        .certificate-score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #c41e3a;
+            margin: 20px 0;
+        }
+        .badge-display {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        .badge {
+            background: white;
+            border: 2px solid #ffc107;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            text-align: center;
+        }
+        .badge-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .hero-content {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .hero-content h2 {
+            color: #c41e3a;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .hero-content p {
+            font-size: 16px;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        .start-button {
+            background: #c41e3a;
+            color: white;
+            padding: 15px 40px;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .module-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .module-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .module-card:hover {
+            border-color: #c41e3a;
+            box-shadow: 0 4px 8px rgba(196, 30, 58, 0.2);
+        }
+        .module-card h3 {
+            color: #c41e3a;
+            margin-bottom: 10px;
+        }
+        .module-card p {
+            font-size: 14px;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 24px;
+            }
+            .content-section {
+                padding: 20px;
+            }
+            .gamification-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .nav-buttons {
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <!-- HERO SCREEN -->
+        <div id="hero" class="screen active">
+            <header>
+                <h1>🚢 Man Overboard — Recognition, Response and Recovery</h1>
+                <p>Emergency Response Training for All Crew</p>
+            </header>
+            <div class="hero-content">
+                <h2>Welcome to MOB Emergency Response Training</h2>
+                <p>This comprehensive course covers everything you need to know about recognizing, responding to, and recovering from Man Overboard situations.</p>
+                <p><strong>Course Duration:</strong> 60-75 minutes | <strong>Assessment:</strong> 20 Questions | <strong>Passing Score:</strong> 70%</p>
+                <div class="highlight-box">
+                    <strong>⚠️ Important:</strong> Man Overboard situations require immediate, coordinated action from all crew members. This training covers recognition, bridge procedures, vessel manoeuvring, rescue boat operations, and recovery techniques.
+                </div>
+                <button class="start-button" onclick="go('m1')">▶ Start Course</button>
+            </div>
+        </div>
+
+        <!-- MODULE 1: INITIAL RECOGNITION & IMMEDIATE ACTIONS -->
+        <div id="m1" class="screen">
+            <div class="breadcrumb">Course Progress: <span>Module 1 of 4</span></div>
+            <div class="gamification-panel">
+                <div class="stat-item">
+                    <div class="stat-label">XP Points</div>
+                    <div class="stat-value" id="xp-display">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Progress</div>
+                    <div class="stat-value" id="progress-display">0%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Badges</div>
+                    <div class="stat-value" id="badge-count">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Status</div>
+                    <div class="stat-value" id="status-display">Active</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="content-section">
+                <h2>🚨 Module 1: Initial Recognition & Immediate Actions</h2>
+                <p>The first moments after a Man Overboard incident are critical. Immediate recognition and swift action significantly improve recovery outcomes.</p>
+                
+                <h3>Immediate Actions on Deck</h3>
+                <ul>
+                    <li><strong>SHOUT "MAN OVERBOARD"</strong> - Alert all crew immediately</li>
+                    <li><strong>POINT</strong> - Maintain visual contact and point continuously</li>
+                    <li><strong>THROW LIFE RING</strong> - Deploy nearest life ring toward person</li>
+                    <li><strong>MARK POSITION</strong> - Note vessel position and time</li>
+                    <li><strong>ALERT BRIDGE</strong> - Report to bridge immediately</li>
+                </ul>
+
+                <h3>Bridge Notification</h3>
+                <p>The bridge must be notified immediately with clear, concise information:</p>
+                <ul>
+                    <li>Exact time of incident</li>
+                    <li>Person's name and location</li>
+                    <li>Vessel's position and heading</li>
+                    <li>Sea state and weather conditions</li>
+                    <li>Availability of rescue equipment</li>
+                </ul>
+
+                <div class="emergency-box">
+                    <strong>⚠️ Critical:</strong> Every second counts. Hypothermia begins immediately in cold water. Survival time decreases rapidly with water temperature.
+                </div>
+
+                <div class="activity-container">
+                    <div class="activity-title">🎮 Interactive Activity: Sequence the Response</div>
+                    <p>Arrange the following actions in the correct order:</p>
+                    <div id="m1-activity"></div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Module 1 Quiz</h2>
+                <div id="m1-quiz"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button onclick="go('hero')">← Back to Menu</button>
+                <button onclick="completeAndGo('m1', 'm2')">Next Module →</button>
+            </div>
+        </div>
+
+        <!-- MODULE 2: VESSEL MANOEUVRING & BRIDGE PROCEDURES -->
+        <div id="m2" class="screen">
+            <div class="breadcrumb">Course Progress: <span>Module 2 of 4</span></div>
+            <div class="gamification-panel">
+                <div class="stat-item">
+                    <div class="stat-label">XP Points</div>
+                    <div class="stat-value" id="xp-display">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Progress</div>
+                    <div class="stat-value" id="progress-display">0%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Badges</div>
+                    <div class="stat-value" id="badge-count">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Status</div>
+                    <div class="stat-value" id="status-display">Active</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="content-section">
+                <h2>🧭 Module 2: Vessel Manoeuvring & Bridge Procedures</h2>
+                <p>Once MOB is reported to the bridge, immediate vessel manoeuvring is essential to return to the person and maintain visual contact.</p>
+
+                <h3>Williamson Turn</h3>
+                <p>The Williamson Turn is the most commonly used MOB manoeuvre for large vessels:</p>
+                <ul>
+                    <li>Hard rudder (full helm) in the direction of the person</li>
+                    <li>When vessel has turned approximately 60°, reverse rudder to full opposite</li>
+                    <li>Continue until vessel is on reciprocal course (180° from original heading)</li>
+                    <li>Vessel approaches person from astern on original course</li>
+                    <li>Advantage: Brings vessel back on original track</li>
+                </ul>
+
+                <h3>Anderson Turn</h3>
+                <p>Used for smaller vessels or when speed needs to be reduced quickly:</p>
+                <ul>
+                    <li>Hard rudder in direction of person</li>
+                    <li>When heading has changed 90°, reduce speed to minimum</li>
+                    <li>Continue turn to bring vessel parallel to person</li>
+                    <li>Approach from windward side</li>
+                </ul>
+
+                <h3>Scharnow Turn</h3>
+                <p>Alternative for specific situations:</p>
+                <ul>
+                    <li>Hard rudder away from person initially</li>
+                    <li>Turn 240° and approach from windward</li>
+                    <li>Less commonly used but effective in certain sea states</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>Key Principle:</strong> The choice of manoeuvre depends on vessel type, sea state, wind direction, and visibility. The goal is to return to the person as quickly as possible while maintaining visual contact.
+                </div>
+
+                <div class="activity-container">
+                    <div class="activity-title">🎮 Interactive Activity: Choose the Manoeuvre</div>
+                    <p>Select the most appropriate manoeuvre for each scenario:</p>
+                    <div id="m2-activity"></div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Module 2 Quiz</h2>
+                <div id="m2-quiz"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button onclick="go('m1')">← Previous Module</button>
+                <button onclick="completeAndGo('m2', 'm3')">Next Module →</button>
+            </div>
+        </div>
+
+        <!-- MODULE 3: RESCUE BOAT OPERATIONS & RECOVERY -->
+        <div id="m3" class="screen">
+            <div class="breadcrumb">Course Progress: <span>Module 3 of 4</span></div>
+            <div class="gamification-panel">
+                <div class="stat-item">
+                    <div class="stat-label">XP Points</div>
+                    <div class="stat-value" id="xp-display">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Progress</div>
+                    <div class="stat-value" id="progress-display">0%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Badges</div>
+                    <div class="stat-value" id="badge-count">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Status</div>
+                    <div class="stat-value" id="status-display">Active</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="content-section">
+                <h2>⛵ Module 3: Rescue Boat Operations & Recovery</h2>
+                <p>Rescue boat launch and recovery operations require precise coordination and adherence to safety procedures.</p>
+
+                <h3>Rescue Boat Launch Decision</h3>
+                <ul>
+                    <li>Assess weather and sea state</li>
+                    <li>Confirm person is conscious and responsive</li>
+                    <li>Determine if person can stay afloat</li>
+                    <li>Evaluate rescue boat crew readiness</li>
+                    <li>Consider vessel's ability to manoeuvre</li>
+                </ul>
+
+                <h3>Rescue Boat Crew Duties</h3>
+                <ul>
+                    <li><strong>Coxswain:</strong> Commands boat, navigates to person, maintains communication</li>
+                    <li><strong>Bowman:</strong> Scans for person, deploys rescue equipment, assists recovery</li>
+                    <li><strong>Crew Members:</strong> Maintain visual contact, prepare recovery equipment, assist with person</li>
+                    <li><strong>Lookouts:</strong> Maintain continuous visual contact with person and boat</li>
+                </ul>
+
+                <h3>Approach and Recovery</h3>
+                <ul>
+                    <li>Approach from windward when possible</li>
+                    <li>Reduce speed to avoid creating wash</li>
+                    <li>Position boat parallel to person at safe distance</li>
+                    <li>Deploy recovery equipment (rescue net, ladder, or sling)</li>
+                    <li>For unconscious person: Use rescue basket or stretcher</li>
+                    <li>Avoid sudden movements that could injure person</li>
+                </ul>
+
+                <div class="emergency-box">
+                    <strong>⚠️ Hypothermia Consideration:</strong> Persons recovered from cold water may be unconscious or unresponsive. Handle gently to avoid cardiac complications. Provide immediate medical attention.
+                </div>
+
+                <div class="activity-container">
+                    <div class="activity-title">🎮 Interactive Activity: Recovery Decision Making</div>
+                    <p>Analyze each scenario and decide the best recovery approach:</p>
+                    <div id="m3-activity"></div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Module 3 Quiz</h2>
+                <div id="m3-quiz"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button onclick="go('m2')">← Previous Module</button>
+                <button onclick="completeAndGo('m3', 'm4')">Next Module →</button>
+            </div>
+        </div>
+
+        <!-- MODULE 4: NIGHT MOB, MEDICAL RESPONSE & DRILLS -->
+        <div id="m4" class="screen">
+            <div class="breadcrumb">Course Progress: <span>Module 4 of 4</span></div>
+            <div class="gamification-panel">
+                <div class="stat-item">
+                    <div class="stat-label">XP Points</div>
+                    <div class="stat-value" id="xp-display">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Progress</div>
+                    <div class="stat-value" id="progress-display">0%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Badges</div>
+                    <div class="stat-value" id="badge-count">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Status</div>
+                    <div class="stat-value" id="status-display">Active</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="content-section">
+                <h2>🌙 Module 4: Night MOB, Medical Response & Drills</h2>
+                <p>Night MOB incidents present additional challenges. Medical response and regular drills are essential for readiness.</p>
+
+                <h3>Night MOB Challenges</h3>
+                <ul>
+                    <li>Reduced visibility of person in water</li>
+                    <li>Difficulty maintaining visual contact</li>
+                    <li>Increased risk of collision with rescue boat</li>
+                    <li>Difficulty assessing person's condition</li>
+                    <li>Increased stress on crew</li>
+                </ul>
+
+                <h3>Night MOB Search Patterns</h3>
+                <ul>
+                    <li><strong>Expanding Square Search:</strong> Systematic grid pattern expanding from last known position</li>
+                    <li><strong>Parallel Track Search:</strong> Vessel makes parallel passes through search area</li>
+                    <li><strong>Creeping Line Ahead:</strong> Vessel moves slowly forward while maintaining search pattern</li>
+                </ul>
+
+                <h3>Night MOB Lighting</h3>
+                <ul>
+                    <li>Activate all deck lighting</li>
+                    <li>Deploy searchlights to scan water</li>
+                    <li>Use rescue boat spotlights</li>
+                    <li>Activate person's life jacket lights</li>
+                    <li>Consider flares or illumination rounds (if available)</li>
+                </ul>
+
+                <h3>Post-Recovery Medical Response</h3>
+                <ul>
+                    <li><strong>Hypothermia Treatment:</strong> Gradual rewarming, avoid rapid temperature changes</li>
+                    <li><strong>Exhaustion Management:</strong> Rest, hydration, monitoring</li>
+                    <li><strong>Unconscious Person:</strong> Recovery position, monitor airway, prepare for CPR</li>
+                    <li><strong>Medical Evacuation:</strong> Contact nearest medical facility, prepare for helicopter evacuation if needed</li>
+                </ul>
+
+                <h3>MOB Drill Requirements</h3>
+                <ul>
+                    <li>Drills conducted at least quarterly</li>
+                    <li>All crew members participate</li>
+                    <li>Documented in ship's records</li>
+                    <li>SIRE inspectors review drill records</li>
+                    <li>Drills include all aspects: recognition, manoeuvring, rescue boat, recovery</li>
+                </ul>
+
+                <div class="success-box">
+                    <strong>✓ Key Learning:</strong> Regular drills ensure crew readiness and familiarity with procedures. Effective communication and coordination are essential for successful MOB response.
+                </div>
+
+                <div class="activity-container">
+                    <div class="activity-title">🎮 Interactive Activity: Identify Common Failures</div>
+                    <p>Review each case study and identify the failure points:</p>
+                    <div id="m4-activity"></div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Module 4 Quiz</h2>
+                <div id="m4-quiz"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button onclick="go('m3')">← Previous Module</button>
+                <button onclick="completeAndGo('m4', 'assess')">Take Assessment →</button>
+            </div>
+        </div>
+
+        <!-- ASSESSMENT SCREEN -->
+        <div id="assess" class="screen">
+            <div class="breadcrumb">Course Progress: <span>Final Assessment</span></div>
+            <div class="gamification-panel">
+                <div class="stat-item">
+                    <div class="stat-label">XP Points</div>
+                    <div class="stat-value" id="xp-display">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Progress</div>
+                    <div class="stat-value" id="progress-display">100%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Badges</div>
+                    <div class="stat-value" id="badge-count">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Status</div>
+                    <div class="stat-value" id="status-display">Assessment</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-bar" style="width: 100%;"></div>
+            </div>
+
+            <div class="content-section">
+                <h2>📋 Final Assessment: Man Overboard Response</h2>
+                <p>You have completed all four modules. Now take the final assessment to demonstrate your knowledge of MOB procedures.</p>
+                <p><strong>Passing Score: 70% (14 out of 20 questions)</strong></p>
+                <div id="assess-content"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button onclick="go('m4')">← Back to Module 4</button>
+            </div>
+        </div>
+
+        <!-- RESULTS SCREEN -->
+        <div id="results" class="screen">
+            <div class="breadcrumb">Course Progress: <span>Completed</span></div>
+            <div class="content-section">
+                <div id="results-content"></div>
+            </div>
+            <div class="nav-buttons">
+                <button onclick="go('hero')">← Return to Menu</button>
+                <button onclick="location.reload()">🔄 Restart Course</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ==================== COURSE STATE ====================
+        window.courseState = {
+            currentScreen: 'hero',
+            totalXP: 0,
+            badges: [],
+            modulesCompleted: [],
+            quizScores: {},
+            assessmentScore: 0,
+            assessmentAnswers: {},
+            startTime: Date.now(),
+            completionTime: 0
+        };
+
+        // ==================== NAVIGATION ====================
+        function go(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            window.courseState.currentScreen = screenId;
+            
+            if (screenId === 'assess') {
+                renderAssessment();
+            }
+            
+            window.scrollTo(0, 0);
+        }
+
+        function completeAndGo(moduleId, nextScreenId) {
+            if (!window.courseState.modulesCompleted.includes(moduleId)) {
+                window.courseState.modulesCompleted.push(moduleId);
+                awardXP(50);
+                updateModuleStats();
+            }
+            go(nextScreenId);
+        }
+
+        // ==================== ACTIVITIES ====================
+        function renderM1Activity() {
+            const activity = document.getElementById('m1-activity');
+            activity.innerHTML = `
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
+                    <p style="margin-bottom: 15px;"><strong>Correct Sequence:</strong></p>
+                    <ol style="margin-left: 20px;">
+                        <li>Shout "MAN OVERBOARD"</li>
+                        <li>Point and maintain visual contact</li>
+                        <li>Throw life ring</li>
+                        <li>Alert bridge with details</li>
+                        <li>Mark vessel position</li>
+                    </ol>
+                    <button onclick="checkM1Activity()" style="margin-top: 15px;">✓ Confirm Understanding</button>
+                </div>
+            `;
+        }
+
+        function checkM1Activity() {
+            awardXP(25);
+            alert('✓ Correct! You understand the immediate response sequence.');
+        }
+
+        function renderM2Activity() {
+            const activity = document.getElementById('m2-activity');
+            activity.innerHTML = `
+                <div class="scenario-box" onclick="selectScenario(this, 'williamson')">
+                    <strong>Scenario 1:</strong> Large container ship, person overboard on starboard side, moderate sea state
+                    <br><small>Best Manoeuvre: Williamson Turn</small>
+                </div>
+                <div class="scenario-box" onclick="selectScenario(this, 'anderson')">
+                    <strong>Scenario 2:</strong> Small fishing vessel, person overboard, need rapid speed reduction
+                    <br><small>Best Manoeuvre: Anderson Turn</small>
+                </div>
+                <button onclick="checkM2Activity()" style="margin-top: 15px;">✓ Submit Answers</button>
+            `;
+        }
+
+        function selectScenario(element, type) {
+            element.classList.toggle('selected');
+        }
+
+        function checkM2Activity() {
+            awardXP(25);
+            alert('✓ Correct! You understand vessel manoeuvring options.');
+        }
+
+        function renderM3Activity() {
+            const activity = document.getElementById('m3-activity');
+            activity.innerHTML = `
+                <div class="scenario-box" onclick="selectRecovery(this, 'conscious')">
+                    <strong>Scenario 1:</strong> Person is conscious, responsive, wearing life jacket
+                    <br><small>Recovery Method: Rescue net or ladder</small>
+                </div>
+                <div class="scenario-box" onclick="selectRecovery(this, 'unconscious')">
+                    <strong>Scenario 2:</strong> Person is unconscious, cold water, hypothermia suspected
+                    <br><small>Recovery Method: Rescue basket/stretcher, gentle handling</small>
+                </div>
+                <button onclick="checkM3Activity()" style="margin-top: 15px;">✓ Submit Answers</button>
+            `;
+        }
+
+        function selectRecovery(element, type) {
+            element.classList.toggle('selected');
+        }
+
+        function checkM3Activity() {
+            awardXP(25);
+            alert('✓ Correct! You understand recovery procedures.');
+        }
+
+        function renderM4Activity() {
+            const activity = document.getElementById('m4-activity');
+            activity.innerHTML = `
+                <div class="scenario-box" onclick="selectFailure(this, 'failure1')">
+                    <strong>Case Study 1:</strong> MOB not reported to bridge immediately. Vessel continued on course for 5 minutes.
+                    <br><small>Failure: Delayed bridge notification</small>
+                </div>
+                <div class="scenario-box" onclick="selectFailure(this, 'failure2')">
+                    <strong>Case Study 2:</strong> Night MOB, no searchlights activated, rescue boat launched without lighting.
+                    <br><small>Failure: Inadequate lighting</small>
+                </div>
+                <button onclick="checkM4Activity()" style="margin-top: 15px;">✓ Submit Answers</button>
+            `;
+        }
+
+        function selectFailure(element, type) {
+            element.classList.toggle('selected');
+        }
+
+        function checkM4Activity() {
+            awardXP(25);
+            alert('✓ Correct! You understand common failure points.');
+        }
+
+        // ==================== QUIZZES ====================
+        const quizzes = {
+            m1: [
+                {
+                    question: "What is the first action when a person falls overboard?",
+                    options: ["Alert the bridge", "Shout 'MAN OVERBOARD'", "Deploy rescue boat", "Check life jackets"],
+                    correct: 1
+                },
+                {
+                    question: "Why is maintaining visual contact critical in MOB situations?",
+                    options: ["To assess the person's swimming ability", "To prevent losing the person in the water", "To calculate rescue time", "To activate alarms"],
+                    correct: 1
+                }
+            ],
+            m2: [
+                {
+                    question: "What is the primary advantage of the Williamson Turn?",
+                    options: ["Fastest response", "Brings vessel back on original track", "Requires less crew", "Works in all sea states"],
+                    correct: 1
+                },
+                {
+                    question: "When should the Anderson Turn be preferred over the Williamson Turn?",
+                    options: ["In rough seas", "For smaller vessels needing rapid speed reduction", "During night operations", "For large tankers"],
+                    correct: 1
+                }
+            ],
+            m3: [
+                {
+                    question: "What is the coxswain's primary responsibility?",
+                    options: ["Deploy recovery equipment", "Command boat and navigate to person", "Maintain vessel position", "Monitor weather"],
+                    correct: 1
+                },
+                {
+                    question: "How should a rescue boat approach a person in the water?",
+                    options: ["At high speed for quick rescue", "From windward when possible, at reduced speed", "From any direction", "At maximum engine power"],
+                    correct: 1
+                }
+            ],
+            m4: [
+                {
+                    question: "What is the main challenge of night MOB operations?",
+                    options: ["Crew fatigue", "Reduced visibility of person", "Vessel speed reduction", "Rescue boat availability"],
+                    correct: 1
+                },
+                {
+                    question: "What is the minimum frequency for MOB drills?",
+                    options: ["Annually", "Semi-annually", "Quarterly", "Monthly"],
+                    correct: 2
+                }
+            ]
+        };
+
+        function renderQuiz(moduleId) {
+            const quizContainer = document.getElementById(`${moduleId}-quiz`);
+            const quiz = quizzes[moduleId];
+            
+            let html = '';
+            quiz.forEach((q, idx) => {
+                html += `
+                    <div style="margin-bottom: 20px;">
+                        <p><strong>Question ${idx + 1}:</strong> ${q.question}</p>
+                        <div id="${moduleId}-q${idx}">
+                            ${q.options.map((opt, optIdx) => `
+                                <div class="quiz-option" onclick="selectQuizOption('${moduleId}', ${idx}, ${optIdx})">
+                                    ${opt}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            html += `<button onclick="submitQuiz('${moduleId}')">Submit Quiz</button>`;
+            quizContainer.innerHTML = html;
+        }
+
+        function selectQuizOption(moduleId, qIdx, optIdx) {
+            document.querySelectorAll(`#${moduleId}-q${qIdx} .quiz-option`).forEach(el => el.classList.remove('selected'));
+            event.target.classList.add('selected');
+            if (!window.courseState.quizScores[moduleId]) window.courseState.quizScores[moduleId] = {};
+            window.courseState.quizScores[moduleId][qIdx] = optIdx;
+        }
+
+        function submitQuiz(moduleId) {
+            const quiz = quizzes[moduleId];
+            let score = 0;
+            
+            Object.keys(window.courseState.quizScores[moduleId] || {}).forEach(qIdx => {
+                if (window.courseState.quizScores[moduleId][qIdx] === quiz[qIdx].correct) {
+                    score++;
+                }
+            });
+            
+            const percentage = Math.round((score / quiz.length) * 100);
+            awardXP(Math.round(percentage / 10) * 10);
+            alert(`Quiz Score: ${score}/${quiz.length} (${percentage}%)`);
+        }
+
+        // ==================== ASSESSMENT ====================
+        const assessmentQuestions = [
+            { question: "What should be the first action when a person falls overboard?", options: ["Alert the bridge", "Shout 'MAN OVERBOARD'", "Deploy rescue boat", "Check life jackets"], correct: 1 },
+            { question: "What is the primary advantage of the Williamson Turn?", options: ["Fastest response", "Brings vessel back on original track", "Requires less crew", "Works in all sea states"], correct: 1 },
+            { question: "Which manoeuvre is preferred for smaller vessels?", options: ["Williamson Turn", "Anderson Turn", "Scharnow Turn", "Crash Astern"], correct: 1 },
+            { question: "What is the coxswain's primary responsibility?", options: ["Deploy equipment", "Command boat and navigate", "Monitor weather", "Maintain vessel position"], correct: 1 },
+            { question: "How should a rescue boat approach a person?", options: ["High speed", "From windward at reduced speed", "Any direction", "Maximum power"], correct: 1 },
+            { question: "What is the minimum MOB drill frequency?", options: ["Annually", "Semi-annually", "Quarterly", "Monthly"], correct: 2 },
+            { question: "What is critical for night MOB operations?", options: ["Crew experience", "Adequate lighting", "Vessel speed", "Weather conditions"], correct: 1 },
+            { question: "How should an unconscious person be recovered?", options: ["Quickly with force", "Using rescue basket gently", "With rescue net only", "Any available method"], correct: 1 },
+            { question: "What is the first sign of hypothermia?", options: ["Loss of consciousness", "Shivering and confusion", "Cardiac arrest", "Respiratory failure"], correct: 1 },
+            { question: "Who should maintain visual contact during MOB?", options: ["Only the bridge", "Only the rescue boat", "Designated lookouts continuously", "Whoever is available"], correct: 2 },
+            { question: "What information must be reported to the bridge?", options: ["Only the person's name", "Time, location, vessel position, sea state", "Just the time", "Only the location"], correct: 1 },
+            { question: "What is the purpose of the life ring?", options: ["Mark the position", "Support the person", "Signal other vessels", "All of the above"], correct: 3 },
+            { question: "When should the rescue boat be launched?", options: ["Immediately always", "After assessing conditions and person's status", "Only at night", "Never during storms"], correct: 1 },
+            { question: "What should be done for a conscious person in cold water?", options: ["Immediate rewarming", "Gradual assistance to boat", "Leave in water longer", "Vigorous movement"], correct: 1 },
+            { question: "How is MOB drill frequency documented?", options: ["Informally", "In ship's records for SIRE inspection", "Only verbally", "Not required"], correct: 1 },
+            { question: "What is the Scharnow Turn used for?", options: ["Large vessels only", "Specific situations as alternative", "Never used", "Training only"], correct: 1 },
+            { question: "What crew members are involved in rescue boat operations?", options: ["Only officers", "Coxswain, bowman, crew, lookouts", "Only experienced sailors", "Whoever is available"], correct: 1 },
+            { question: "What is the recovery position for unconscious person?", options: ["Flat on back", "On side with airway clear", "Face down", "Seated upright"], correct: 1 },
+            { question: "How long can survival time be in cold water?", options: ["Hours", "Minutes to hours depending on temperature", "Days", "Indefinite"], correct: 1 },
+            { question: "What is the passing score for this assessment?", options: ["60%", "70%", "80%", "90%"], correct: 1 }
+        ];
+
+        function renderAssessment() {
+            const container = document.getElementById('assess-content');
+            let html = '';
+            
+            assessmentQuestions.forEach((q, idx) => {
+                html += `
+                    <div style="margin-bottom: 20px; padding: 15px; background: #f9f9f9; border-radius: 5px;">
+                        <p><strong>Question ${idx + 1} of ${assessmentQuestions.length}:</strong> ${q.question}</p>
+                        <div id="assess-q${idx}">
+                            ${q.options.map((opt, optIdx) => `
+                                <div class="quiz-option" onclick="selectAssessmentOption(${idx}, ${optIdx})">
+                                    ${opt}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `<button onclick="submitAssessment()" style="width: 100%; padding: 15px; font-size: 16px;">📋 Submit Assessment</button>`;
+            container.innerHTML = html;
+        }
+
+        function selectAssessmentOption(qIdx, optIdx) {
+            document.querySelectorAll(`#assess-q${qIdx} .quiz-option`).forEach(el => el.classList.remove('selected'));
+            event.target.classList.add('selected');
+            window.courseState.assessmentAnswers[qIdx] = optIdx;
+        }
+
+        function submitAssessment() {
+            let score = 0;
+            assessmentQuestions.forEach((q, idx) => {
+                if (window.courseState.assessmentAnswers[idx] === q.correct) {
+                    score++;
+                }
+            });
+            
+            const percentage = Math.round((score / assessmentQuestions.length) * 100);
+            const passed = percentage >= 70;
+            
+            window.courseState.assessmentScore = percentage;
+            window.courseState.completionTime = Math.round((Date.now() - window.courseState.startTime) / 1000);
+            
+            if (passed) {
+                awardXP(100);
+                checkBadges();
+            }
+            
+            displayResults(score, percentage, passed);
+            sendLMSCompletion(passed, percentage);
+        }
+
+        function displayResults(score, percentage, passed) {
+            const resultsContainer = document.getElementById('results-content');
+            const badgesHtml = window.courseState.badges.length > 0 ? `
+                <div class="badge-display">
+                    ${window.courseState.badges.map(badge => `<div class="badge">${badge}</div>`).join('')}
+                </div>
+            ` : '';
+            
+            resultsContainer.innerHTML = `
+                <h2>${passed ? '🎉 Assessment Passed!' : '⚠️ Assessment Not Passed'}</h2>
+                <div class="certificate">
+                    <h2>Assessment Results</h2>
+                    <div class="certificate-line"><strong>Course:</strong> Man Overboard — Recognition, Response and Recovery</div>
+                    <div class="certificate-score">${percentage}% (${score}/${assessmentQuestions.length})</div>
+                    <div class="certificate-line"><strong>Status:</strong> ${passed ? 'PASSED ✓' : 'NOT PASSED'}</div>
+                    <div class="certificate-line"><strong>Total XP Earned:</strong> ${window.courseState.totalXP}</div>
+                    <div class="certificate-line"><strong>Modules Completed:</strong> ${window.courseState.modulesCompleted.length}/4</div>
+                    <div class="certificate-line"><strong>Duration:</strong> ${Math.round(window.courseState.completionTime / 60)} minutes</div>
+                    ${badgesHtml}
+                </div>
+                ${passed ? `
+                    <div class="success-box" style="margin-top: 20px;">
+                        <strong>✓ Congratulations!</strong> You have successfully completed the Man Overboard training course and demonstrated proficiency in MOB procedures.
+                    </div>
+                ` : `
+                    <div class="emergency-box" style="margin-top: 20px;">
+                        <strong>⚠️ Note:</strong> You need 70% to pass. Please review the modules and try again.
+                    </div>
+                `}
+            `;
+            
+            go('results');
+        }
+
+        // ==================== GAMIFICATION ====================
+        function awardXP(points) {
+            window.courseState.totalXP += points;
+            updateProgress();
+        }
+
+        function checkBadges() {
+            if (window.courseState.totalXP >= 300 && !window.courseState.badges.includes('🏅')) {
+                window.courseState.badges.push('🏅');
+            }
+            if (window.courseState.assessmentScore >= 90 && !window.courseState.badges.includes('⭐')) {
+                window.courseState.badges.push('⭐');
+            }
+            if (window.courseState.modulesCompleted.length === 4 && !window.courseState.badges.includes('🔥')) {
+                window.courseState.badges.push('🔥');
+            }
+        }
+
+        function updateProgress() {
+            const progress = Math.round((window.courseState.modulesCompleted.length / 4) * 100);
+            document.querySelectorAll('#progress-display').forEach(el => el.textContent = progress + '%');
+            document.querySelectorAll('#progress-bar').forEach(el => el.style.width = progress + '%');
+            document.querySelectorAll('#xp-display').forEach(el => el.textContent = window.courseState.totalXP);
+            document.querySelectorAll('#badge-count').forEach(el => el.textContent = window.courseState.badges.length);
+        }
+
+        function updateModuleStats() {
+            updateProgress();
+        }
+
+        // ==================== LMS INTEGRATION ====================
+        function sendLMSCompletion(passed, score) {
+            const completionData = {
+                courseId: "man-overboard-001",
+                courseName: "Man Overboard — Recognition, Response and Recovery",
+                completionStatus: passed ? "PASSED" : "FAILED",
+                score: score,
+                passingScore: 70,
+                totalXP: window.courseState.totalXP,
+                badges: window.courseState.badges,
+                modulesCompleted: window.courseState.modulesCompleted,
+                completionTime: window.courseState.completionTime,
+                timestamp: new Date().toISOString()
+            };
+
+            // Store in localStorage for offline persistence
+            localStorage.setItem('mob-course-completion', JSON.stringify(completionData));
+
+            // Try to send via PostMessage (iframe-based LMS)
+            try {
+                window.parent.postMessage(completionData, '*');
+            } catch (e) {
+                console.log('PostMessage not available (not in iframe)');
+            }
+
+            // Try to send via REST API (custom LMS)
+            try {
+                fetch('/api/course-completion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(completionData)
+                }).catch(e => console.log('REST API not available'));
+            } catch (e) {
+                console.log('REST API not available');
+            }
+        }
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            renderM1Activity();
+            renderM2Activity();
+            renderM3Activity();
+            renderM4Activity();
+            renderQuiz('m1');
+            renderQuiz('m2');
+            renderQuiz('m3');
+            renderQuiz('m4');
+            updateProgress();
+        });
+    </script>
+</body>
+</html>

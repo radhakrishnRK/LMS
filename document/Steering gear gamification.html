@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steering Gear — Operation, Testing and Emergency Procedures</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .breadcrumb {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            border-left: 4px solid #2a5298;
+        }
+
+        .breadcrumb span {
+            margin: 0 5px;
+            color: #999;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 4px solid #2a5298;
+        }
+
+        .stat-box h3 {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-box .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #2a5298, #1e3c72);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 5px solid #2a5298;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .module-card.completed {
+            border-left-color: #4caf50;
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            padding: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .module-content {
+            padding: 20px;
+        }
+
+        .module-content p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .content-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .content-section h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #2a5298;
+            padding-bottom: 10px;
+        }
+
+        .content-section h3 {
+            color: #2a5298;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .content-section p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .activity-box {
+            background: #f9f9f9;
+            border: 2px dashed #2a5298;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .activity-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .activity-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #2a5298;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .activity-item:hover {
+            background: #f0f7ff;
+            transform: translateX(5px);
+        }
+
+        .activity-item input[type="radio"],
+        .activity-item input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .activity-item label {
+            cursor: pointer;
+            display: block;
+        }
+
+        .feedback-box {
+            background: #f0f7ff;
+            border: 2px solid #2a5298;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-item {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .feedback-correct {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+        }
+
+        .feedback-incorrect {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+        }
+
+        .quiz-section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #2a5298;
+        }
+
+        .quiz-question {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .quiz-question label {
+            display: block;
+            margin: 10px 0;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+
+        .quiz-question label:hover {
+            background: #f0f0f0;
+        }
+
+        .quiz-question input {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 10px 5px 10px 0;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.4);
+        }
+
+        .button.secondary {
+            background: #666;
+        }
+
+        .button.secondary:hover {
+            background: #555;
+        }
+
+        .button.success {
+            background: #4caf50;
+        }
+
+        .button.success:hover {
+            background: #45a049;
+        }
+
+        .button.danger {
+            background: #f44336;
+        }
+
+        .button.danger:hover {
+            background: #da190b;
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results-screen {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .results-screen h2 {
+            font-size: 2em;
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #2a5298;
+            margin: 20px 0;
+        }
+
+        .certificate {
+            background: linear-gradient(135deg, #f5deb3, #daa520);
+            border: 3px solid #8b7500;
+            border-radius: 10px;
+            padding: 40px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .certificate h3 {
+            font-size: 2em;
+            color: #8b7500;
+            margin-bottom: 20px;
+            font-family: Georgia, serif;
+        }
+
+        .certificate p {
+            font-size: 1.1em;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #ffd700;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .badges-display {
+            margin: 20px 0;
+        }
+
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .assessment-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #2a5298;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .assessment-card h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+
+        .assessment-card label {
+            display: block;
+            margin: 10px 0;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+
+        .assessment-card label:hover {
+            background: #f0f7ff;
+        }
+
+        .assessment-card input {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .assessment-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Screen -->
+        <div id="hero" class="screen active">
+            <header>
+                <h1>⚙️ Steering Gear Operation</h1>
+                <p>Testing, Maintenance and Emergency Procedures</p>
+            </header>
+            <div class="content-section">
+                <h2>Welcome to Your Steering Gear Training Course</h2>
+                <p>This comprehensive course covers all aspects of steering gear systems, including operation, testing procedures, and emergency response protocols. You'll learn about hydraulic systems, SOLAS testing requirements, and critical safety procedures.</p>
+                <h3>What You'll Learn:</h3>
+                <p>✓ Steering gear types and hydraulic systems<br>
+                ✓ SOLAS testing requirements and procedures<br>
+                ✓ Emergency steering operations<br>
+                ✓ Failure modes and troubleshooting<br>
+                ✓ Record-keeping and compliance<br>
+                ✓ Safety protocols and best practices</p>
+                <button class="button" onclick="go('modules')">Start Course →</button>
+            </div>
+        </div>
+
+        <!-- Modules Screen -->
+        <div id="modules" class="screen">
+            <div class="breadcrumb">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span>Modules</span>
+            </div>
+
+            <div class="dashboard">
+                <div class="stat-box">
+                    <h3>Progress</h3>
+                    <div class="value" id="progressPercent">0%</div>
+                    <div id="progressBar" class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <h3>XP Earned</h3>
+                    <div class="value" id="xpDisplay">0</div>
+                </div>
+                <div class="stat-box">
+                    <h3>Modules Done</h3>
+                    <div class="value" id="modulesCompleted">0/5</div>
+                </div>
+                <div class="stat-box">
+                    <h3>Badges</h3>
+                    <div class="value" id="badgeCount">0</div>
+                    <div id="badgeDisplay"></div>
+                </div>
+            </div>
+
+            <div class="modules-grid">
+                <div class="module-card" onclick="go('m1')">
+                    <div class="module-header">📋 Module 1</div>
+                    <div class="module-content">
+                        <p><strong>Steering Gear Types & Hydraulic Systems</strong></p>
+                        <p>Learn about ram type and rotary vane systems, pump units, and actuating systems.</p>
+                        <button class="button" style="width: 100%;">Start Module</button>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="go('m2')">
+                    <div class="module-header">📋 Module 2</div>
+                    <div class="module-content">
+                        <p><strong>SOLAS Testing Requirements</strong></p>
+                        <p>Understand weekly full movement tests, pre-departure tests, and rudder angle indicator checks.</p>
+                        <button class="button" style="width: 100%;">Start Module</button>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="go('m3')">
+                    <div class="module-header">📋 Module 3</div>
+                    <div class="module-content">
+                        <p><strong>Emergency Steering Operations</strong></p>
+                        <p>Master steering gear changeover and emergency steering position procedures.</p>
+                        <button class="button" style="width: 100%;">Start Module</button>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="go('m4')">
+                    <div class="module-header">📋 Module 4</div>
+                    <div class="module-content">
+                        <p><strong>Failure Modes & Troubleshooting</strong></p>
+                        <p>Identify and respond to hydraulic leaks, pump failures, and control system failures.</p>
+                        <button class="button" style="width: 100%;">Start Module</button>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="go('m5')">
+                    <div class="module-header">📋 Module 5</div>
+                    <div class="module-content">
+                        <p><strong>Record-Keeping & Compliance</strong></p>
+                        <p>Master SOLAS log entries and SIRE inspector requirements.</p>
+                        <button class="button" style="width: 100%;">Start Module</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="button" onclick="go('assess')">Take Assessment →</button>
+            </div>
+        </div>
+
+        <!-- Module 1 -->
+        <div id="m1" class="screen">
+            <div class="breadcrumb">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span onclick="go('modules')" style="cursor: pointer; color: #2a5298;">Modules</span>
+                <span>›</span>
+                <span>Module 1</span>
+            </div>
+
+            <div class="content-section">
+                <h2>Steering Gear Types & Hydraulic Systems</h2>
+                <h3>Ram Type Steering Gear</h3>
+                <p>Ram type steering gears use a double-acting hydraulic ram connected to the rudder stock through a mechanical linkage. The pump unit provides pressurized hydraulic fluid to move the ram in both directions, creating rudder movement.</p>
+                <h3>Rotary Vane Steering Gear</h3>
+                <p>Rotary vane systems use a rotating vane inside a housing to convert hydraulic pressure into rotational motion. This type is more compact and provides smoother operation compared to ram systems.</p>
+                <h3>Hydraulic System Components</h3>
+                <p>The hydraulic system consists of pump units, actuating cylinders, control valves, hunting gear, and accumulators. Proper maintenance of these components is critical for safe steering operation.</p>
+
+                <div class="activity-box">
+                    <div class="activity-title">🎮 Interactive Activity: Steering Gear Type Matching</div>
+                    <p>Match each characteristic to the correct steering gear type:</p>
+                    <div id="m1Activity"></div>
+                    <button class="button success" onclick="checkM1Activity()">Submit Answer</button>
+                    <div id="m1Feedback" class="feedback-box"></div>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>Module 1 Quiz</h3>
+                    <div id="m1Quiz"></div>
+                    <button class="button success" onclick="submitQuiz('m1')">Submit Quiz</button>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="button" onclick="go('m2')">Next Module →</button>
+                    <button class="button secondary" onclick="go('modules')">Back to Modules</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 2 -->
+        <div id="m2" class="screen">
+            <div class="breadcrumb">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span onclick="go('modules')" style="cursor: pointer; color: #2a5298;">Modules</span>
+                <span>›</span>
+                <span>Module 2</span>
+            </div>
+
+            <div class="content-section">
+                <h2>SOLAS Testing Requirements</h2>
+                <h3>Weekly Full Movement Test</h3>
+                <p>SOLAS regulations require a full movement test of the steering gear every week. This test verifies that the steering gear can move from hard-a-port to hard-a-starboard and back, confirming full operational capability.</p>
+                <h3>Pre-Departure Test</h3>
+                <p>Before departure, the steering gear must be tested to ensure proper operation. This includes checking rudder angle indicators and verifying communication between bridge and steering gear room.</p>
+                <h3>Rudder Angle Indicator Check</h3>
+                <p>The rudder angle indicator must be checked and calibrated to ensure accurate feedback to the bridge. Any discrepancies must be recorded and corrected before departure.</p>
+
+                <div class="activity-box">
+                    <div class="activity-title">🎮 Interactive Activity: Testing Procedure Sequencing</div>
+                    <p>Arrange the testing steps in the correct order:</p>
+                    <div id="m2Activity"></div>
+                    <button class="button success" onclick="checkM2Activity()">Submit Answer</button>
+                    <div id="m2Feedback" class="feedback-box"></div>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>Module 2 Quiz</h3>
+                    <div id="m2Quiz"></div>
+                    <button class="button success" onclick="submitQuiz('m2')">Submit Quiz</button>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="button" onclick="go('m3')">Next Module →</button>
+                    <button class="button secondary" onclick="go('modules')">Back to Modules</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 3 -->
+        <div id="m3" class="screen">
+            <div class="breadcrumb">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span onclick="go('modules')" style="cursor: pointer; color: #2a5298;">Modules</span>
+                <span>›</span>
+                <span>Module 3</span>
+            </div>
+
+            <div class="content-section">
+                <h2>Emergency Steering Operations</h2>
+                <h3>Steering Gear Changeover</h3>
+                <p>In case of main steering gear failure, the vessel must be able to switch to emergency steering. This involves transferring control from the bridge to the emergency steering position and activating the backup steering system.</p>
+                <h3>Emergency Steering Position</h3>
+                <p>The emergency steering position is typically located in the steering gear room. It must be clearly marked, easily accessible, and equipped with a rudder angle indicator and communication system.</p>
+                <h3>Communication Procedures</h3>
+                <p>Clear communication between the bridge and emergency steering position is critical. Standard procedures must be established and regularly drilled to ensure quick and effective response during emergencies.</p>
+
+                <div class="activity-box">
+                    <div class="activity-title">🎮 Interactive Activity: Emergency Response Decisions</div>
+                    <p>Select the correct action for each emergency scenario:</p>
+                    <div id="m3Activity"></div>
+                    <button class="button success" onclick="checkM3Activity()">Submit Answer</button>
+                    <div id="m3Feedback" class="feedback-box"></div>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>Module 3 Quiz</h3>
+                    <div id="m3Quiz"></div>
+                    <button class="button success" onclick="submitQuiz('m3')">Submit Quiz</button>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="button" onclick="go('m4')">Next Module →</button>
+                    <button class="button secondary" onclick="go('modules')">Back to Modules</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 4 -->
+        <div id="m4" class="screen">
+            <div class="breadcrumb">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span onclick="go('modules')" style="cursor: pointer; color: #2a5298;">Modules</span>
+                <span>›</span>
+                <span>Module 4</span>
+            </div>
+
+            <div class="content-section">
+                <h2>Failure Modes & Troubleshooting</h2>
+                <h3>Hydraulic Leak</h3>
+                <p>Hydraulic leaks reduce system pressure and steering response. Signs include slow rudder movement, unusual noises, and visible fluid leakage. Immediate inspection and repair are required.</p>
+                <h3>Pump Failure</h3>
+                <p>Pump failure results in loss of hydraulic pressure and complete steering loss. This is a critical emergency requiring immediate activation of emergency steering procedures.</p>
+                <h3>Control System Failure</h3>
+                <p>Control system failures affect steering response and may prevent proper rudder movement. These can include valve failures, electrical failures, or mechanical linkage problems.</p>
+
+                <div class="activity-box">
+                    <div class="activity-title">🎮 Interactive Activity: Failure Mode Identification</div>
+                    <p>Identify the failure mode based on the symptoms:</p>
+                    <div id="m4Activity"></div>
+                    <button class="button success" onclick="checkM4Activity()">Submit Answer</button>
+                    <div id="m4Feedback" class="feedback-box"></div>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>Module 4 Quiz</h3>
+                    <div id="m4Quiz"></div>
+                    <button class="button success" onclick="submitQuiz('m4')">Submit Quiz</button>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="button" onclick="go('m5')">Next Module →</button>
+                    <button class="button secondary" onclick="go('modules')">Back to Modules</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 5 -->
+        <div id="m5" class="screen">
+            <div class="breadcrumb">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span onclick="go('modules')" style="cursor: pointer; color: #2a5298;">Modules</span>
+                <span>›</span>
+                <span>Module 5</span>
+            </div>
+
+            <div class="content-section">
+                <h2>Record-Keeping & Compliance</h2>
+                <h3>SOLAS Log Entries</h3>
+                <p>SOLAS regulations require detailed logging of all steering gear tests and maintenance. These records must include the date, time, test results, and any defects found. Records must be retained for inspection by port state control.</p>
+                <h3>SIRE Inspector Requirements</h3>
+                <p>SIRE (Ship Inspection Report) inspectors will review steering gear testing records as part of their comprehensive vessel inspection. Proper documentation is essential for passing SIRE inspections.</p>
+                <h3>Maintenance Records</h3>
+                <p>All maintenance activities, repairs, and component replacements must be documented. These records demonstrate compliance with maintenance schedules and help track system reliability.</p>
+
+                <div class="activity-box">
+                    <div class="activity-title">🎮 Interactive Activity: Record-Keeping Compliance</div>
+                    <p>Select the correct record-keeping procedures:</p>
+                    <div id="m5Activity"></div>
+                    <button class="button success" onclick="checkM5Activity()">Submit Answer</button>
+                    <div id="m5Feedback" class="feedback-box"></div>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>Module 5 Quiz</h3>
+                    <div id="m5Quiz"></div>
+                    <button class="button success" onclick="submitQuiz('m5')">Submit Quiz</button>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="button" onclick="go('assess')">Take Assessment →</button>
+                    <button class="button secondary" onclick="go('modules')">Back to Modules</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assessment Screen -->
+        <div id="assess" class="screen">
+            <div class="breadcrumb">
+                <span onclick="go('hero')" style="cursor: pointer; color: #2a5298;">Home</span>
+                <span>›</span>
+                <span>Assessment</span>
+            </div>
+
+            <div class="content-section">
+                <h2>Final Assessment - Steering Gear Operations</h2>
+                <p>Answer all questions to test your knowledge. You need 70% to pass.</p>
+                <div id="assessmentContainer"></div>
+                <button class="button success" onclick="submitAssessment()">Submit Assessment</button>
+                <button class="button secondary" onclick="go('modules')">Back to Modules</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="screen">
+            <div class="results-screen">
+                <h2>Assessment Complete!</h2>
+                <div class="score-display" id="scoreDisplay">0%</div>
+                <p id="resultMessage"></p>
+                <div id="badgesDisplay" class="badges-display"></div>
+                <div id="certificateDisplay"></div>
+                <button class="button" onclick="go('modules')">Back to Modules</button>
+                <button class="button secondary" onclick="go('hero')">Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const courseState = {
+            currentScreen: 'hero',
+            xp: 0,
+            badges: [],
+            modulesCompleted: [],
+            quizScores: {},
+            activityScores: {},
+            assessmentScore: 0,
+            startTime: Date.now()
+        };
+
+        const activities = {
+            m1: [
+                { item: 'Uses double-acting hydraulic ram', correct: 'Ram Type', explanation: 'Ram type systems use a double-acting hydraulic ram connected to the rudder stock.' },
+                { item: 'More compact design', correct: 'Rotary Vane', explanation: 'Rotary vane systems are more compact and provide smoother operation.' },
+                { item: 'Provides smoother operation', correct: 'Rotary Vane', explanation: 'Rotary vane systems offer smoother operation compared to ram systems.' },
+                { item: 'Connected through mechanical linkage', correct: 'Ram Type', explanation: 'Ram type systems use mechanical linkage to connect the ram to the rudder stock.' },
+                { item: 'Uses rotating vane in housing', correct: 'Rotary Vane', explanation: 'Rotary vane systems use a rotating vane inside a housing to convert hydraulic pressure.' }
+            ],
+            m2: [
+                { step: 'Check rudder angle indicator calibration', order: 1, explanation: 'First, verify the rudder angle indicator is properly calibrated.' },
+                { step: 'Perform full movement test (hard-a-port to hard-a-starboard)', order: 2, explanation: 'Execute full movement test to verify complete operational capability.' },
+                { step: 'Verify bridge-to-steering room communication', order: 3, explanation: 'Confirm communication systems are working properly.' },
+                { step: 'Record test results in SOLAS log', order: 4, explanation: 'Document all test results according to SOLAS requirements.' },
+                { step: 'Correct any defects found', order: 5, explanation: 'Address any issues before declaring steering gear operational.' }
+            ],
+            m3: [
+                { scenario: 'Main steering gear fails during voyage', correct: 'Activate emergency steering and notify bridge', explanation: 'Immediately activate emergency steering and inform the bridge of the situation.' },
+                { scenario: 'Rudder angle indicator shows incorrect reading', correct: 'Stop and investigate before proceeding', explanation: 'Do not proceed until the rudder angle indicator is verified and corrected.' },
+                { scenario: 'Hydraulic pressure drops suddenly', correct: 'Check for leaks and activate emergency steering if needed', explanation: 'Investigate the pressure drop and be prepared to activate emergency steering.' },
+                { scenario: 'Communication between bridge and steering room is lost', correct: 'Establish alternative communication method', explanation: 'Ensure communication is restored before any steering operations.' },
+                { scenario: 'Pump failure detected', correct: 'Activate emergency steering immediately', explanation: 'Pump failure is critical; activate emergency steering without delay.' }
+            ],
+            m4: [
+                { symptoms: 'Slow rudder movement and visible fluid leakage', correct: 'Hydraulic Leak', explanation: 'These symptoms indicate a hydraulic leak reducing system pressure.' },
+                { symptoms: 'Complete loss of steering response', correct: 'Pump Failure', explanation: 'Complete steering loss typically indicates pump failure.' },
+                { symptoms: 'Rudder moves but slowly and erratically', correct: 'Control System Failure', explanation: 'Erratic movement suggests control system or valve problems.' },
+                { symptoms: 'Unusual noises and reduced pressure gauge reading', correct: 'Hydraulic Leak', explanation: 'Unusual noises and low pressure indicate a hydraulic leak.' },
+                { symptoms: 'Steering response delayed and inconsistent', correct: 'Control System Failure', explanation: 'Delayed and inconsistent response suggests control system issues.' }
+            ],
+            m5: [
+                { procedure: 'Test results must be recorded in SOLAS log', correct: true, explanation: 'SOLAS regulations require detailed logging of all steering gear tests.' },
+                { procedure: 'Records can be kept for 1 year only', correct: false, explanation: 'Records must be retained for inspection by port state control (typically 3 years).' },
+                { procedure: 'All maintenance activities must be documented', correct: true, explanation: 'All repairs and maintenance must be recorded for compliance.' },
+                { procedure: 'SIRE inspectors review steering gear records', correct: true, explanation: 'SIRE inspectors specifically check steering gear testing and maintenance records.' },
+                { procedure: 'Defects can be recorded but do not need to be corrected', correct: false, explanation: 'All defects must be corrected and documented before declaring steering gear operational.' }
+            ]
+        };
+
+        const quizzes = {
+            m1: [
+                { question: 'What is the main advantage of rotary vane steering gear?', answers: ['More compact design', 'Lower cost', 'Easier maintenance'], correct: 0, explanation: 'Rotary vane systems are more compact and provide smoother operation.' },
+                { question: 'What does the hunting gear do in a steering system?', answers: ['Reduces oscillation around neutral', 'Increases steering speed', 'Provides emergency backup'], correct: 0, explanation: 'The hunting gear reduces oscillation and maintains the rudder at the desired angle.' }
+            ],
+            m2: [
+                { question: 'How often must the steering gear be tested according to SOLAS?', answers: ['Daily', 'Weekly', 'Monthly'], correct: 1, explanation: 'SOLAS requires a full movement test every week.' },
+                { question: 'What must be checked before departure?', answers: ['Engine oil level', 'Steering gear operation and rudder angle indicator', 'Fuel consumption'], correct: 1, explanation: 'Pre-departure checks include steering gear operation and rudder angle indicator verification.' }
+            ],
+            m3: [
+                { question: 'Where is the emergency steering position typically located?', answers: ['Bridge', 'Steering gear room', 'Engine room'], correct: 1, explanation: 'The emergency steering position is typically in the steering gear room.' },
+                { question: 'What is the first action if main steering fails?', answers: ['Reduce speed', 'Activate emergency steering', 'Contact port authority'], correct: 1, explanation: 'The first action is to activate emergency steering immediately.' }
+            ],
+            m4: [
+                { question: 'What indicates a hydraulic leak?', answers: ['High pressure', 'Slow rudder movement and fluid leakage', 'Loud noises'], correct: 1, explanation: 'Slow movement and visible fluid leakage are signs of a hydraulic leak.' },
+                { question: 'What is the consequence of pump failure?', answers: ['Slow steering', 'Complete loss of steering', 'Increased pressure'], correct: 1, explanation: 'Pump failure results in complete loss of steering capability.' }
+            ],
+            m5: [
+                { question: 'How long must steering gear records be retained?', answers: ['1 year', '3 years', '5 years'], correct: 1, explanation: 'Records must be retained for inspection by port state control, typically 3 years.' },
+                { question: 'What do SIRE inspectors specifically check?', answers: ['Crew uniforms', 'Steering gear testing records', 'Paint condition'], correct: 1, explanation: 'SIRE inspectors review steering gear testing and maintenance records.' }
+            ]
+        };
+
+        const assessmentQuestions = [
+            { question: 'What are the two main types of steering gear systems?', answers: ['Ram type and rotary vane', 'Electric and hydraulic', 'Manual and automatic'], correct: 0 },
+            { question: 'How often must full movement tests be performed?', answers: ['Daily', 'Weekly', 'Monthly'], correct: 1 },
+            { question: 'Where is the emergency steering position located?', answers: ['Bridge', 'Steering gear room', 'Engine room'], correct: 1 },
+            { question: 'What does SOLAS stand for?', answers: ['Safety Of Life At Sea', 'Ship Operation Logistics And Safety', 'Standard Operating Life And Safety'], correct: 0 },
+            { question: 'What is the first sign of a hydraulic leak?', answers: ['High pressure', 'Slow rudder movement', 'Loud noises'], correct: 1 },
+            { question: 'How long are steering gear records retained?', answers: ['1 year', '3 years', '5 years'], correct: 1 },
+            { question: 'What is the purpose of the hunting gear?', answers: ['Increase speed', 'Reduce oscillation', 'Provide backup'], correct: 1 },
+            { question: 'What must be checked before departure?', answers: ['Engine temperature', 'Steering gear operation', 'Fuel level'], correct: 1 },
+            { question: 'What indicates pump failure?', answers: ['Slow steering', 'Complete loss of steering', 'Unusual noises'], correct: 1 },
+            { question: 'Who reviews steering gear records during SIRE inspections?', answers: ['Captain only', 'SIRE inspectors', 'Classification society'], correct: 1 },
+            { question: 'What is the emergency steering activation procedure?', answers: ['Reduce speed', 'Switch to emergency steering position', 'Contact authorities'], correct: 1 },
+            { question: 'How should defects in steering gear be handled?', answers: ['Ignore if minor', 'Record and correct', 'Report after voyage'], correct: 1 },
+            { question: 'What does rudder angle indicator check verify?', answers: ['Pressure level', 'Accurate feedback to bridge', 'Hydraulic flow'], correct: 1 },
+            { question: 'What is the consequence of control system failure?', answers: ['Slow steering', 'Erratic steering response', 'Complete loss'], correct: 1 },
+            { question: 'How should communication be maintained during emergency steering?', answers: ['Verbal only', 'Written only', 'Established procedures'], correct: 2 },
+            { question: 'What must be documented in SOLAS log?', answers: ['Crew meals', 'All steering tests and maintenance', 'Weather conditions'], correct: 1 },
+            { question: 'What is the main advantage of ram type steering?', answers: ['Compact', 'Reliable and proven', 'Smooth operation'], correct: 1 },
+            { question: 'When should pre-departure steering test be performed?', answers: ['After departure', 'Before departure', 'Weekly'], correct: 1 },
+            { question: 'What indicates a control system failure?', answers: ['High pressure', 'Erratic rudder movement', 'No movement'], correct: 1 },
+            { question: 'What is critical for SIRE inspection compliance?', answers: ['Clean deck', 'Proper record-keeping', 'New equipment'], correct: 1 }
+        ];
+
+        function go(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screen).classList.add('active');
+            courseState.currentScreen = screen;
+            updateDashboard();
+        }
+
+        function completeAndGo(screen) {
+            courseState.modulesCompleted.push(screen);
+            go(screen);
+        }
+
+        function renderActivities() {
+            renderActivity('m1');
+            renderActivity('m2');
+            renderActivity('m3');
+            renderActivity('m4');
+            renderActivity('m5');
+            renderQuizzes();
+            renderAssessment();
+        }
+
+        function renderActivity(module) {
+            const container = document.getElementById(`${module}Activity`);
+            const moduleActivities = activities[module];
+            let html = '';
+
+            moduleActivities.forEach((item, idx) => {
+                if (module === 'm1' || module === 'm3' || module === 'm4') {
+                    html += `<div class="activity-item">
+                        <label>
+                            <input type="radio" name="${module}_activity" value="${idx}" data-correct="${item.correct}">
+                            ${item.item || item.scenario || item.symptoms}
+                        </label>
+                    </div>`;
+                } else if (module === 'm2') {
+                    html += `<div class="activity-item">
+                        <label>
+                            <input type="checkbox" name="${module}_activity" value="${idx}" data-order="${item.order}">
+                            ${item.step}
+                        </label>
+                    </div>`;
+                } else if (module === 'm5') {
+                    html += `<div class="activity-item">
+                        <label>
+                            <input type="radio" name="${module}_activity" value="${idx}" data-correct="${item.correct}">
+                            ${item.procedure}
+                        </label>
+                    </div>`;
+                }
+            });
+
+            container.innerHTML = html;
+        }
+
+        function checkM1Activity() {
+            const selected = document.querySelector('input[name="m1_activity"]:checked');
+            if (!selected) {
+                alert('Please select an answer');
+                return;
+            }
+
+            const idx = parseInt(selected.value);
+            const item = activities.m1[idx];
+            const feedback = document.getElementById('m1Feedback');
+            let html = '<div class="feedback-item feedback-correct">✓ Correct! ' + item.explanation + '</div>';
+
+            feedback.innerHTML = html;
+            feedback.classList.add('show');
+            awardXP(25);
+            courseState.activityScores.m1 = 100;
+        }
+
+        function checkM2Activity() {
+            const selected = Array.from(document.querySelectorAll('input[name="m2_activity"]:checked'));
+            if (selected.length === 0) {
+                alert('Please select the steps');
+                return;
+            }
+
+            const feedback = document.getElementById('m2Feedback');
+            let html = '';
+            let score = 0;
+
+            selected.forEach((checkbox, idx) => {
+                const itemIdx = parseInt(checkbox.value);
+                const item = activities.m2[itemIdx];
+                const expectedOrder = idx + 1;
+
+                if (item.order === expectedOrder) {
+                    html += `<div class="feedback-item feedback-correct">✓ Step ${expectedOrder}: ${item.step} - ${item.explanation}</div>`;
+                    score += 20;
+                } else {
+                    html += `<div class="feedback-item feedback-incorrect">✗ Incorrect order. ${item.explanation}</div>`;
+                }
+            });
+
+            feedback.innerHTML = html;
+            feedback.classList.add('show');
+            awardXP(Math.min(score, 25));
+            courseState.activityScores.m2 = score;
+        }
+
+        function checkM3Activity() {
+            const selected = document.querySelector('input[name="m3_activity"]:checked');
+            if (!selected) {
+                alert('Please select an answer');
+                return;
+            }
+
+            const idx = parseInt(selected.value);
+            const item = activities.m3[idx];
+            const feedback = document.getElementById('m3Feedback');
+            let html = '<div class="feedback-item feedback-correct">✓ Correct! ' + item.explanation + '</div>';
+
+            feedback.innerHTML = html;
+            feedback.classList.add('show');
+            awardXP(25);
+            courseState.activityScores.m3 = 100;
+        }
+
+        function checkM4Activity() {
+            const selected = document.querySelector('input[name="m4_activity"]:checked');
+            if (!selected) {
+                alert('Please select an answer');
+                return;
+            }
+
+            const idx = parseInt(selected.value);
+            const item = activities.m4[idx];
+            const feedback = document.getElementById('m4Feedback');
+            let html = '<div class="feedback-item feedback-correct">✓ Correct! ' + item.explanation + '</div>';
+
+            feedback.innerHTML = html;
+            feedback.classList.add('show');
+            awardXP(25);
+            courseState.activityScores.m4 = 100;
+        }
+
+        function checkM5Activity() {
+            const selected = document.querySelector('input[name="m5_activity"]:checked');
+            if (!selected) {
+                alert('Please select an answer');
+                return;
+            }
+
+            const idx = parseInt(selected.value);
+            const item = activities.m5[idx];
+            const feedback = document.getElementById('m5Feedback');
+            const isCorrect = item.correct === (selected.value === 'true');
+            let html = isCorrect ? 
+                `<div class="feedback-item feedback-correct">✓ Correct! ${item.explanation}</div>` :
+                `<div class="feedback-item feedback-incorrect">✗ Incorrect. ${item.explanation}</div>`;
+
+            feedback.innerHTML = html;
+            feedback.classList.add('show');
+            awardXP(isCorrect ? 25 : 10);
+            courseState.activityScores.m5 = isCorrect ? 100 : 50;
+        }
+
+        function renderQuizzes() {
+            for (let i = 1; i <= 5; i++) {
+                const module = `m${i}`;
+                const container = document.getElementById(`${module}Quiz`);
+                const moduleQuizzes = quizzes[module];
+                let html = '';
+
+                moduleQuizzes.forEach((q, idx) => {
+                    html += `<div class="quiz-question">
+                        <p><strong>Q${idx + 1}: ${q.question}</strong></p>`;
+                    q.answers.forEach((answer, ansIdx) => {
+                        html += `<label>
+                            <input type="radio" name="${module}_quiz_${idx}" value="${ansIdx}">
+                            ${answer}
+                        </label>`;
+                    });
+                    html += `</div>`;
+                });
+
+                container.innerHTML = html;
+            }
+        }
+
+        function submitQuiz(module) {
+            const quizData = quizzes[module];
+            let score = 0;
+            let correct = 0;
+
+            quizData.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="${module}_quiz_${idx}"]:checked`);
+                if (selected && parseInt(selected.value) === q.correct) {
+                    correct++;
+                    score += 50;
+                }
+            });
+
+            const percentage = Math.round((correct / quizData.length) * 100);
+            courseState.quizScores[module] = percentage;
+            awardXP(score / quizData.length);
+
+            alert(`Quiz Score: ${percentage}%\n${correct}/${quizData.length} correct`);
+        }
+
+        function renderAssessment() {
+            const container = document.getElementById('assessmentContainer');
+            let html = '';
+
+            assessmentQuestions.forEach((q, idx) => {
+                html += `<div class="assessment-card">
+                    <h3>Question ${idx + 1}</h3>
+                    <p>${q.question}</p>`;
+                q.answers.forEach((answer, ansIdx) => {
+                    html += `<label>
+                        <input type="radio" name="assess_${idx}" value="${ansIdx}">
+                        ${answer}
+                    </label>`;
+                });
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function submitAssessment() {
+            let correct = 0;
+
+            assessmentQuestions.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="assess_${idx}"]:checked`);
+                if (selected && parseInt(selected.value) === q.correct) {
+                    correct++;
+                }
+            });
+
+            const score = Math.round((correct / assessmentQuestions.length) * 100);
+            courseState.assessmentScore = score;
+            const passed = score >= 70;
+
+            awardXP(correct * 5);
+            checkBadges();
+            displayResults(score, passed, correct);
+        }
+
+        function displayResults(score, passed, correct) {
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const resultMessage = document.getElementById('resultMessage');
+            const badgesDisplay = document.getElementById('badgesDisplay');
+            const certificateDisplay = document.getElementById('certificateDisplay');
+
+            scoreDisplay.textContent = score + '%';
+            scoreDisplay.style.color = passed ? '#4caf50' : '#f44336';
+
+            resultMessage.innerHTML = passed ? 
+                `<p style="color: #4caf50; font-size: 1.2em;">✓ Congratulations! You passed the assessment!</p>
+                <p>You answered ${correct} out of ${assessmentQuestions.length} questions correctly.</p>` :
+                `<p style="color: #f44336; font-size: 1.2em;">✗ You did not pass this time.</p>
+                <p>You answered ${correct} out of ${assessmentQuestions.length} questions correctly. You need 70% to pass.</p>`;
+
+            if (passed) {
+                let badgesHtml = '<h3>Badges Earned:</h3>';
+                courseState.badges.forEach(badge => {
+                    badgesHtml += `<div class="badge">${badge}</div>`;
+                });
+                badgesDisplay.innerHTML = badgesHtml;
+
+                certificateDisplay.innerHTML = `
+                    <div class="certificate">
+                        <h3>Certificate of Completion</h3>
+                        <p>This certifies that the bearer has successfully completed</p>
+                        <p><strong>Steering Gear — Operation, Testing and Emergency Procedures</strong></p>
+                        <p>with a score of ${score}%</p>
+                        <p style="margin-top: 20px; font-size: 0.9em;">Date: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                `;
+            }
+
+            sendLMSCompletion(passed, score);
+            go('results');
+        }
+
+        function awardXP(points) {
+            courseState.xp += points;
+            updateDashboard();
+        }
+
+        function checkBadges() {
+            if (courseState.xp >= 500 && !courseState.badges.includes('🏅')) {
+                courseState.badges.push('🏅');
+            }
+            if (courseState.xp >= 300 && !courseState.badges.includes('⭐')) {
+                courseState.badges.push('⭐');
+            }
+            if (courseState.assessmentScore >= 90 && !courseState.badges.includes('🔥')) {
+                courseState.badges.push('🔥');
+            }
+        }
+
+        function updateDashboard() {
+            const completed = Object.keys(courseState.quizScores).length;
+            const progress = Math.round((completed / 5) * 100);
+
+            document.getElementById('xpDisplay').textContent = courseState.xp;
+            document.getElementById('modulesCompleted').textContent = completed + '/5';
+            document.getElementById('badgeCount').textContent = courseState.badges.length;
+            document.getElementById('progressPercent').textContent = progress + '%';
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function sendLMSCompletion(passed, score) {
+            const completionData = {
+                courseId: 'steering-gear-001',
+                courseName: 'Steering Gear — Operation, Testing and Emergency Procedures',
+                completionStatus: passed ? 'PASSED' : 'FAILED',
+                score: score,
+                passingScore: 70,
+                totalXP: courseState.xp,
+                badges: courseState.badges,
+                modulesCompleted: Object.keys(courseState.quizScores),
+                completionTime: Math.round((Date.now() - courseState.startTime) / 1000),
+                timestamp: new Date().toISOString()
+            };
+
+            // PostMessage API for iframe LMS
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'courseCompletion',
+                    data: completionData
+                }, '*');
+            }
+
+            // localStorage for offline persistence
+            localStorage.setItem('steeringGearCompletion', JSON.stringify(completionData));
+
+            // REST API for custom LMS
+            try {
+                fetch('/api/lms/completion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(completionData)
+                }).catch(() => {});
+            } catch (e) {}
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderActivities();
+            updateDashboard();
+        });
+    </script>
+</body>
+</html>

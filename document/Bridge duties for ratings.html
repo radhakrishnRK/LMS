@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ratings at Sea — Duties, Responsibilities and Safe Practices</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#ffffff;color:#1a1a2e;line-height:1.6}
+.screen{display:none!important;min-height:100vh;padding:20px;max-width:900px;margin:0 auto}
+.screen.active{display:block!important}
+.hero-screen{flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:100vh;background:linear-gradient(135deg,#0f3460 0%,#16213e 50%,#1a1a2e 100%);color:#fff;border-radius:0;max-width:100%;padding:40px 20px}
+.hero-screen.active{display:flex!important}
+.hero-screen h1{font-size:2.4em;margin-bottom:15px;text-shadow:2px 2px 4px rgba(0,0,0,0.3)}
+.hero-screen .subtitle{font-size:1.2em;opacity:0.9;margin-bottom:10px}
+.hero-screen .course-meta{font-size:0.9em;opacity:0.7;margin-bottom:30px;max-width:700px}
+.hero-screen .course-meta span{display:inline-block;margin:5px 10px;padding:4px 12px;background:rgba(255,255,255,0.15);border-radius:20px}
+.btn{padding:14px 36px;border:none;border-radius:8px;font-size:1.1em;font-weight:600;cursor:pointer;transition:all 0.3s ease;display:inline-block}
+.btn-primary{background:linear-gradient(135deg,#e94560,#c23152);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(233,69,96,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#0f3460,#16213e);color:#fff}
+.btn-secondary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(15,52,96,0.4)}
+.btn-success{background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff}
+.btn-success:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(39,174,96,0.4)}
+.btn-back{background:#f0f0f0;color:#333;padding:10px 20px;font-size:0.95em}
+.btn-back:hover{background:#e0e0e0}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+/* Dashboard */
+.dashboard{padding:30px 20px}
+.dashboard h2{text-align:center;font-size:1.8em;margin-bottom:25px;color:#0f3460}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:20px}
+.stat-box{background:#f8f9fa;border-radius:12px;padding:20px;text-align:center;border:2px solid #e9ecef}
+.stat-box .stat-value{font-size:2em;font-weight:700;color:#0f3460}
+.stat-box .stat-label{font-size:0.85em;color:#666;margin-top:5px}
+#progressBar{width:100%;height:12px;background:#e9ecef;border-radius:6px;overflow:hidden;margin-bottom:25px}
+#progressBar .fill{height:100%;background:linear-gradient(90deg,#e94560,#c23152);border-radius:6px;transition:width 0.5s ease;width:0%}
+#badgeDisplay{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;min-height:30px}
+.badge{padding:6px 14px;border-radius:20px;font-size:0.85em;font-weight:600;background:#fff3cd;color:#856404;border:1px solid #ffc107}
+.module-grid{display:grid;gap:15px;margin-bottom:20px}
+.module-card{background:#fff;border-radius:12px;padding:20px;border:2px solid #e9ecef;cursor:pointer;transition:all 0.3s ease;position:relative}
+.module-card:hover{border-color:#0f3460;transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,0.1)}
+.module-card.completed{border-color:#27ae60;background:#f0fff4}
+.module-card.completed::after{content:'✓';position:absolute;top:15px;right:15px;background:#27ae60;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.module-card.locked{opacity:0.5;cursor:not-allowed}
+.module-card h3{color:#0f3460;margin-bottom:8px;font-size:1.1em}
+.module-card p{color:#666;font-size:0.9em}
+.module-num{display:inline-block;background:#0f3460;color:#fff;width:30px;height:30px;border-radius:50%;text-align:center;line-height:30px;font-weight:700;font-size:0.85em;margin-right:10px}
+.assess-card{background:linear-gradient(135deg,#e94560,#c23152);color:#fff;border-color:#e94560;cursor:pointer}
+.assess-card:hover{border-color:#c23152}
+.assess-card h3{color:#fff}
+.assess-card p{color:rgba(255,255,255,0.85)}
+
+/* Module Content */
+.module-header{background:linear-gradient(135deg,#0f3460,#16213e);color:#fff;padding:25px;border-radius:12px;margin-bottom:25px}
+.module-header h2{font-size:1.6em;margin-bottom:8px}
+.module-header p{opacity:0.85}
+.content-section{background:#fff;border-radius:12px;padding:25px;margin-bottom:20px;border:1px solid #e9ecef;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.content-section h3{color:#0f3460;margin-bottom:15px;font-size:1.2em;border-bottom:2px solid #e94560;padding-bottom:8px;display:inline-block}
+.content-section p{margin-bottom:12px;color:#444}
+.content-section ul{margin:10px 0 15px 20px;color:#444}
+.content-section ul li{margin-bottom:8px}
+.key-point{background:#e8f4fd;border-left:4px solid #0f3460;padding:15px;border-radius:0 8px 8px 0;margin:15px 0}
+.warning-box{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;border-radius:0 8px 8px 0;margin:15px 0}
+.danger-box{background:#f8d7da;border-left:4px solid #dc3545;padding:15px;border-radius:0 8px 8px 0;margin:15px 0}
+table.info-table{width:100%;border-collapse:collapse;margin:15px 0}
+table.info-table th{background:#0f3460;color:#fff;padding:12px;text-align:left}
+table.info-table td{padding:10px 12px;border-bottom:1px solid #e9ecef}
+table.info-table tr:nth-child(even){background:#f8f9fa}
+
+/* Interactive Activities */
+.activity-container{background:#f0f4ff;border:2px dashed #0f3460;border-radius:12px;padding:25px;margin:25px 0}
+.activity-container h3{color:#0f3460;margin-bottom:5px}
+.activity-container .activity-label{color:#e94560;font-weight:700;font-size:0.85em;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.activity-container p.activity-desc{color:#555;margin-bottom:20px}
+.activity-item{background:#fff;border-radius:8px;padding:15px;margin-bottom:12px;border:2px solid #e9ecef;transition:all 0.3s ease}
+.activity-item:hover{border-color:#0f3460}
+.activity-item label{display:flex;align-items:center;cursor:pointer;gap:10px}
+.activity-item select{padding:8px 12px;border:2px solid #ddd;border-radius:6px;font-size:0.95em;min-width:180px}
+.activity-item .item-text{flex:1}
+.match-row{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+.match-label{font-weight:600;min-width:200px;color:#333}
+.feedback-area{margin-top:20px;padding:20px;border-radius:8px;display:none}
+.feedback-area.show{display:block}
+.feedback-correct{background:#d4edda;border:2px solid #27ae60;color:#155724}
+.feedback-incorrect{background:#f8d7da;border:2px solid #dc3545;color:#721c24}
+.feedback-item{padding:10px;margin:8px 0;border-radius:6px;border-left:4px solid}
+.feedback-item.correct{background:#d4edda;border-left-color:#27ae60}
+.feedback-item.incorrect{background:#f8d7da;border-left-color:#dc3545}
+.feedback-item .correct-answer{font-weight:600;color:#155724}
+.feedback-item .explanation{font-size:0.9em;color:#555;margin-top:5px;font-style:italic}
+
+/* Quiz */
+.quiz-container{background:#f8f9fa;border-radius:12px;padding:25px;margin:25px 0;border:2px solid #e9ecef}
+.quiz-container h3{color:#0f3460;margin-bottom:15px}
+.quiz-question{margin-bottom:20px}
+.quiz-question p{font-weight:600;margin-bottom:10px;color:#333}
+.quiz-option{background:#fff;border:2px solid #e9ecef;border-radius:8px;padding:12px 15px;margin-bottom:8px;cursor:pointer;transition:all 0.2s ease}
+.quiz-option:hover{border-color:#0f3460;background:#f0f4ff}
+.quiz-option.selected{border-color:#0f3460;background:#e8f4fd}
+.quiz-option.correct-show{border-color:#27ae60;background:#d4edda}
+.quiz-option.incorrect-show{border-color:#dc3545;background:#f8d7da}
+
+/* Assessment */
+.assess-question{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;border:2px solid #e9ecef}
+.assess-question p.q-text{font-weight:600;margin-bottom:12px;color:#333}
+.assess-option{background:#f8f9fa;border:2px solid #e9ecef;border-radius:8px;padding:12px 15px;margin-bottom:8px;cursor:pointer;transition:all 0.2s ease}
+.assess-option:hover{border-color:#0f3460;background:#e8f4fd}
+.assess-option.selected{border-color:#0f3460;background:#e8f4fd}
+
+/* Results */
+.results-container{text-align:center;padding:40px 20px}
+.score-circle{width:180px;height:180px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:30px auto;font-size:2.5em;font-weight:700;color:#fff}
+.score-circle.pass{background:linear-gradient(135deg,#27ae60,#2ecc71)}
+.score-circle.fail{background:linear-gradient(135deg,#e74c3c,#c0392b)}
+.score-circle .score-label{font-size:0.35em;font-weight:400;opacity:0.9}
+.cert-box{background:#f0fff4;border:3px solid #27ae60;border-radius:12px;padding:30px;margin:25px auto;max-width:600px}
+.cert-box h3{color:#27ae60;margin-bottom:10px}
+
+/* Feedback Modal */
+.feedback-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}
+.feedback-modal.show{display:flex}
+.feedback-modal-content{background:#fff;border-radius:16px;padding:30px;max-width:400px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.feedback-modal-content.pass{border-top:6px solid #27ae60}
+.feedback-modal-content.fail{border-top:6px solid #e74c3c}
+.feedback-modal-content h3{font-size:1.5em;margin-bottom:10px}
+.feedback-modal-content .score-text{font-size:2em;font-weight:700;margin:10px 0}
+
+@media(max-width:768px){
+.hero-screen h1{font-size:1.6em}
+.stats-row{grid-template-columns:1fr}
+.match-row{flex-direction:column;align-items:flex-start}
+.match-label{min-width:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- SCREEN: Welcome/Hero -->
+<div id="screen-hero" class="screen hero-screen active">
+<h1>Ratings at Sea</h1>
+<p class="subtitle">Duties, Responsibilities and Safe Practices</p>
+<div class="course-meta">
+<span>STCW A-II/4 & A-II/5</span>
+<span>STCW A-VI/1</span>
+<span>SIRE 2.0 Ch.3 & Ch.5</span>
+<span>All Deck Ratings</span>
+</div>
+<p style="max-width:650px;margin-bottom:30px;opacity:0.85">Master the essential duties and responsibilities of deck ratings — from lookout and helmsman duties to mooring operations, gangway safety, and SIRE inspector interactions. This interactive course prepares AB and OS ratings for safe, competent watchkeeping and deck operations.</p>
+<button class="btn btn-primary" onclick="go('dashboard')">Start Course</button>
+</div>
+
+<!-- SCREEN: Dashboard -->
+<div id="screen-dashboard" class="screen dashboard">
+<h2>Course Dashboard</h2>
+<div class="stats-row">
+<div class="stat-box"><div class="stat-value" id="xpDisplay">0</div><div class="stat-label">XP Earned</div></div>
+<div class="stat-box"><div class="stat-value" id="modulesDone">0/5</div><div class="stat-label">Modules Complete</div></div>
+<div class="stat-box"><div class="stat-value" id="quizScore">--</div><div class="stat-label">Latest Quiz</div></div>
+</div>
+<div id="progressBar"><div class="fill"></div></div>
+<div id="badgeDisplay"></div>
+<div class="module-grid">
+<div class="module-card" id="mc1" onclick="openModule(1)"><h3><span class="module-num">1</span>Lookout Duties</h3><p>What to look for, how to report, verbal vs alarm signals</p></div>
+<div class="module-card" id="mc2" onclick="openModule(2)"><h3><span class="module-num">2</span>Helmsman Duties</h3><p>Helm orders, meeting and passing responses, autopilot/manual changeover</p></div>
+<div class="module-card" id="mc3" onclick="openModule(3)"><h3><span class="module-num">3</span>Mooring Station Duties</h3><p>Line handling, winch operation, communication, personal safety</p></div>
+<div class="module-card" id="mc4" onclick="openModule(4)"><h3><span class="module-num">4</span>Gangway, Pilot Ladder & Cargo Area Safety</h3><p>Rigging, safety nets, PPE, access restrictions, supervisor authority</p></div>
+<div class="module-card" id="mc5" onclick="openModule(5)"><h3><span class="module-num">5</span>Toolbox Talks & SIRE Interaction</h3><p>Participation rights, raising concerns, what inspectors ask ratings</p></div>
+<div class="module-card assess-card" id="mcAssess" onclick="go('assessment')"><h3>Final Assessment</h3><p>25 questions — 70% to pass — earn your certificate</p></div>
+</div>
+<button class="btn btn-back" onclick="go('screen-hero')">Back to Home</button>
+</div>
+
+<!-- MODULE 1: Lookout Duties -->
+<div id="screen-m1" class="screen">
+<button class="btn btn-back" onclick="go('dashboard')">Back to Dashboard</button>
+<div class="module-header"><h2>Module 1: Lookout Duties</h2><p>What to look for, how to report, verbal vs alarm signals</p></div>
+
+<div class="content-section">
+<h3>The Lookout Responsibility</h3>
+<p>The lookout is one of the most critical duties assigned to a deck rating. Under <strong>COLREGS Rule 5</strong>, every vessel must at all times maintain a proper lookout by sight and hearing as well as by all available means appropriate to the prevailing circumstances.</p>
+<div class="key-point"><strong>Key Principle:</strong> The lookout is the eyes and ears of the vessel. A dedicated lookout must give their full attention to keeping a proper lookout and must not undertake any other duties that could interfere with this responsibility.</div>
+<p>As a lookout, you must be able to identify and report:</p>
+<ul>
+<li><strong>Other vessels</strong> — their lights, shapes, bearing, and whether the bearing is changing</li>
+<li><strong>Navigation marks</strong> — buoys, lighthouses, beacons</li>
+<li><strong>Land features</strong> — coastline, headlands, breakwaters</li>
+<li><strong>Hazards</strong> — floating objects, debris, fishing nets, ice</li>
+<li><strong>Weather changes</strong> — fog, rain, squalls, visibility reduction</li>
+<li><strong>Distress signals</strong> — flares, lights, sound signals</li>
+</ul>
+</div>
+
+<div class="content-section">
+<h3>How to Report Sightings</h3>
+<p>Reporting must be <strong>clear, concise, and immediate</strong>. The standard reporting format is:</p>
+<table class="info-table">
+<tr><th>Element</th><th>Example</th></tr>
+<tr><td>Object type</td><td>"Light", "Vessel", "Buoy", "Object in water"</td></tr>
+<tr><td>Bearing</td><td>"Two points on the port bow", "Red 045", "Dead ahead"</td></tr>
+<tr><td>Additional info</td><td>"Flashing", "Closing", "Stationary", "Bearing steady"</td></tr>
+</table>
+<div class="warning-box"><strong>Important:</strong> Never assume the OOW has already seen what you have spotted. Always report every sighting — even if you think it is obvious. A bearing that is not changing indicates risk of collision.</div>
+<p><strong>Verbal vs Alarm Signals:</strong></p>
+<ul>
+<li><strong>Verbal report</strong> — Standard method during normal watchkeeping. Report directly to the OOW on the bridge.</li>
+<li><strong>Sound-powered telephone</strong> — Used when the lookout is stationed on the forecastle or away from the bridge.</li>
+<li><strong>Alarm signal</strong> — Used in emergency situations only (e.g., man overboard, imminent collision risk). The general alarm or MOB alarm may be activated.</li>
+</ul>
+</div>
+
+<div class="content-section">
+<h3>Lookout Discipline</h3>
+<p>Effective lookout requires discipline and focus:</p>
+<ul>
+<li><strong>No distractions</strong> — No mobile phones, no reading, no conversations unrelated to duty</li>
+<li><strong>Night vision</strong> — Allow 20-30 minutes for eyes to adapt to darkness. Avoid looking at bright lights.</li>
+<li><strong>Systematic scanning</strong> — Scan from one side to the other methodically, not randomly</li>
+<li><strong>Hearing</strong> — Listen for fog signals, engine sounds, breaking waves on shoals</li>
+<li><strong>Relief</strong> — Report all contacts and conditions to your relief when handing over</li>
+</ul>
+<div class="danger-box"><strong>SIRE Inspector Note:</strong> SIRE inspectors may ask ratings directly: "What are your lookout duties?" and "How do you report a sighting?" You must be able to answer confidently.</div>
+</div>
+
+<!-- Activity 1: Lookout Reporting -->
+<div class="activity-container" id="activity1">
+<div class="activity-label">Interactive Activity</div>
+<h3>Lookout Reporting Challenge</h3>
+<p class="activity-desc">Match each sighting scenario with the correct reporting action:</p>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">1. You see a white light dead ahead that appears to be getting closer</span><select id="a1q1"><option value="">Select action...</option><option value="a">Report immediately — bearing steady, risk of collision</option><option value="b">Wait and watch for 5 minutes</option><option value="c">Only report if the OOW asks</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">2. You notice fog forming on the horizon ahead</span><select id="a1q2"><option value="">Select action...</option><option value="a">Ignore it — the radar will detect vessels</option><option value="b">Report visibility reduction to OOW immediately</option><option value="c">Wait until visibility drops below 1 mile</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">3. You spot a small object floating in the water on the port bow</span><select id="a1q3"><option value="">Select action...</option><option value="a">It is too small to matter — ignore it</option><option value="b">Report "Object in water, port bow" to OOW</option><option value="c">Only report if it is a container</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">4. A crew member comes to talk to you during your lookout watch</span><select id="a1q4"><option value="">Select action...</option><option value="a">Have a brief conversation — it helps pass the time</option><option value="b">Tell them you cannot talk — you are on lookout duty</option><option value="c">Talk quietly so the OOW does not hear</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">5. You see a red flare in the distance on the starboard side</span><select id="a1q5"><option value="">Select action...</option><option value="a">Report distress signal to OOW immediately</option><option value="b">Wait to see if there is a second flare</option><option value="c">Assume it is a fishing vessel signal</option></select></div></div>
+
+<button class="btn btn-primary" onclick="checkActivity(1)">Submit Answer</button>
+<div class="feedback-area" id="feedback1"></div>
+</div>
+
+<!-- Quiz 1 -->
+<div class="quiz-container" id="quiz1">
+<h3>Module 1 — Knowledge Check</h3>
+<div class="quiz-question"><p>Q1: Under which COLREGS rule must every vessel maintain a proper lookout?</p>
+<div class="quiz-option" onclick="selectQuiz(1,1,this)" data-q="1" data-a="1">A) Rule 2 — Responsibility</div>
+<div class="quiz-option" onclick="selectQuiz(1,1,this)" data-q="1" data-a="2">B) Rule 5 — Lookout</div>
+<div class="quiz-option" onclick="selectQuiz(1,1,this)" data-q="1" data-a="3">C) Rule 8 — Action to Avoid Collision</div>
+<div class="quiz-option" onclick="selectQuiz(1,1,this)" data-q="1" data-a="4">D) Rule 19 — Restricted Visibility</div>
+</div>
+<div class="quiz-question"><p>Q2: What does a steady bearing with decreasing range indicate?</p>
+<div class="quiz-option" onclick="selectQuiz(1,2,this)" data-q="2" data-a="1">A) The vessel is moving away</div>
+<div class="quiz-option" onclick="selectQuiz(1,2,this)" data-q="2" data-a="2">B) Risk of collision</div>
+<div class="quiz-option" onclick="selectQuiz(1,2,this)" data-q="2" data-a="3">C) The vessel is anchored</div>
+<div class="quiz-option" onclick="selectQuiz(1,2,this)" data-q="2" data-a="4">D) No action required</div>
+</div>
+<button class="btn btn-success" onclick="submitQuiz(1)">Submit Quiz</button>
+</div>
+<button class="btn btn-primary" onclick="completeModule(1)">Complete Module 1</button>
+</div>
+
+<!-- MODULE 2: Helmsman Duties -->
+<div id="screen-m2" class="screen">
+<button class="btn btn-back" onclick="go('dashboard')">Back to Dashboard</button>
+<div class="module-header"><h2>Module 2: Helmsman Duties</h2><p>Understanding helm orders, responses, and autopilot/manual changeover</p></div>
+
+<div class="content-section">
+<h3>The Helmsman Role</h3>
+<p>The helmsman (or quartermaster) is responsible for steering the vessel as directed by the OOW or the pilot. This is a critical safety role — <strong>incorrect helm action can lead to collision or grounding</strong>.</p>
+<div class="key-point"><strong>Key Principle:</strong> The helmsman must repeat every helm order back to the OOW before executing it. This is called <strong>closed-loop communication</strong> and ensures the order has been correctly understood.</div>
+</div>
+
+<div class="content-section">
+<h3>Standard Helm Orders and Responses</h3>
+<table class="info-table">
+<tr><th>Order Given</th><th>Helmsman Response</th><th>Action</th></tr>
+<tr><td>"Starboard 10"</td><td>"Starboard 10, Sir/Ma'am"</td><td>Apply 10 degrees starboard helm</td></tr>
+<tr><td>"Midships"</td><td>"Midships, Sir/Ma'am"</td><td>Return rudder to zero</td></tr>
+<tr><td>"Steady"</td><td>"Steady on [heading], Sir/Ma'am"</td><td>Hold the current heading</td></tr>
+<tr><td>"Steady as she goes"</td><td>"Steady as she goes, heading [xxx]"</td><td>Maintain the heading at time of order</td></tr>
+<tr><td>"Hard a-starboard"</td><td>"Hard a-starboard, Sir/Ma'am"</td><td>Apply maximum starboard helm</td></tr>
+<tr><td>"Port 20"</td><td>"Port 20, Sir/Ma'am"</td><td>Apply 20 degrees port helm</td></tr>
+<tr><td>"Ease to 5"</td><td>"Ease to 5, Sir/Ma'am"</td><td>Reduce helm angle to 5 degrees</td></tr>
+<tr><td>"Nothing to port"</td><td>"Nothing to port, Sir/Ma'am"</td><td>Do not allow the vessel to swing to port</td></tr>
+</table>
+<div class="warning-box"><strong>Critical Rule:</strong> When the helmsman has achieved the ordered heading, they must report: "Course [heading], Sir/Ma'am." The helmsman must never leave the wheel without permission from the OOW.</div>
+</div>
+
+<div class="content-section">
+<h3>Autopilot to Manual Changeover</h3>
+<p>Changeover from autopilot to manual steering must be practised and understood:</p>
+<ul>
+<li><strong>When to change over</strong> — In confined waters, heavy traffic, restricted visibility, or when ordered by the OOW</li>
+<li><strong>Procedure</strong> — OOW orders "Change to hand steering." Helmsman switches to manual, confirms rudder response, reports "Hand steering, Sir/Ma'am"</li>
+<li><strong>Testing</strong> — After changeover, test the rudder by applying small helm angles to confirm response</li>
+<li><strong>SOLAS requirement</strong> — Manual steering must be tested at least once per watch in areas where hand steering is likely to be required</li>
+</ul>
+<div class="danger-box"><strong>SIRE Inspector Note:</strong> Inspectors may ask the helmsman: "How do you change from autopilot to manual steering?" and "What helm orders do you know?" Be prepared to demonstrate.</div>
+</div>
+
+<!-- Activity 2: Helm Orders -->
+<div class="activity-container" id="activity2">
+<div class="activity-label">Interactive Activity</div>
+<h3>Helm Order Response Challenge</h3>
+<p class="activity-desc">Select the correct helmsman response for each order:</p>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">1. OOW orders: "Port 15"</span><select id="a2q1"><option value="">Select response...</option><option value="a">"Port 15, Sir" — apply 15 degrees port helm</option><option value="b">"Okay" — turn the wheel to port</option><option value="c">"15 degrees" — wait for confirmation</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">2. OOW orders: "Steady as she goes"</span><select id="a2q2"><option value="">Select response...</option><option value="a">"Steady" — stop turning</option><option value="b">"Steady as she goes, heading 275, Sir"</option><option value="c">"Midships" — return rudder to zero</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">3. OOW orders: "Midships"</span><select id="a2q3"><option value="">Select response...</option><option value="a">"Midships, Sir" — return rudder to amidships</option><option value="b">"Zero helm" — stop the vessel</option><option value="c">"Centre" — hold current heading</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">4. The vessel reaches ordered heading 180</span><select id="a2q4"><option value="">Select response...</option><option value="a">Say nothing — the OOW can see the compass</option><option value="b">Report "Course 180, Sir"</option><option value="c">Apply midships and wait</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">5. OOW orders: "Nothing to starboard"</span><select id="a2q5"><option value="">Select response...</option><option value="a">"Nothing to starboard, Sir" — prevent swing to starboard</option><option value="b">"Starboard stopped" — apply port helm</option><option value="c">"Hard a-port" — maximum opposite helm</option></select></div></div>
+
+<button class="btn btn-primary" onclick="checkActivity(2)">Submit Answer</button>
+<div class="feedback-area" id="feedback2"></div>
+</div>
+
+<!-- Quiz 2 -->
+<div class="quiz-container" id="quiz2">
+<h3>Module 2 — Knowledge Check</h3>
+<div class="quiz-question"><p>Q1: What must the helmsman always do before executing a helm order?</p>
+<div class="quiz-option" onclick="selectQuiz(2,1,this)" data-q="1" data-a="1">A) Check the radar</div>
+<div class="quiz-option" onclick="selectQuiz(2,1,this)" data-q="1" data-a="2">B) Repeat the order back to the OOW</div>
+<div class="quiz-option" onclick="selectQuiz(2,1,this)" data-q="1" data-a="3">C) Sound the horn</div>
+<div class="quiz-option" onclick="selectQuiz(2,1,this)" data-q="1" data-a="4">D) Log the order in the logbook</div>
+</div>
+<div class="quiz-question"><p>Q2: When must manual steering be tested according to SOLAS?</p>
+<div class="quiz-option" onclick="selectQuiz(2,2,this)" data-q="2" data-a="1">A) Only during drills</div>
+<div class="quiz-option" onclick="selectQuiz(2,2,this)" data-q="2" data-a="2">B) At least once per watch when hand steering may be required</div>
+<div class="quiz-option" onclick="selectQuiz(2,2,this)" data-q="2" data-a="3">C) Only when the Master orders it</div>
+<div class="quiz-option" onclick="selectQuiz(2,2,this)" data-q="2" data-a="4">D) Once per voyage</div>
+</div>
+<button class="btn btn-success" onclick="submitQuiz(2)">Submit Quiz</button>
+</div>
+<button class="btn btn-primary" onclick="completeModule(2)">Complete Module 2</button>
+</div>
+
+<!-- MODULE 3: Mooring Station Duties -->
+<div id="screen-m3" class="screen">
+<button class="btn btn-back" onclick="go('dashboard')">Back to Dashboard</button>
+<div class="module-header"><h2>Module 3: Mooring Station Duties</h2><p>Line handling, winch operation, communication with bridge, personal safety</p></div>
+
+<div class="content-section">
+<h3>Mooring Operations — The Rating's Role</h3>
+<p>Mooring operations are among the <strong>most dangerous activities onboard</strong>. Parted mooring lines have caused fatalities. Every rating must understand their role and the hazards involved.</p>
+<div class="danger-box"><strong>Safety Critical:</strong> Mooring lines under tension store enormous energy. A parted line can recoil with lethal force. Always stay out of the snap-back zone and never stand in the bight of a line.</div>
+</div>
+
+<div class="content-section">
+<h3>Line Handling Duties</h3>
+<ul>
+<li><strong>Know your lines</strong> — Head line, stern line, breast line, spring line — know which is which and their purpose</li>
+<li><strong>Heaving line</strong> — Throw accurately to shore. Never wrap the heaving line around your hand.</li>
+<li><strong>Tending lines</strong> — Keep lines taut as ordered. Slack lines can part under sudden load.</li>
+<li><strong>Securing on bitts</strong> — Use proper figure-of-eight turns. Ensure sufficient turns for holding power.</li>
+<li><strong>Synthetic lines</strong> — More dangerous than wire when they part — they snap back with extreme force</li>
+</ul>
+</div>
+
+<div class="content-section">
+<h3>Winch Operation Safety</h3>
+<ul>
+<li><strong>Training required</strong> — Never operate a winch without proper training and authorisation</li>
+<li><strong>Hands clear</strong> — Keep hands, fingers, and loose clothing away from the drum</li>
+<li><strong>Communication</strong> — Maintain clear communication with the mooring team leader and bridge</li>
+<li><strong>Emergency stop</strong> — Know the location and operation of the emergency stop on every winch</li>
+<li><strong>Brake operation</strong> — Understand brake application — never release a brake under load without orders</li>
+</ul>
+<div class="warning-box"><strong>Bridge Communication:</strong> The bridge controls the operation. All line handling actions must be coordinated with bridge orders. Use radio or hand signals as established in the toolbox talk.</div>
+</div>
+
+<div class="content-section">
+<h3>Personal Safety at Mooring Stations</h3>
+<ul>
+<li><strong>PPE</strong> — Hard hat, safety shoes, gloves, high-visibility vest</li>
+<li><strong>Snap-back zones</strong> — Marked on deck. Never stand in a snap-back zone.</li>
+<li><strong>Bight of a line</strong> — Never stand inside the bight of a line being worked</li>
+<li><strong>Fairleads and rollers</strong> — Keep clear of lines running through fairleads</li>
+<li><strong>Fatigue</strong> — Report if you are too fatigued to work safely</li>
+</ul>
+</div>
+
+<!-- Activity 3: Mooring Safety -->
+<div class="activity-container" id="activity3">
+<div class="activity-label">Interactive Activity</div>
+<h3>Mooring Safety Decision Challenge</h3>
+<p class="activity-desc">For each scenario, select the safest course of action:</p>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">1. You are told to stand near a taut mooring line to tend it</span><select id="a3q1"><option value="">Select action...</option><option value="a">Stand where told — the officer knows best</option><option value="b">Check if you are in a snap-back zone and move to a safe position</option><option value="c">Refuse to tend the line</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">2. A mooring line is surging on the drum and you are not trained on the winch</span><select id="a3q2"><option value="">Select action...</option><option value="a">Try to apply the brake — it is an emergency</option><option value="b">Call the trained operator immediately and stand clear</option><option value="c">Pull the line by hand to help</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">3. You notice a mooring line showing signs of chafing and damage</span><select id="a3q3"><option value="">Select action...</option><option value="a">It will hold — continue operations</option><option value="b">Report the damaged line to the officer in charge immediately</option><option value="c">Replace it yourself without telling anyone</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">4. The bridge orders "Let go forward springs" but you are unsure which lines are springs</span><select id="a3q4"><option value="">Select action...</option><option value="a">Let go the nearest lines and hope for the best</option><option value="b">Ask the mooring team leader to confirm which lines before acting</option><option value="c">Wait and do nothing until someone else acts</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">5. You are throwing a heaving line and it falls short</span><select id="a3q5"><option value="">Select action...</option><option value="a">Wrap the line around your hand for a better throw</option><option value="b">Coil properly and throw again — never wrap around your hand</option><option value="c">Ask someone else to throw it</option></select></div></div>
+
+<button class="btn btn-primary" onclick="checkActivity(3)">Submit Answer</button>
+<div class="feedback-area" id="feedback3"></div>
+</div>
+
+<!-- Quiz 3 -->
+<div class="quiz-container" id="quiz3">
+<h3>Module 3 — Knowledge Check</h3>
+<div class="quiz-question"><p>Q1: What is the greatest danger from a parted synthetic mooring line?</p>
+<div class="quiz-option" onclick="selectQuiz(3,1,this)" data-q="1" data-a="1">A) It gets tangled in the propeller</div>
+<div class="quiz-option" onclick="selectQuiz(3,1,this)" data-q="1" data-a="2">B) It snaps back with extreme force and can be fatal</div>
+<div class="quiz-option" onclick="selectQuiz(3,1,this)" data-q="1" data-a="3">C) It damages the fairlead</div>
+<div class="quiz-option" onclick="selectQuiz(3,1,this)" data-q="1" data-a="4">D) It causes the vessel to drift</div>
+</div>
+<div class="quiz-question"><p>Q2: What must you never do when throwing a heaving line?</p>
+<div class="quiz-option" onclick="selectQuiz(3,2,this)" data-q="2" data-a="1">A) Coil it properly</div>
+<div class="quiz-option" onclick="selectQuiz(3,2,this)" data-q="2" data-a="2">B) Wrap it around your hand</div>
+<div class="quiz-option" onclick="selectQuiz(3,2,this)" data-q="2" data-a="3">C) Aim for the shore bollard</div>
+<div class="quiz-option" onclick="selectQuiz(3,2,this)" data-q="2" data-a="4">D) Use a monkey fist</div>
+</div>
+<button class="btn btn-success" onclick="submitQuiz(3)">Submit Quiz</button>
+</div>
+<button class="btn btn-primary" onclick="completeModule(3)">Complete Module 3</button>
+</div>
+
+<!-- MODULE 4: Gangway, Pilot Ladder & Cargo Area Safety -->
+<div id="screen-m4" class="screen">
+<button class="btn btn-back" onclick="go('dashboard')">Back to Dashboard</button>
+<div class="module-header"><h2>Module 4: Gangway, Pilot Ladder & Cargo Area Safety</h2><p>Rigging, safety nets, life rings, PPE, access restrictions, supervisor authority</p></div>
+
+<div class="content-section">
+<h3>Gangway Watch Duties</h3>
+<p>The gangway watchman is the <strong>first point of contact</strong> for anyone boarding the vessel. This is both a <strong>security and safety role</strong>.</p>
+<ul>
+<li><strong>Access control</strong> — Check identification of all visitors. Record names, company, time in/out.</li>
+<li><strong>Safety briefing</strong> — Ensure visitors receive a safety briefing before proceeding onboard</li>
+<li><strong>Gangway condition</strong> — Ensure the gangway is safe, properly rigged, well-lit, and the safety net is in place</li>
+<li><strong>Life ring</strong> — A life ring with light and line must be available at the gangway at all times</li>
+<li><strong>Communication</strong> — Maintain radio contact with the bridge/duty officer</li>
+</ul>
+<div class="key-point"><strong>ISPS Code:</strong> The gangway watch is part of the vessel's security plan. Unauthorised access must be prevented and reported.</div>
+</div>
+
+<div class="content-section">
+<h3>Pilot Ladder Rigging</h3>
+<p>Pilot ladder rigging is a <strong>life-critical task</strong>. Improperly rigged pilot ladders have caused pilot deaths.</p>
+<ul>
+<li><strong>SOLAS Chapter V Regulation 23</strong> — Specifies pilot ladder requirements</li>
+<li><strong>Condition</strong> — Steps must be level, evenly spaced, and in good condition</li>
+<li><strong>Securing</strong> — Ladder must be secured to the ship's hull, not to the rails</li>
+<li><strong>Lighting</strong> — Adequate lighting at the embarkation point</li>
+<li><strong>Safety net</strong> — Rigged beneath the pilot ladder access point</li>
+<li><strong>Life ring</strong> — Ready for immediate use at the pilot station</li>
+<li><strong>Weight placard</strong> — Maximum safe working load must be displayed</li>
+<li><strong>Manropes</strong> — If required, properly secured and of correct diameter</li>
+</ul>
+</div>
+
+<div class="content-section">
+<h3>Cargo Area Safety for Ratings</h3>
+<p>Ratings must understand cargo area restrictions and follow supervisor authority at all times:</p>
+<ul>
+<li><strong>Access restrictions</strong> — Never enter the cargo area without permission from the duty officer</li>
+<li><strong>Enclosed spaces</strong> — Never enter an enclosed space without a valid entry permit and proper procedures</li>
+<li><strong>PPE requirements</strong> — Wear all required PPE as specified for the cargo area (hard hat, safety shoes, coveralls, gas detector as required)</li>
+<li><strong>Supervisor authority</strong> — Follow instructions from the officer in charge. If you are unsure, ask.</li>
+<li><strong>Stop Work Authority</strong> — Every crew member has the right and duty to stop work if they believe it is unsafe</li>
+</ul>
+<div class="danger-box"><strong>Critical Safety Rule:</strong> Never enter a cargo tank, pump room, void space, or any enclosed space without following the enclosed space entry procedure. Failure to follow this rule has caused multiple fatalities in the maritime industry.</div>
+</div>
+
+<!-- Activity 4: Gangway & Safety -->
+<div class="activity-container" id="activity4">
+<div class="activity-label">Interactive Activity</div>
+<h3>Gangway & Cargo Area Safety Scenarios</h3>
+<p class="activity-desc">Select the correct action for each scenario:</p>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">1. A visitor arrives at the gangway without identification</span><select id="a4q1"><option value="">Select action...</option><option value="a">Let them board — they look like a contractor</option><option value="b">Deny access and contact the duty officer</option><option value="c">Ask them to wait and check later</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">2. You notice the gangway safety net has come loose</span><select id="a4q2"><option value="">Select action...</option><option value="a">It is fine — nobody will fall</option><option value="b">Secure the net immediately and report to the duty officer</option><option value="c">Wait for the next watch to fix it</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">3. An officer asks you to enter a cargo tank to retrieve a tool</span><select id="a4q3"><option value="">Select action...</option><option value="a">Enter immediately — an officer gave the order</option><option value="b">Ask if an enclosed space entry permit has been issued</option><option value="c">Enter quickly before anyone notices</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">4. You are rigging the pilot ladder and notice a damaged step</span><select id="a4q4"><option value="">Select action...</option><option value="a">Use it anyway — the pilot will be careful</option><option value="b">Report the damage and do not rig the ladder until it is repaired or replaced</option><option value="c">Cover the step with tape</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">5. You feel a task is unsafe but the supervisor tells you to continue</span><select id="a4q5"><option value="">Select action...</option><option value="a">Continue — the supervisor has authority</option><option value="b">Exercise your Stop Work Authority and explain your concern</option><option value="c">Do it but complain afterwards</option></select></div></div>
+
+<button class="btn btn-primary" onclick="checkActivity(4)">Submit Answer</button>
+<div class="feedback-area" id="feedback4"></div>
+</div>
+
+<!-- Quiz 4 -->
+<div class="quiz-container" id="quiz4">
+<h3>Module 4 — Knowledge Check</h3>
+<div class="quiz-question"><p>Q1: What must always be available at the gangway?</p>
+<div class="quiz-option" onclick="selectQuiz(4,1,this)" data-q="1" data-a="1">A) A fire extinguisher only</div>
+<div class="quiz-option" onclick="selectQuiz(4,1,this)" data-q="1" data-a="2">B) A life ring with light and line</div>
+<div class="quiz-option" onclick="selectQuiz(4,1,this)" data-q="1" data-a="3">C) A first aid kit only</div>
+<div class="quiz-option" onclick="selectQuiz(4,1,this)" data-q="1" data-a="4">D) A fire hose</div>
+</div>
+<div class="quiz-question"><p>Q2: What right does every crew member have regarding unsafe work?</p>
+<div class="quiz-option" onclick="selectQuiz(4,2,this)" data-q="2" data-a="1">A) Right to refuse overtime</div>
+<div class="quiz-option" onclick="selectQuiz(4,2,this)" data-q="2" data-a="2">B) Stop Work Authority</div>
+<div class="quiz-option" onclick="selectQuiz(4,2,this)" data-q="2" data-a="3">C) Right to leave the vessel</div>
+<div class="quiz-option" onclick="selectQuiz(4,2,this)" data-q="2" data-a="4">D) Right to contact the flag state</div>
+</div>
+<button class="btn btn-success" onclick="submitQuiz(4)">Submit Quiz</button>
+</div>
+<button class="btn btn-primary" onclick="completeModule(4)">Complete Module 4</button>
+</div>
+
+<!-- MODULE 5: Toolbox Talks & SIRE Interaction -->
+<div id="screen-m5" class="screen">
+<button class="btn btn-back" onclick="go('dashboard')">Back to Dashboard</button>
+<div class="module-header"><h2>Module 5: Toolbox Talks & SIRE Interaction</h2><p>Participation rights, raising concerns, and what inspectors ask ratings</p></div>
+
+<div class="content-section">
+<h3>Toolbox Talk Participation</h3>
+<p>A toolbox talk is a brief safety meeting held <strong>before every job</strong>. As a rating, your participation is not just expected — it is essential.</p>
+<ul>
+<li><strong>Listen actively</strong> — Understand the task, hazards, precautions, and your specific role</li>
+<li><strong>Ask questions</strong> — If anything is unclear, ask. There are no stupid questions when safety is involved.</li>
+<li><strong>Raise concerns</strong> — If you see a hazard that has not been mentioned, speak up</li>
+<li><strong>Sign the attendance sheet</strong> — Your signature confirms you understood the briefing</li>
+<li><strong>Right to refuse</strong> — If you do not understand the task or feel it is unsafe, you have the right to say so</li>
+</ul>
+<div class="key-point"><strong>Key Principle:</strong> A toolbox talk is not a one-way lecture. It is a two-way conversation. The supervisor briefs the team, and the team confirms understanding and raises concerns.</div>
+</div>
+
+<div class="content-section">
+<h3>SIRE Inspector Interaction — What Ratings May Be Asked</h3>
+<p>Under SIRE 2.0, inspectors will speak directly to ratings. This is not something to fear — it is an opportunity to demonstrate your competence.</p>
+<table class="info-table">
+<tr><th>Topic</th><th>Typical Questions</th></tr>
+<tr><td>Familiarisation</td><td>"When did you join? Were you familiarised? What did it cover?"</td></tr>
+<tr><td>Emergency duties</td><td>"What is your muster station? What are your emergency duties?"</td></tr>
+<tr><td>Lookout</td><td>"What are your lookout duties? How do you report a sighting?"</td></tr>
+<tr><td>Mooring</td><td>"What PPE do you wear? Where are the snap-back zones?"</td></tr>
+<tr><td>Enclosed spaces</td><td>"Would you enter a tank without a permit? What would you do if asked?"</td></tr>
+<tr><td>Toolbox talks</td><td>"Was a toolbox talk held before this job? What was discussed?"</td></tr>
+<tr><td>Stop Work</td><td>"Do you know your right to stop work? Have you ever used it?"</td></tr>
+<tr><td>Safety equipment</td><td>"Where is the nearest fire extinguisher? Life ring? SCBA?"</td></tr>
+</table>
+<div class="warning-box"><strong>Preparation Tip:</strong> Know your emergency duties, your muster station, the location of safety equipment near your work area, and the basics of your familiarisation. Answer honestly — inspectors respect honest answers more than rehearsed ones.</div>
+</div>
+
+<div class="content-section">
+<h3>Your Rights and Responsibilities</h3>
+<ul>
+<li><strong>Right to a safe workplace</strong> — Under MLC 2006, every seafarer has the right to safe working conditions</li>
+<li><strong>Right to training</strong> — You must receive proper training before being assigned duties</li>
+<li><strong>Right to PPE</strong> — The company must provide appropriate PPE at no cost to you</li>
+<li><strong>Responsibility to follow procedures</strong> — Follow the SMS, wear PPE, attend toolbox talks</li>
+<li><strong>Responsibility to report</strong> — Report hazards, near-misses, and unsafe conditions</li>
+<li><strong>Responsibility to be fit for duty</strong> — Adequate rest, no alcohol or drugs on duty</li>
+</ul>
+</div>
+
+<!-- Activity 5: SIRE Interaction -->
+<div class="activity-container" id="activity5">
+<div class="activity-label">Interactive Activity</div>
+<h3>SIRE Inspector Response Challenge</h3>
+<p class="activity-desc">Select the best response to each SIRE inspector question:</p>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">1. Inspector asks: "What is your muster station?"</span><select id="a5q1"><option value="">Select response...</option><option value="a">"I think it is on the boat deck... somewhere"</option><option value="b">"My muster station is [specific location], my duty is [specific role]"</option><option value="c">"I do not know — I just follow the others"</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">2. Inspector asks: "Was a toolbox talk held before this job?"</span><select id="a5q2"><option value="">Select response...</option><option value="a">"Yes — we discussed the task, hazards, PPE, and emergency procedures"</option><option value="b">"I think so — I was not really paying attention"</option><option value="c">"The officer just told us to start work"</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">3. Inspector asks: "Would you enter a tank without a permit?"</span><select id="a5q3"><option value="">Select response...</option><option value="a">"If an officer told me to, yes"</option><option value="b">"No — I would never enter without an enclosed space entry permit"</option><option value="c">"Only if it was a quick job"</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">4. Inspector asks: "Do you know your right to stop work?"</span><select id="a5q4"><option value="">Select response...</option><option value="a">"Yes — every crew member can stop work if they believe it is unsafe"</option><option value="b">"Only officers can stop work"</option><option value="c">"I have heard of it but never used it"</option></select></div></div>
+
+<div class="activity-item"><div class="match-row"><span class="match-label">5. Inspector asks: "Where is the nearest fire extinguisher?"</span><select id="a5q5"><option value="">Select response...</option><option value="a">"Somewhere on this deck, I think"</option><option value="b">"It is located [specific location] — it is a [type] extinguisher"</option><option value="c">"I would have to look for it"</option></select></div></div>
+
+<button class="btn btn-primary" onclick="checkActivity(5)">Submit Answer</button>
+<div class="feedback-area" id="feedback5"></div>
+</div>
+
+<!-- Quiz 5 -->
+<div class="quiz-container" id="quiz5">
+<h3>Module 5 — Knowledge Check</h3>
+<div class="quiz-question"><p>Q1: What should you do if you do not understand a task explained in a toolbox talk?</p>
+<div class="quiz-option" onclick="selectQuiz(5,1,this)" data-q="1" data-a="1">A) Stay quiet and figure it out yourself</div>
+<div class="quiz-option" onclick="selectQuiz(5,1,this)" data-q="1" data-a="2">B) Ask questions until you understand</div>
+<div class="quiz-option" onclick="selectQuiz(5,1,this)" data-q="1" data-a="3">C) Sign the attendance sheet and hope for the best</div>
+<div class="quiz-option" onclick="selectQuiz(5,1,this)" data-q="1" data-a="4">D) Tell the officer after the job is done</div>
+</div>
+<div class="quiz-question"><p>Q2: Under SIRE 2.0, who may the inspector speak to directly?</p>
+<div class="quiz-option" onclick="selectQuiz(5,2,this)" data-q="2" data-a="1">A) Only the Master and Chief Officer</div>
+<div class="quiz-option" onclick="selectQuiz(5,2,this)" data-q="2" data-a="2">B) Any crew member including ratings</div>
+<div class="quiz-option" onclick="selectQuiz(5,2,this)" data-q="2" data-a="3">C) Only officers with certificates</div>
+<div class="quiz-option" onclick="selectQuiz(5,2,this)" data-q="2" data-a="4">D) Only the designated person ashore</div>
+</div>
+<button class="btn btn-success" onclick="submitQuiz(5)">Submit Quiz</button>
+</div>
+<button class="btn btn-primary" onclick="completeModule(5)">Complete Module 5</button>
+</div>
+
+<!-- ASSESSMENT SCREEN -->
+<div id="screen-assessment" class="screen">
+<button class="btn btn-back" onclick="go('dashboard')">Back to Dashboard</button>
+<div class="module-header" style="background:linear-gradient(135deg,#e94560,#c23152)"><h2>Final Assessment</h2><p>25 questions — 70% required to pass — Good luck!</p></div>
+<div id="assessmentContainer"></div>
+<button class="btn btn-primary" onclick="submitAssessment()" style="width:100%;margin-top:20px;padding:18px">Submit Assessment</button>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div id="screen-results" class="screen results-container">
+<h2>Course Complete!</h2>
+<div class="score-circle" id="scoreCircle"><span id="scoreValue">0%</span><span class="score-label">Assessment Score</span></div>
+<div id="resultMessage"></div>
+<div id="certArea"></div>
+<div style="margin-top:20px">
+<p><strong>Total XP Earned:</strong> <span id="finalXP">0</span></p>
+<p><strong>Modules Completed:</strong> <span id="finalModules">0</span>/5</p>
+<p><strong>Badges Earned:</strong> <span id="finalBadges">None</span></p>
+</div>
+<button class="btn btn-secondary" onclick="go('dashboard')" style="margin-top:25px">Back to Dashboard</button>
+</div>
+
+<!-- Feedback Modal -->
+<div class="feedback-modal" id="quizModal">
+<div class="feedback-modal-content" id="quizModalContent">
+<h3 id="quizModalTitle">Quiz Complete!</h3>
+<div class="score-text" id="quizModalScore">100%</div>
+<p id="quizModalMsg">Well done!</p>
+</div>
+</div>
+
+<script>
+// ============ COURSE STATE ============
+window.courseState = {
+  xp: 0,
+  modulesCompleted: [],
+  quizAnswers: {},
+  quizScores: {},
+  assessmentAnswers: {},
+  assessmentScore: null,
+  badges: [],
+  startTime: Date.now()
+};
+
+// ============ ACTIVITY DATA ============
+const activityData = {
+  1: {
+    answers: { a1q1: 'a', a1q2: 'b', a1q3: 'b', a1q4: 'b', a1q5: 'a' },
+    explanations: {
+      a1q1: { correct: 'Report immediately — bearing steady, risk of collision', explanation: 'A white light dead ahead getting closer with a steady bearing indicates risk of collision under COLREGS Rule 7. Immediate reporting is essential.' },
+      a1q2: { correct: 'Report visibility reduction to OOW immediately', explanation: 'Any reduction in visibility must be reported immediately so the OOW can take appropriate action — radar monitoring, speed reduction, fog signals.' },
+      a1q3: { correct: 'Report "Object in water, port bow" to OOW', explanation: 'All objects in the water must be reported regardless of size. Floating containers, debris, or even small objects can damage the hull or propeller.' },
+      a1q4: { correct: 'Tell them you cannot talk — you are on lookout duty', explanation: 'The lookout must give full attention to their duty. No conversations, mobile phones, or distractions are permitted during lookout watch.' },
+      a1q5: { correct: 'Report distress signal to OOW immediately', explanation: 'A red flare is an internationally recognised distress signal. It must be reported immediately — never wait for a second signal.' }
+    }
+  },
+  2: {
+    answers: { a2q1: 'a', a2q2: 'b', a2q3: 'a', a2q4: 'b', a2q5: 'a' },
+    explanations: {
+      a2q1: { correct: '"Port 15, Sir" — apply 15 degrees port helm', explanation: 'The helmsman must always repeat the order back using the exact words, followed by "Sir/Ma\'am", then execute. This is closed-loop communication.' },
+      a2q2: { correct: '"Steady as she goes, heading 275, Sir"', explanation: 'When ordered "Steady as she goes", the helmsman must repeat the order AND state the current heading to confirm what heading will be maintained.' },
+      a2q3: { correct: '"Midships, Sir" — return rudder to amidships', explanation: '"Midships" means return the rudder to the zero position (amidships). The helmsman repeats the order and centres the wheel.' },
+      a2q4: { correct: 'Report "Course 180, Sir"', explanation: 'When the ordered heading is reached, the helmsman MUST report the course to the OOW. Never assume the OOW has noticed.' },
+      a2q5: { correct: '"Nothing to starboard, Sir" — prevent swing to starboard', explanation: '"Nothing to starboard" means do not allow the vessel\'s head to swing to starboard. Apply corrective helm as needed to prevent any starboard swing.' }
+    }
+  },
+  3: {
+    answers: { a3q1: 'b', a3q2: 'b', a3q3: 'b', a3q4: 'b', a3q5: 'b' },
+    explanations: {
+      a3q1: { correct: 'Check if you are in a snap-back zone and move to a safe position', explanation: 'Always check your position relative to snap-back zones. Even if told to stand somewhere, your safety comes first. Snap-back zones are marked on deck for a reason.' },
+      a3q2: { correct: 'Call the trained operator immediately and stand clear', explanation: 'Never operate equipment you are not trained on — even in an emergency. Call the trained operator and keep clear. Untrained operation can make the situation worse.' },
+      a3q3: { correct: 'Report the damaged line to the officer in charge immediately', explanation: 'A damaged mooring line is a serious safety hazard. It must be reported immediately so it can be assessed and replaced if necessary before it parts under load.' },
+      a3q4: { correct: 'Ask the mooring team leader to confirm which lines before acting', explanation: 'If you are unsure which lines to let go, ALWAYS ask for confirmation. Letting go the wrong line could be dangerous. There is no shame in asking.' },
+      a3q5: { correct: 'Coil properly and throw again — never wrap around your hand', explanation: 'Never wrap a heaving line around your hand. If the line is caught or pulled, your hand could be trapped or injured. Coil properly and throw again.' }
+    }
+  },
+  4: {
+    answers: { a4q1: 'b', a4q2: 'b', a4q3: 'b', a4q4: 'b', a4q5: 'b' },
+    explanations: {
+      a4q1: { correct: 'Deny access and contact the duty officer', explanation: 'Under the ISPS Code, no one may board without proper identification. Deny access politely and contact the duty officer for instructions.' },
+      a4q2: { correct: 'Secure the net immediately and report to the duty officer', explanation: 'The gangway safety net is a critical fall protection measure. If it comes loose, secure it immediately and report to the duty officer.' },
+      a4q3: { correct: 'Ask if an enclosed space entry permit has been issued', explanation: 'NEVER enter an enclosed space (including cargo tanks) without a valid enclosed space entry permit — regardless of who gives the order. This rule saves lives.' },
+      a4q4: { correct: 'Report the damage and do not rig the ladder until it is repaired or replaced', explanation: 'A damaged pilot ladder step is a life-threatening hazard. Pilots have been killed by faulty ladders. Report and do not use until repaired.' },
+      a4q5: { correct: 'Exercise your Stop Work Authority and explain your concern', explanation: 'Every crew member has Stop Work Authority. If you believe a task is unsafe, you have the right AND the duty to stop and explain your concern. This is protected by company policy and ISM Code.' }
+    }
+  },
+  5: {
+    answers: { a5q1: 'b', a5q2: 'a', a5q3: 'b', a5q4: 'a', a5q5: 'b' },
+    explanations: {
+      a5q1: { correct: '"My muster station is [specific location], my duty is [specific role]"', explanation: 'You must know your exact muster station and emergency duties. A confident, specific answer demonstrates competence and proper familiarisation.' },
+      a5q2: { correct: '"Yes — we discussed the task, hazards, PPE, and emergency procedures"', explanation: 'A good answer shows you actively participated in the toolbox talk and can recall what was discussed. This demonstrates safety awareness.' },
+      a5q3: { correct: '"No — I would never enter without an enclosed space entry permit"', explanation: 'The correct answer is always NO. Never enter an enclosed space without a permit — even if ordered to by an officer. This is a non-negotiable safety rule.' },
+      a5q4: { correct: '"Yes — every crew member can stop work if they believe it is unsafe"', explanation: 'Stop Work Authority applies to ALL crew members regardless of rank. Knowing this right and being willing to use it demonstrates a strong safety culture.' },
+      a5q5: { correct: '"It is located [specific location] — it is a [type] extinguisher"', explanation: 'You should know the exact location and type of the nearest fire extinguisher to your work area. This is basic safety familiarisation.' }
+    }
+  }
+};
+
+// ============ QUIZ DATA ============
+const quizData = {
+  1: { 1: 2, 2: 2 }, // Q1: B (Rule 5), Q2: B (Risk of collision)
+  2: { 1: 2, 2: 2 }, // Q1: B (Repeat order), Q2: B (Once per watch)
+  3: { 1: 2, 2: 2 }, // Q1: B (Snap-back), Q2: B (Wrap around hand)
+  4: { 1: 2, 2: 2 }, // Q1: B (Life ring), Q2: B (Stop Work Authority)
+  5: { 1: 2, 2: 2 }  // Q1: B (Ask questions), Q2: B (Any crew member)
+};
+
+// ============ ASSESSMENT DATA ============
+const assessmentQuestions = [
+  { q: "Under which COLREGS rule must every vessel maintain a proper lookout?", options: ["Rule 2", "Rule 5", "Rule 8", "Rule 19"], correct: 1 },
+  { q: "What does a steady bearing with decreasing range indicate?", options: ["Vessel moving away", "Risk of collision", "Vessel is anchored", "No danger"], correct: 1 },
+  { q: "How long should you allow for your eyes to adapt to darkness for night lookout?", options: ["5 minutes", "10 minutes", "20-30 minutes", "1 hour"], correct: 2 },
+  { q: "What is the correct response when ordered 'Port 20'?", options: ["'Okay'", "'Port 20, Sir' — apply 20 degrees port helm", "'20 degrees'", "'Turning port'"], correct: 1 },
+  { q: "What does 'Steady as she goes' mean?", options: ["Stop the engine", "Maintain the current heading", "Return rudder to midships", "Reduce speed"], correct: 1 },
+  { q: "When must the helmsman report the course to the OOW?", options: ["Only when asked", "When the ordered heading is reached", "At the end of the watch", "Every 15 minutes"], correct: 1 },
+  { q: "What is closed-loop communication?", options: ["Speaking in a circle", "Repeating the order back before executing", "Using a radio", "Writing orders down"], correct: 1 },
+  { q: "What is the greatest danger from a parted synthetic mooring line?", options: ["Tangling in propeller", "Snap-back with lethal force", "Damaging the fairlead", "Vessel drifting"], correct: 1 },
+  { q: "What must you never do when throwing a heaving line?", options: ["Coil it properly", "Wrap it around your hand", "Aim for the bollard", "Use a monkey fist"], correct: 1 },
+  { q: "What are snap-back zones?", options: ["Areas where lines are stored", "Marked danger zones where a parted line could recoil", "Winch operating positions", "Mooring team assembly points"], correct: 1 },
+  { q: "What PPE is required at mooring stations?", options: ["Only safety shoes", "Hard hat, safety shoes, gloves, high-vis vest", "Only a hard hat", "No PPE required"], correct: 1 },
+  { q: "What must always be available at the gangway?", options: ["Fire extinguisher only", "Life ring with light and line", "First aid kit only", "Fire hose"], correct: 1 },
+  { q: "Under the ISPS Code, what must the gangway watchman do with unidentified visitors?", options: ["Let them board", "Deny access and contact duty officer", "Ask them to wait", "Ignore them"], correct: 1 },
+  { q: "What is the most critical check before rigging a pilot ladder?", options: ["Paint condition", "Steps are level, evenly spaced, and in good condition", "Rope colour", "Length only"], correct: 1 },
+  { q: "When can you enter an enclosed space?", options: ["When an officer tells you to", "Only with a valid enclosed space entry permit", "When it looks safe", "During daytime only"], correct: 1 },
+  { q: "What is Stop Work Authority?", options: ["Only the Master can stop work", "Every crew member's right to stop unsafe work", "A union regulation", "A port state requirement"], correct: 1 },
+  { q: "What should you do during a toolbox talk if you do not understand something?", options: ["Stay quiet", "Ask questions until you understand", "Sign and figure it out later", "Leave the meeting"], correct: 1 },
+  { q: "Under SIRE 2.0, who may the inspector speak to?", options: ["Only the Master", "Any crew member including ratings", "Only certificated officers", "Only the DPA"], correct: 1 },
+  { q: "What should you know about your emergency duties?", options: ["Only your muster station", "Muster station, duties, equipment location", "Only the alarm signals", "Nothing — officers handle emergencies"], correct: 1 },
+  { q: "What is the purpose of a familiarisation checklist?", options: ["A formality for filing", "To ensure new crew know safety equipment, duties, and key systems", "To test crew knowledge", "For shore office records only"], correct: 1 },
+  { q: "What must the helmsman do before leaving the wheel?", options: ["Nothing — just leave", "Get permission from the OOW", "Log it in the book", "Tell the lookout"], correct: 1 },
+  { q: "When should you report a hazard you have noticed?", options: ["At the end of the voyage", "Immediately to the officer in charge", "Only if someone gets hurt", "During the next safety meeting"], correct: 1 },
+  { q: "What does MLC 2006 guarantee for seafarers?", options: ["Higher wages", "Right to safe working conditions", "Free internet", "Shore leave every port"], correct: 1 },
+  { q: "What is the correct way to scan the horizon as a lookout?", options: ["Look randomly", "Systematic scanning from one side to the other", "Focus on one point", "Only use binoculars"], correct: 1 },
+  { q: "Why must you never stand in the bight of a mooring line?", options: ["It is untidy", "The line could tighten and trap or injure you", "The officer will be angry", "It slows down operations"], correct: 1 }
+];
+
+// ============ NAVIGATION ============
+function go(screenId) {
+  if (screenId === 'dashboard') screenId = 'screen-dashboard';
+  if (screenId === 'assessment') {
+    screenId = 'screen-assessment';
+    renderAssessment();
+  }
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  if (target) { target.classList.add('active'); window.scrollTo(0, 0); }
+  updateDashboard();
+}
+
+function openModule(n) {
+  go('screen-m' + n);
+}
+
+// ============ ACTIVITIES ============
+function checkActivity(n) {
+  const data = activityData[n];
+  const keys = Object.keys(data.answers);
+  let correct = 0;
+  let html = '<h4 style="margin-bottom:15px">Activity Results:</h4>';
+
+  keys.forEach(key => {
+    const sel = document.getElementById(key);
+    const userAnswer = sel ? sel.value : '';
+    const correctAnswer = data.answers[key];
+    const isCorrect = userAnswer === correctAnswer;
+    if (isCorrect) correct++;
+
+    const expData = data.explanations[key];
+    const qNum = key.replace(/a\dq/, '');
+    const label = sel ? sel.closest('.activity-item').querySelector('.match-label').textContent : '';
+
+    html += '<div class="feedback-item ' + (isCorrect ? 'correct' : 'incorrect') + '">';
+    html += '<strong>' + (isCorrect ? '✓ Correct' : '✗ Incorrect') + '</strong> — ' + label.substring(0, 60) + '...';
+    if (!isCorrect) {
+      html += '<div class="correct-answer">Correct answer: ' + expData.correct + '</div>';
+    }
+    html += '<div class="explanation">' + expData.explanation + '</div>';
+    html += '</div>';
+  });
+
+  const score = Math.round((correct / keys.length) * 100);
+  html += '<div style="margin-top:15px;padding:15px;background:' + (score >= 60 ? '#d4edda' : '#f8d7da') + ';border-radius:8px;text-align:center;font-weight:700">';
+  html += 'Activity Score: ' + score + '% (' + correct + '/' + keys.length + ' correct)</div>';
+
+  const fb = document.getElementById('feedback' + n);
+  fb.innerHTML = html;
+  fb.classList.add('show');
+
+  const xpEarned = correct * 5;
+  courseState.xp += xpEarned;
+  updateDashboard();
+}
+
+// ============ QUIZZES ============
+function selectQuiz(module, question, el) {
+  const container = el.parentElement;
+  container.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  if (!courseState.quizAnswers[module]) courseState.quizAnswers[module] = {};
+  courseState.quizAnswers[module][question] = parseInt(el.getAttribute('data-a'));
+}
+
+function submitQuiz(module) {
+  const answers = courseState.quizAnswers[module] || {};
+  const correctAnswers = quizData[module];
+  let correct = 0;
+  let total = Object.keys(correctAnswers).length;
+
+  Object.keys(correctAnswers).forEach(q => {
+    if (answers[q] === correctAnswers[q]) correct++;
+  });
+
+  const score = Math.round((correct / total) * 100);
+  courseState.quizScores[module] = score;
+  courseState.xp += correct * 10;
+
+  // Show correct/incorrect on options
+  const quizContainer = document.getElementById('quiz' + module);
+  quizContainer.querySelectorAll('.quiz-question').forEach((qEl, idx) => {
+    const qNum = idx + 1;
+    const correctAns = correctAnswers[qNum];
+    qEl.querySelectorAll('.quiz-option').forEach(opt => {
+      const optAns = parseInt(opt.getAttribute('data-a'));
+      if (optAns === correctAns) opt.classList.add('correct-show');
+      else if (opt.classList.contains('selected') && optAns !== correctAns) opt.classList.add('incorrect-show');
+      opt.style.pointerEvents = 'none';
+    });
+  });
+
+  // Show modal
+  const modal = document.getElementById('quizModal');
+  const content = document.getElementById('quizModalContent');
+  document.getElementById('quizModalTitle').textContent = score >= 60 ? '✓ Quiz Completed!' : '✗ Quiz Completed';
+  document.getElementById('quizModalScore').textContent = 'Score: ' + score + '%';
+  document.getElementById('quizModalMsg').textContent = score >= 60 ? 'Well done! Review the highlighted answers above.' : 'Review the correct answers highlighted in green above.';
+  content.className = 'feedback-modal-content ' + (score >= 60 ? 'pass' : 'fail');
+  modal.classList.add('show');
+  setTimeout(() => modal.classList.remove('show'), 4000);
+
+  updateDashboard();
+}
+
+// ============ MODULE COMPLETION ============
+function completeModule(n) {
+  if (!courseState.modulesCompleted.includes(n)) {
+    courseState.modulesCompleted.push(n);
+    courseState.xp += 30;
+    checkBadges();
+  }
+  go('dashboard');
+}
+
+// ============ ASSESSMENT ============
+function renderAssessment() {
+  const container = document.getElementById('assessmentContainer');
+  let html = '';
+  assessmentQuestions.forEach((q, i) => {
+    html += '<div class="assess-question"><p class="q-text">Q' + (i + 1) + ': ' + q.q + '</p>';
+    q.options.forEach((opt, j) => {
+      html += '<div class="assess-option" onclick="selectAssessment(' + i + ',' + j + ',this)">' + String.fromCharCode(65 + j) + ') ' + opt + '</div>';
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function selectAssessment(qIdx, optIdx, el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.assess-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  courseState.assessmentAnswers[qIdx] = optIdx;
+}
+
+function submitAssessment() {
+  let correct = 0;
+  assessmentQuestions.forEach((q, i) => {
+    if (courseState.assessmentAnswers[i] === q.correct) correct++;
+  });
+
+  const score = Math.round((correct / assessmentQuestions.length) * 100);
+  courseState.assessmentScore = score;
+  courseState.xp += correct * 5;
+
+  const passed = score >= 70;
+  checkBadges();
+
+  // Show results
+  document.getElementById('scoreValue').textContent = score + '%';
+  const circle = document.getElementById('scoreCircle');
+  circle.className = 'score-circle ' + (passed ? 'pass' : 'fail');
+
+  document.getElementById('resultMessage').innerHTML = passed
+    ? '<h3 style="color:#27ae60;margin:15px 0">Congratulations! You Passed!</h3><p>You have demonstrated competence in deck rating duties and responsibilities.</p>'
+    : '<h3 style="color:#e74c3c;margin:15px 0">Not Yet Passed</h3><p>You need 70% to pass. Review the modules and try again.</p>';
+
+  document.getElementById('certArea').innerHTML = passed
+    ? '<div class="cert-box"><h3>Certificate of Completion</h3><p><strong>Ratings at Sea — Duties, Responsibilities and Safe Practices</strong></p><p>Score: ' + score + '% | Date: ' + new Date().toLocaleDateString() + '</p><p>STCW A-II/4, A-II/5, A-VI/1 | SIRE Ch.3 & Ch.5</p></div>'
+    : '';
+
+  document.getElementById('finalXP').textContent = courseState.xp;
+  document.getElementById('finalModules').textContent = courseState.modulesCompleted.length;
+  document.getElementById('finalBadges').textContent = courseState.badges.length > 0 ? courseState.badges.join(', ') : 'None';
+
+  go('screen-results');
+  sendLMSCompletion(score, passed);
+}
+
+// ============ BADGES ============
+function checkBadges() {
+  if (courseState.modulesCompleted.length === 5 && !courseState.badges.includes('Course Master')) {
+    courseState.badges.push('Course Master');
+  }
+  if (courseState.xp >= 300 && !courseState.badges.includes('XP Champion')) {
+    courseState.badges.push('XP Champion');
+  }
+  if (courseState.xp >= 500 && !courseState.badges.includes('On Fire')) {
+    courseState.badges.push('On Fire');
+  }
+  updateDashboard();
+}
+
+// ============ DASHBOARD UPDATE ============
+function updateDashboard() {
+  const xpEl = document.getElementById('xpDisplay');
+  if (xpEl) xpEl.textContent = courseState.xp;
+
+  const modEl = document.getElementById('modulesDone');
+  if (modEl) modEl.textContent = courseState.modulesCompleted.length + '/5';
+
+  const qsEl = document.getElementById('quizScore');
+  if (qsEl) {
+    const scores = Object.values(courseState.quizScores);
+    qsEl.textContent = scores.length > 0 ? scores[scores.length - 1] + '%' : '--';
+  }
+
+  // Progress bar
+  const progress = (courseState.modulesCompleted.length / 5) * 100;
+  const fill = document.querySelector('#progressBar .fill');
+  if (fill) fill.style.width = progress + '%';
+
+  // Module cards
+  for (let i = 1; i <= 5; i++) {
+    const card = document.getElementById('mc' + i);
+    if (card) {
+      if (courseState.modulesCompleted.includes(i)) card.classList.add('completed');
+      else card.classList.remove('completed');
+    }
+  }
+
+  // Badges
+  const badgeEl = document.getElementById('badgeDisplay');
+  if (badgeEl) {
+    badgeEl.innerHTML = courseState.badges.map(b => '<span class="badge">' + b + '</span>').join('');
+  }
+}
+
+// ============ LMS INTEGRATION ============
+function sendLMSCompletion(score, passed) {
+  const completionData = {
+    courseId: 'ratings-at-sea-duties-001',
+    courseName: 'Ratings at Sea — Duties, Responsibilities and Safe Practices',
+    completionStatus: passed ? 'PASSED' : 'FAILED',
+    score: score,
+    passingScore: 70,
+    totalXP: courseState.xp,
+    badges: courseState.badges,
+    modulesCompleted: courseState.modulesCompleted,
+    completionTime: Math.round((Date.now() - courseState.startTime) / 1000),
+    timestamp: new Date().toISOString(),
+    stcwReference: 'STCW A-II/4, A-II/5, A-VI/1',
+    sireChapter: 'Ch.3 Crew Management, Ch.5 Safety Management'
+  };
+
+  // Method 1: PostMessage API (for iframe-based LMS)
+  if (window.parent !== window) {
+    window.parent.postMessage({
+      type: 'course-completion',
+      data: completionData
+    }, '*');
+  }
+
+  // Method 2: REST API (for custom LMS)
+  try {
+    fetch('/api/lms/completion', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(completionData)
+    }).catch(function() {});
+  } catch (e) {}
+
+  // Method 3: localStorage (offline persistence)
+  try {
+    localStorage.setItem('course_completion_ratings_at_sea', JSON.stringify(completionData));
+  } catch (e) {}
+
+  // Method 4: SCORM-compatible
+  try {
+    if (window.API) {
+      window.API.LMSSetValue('cmi.core.score.raw', score);
+      window.API.LMSSetValue('cmi.core.lesson_status', passed ? 'passed' : 'failed');
+      window.API.LMSCommit('');
+    }
+    if (window.API_1484_11) {
+      window.API_1484_11.SetValue('cmi.score.raw', score);
+      window.API_1484_11.SetValue('cmi.completion_status', 'completed');
+      window.API_1484_11.SetValue('cmi.success_status', passed ? 'passed' : 'failed');
+      window.API_1484_11.Commit('');
+    }
+  } catch (e) {}
+
+  console.log('LMS Completion Data:', JSON.stringify(completionData, null, 2));
+}
+
+// ============ INIT ============
+document.addEventListener('DOMContentLoaded', function() {
+  updateDashboard();
+});
+</script>
+</body>
+</html>
