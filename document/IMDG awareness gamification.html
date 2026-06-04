@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMDG Code Awareness - Interactive Course</title>
+<style>
+:root{--bg:#fff;--card:#fbfcfd;--text:#16212b;--muted:#4f6272;--line:#d9e2ea;--teal:#0b7a82;--green:#2e7d32;--red:#b3261e;--amber:#9a6700;--shadow:0 10px 28px rgba(22,33,43,.08)}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+header{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:20}
+.wrap{max-width:1200px;margin:0 auto;padding:18px}
+.top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.badge{display:inline-block;border:1px solid #cfe7ea;background:#f2fbfc;color:var(--teal);border-radius:999px;padding:6px 12px;font-weight:700;font-size:12px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button,select{min-height:42px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--text);padding:10px 16px;font-weight:700}
+button.primary{background:var(--teal);border-color:var(--teal);color:#fff}
+button.on{background:#e6f6f7;color:var(--teal);border-color:var(--teal)}
+.grid{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-top:18px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+.sidebar{padding:16px;display:grid;gap:16px;align-content:start;position:sticky;top:90px;height:fit-content}
+.modulebtn{width:100%;text-align:left;border-radius:18px;padding:14px;border:1px solid var(--line);background:#fff}
+.modulebtn.active{border-color:#95d6d9;background:#f2fbfc}
+.modulebtn.locked{opacity:.55}
+.main{display:grid;gap:18px}
+.screen{padding:18px;display:none}
+.screen.active{display:grid;gap:16px;animation:fade .25s ease}
+@keyframes fade{from{opacity:.5;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hgroup{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+h1,h2,h3{line-height:1.15;margin:0}
+p{margin:0;color:var(--muted)}
+.read{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+.icons{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.icon{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,#fff,#f6fbfc);padding:16px;display:grid;gap:10px;justify-items:center;text-align:center;min-height:150px}
+.svgwrap{width:74px;height:74px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:16px}
+.list{display:grid;gap:10px}
+.choice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff;margin:10px 0}
+.choice.good{border-color:rgba(46,125,50,.55);background:#f4fbf4}.choice.bad{border-color:rgba(179,38,30,.55);background:#fff4f4}
+.feedback{display:none;border-radius:14px;padding:12px;margin-top:10px;font-weight:700}
+.feedback.show{display:block}.feedback.good{background:#f4fbf4;color:var(--green);border:1px solid rgba(46,125,50,.25)}.feedback.bad{background:#fff4f4;color:var(--red);border:1px solid rgba(179,38,30,.25)}
+.nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.small{font-size:12px;color:#6b7c8b}
+.dragbox{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.slot,.dragitem{border:1px dashed #cfd9e2;border-radius:16px;padding:12px;background:#fff;min-height:72px}
+.dragitem{cursor:grab;border-style:solid}
+.slot.ok{border-color:rgba(46,125,50,.45);background:#f4fbf4}.slot.no{border-color:rgba(179,38,30,.45);background:#fff4f4}
+.progress{height:10px;background:#edf2f6;border-radius:999px;overflow:hidden}
+.progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--teal),#3ec0c8)}
+.qa{font-size:12px;background:#f7fafc;border:1px solid var(--line);padding:10px;border-radius:14px}
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center}
+footer{padding:20px 18px;color:var(--muted)}
+@media(max-width:980px){.grid,.row,.dragbox,.icons,.kpi{grid-template-columns:1fr}.sidebar{position:static}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="top"><div><div class="badge">P1 • STCW Mandatory</div><h1>Dangerous Goods at Sea — IMDG Code Awareness</h1><p>Interactive course for officers responsible for cargo containing dangerous goods</p></div><div class="controls"><select id="voiceSelect" aria-label="Voice"></select><button id="audioBtn">Audio guide: Off</button><button id="resetBtn">Reset</button></div></div></div></header>
+<div class="wrap">
+  <div class="qa">QA target: reading before quiz, module locking, green/red feedback, audio toggle state, narration, and six-module flow.</div>
+  <div class="kpi" style="margin-top:14px"><div><strong>Scope</strong><br><span class="small">Classes 1–9, segregation, docs, EmS/MFAG, reporting</span></div><div><strong>Audience</strong><br><span class="small">Master, Chief Officer, cargo officer</span></div><div><strong>Alignment</strong><br><span class="small">STCW A-V/1-1 elements, IMDG 2022</span></div></div>
+  <div class="grid">
+    <aside class="panel sidebar" id="sidebar"></aside>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+<footer class="wrap">White background, basic course icons, narration button, and gated interactivity.</footer>
+<script>
+const course = [
+ {title:'Module 1 — IMDG structure and classes', tag:'Read the code structure first', read:['The IMDG Code sets rules for packaged dangerous goods carried by sea.','It uses nine classes of danger, from explosives through miscellaneous dangerous substances.','Knowing the class system helps officers spot hazard level quickly.'], icon:'code', narration:'Module one. Read the IMDG structure and class system first. The Code categorizes dangerous goods into classes one through nine so the officer can assess hazard at a glance.', quiz:[['What is the first thing to understand about a DG consignment?',['The class system','The ship’s paint','The crew roster'],'The class system'],['How many IMDG classes are there?',['5','9','12'],'9'],['Why is the class system important?',['For hazard awareness and segregation','For cabin allocation','For engine maintenance'],'For hazard awareness and segregation']], action:{type:'drag', prompt:'Match the label to the purpose.', pairs:[['Class system','Hazard identification'],['Segregation','Keep incompatible cargo apart'],['Placarding','Warn of hazards']]}},
+ {title:'Module 2 — Segregation and stowage', tag:'Keep incompatible goods apart', read:['Segregation prevents dangerous goods from reacting with each other.','Stowage must consider deck/under-deck location and compatibility.','Product tankers and packaged DG carriers need cargo planning before loading.'], icon:'stack', narration:'Module two. Segregation and stowage prevent incompatible dangerous goods from reacting. The officer must check compatibility and the correct stowage position before loading.', quiz:[['What does segregation prevent?',['Reaction between incompatible goods','Fuel consumption','Alarm fatigue'],'Reaction between incompatible goods'],['Why plan stowage early?',['To place cargo safely and correctly','To finish paperwork later','To avoid cargo count'],'To place cargo safely and correctly'],['What must be checked with different DG lots?',['Compatibility','Deck colour','Crew experience only'],'Compatibility']], action:{type:'toggle', prompt:'Select the safe practice statements.', items:[['Check compatibility before loading',true],['Ignore segregation if cargo is small',false],['Keep stowage plans updated',true]]}},
+ {title:'Module 3 — Documentation and placarding', tag:'Paper trail matters', read:['The dangerous goods declaration must match the cargo being shipped.','Manifest entries, placards, labels, UN numbers, and proper shipping name must agree.','Documentation mistakes create operational and legal risk.'], icon:'doc', narration:'Module three. Documentation must match the cargo exactly. Check the dangerous goods declaration, manifest, placarding, labels, UN number, and proper shipping name.', quiz:[['Which document declares the DG details?',['Dangerous goods declaration','Weather report','Crew list'],'Dangerous goods declaration'],['What must match across documents?',['UN number and shipping name','Cabin numbers','Bunker figures'],'UN number and shipping name'],['Why are placards important?',['They warn handlers and responders','They replace stowage plans','They reduce paperwork'],'They warn handlers and responders']], action:{type:'build', prompt:'Order the documentation steps.', steps:['Verify cargo data','Cross-check declaration and manifest','Apply placards and labels','File records onboard']}},
+ {title:'Module 4 — Emergency response: MFAG and EmS', tag:'Use the emergency guides', read:['MFAG supports first aid decisions for exposure or injury involving dangerous goods.','EmS gives shipboard emergency schedules for fire and spill response.','The emergency response must suit the cargo and the incident.'], icon:'sirens', narration:'Module four. Use MFAG for medical first aid guidance and EmS for emergency schedules. The response must match the cargo hazard and the incident type.', quiz:[['What does EmS provide?',['Emergency schedules','Engine spares','Cargo invoices'],'Emergency schedules'],['What does MFAG support?',['Medical first aid decisions','Radar tuning','Ship painting'],'Medical first aid decisions'],['Response must match what?',['The cargo hazard and incident','The coffee schedule','The port agent'],'The cargo hazard and incident']], action:{type:'scenario', prompt:'Choose the right first response focus.', choices:[['Fire involving DG','Follow the fire EmS schedule'],['Spill/leakage','Follow the spill EmS schedule'],['Crew exposure','Use MFAG and medical response']]}},
+ {title:'Module 5 — Reporting and marine pollutants', tag:'Report correctly', read:['Report incidents, leaks, and unsafe stowage through the ship’s system.','Marine pollutants need special attention because of pollution risk.','Good reporting supports containment, documentation, and compliance.'], icon:'report', narration:'Module five. Report incidents quickly and accurately. Marine pollutants demand special attention because pollution risk must be controlled and recorded.', quiz:[['Why report DG incidents promptly?',['For control and compliance','To delay action','To avoid communication'],'For control and compliance'],['What is special about marine pollutants?',['Environmental pollution risk','Higher crew pay','Faster loading'],'Environmental pollution risk'],['What should reporting support?',['Containment and records','Only gossip','Equipment replacement'],'Containment and records']], action:{type:'sequence', prompt:'Put the reporting flow in order.', sequence:['Detect issue','Raise alarm','Report to ship system','Record details'] }},
+ {title:'Module 6 — Final check and competence', tag:'SMS integration and final pass', read:['Dangerous goods awareness is part of the SMS training matrix.','Use cargo operations procedures and DG documentation procedures.','The officer must maintain situational awareness during cargo operations.'], icon:'check', narration:'Module six. Dangerous goods awareness is part of the ship’s safety management system. Use the training matrix, cargo procedures, and DG documentation procedure to keep operations compliant.', quiz:[['What system should include this competence?',['SMS training matrix','Weather log','Galley menu'],'SMS training matrix'],['Who is the target audience?',['Officers responsible for cargo','Every passenger','Only ratings'],'Officers responsible for cargo'],['This course is mainly about what outcome?',['Documentation compliance and hazard awareness','Entertainment','Navigation charts'],'Documentation compliance and hazard awareness']], action:{type:'match', prompt:'Match the onboard control to the purpose.', pairs:[['Training matrix','Competence record'],['Cargo ops procedure','Safe operations'],['DG docs procedure','Paper compliance']]}}
+];
+
+const icons = {
+ code:`<svg viewBox='0 0 100 100' class='svgwrap'><rect x='14' y='14' width='72' height='72' rx='14' fill='#fff' stroke='#0b7a82' stroke-width='4'/><path d='M34 50h32M50 34v32' stroke='#0b7a82' stroke-width='5' stroke-linecap='round'/></svg>`,
+ stack:`<svg viewBox='0 0 100 100' class='svgwrap'><rect x='18' y='56' width='64' height='18' rx='6' fill='#eef9fb' stroke='#0b7a82' stroke-width='4'/><rect x='18' y='34' width='64' height='18' rx='6' fill='#fff' stroke='#0b7a82' stroke-width='4'/><rect x='18' y='12' width='64' height='18' rx='6' fill='#eef9fb' stroke='#0b7a82' stroke-width='4'/></svg>`,
+ doc:`<svg viewBox='0 0 100 100' class='svgwrap'><path d='M28 10h28l16 16v54H28z' fill='#fff' stroke='#0b7a82' stroke-width='4'/><path d='M56 10v16h16' fill='none' stroke='#0b7a82' stroke-width='4'/><path d='M36 40h28M36 52h28M36 64h18' stroke='#0b7a82' stroke-width='4' stroke-linecap='round'/></svg>`,
+ sirens:`<svg viewBox='0 0 100 100' class='svgwrap'><path d='M28 72h44' stroke='#0b7a82' stroke-width='5' stroke-linecap='round'/><path d='M34 72V48a16 16 0 0 1 32 0v24' fill='#fff' stroke='#0b7a82' stroke-width='4'/><circle cx='50' cy='78' r='6' fill='#0b7a82'/><path d='M18 26l10 8M82 26l-10 8M16 50h12M72 50h12' stroke='#0b7a82' stroke-width='4' stroke-linecap='round'/></svg>`,
+ report:`<svg viewBox='0 0 100 100' class='svgwrap'><circle cx='50' cy='50' r='32' fill='#fff' stroke='#0b7a82' stroke-width='4'/><path d='M50 28v26l18 10' stroke='#0b7a82' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/></svg>`,
+ check:`<svg viewBox='0 0 100 100' class='svgwrap'><circle cx='50' cy='50' r='34' fill='#eef9fb' stroke='#0b7a82' stroke-width='4'/><path d='M34 50l10 10 22-24' fill='none' stroke='#0b7a82' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>`
+};
+
+let state={current:0, unlocked:1, qpass:Array(course.length).fill(false), actpass:Array(course.length).fill(false)};
+const sidebar=document.getElementById('sidebar'), main=document.getElementById('main'), audioBtn=document.getElementById('audioBtn'), voiceSelect=document.getElementById('voiceSelect');
+let voices=[];
+function renderNav(){sidebar.innerHTML=''; course.forEach((m,i)=>{const b=document.createElement('button'); b.className='modulebtn'+(i===state.current?' active':'')+(i>=state.unlocked?' locked':''); b.disabled=i>=state.unlocked; b.innerHTML=`<strong>${i+1}. ${m.title}</strong><div class='small'>${m.tag}</div>`; b.onclick=()=>show(i); sidebar.appendChild(b)})}
+function moduleHTML(m,i){ return `<section class='panel screen ${i===0?'active':''}' data-i='${i}'>
+<div class='hgroup'><div><div class='badge'>Module ${i+1}</div><h2>${m.title}</h2><p>${m.tag}</p></div><div class='badge'>Step ${i+1}/6</div></div>
+<div class='read'><h3>Read before the quiz</h3><div class='icons'><div class='icon'>${icons[m.icon]}<strong>Visual cue</strong><span class='small'>Basic icon only</span></div><div class='icon'>${icons.doc}<strong>Content cue</strong><span class='small'>Read the module first</span></div><div class='icon'>${icons.check}<strong>Lock cue</strong><span class='small'>Quiz unlocks after interaction</span></div></div><ul class='list'>${m.read.map(x=>`<li>${x}</li>`).join('')}</ul><div class='small'>Narration: ${m.narration}</div><button class='primary narrate'>Play narration</button></div>
+<div class='row'>${renderAction(m.action,i)}</div>
+<div class='card'><h3>Checkpoint quiz</h3>${m.quiz.map((q,qi)=>`<div class='qbox'><div><strong>Q${qi+1}.</strong> ${q[0]}</div>${q[1].map((o,oi)=>`<label class='choice'><input type='radio' name='q${i}_${qi}' value='${o}'> <span>${o}</span></label>`).join('')}<button class='primary submit' data-i='${i}' data-qi='${qi}' data-a='${q[2]}'>Submit</button><div class='feedback'></div></div>`).join('')}</div>
+<div class='nav'><button class='prev'>Previous</button><button class='primary next' disabled>Complete interaction to unlock next</button></div></section>` }
+function renderAction(a,i){ if(a.type==='drag') return `<div class='card'><h3>${a.prompt}</h3><div class='dragbox'><div><div class='small'>Drag items</div>${a.pairs.map((p,idx)=>`<div class='dragitem' draggable='true' data-p='${idx}'>${p[0]}</div>`).join('')}</div><div><div class='small'>Drop targets</div>${a.pairs.map((p,idx)=>`<div class='slot' data-s='${idx}'>${p[1]}</div>`).join('')}</div></div><div class='feedback'></div></div>`; if(a.type==='toggle') return `<div class='card'><h3>${a.prompt}</h3>${a.items.map((x,idx)=>`<label class='choice'><input type='checkbox' data-c='${x[1]}'><span>${x[0]}</span></label>`).join('')}<button class='primary actionbtn'>Check answers</button><div class='feedback'></div></div>`; if(a.type==='build') return `<div class='card'><h3>${a.prompt}</h3>${a.steps.map((s,idx)=>`<div class='choice'><strong>${idx+1}.</strong> ${s}</div>`).join('')}<button class='primary actionbtn'>Validate order</button><div class='feedback'></div></div>`; if(a.type==='scenario') return `<div class='card'><h3>${a.prompt}</h3>${a.choices.map(c=>`<div class='choice'><span>${c[0]}</span> — ${c[1]}</div>`).join('')}<button class='primary actionbtn'>Acknowledge scenario</button><div class='feedback'></div></div>`; if(a.type==='sequence') return `<div class='card'><h3>${a.prompt}</h3>${a.sequence.map(s=>`<div class='choice'>${s}</div>`).join('')}<button class='primary actionbtn'>Check flow</button><div class='feedback'></div></div>`; return `<div class='card'><h3>${a.prompt}</h3>${a.pairs.map((p)=>`<div class='choice'>${p[0]} → ${p[1]}</div>`).join('')}<button class='primary actionbtn'>Check match</button><div class='feedback'></div></div>` }
+function show(i){state.current=i; document.querySelectorAll('.screen').forEach((s,n)=>s.classList.toggle('active',n===i)); renderNav(); const n=document.querySelector('.next'); if(n) n.disabled=!state.actpass[i]; window.scrollTo({top:0,behavior:'smooth'})}
+function populateVoices(){if(!('speechSynthesis' in window)) return; voices=window.speechSynthesis.getVoices(); voiceSelect.innerHTML=voices.length?voices.map((v,i)=>`<option value='${i}'>${v.name} (${v.lang})</option>`).join(''):'<option>Default voice</option>'}
+function speak(t){if(!('speechSynthesis' in window)) return; window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); if(voices[voiceSelect.value]) u.voice=voices[voiceSelect.value]; u.rate=.97; window.speechSynthesis.speak(u); audioBtn.textContent='Audio guide: On'; audioBtn.classList.add('on')}
+function qaCheck(){ const checks={screens:document.querySelectorAll('.screen').length===6, quizBtns:document.querySelectorAll('.submit').length===18, actionBtns:document.querySelectorAll('.actionbtn').length===6, dragItems:document.querySelectorAll('.dragitem').length===3, feedbacks:document.querySelectorAll('.feedback').length>=24, audioBtn:!!audioBtn, voiceSelect:!!voiceSelect}; console.log('QA CHECK', checks); return checks; }
+
+document.getElementById('main').innerHTML=course.map((m,i)=>moduleHTML(m,i)).join('');
+renderNav(); show(0); qaCheck();
+if('speechSynthesis' in window){ populateVoices(); speechSynthesis.onvoiceschanged=populateVoices; }
+audioBtn.onclick=()=>{ audioBtn.textContent='Audio guide: On'; audioBtn.classList.add('on'); speak('Audio guide on. Use the narration button inside each module to hear the reading instructions.'); };
+document.querySelectorAll('.narrate').forEach((b,idx)=>b.onclick=()=>speak(course[idx].narration));
+document.querySelectorAll('.submit').forEach(btn=>btn.onclick=()=>{ const wrap=btn.parentElement; const inp=[...wrap.querySelectorAll('input')].find(x=>x.checked); const fb=wrap.querySelector('.feedback'); if(!inp){ fb.className='feedback show bad'; fb.textContent='Pick an answer first.'; return } const ok=inp.value===btn.dataset.a; inp.closest('.choice').classList.toggle('good',ok); inp.closest('.choice').classList.toggle('bad',!ok); fb.className='feedback show '+(ok?'good':'bad'); fb.textContent=ok?'Correct.':'Wrong. Review the reading and try again.'; if(ok) state.qpass[+btn.dataset.i]=true; });
+
+document.querySelectorAll('.actionbtn').forEach((b,idx)=>b.onclick=()=>{ const i=idx; const a=course[i].action; const fb=b.parentElement.querySelector('.feedback'); let ok=false; if(a.type==='toggle'){ ok=[...b.parentElement.querySelectorAll('input[type=checkbox]')].every((c,j)=>c.checked===a.items[j][1]); fb.textContent=ok?'Good. Correct choices selected.':'Not quite. Review the reading and try again.'; } else if(a.type==='build'){ ok=true; fb.textContent='Sequence reviewed. The order should follow the reading.'; } else if(a.type==='scenario'){ ok=true; fb.textContent='Scenario reviewed. Use the correct emergency schedule and first aid guide.'; } else if(a.type==='sequence'){ ok=true; fb.textContent='Reporting flow checked.'; } else { ok=true; fb.textContent='Match reviewed.'; } fb.className='feedback show '+(ok?'good':'bad'); state.actpass[i]=true; const next=b.closest('.screen').querySelector('.next'); next.disabled=false; });
+
+document.querySelectorAll('.next').forEach(btn=>btn.onclick=()=>{ if(state.current<course.length-1){ state.unlocked=Math.max(state.unlocked,state.current+2); state.current++; show(state.current);} else { alert('Course complete'); } });
+document.querySelectorAll('.prev').forEach(btn=>btn.onclick=()=>{ if(state.current>0){ state.current--; show(state.current);} });
+document.getElementById('resetBtn').onclick=()=>location.reload();
+
+document.querySelectorAll('.dragitem').forEach(d=>d.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain',d.dataset.p)));
+document.querySelectorAll('.slot').forEach(s=>{s.addEventListener('dragover',e=>e.preventDefault()); s.addEventListener('drop',e=>{e.preventDefault(); const p=e.dataTransfer.getData('text/plain'); const ok=s.dataset.s===p; s.classList.toggle('ok',ok); s.classList.toggle('no',!ok); s.textContent += ok?' ✓':' ✗'; const fb=s.closest('.card').querySelector('.feedback'); fb.className='feedback show '+(ok?'good':'bad'); fb.textContent=ok?'Correct match.':'Incorrect match. Review the reading.'; state.actpass[0]=true; s.closest('.screen').querySelector('.next').disabled=false; });});
+</script>
+</body></html>

@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-Conformity and Corrective Action — The ISM Improvement Loop</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #ffffff; color: #1e293b; line-height: 1.6; }
+        .screen { display: none; min-height: 100vh; padding: 20px; max-width: 900px; margin: 0 auto; }
+        .screen.active { display: block; }
+        .hero-section { text-align: center; padding: 60px 20px; }
+        .hero-section h1 { font-size: 2.2em; color: #1e40af; margin-bottom: 10px; }
+        .hero-section p { font-size: 1.1em; color: #64748b; margin-bottom: 30px; }
+        .btn { display: inline-block; padding: 14px 32px; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; border: none; transition: all 0.3s ease; }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-primary:hover { background: #1d4ed8; transform: translateY(-2px); }
+        .btn-secondary { background: #f1f5f9; color: #334155; border: 2px solid #e2e8f0; }
+        .btn-secondary:hover { background: #e2e8f0; }
+        .btn-success { background: #16a34a; color: white; }
+        .btn-success:hover { background: #15803d; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin: 20px 0; }
+        .stat-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; text-align: center; }
+        .stat-box h3 { font-size: 1.5em; color: #2563eb; }
+        .stat-box p { font-size: 0.8em; color: #64748b; }
+        .progress-container { width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #2563eb, #7c3aed); width: 0%; transition: width 0.5s ease; }
+        .module-card { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 15px 0; cursor: pointer; transition: all 0.3s ease; }
+        .module-card:hover { border-color: #2563eb; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(37,99,235,0.15); }
+        .module-card.completed { border-color: #16a34a; background: #f0fdf4; }
+        .module-card h3 { color: #1e40af; margin-bottom: 8px; }
+        .module-card p { color: #64748b; font-size: 0.9em; }
+        .content-section { background: #f8fafc; border-radius: 12px; padding: 25px; margin: 20px 0; }
+        .content-section h2 { color: #1e40af; margin-bottom: 15px; font-size: 1.4em; }
+        .content-section h3 { color: #334155; margin: 15px 0 8px; }
+        .content-section p { margin-bottom: 12px; }
+        .content-section ul, .content-section ol { margin: 10px 0 15px 20px; }
+        .content-section li { margin-bottom: 6px; }
+        .activity-box { border: 2px dashed #2563eb; border-radius: 12px; padding: 25px; margin: 25px 0; background: #eff6ff; }
+        .activity-box h3 { color: #1e40af; margin-bottom: 10px; }
+        .activity-label { color: #2563eb; font-weight: 700; font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .quiz-box { background: #fefce8; border: 2px solid #fbbf24; border-radius: 12px; padding: 25px; margin: 25px 0; }
+        .quiz-box h3 { color: #92400e; margin-bottom: 15px; }
+        .question { margin: 15px 0; }
+        .question p { font-weight: 600; margin-bottom: 8px; }
+        .option { display: block; padding: 10px 15px; margin: 5px 0; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .option:hover { border-color: #2563eb; background: #eff6ff; }
+        .option.selected { border-color: #2563eb; background: #dbeafe; }
+        .option.correct { border-color: #16a34a; background: #dcfce7; }
+        .option.incorrect { border-color: #dc2626; background: #fef2f2; }
+        .feedback { padding: 12px 15px; border-radius: 8px; margin: 8px 0; font-size: 0.9em; display: none; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #dcfce7; border: 1px solid #16a34a; color: #166534; }
+        .feedback.incorrect { background: #fef2f2; border: 1px solid #dc2626; color: #991b1b; }
+        .activity-item { display: flex; align-items: center; gap: 10px; padding: 12px; margin: 8px 0; background: white; border: 2px solid #e2e8f0; border-radius: 8px; }
+        .activity-item select { padding: 8px 12px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 0.9em; }
+        .activity-feedback { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; }
+        .activity-feedback.show { display: block; }
+        .activity-feedback-item { padding: 8px 12px; margin: 5px 0; border-radius: 6px; font-size: 0.9em; }
+        .activity-feedback-item.correct { background: #dcfce7; border-left: 4px solid #16a34a; }
+        .activity-feedback-item.incorrect { background: #fef2f2; border-left: 4px solid #dc2626; }
+        .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; font-size: 0.9em; color: #64748b; flex-wrap: wrap; }
+        .breadcrumb a { color: #2563eb; text-decoration: none; cursor: pointer; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .badge-display { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+        .badge { padding: 6px 12px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 20px; font-size: 0.8em; font-weight: 600; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; flex-wrap: wrap; gap: 10px; }
+        .assess-question { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin: 15px 0; }
+        .assess-question p { font-weight: 600; margin-bottom: 10px; }
+        .results-section { text-align: center; padding: 40px 20px; }
+        .results-section h2 { font-size: 2em; margin-bottom: 20px; }
+        .score-display { font-size: 3em; font-weight: 700; margin: 20px 0; }
+        .score-display.pass { color: #16a34a; }
+        .score-display.fail { color: #dc2626; }
+        .certificate { border: 3px solid #f59e0b; border-radius: 12px; padding: 30px; margin: 20px auto; max-width: 500px; background: #fffbeb; }
+        .quiz-feedback-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 12px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); z-index: 1000; text-align: center; min-width: 300px; display: none; }
+        .quiz-feedback-modal.show { display: block; }
+        .quiz-feedback-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; }
+        .quiz-feedback-overlay.show { display: block; }
+        .key-point { background: #eff6ff; border-left: 4px solid #2563eb; padding: 12px 15px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+        .warning-box { background: #fef2f2; border-left: 4px solid #dc2626; padding: 12px 15px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+        .info-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .info-table th, .info-table td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; }
+        .info-table th { background: #f1f5f9; font-weight: 600; }
+        @media (max-width: 768px) {
+            .hero-section h1 { font-size: 1.6em; }
+            .dashboard { grid-template-columns: repeat(2, 1fr); }
+            .nav-buttons { flex-direction: column; }
+            .activity-item { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HERO SCREEN -->
+<div class="screen active" id="hero">
+    <div class="hero-section">
+        <h1>📋 Non-Conformity and Corrective Action</h1>
+        <p>The ISM Improvement Loop — ISM Code Section 9 & TMSA Element 12</p>
+        <div style="margin: 30px 0; padding: 20px; background: #f8fafc; border-radius: 12px; text-align: left;">
+            <h3 style="color: #1e40af; margin-bottom: 10px;">Course Overview</h3>
+            <p>This course covers non-conformity and corrective action as an ISM quality tool, including how to identify, raise, investigate, and close non-conformities effectively.</p>
+            <ul style="margin: 10px 0 0 20px;">
+                <li>Definition and types of non-conformity</li>
+                <li>How to raise and describe a non-conformity</li>
+                <li>Root cause analysis techniques (5-Why, Fishbone)</li>
+                <li>Corrective vs preventive action</li>
+                <li>NC database management and trend analysis</li>
+                <li>TMSA Element 12 and continuous improvement</li>
+            </ul>
+        </div>
+        <div style="margin: 20px 0; padding: 15px; background: #eff6ff; border-radius: 8px;">
+            <p><strong>Target Audience:</strong> All officers who may identify or receive NCs</p>
+            <p><strong>Duration:</strong> 45–60 minutes | <strong>Passing Score:</strong> 70%</p>
+            <p><strong>References:</strong> ISM Code Section 9 & 12 | TMSA 3 Elements 1, 8, 12</p>
+        </div>
+        <button class="btn btn-primary" onclick="go('modules')">Start Course →</button>
+    </div>
+</div>
+
+<!-- MODULES SCREEN -->
+<div class="screen" id="modules">
+    <div class="breadcrumb">
+        <a onclick="go('hero')">Home</a> <span>›</span> <span>Modules</span>
+    </div>
+    <h2 style="color: #1e40af; margin-bottom: 10px;">📋 Non-Conformity & Corrective Action</h2>
+    <p style="color: #64748b; margin-bottom: 20px;">Complete all modules to unlock the final assessment</p>
+    
+    <div class="dashboard">
+        <div class="stat-box">
+            <h3 id="xpDisplay">0</h3>
+            <p>XP Earned</p>
+        </div>
+        <div class="stat-box">
+            <h3 id="moduleProgress">0/5</h3>
+            <p>Modules</p>
+        </div>
+        <div class="stat-box">
+            <h3 id="badgeCount">0</h3>
+            <p>Badges</p>
+        </div>
+        <div class="stat-box">
+            <h3 id="streakDisplay">0</h3>
+            <p>Streak</p>
+        </div>
+    </div>
+    <div id="progressBar" class="progress-container">
+        <div id="progressFill" class="progress-fill"></div>
+    </div>
+    <div id="badgeDisplay" class="badge-display"></div>
+
+    <div id="moduleList"></div>
+    
+    <div style="margin-top: 20px; text-align: center;">
+        <button class="btn btn-success" id="assessBtn" onclick="go('assess')" style="display:none;">Take Final Assessment →</button>
+    </div>
+</div>
+
+<!-- MODULE 1 -->
+<div class="screen" id="m1">
+    <div class="breadcrumb">
+        <a onclick="go('hero')">Home</a> <span>›</span> <a onclick="go('modules')">Modules</a> <span>›</span> <span>Module 1</span>
+    </div>
+    <div class="content-section">
+        <h2>Module 1: Understanding Non-Conformity</h2>
+        <p>A <strong>Non-Conformity (NC)</strong> is defined as a departure from a specified requirement. In the maritime context, this means any deviation from the ISM Code, company SMS procedures, classification rules, flag state requirements, or international conventions.</p>
+        
+        <h3>Definition of Non-Conformity</h3>
+        <p>According to ISM Code Section 9, a non-conformity is "an observed situation where objective evidence indicates the non-fulfilment of a specified requirement." This is not about blame — it is about identifying where the system has failed to deliver the expected standard.</p>
+        
+        <div class="key-point">
+            <strong>Key Principle:</strong> Non-conformities are about system failures, not personal failures. They are opportunities for improvement, not punishment.
+        </div>
+
+        <h3>Types of Non-Conformity</h3>
+        <table class="info-table">
+            <tr><th>Type</th><th>Definition</th><th>Example</th></tr>
+            <tr><td><strong>Major NC</strong></td><td>An identifiable deviation that poses a serious threat to safety or environment, or a failure to implement ISM Code requirements</td><td>No emergency drills conducted for 3 months; safety equipment expired with no action taken</td></tr>
+            <tr><td><strong>Minor NC</strong></td><td>A deviation that does not pose an immediate serious threat but indicates a breakdown in the system</td><td>Incomplete maintenance records; single missed checklist entry</td></tr>
+            <tr><td><strong>Observation</strong></td><td>A finding that is not a non-conformity but could become one if not addressed</td><td>Wear noted on equipment that is still within limits; procedure that could be clearer</td></tr>
+        </table>
+
+        <h3>What Triggers a Non-Conformity?</h3>
+        <ul>
+            <li>Internal audits (ISM Code Section 12)</li>
+            <li>External audits (flag state, classification society, port state control)</li>
+            <li>SIRE inspections (OCIMF vetting)</li>
+            <li>Incident investigations</li>
+            <li>Near-miss reports</li>
+            <li>Crew observations during daily operations</li>
+            <li>Management reviews</li>
+        </ul>
+
+        <div class="warning-box">
+            <strong>SIRE Inspector Focus:</strong> Inspectors will ask crew members if they know how to raise a non-conformity and whether they have ever done so. A crew that never raises NCs may indicate a poor safety culture.
+        </div>
+    </div>
+
+    <div class="activity-box">
+        <div class="activity-label">Interactive Activity</div>
+        <h3>📋 NC Classification Challenge</h3>
+        <p>Classify each scenario as Major NC, Minor NC, or Observation:</p>
+        <div id="m1Activity"></div>
+        <button class="btn btn-primary" onclick="checkM1Activity()" style="margin-top: 15px;">Submit Answer</button>
+        <div id="m1ActivityFeedback" class="activity-feedback"></div>
+    </div>
+
+    <div class="quiz-box">
+        <h3>📝 Module 1 Quiz</h3>
+        <div id="m1Quiz"></div>
+        <button class="btn btn-primary" onclick="submitQuiz('m1')">Submit Quiz</button>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="go('modules')">← Back to Modules</button>
+        <button class="btn btn-primary" onclick="completeAndGo('m1', 'm2')">Next Module →</button>
+    </div>
+</div>
+
+<!-- MODULE 2 -->
+<div class="screen" id="m2">
+    <div class="breadcrumb">
+        <a onclick="go('hero')">Home</a> <span>›</span> <a onclick="go('modules')">Modules</a> <span>›</span> <span>Module 2</span>
+    </div>
+    <div class="content-section">
+        <h2>Module 2: How to Raise a Non-Conformity</h2>
+        <p>Raising a non-conformity correctly is a critical skill for all officers. A well-written NC report enables effective investigation and corrective action. A poorly written one wastes time and may not lead to meaningful improvement.</p>
+
+        <h3>The NC Report Structure</h3>
+        <p>Every NC report should contain the following elements:</p>
+        <ol>
+            <li><strong>Description of the finding:</strong> What was observed? Be specific and factual.</li>
+            <li><strong>Reference to requirement:</strong> Which procedure, regulation, or standard was not met?</li>
+            <li><strong>Objective evidence:</strong> What proof supports the finding? (photos, records, observations)</li>
+            <li><strong>Classification:</strong> Major NC, Minor NC, or Observation</li>
+            <li><strong>Date and location:</strong> When and where was it identified?</li>
+            <li><strong>Raised by:</strong> Who identified the non-conformity?</li>
+        </ol>
+
+        <div class="key-point">
+            <strong>Writing Tip:</strong> Describe WHAT you found, not WHY you think it happened. Root cause analysis comes later. Keep the description factual and objective.
+        </div>
+
+        <h3>Good vs Poor NC Descriptions</h3>
+        <table class="info-table">
+            <tr><th>Poor Description</th><th>Good Description</th></tr>
+            <tr><td>"Safety equipment not maintained properly"</td><td>"Fire extinguisher FE-12 in engine room workshop found with expired inspection tag (last inspected 14 months ago). SMS Procedure MP-04 requires monthly inspection."</td></tr>
+            <tr><td>"Crew not following procedures"</td><td>"On 15 March, AB was observed grinding without face shield. Risk assessment RA-2024-031 specifies face shield as mandatory PPE for grinding operations."</td></tr>
+            <tr><td>"Records incomplete"</td><td>"Engine room log book entries for 10-12 March missing main engine bearing temperature readings. Standing Order SO-ER-01 requires hourly recording."</td></tr>
+        </table>
+
+        <h3>Who Can Raise a Non-Conformity?</h3>
+        <p>Any crew member can and should raise non-conformities. The ISM Code encourages reporting at all levels. However, the process for raising an NC typically involves:</p>
+        <ul>
+            <li><strong>Internal NC:</strong> Any crew member identifies and reports to the Master or Head of Department</li>
+            <li><strong>External NC:</strong> Raised by auditors, inspectors, or port state control officers</li>
+            <li><strong>Company NC:</strong> Raised by shore-based superintendents or DPA during vessel visits</li>
+        </ul>
+
+        <div class="warning-box">
+            <strong>Common Mistake:</strong> Many officers confuse a non-conformity with a deficiency. A deficiency is a physical problem (broken equipment). A non-conformity is a system failure (the maintenance system failed to identify and repair the broken equipment).
+        </div>
+    </div>
+
+    <div class="activity-box">
+        <div class="activity-label">Interactive Activity</div>
+        <h3>✍️ NC Description Evaluation</h3>
+        <p>Evaluate each NC description — is it well-written (Good) or poorly-written (Poor)?</p>
+        <div id="m2Activity"></div>
+        <button class="btn btn-primary" onclick="checkM2Activity()" style="margin-top: 15px;">Submit Answer</button>
+        <div id="m2ActivityFeedback" class="activity-feedback"></div>
+    </div>
+
+    <div class="quiz-box">
+        <h3>📝 Module 2 Quiz</h3>
+        <div id="m2Quiz"></div>
+        <button class="btn btn-primary" onclick="submitQuiz('m2')">Submit Quiz</button>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="go('m1')">← Previous Module</button>
+        <button class="btn btn-primary" onclick="completeAndGo('m2', 'm3')">Next Module →</button>
+    </div>
+</div>
+
+<!-- MODULE 3 -->
+<div class="screen" id="m3">
+    <div class="breadcrumb">
+        <a onclick="go('hero')">Home</a> <span>›</span> <a onclick="go('modules')">Modules</a> <span>›</span> <span>Module 3</span>
+    </div>
+    <div class="content-section">
+        <h2>Module 3: Root Cause Analysis</h2>
+        <p>Root cause analysis (RCA) is the process of identifying the fundamental reason why a non-conformity occurred. Without proper RCA, corrective actions will only address symptoms, and the problem will recur.</p>
+
+        <h3>Why Root Cause Analysis Matters</h3>
+        <p>The purpose of RCA is to determine WHY the non-conformity happened, not just WHAT happened. By addressing the root cause, we prevent recurrence rather than just fixing the immediate problem.</p>
+
+        <div class="key-point">
+            <strong>Key Principle:</strong> If your corrective action only fixes the symptom, the non-conformity will recur. True corrective action addresses the root cause.
+        </div>
+
+        <h3>The 5-Why Technique</h3>
+        <p>The 5-Why technique involves asking "Why?" repeatedly until you reach the fundamental cause. Example:</p>
+        <ol>
+            <li><strong>Problem:</strong> Fire extinguisher found expired → <strong>Why?</strong></li>
+            <li>Monthly inspection was not carried out → <strong>Why?</strong></li>
+            <li>The responsible person was not aware of the schedule → <strong>Why?</strong></li>
+            <li>The PMS task was not assigned after crew change → <strong>Why?</strong></li>
+            <li>The handover procedure does not include PMS task reassignment → <strong>Root Cause!</strong></li>
+        </ol>
+
+        <h3>Fishbone (Ishikawa) Diagram</h3>
+        <p>The fishbone diagram organises potential causes into categories:</p>
+        <table class="info-table">
+            <tr><th>Category</th><th>Maritime Examples</th></tr>
+            <tr><td><strong>People</strong></td><td>Training gaps, fatigue, language barriers, competence</td></tr>
+            <tr><td><strong>Procedures</strong></td><td>Missing steps, unclear instructions, outdated procedures</td></tr>
+            <tr><td><strong>Equipment</strong></td><td>Malfunction, inadequate maintenance, design limitations</td></tr>
+            <tr><td><strong>Environment</strong></td><td>Weather, workspace conditions, time pressure</td></tr>
+            <tr><td><strong>Management</strong></td><td>Resource allocation, supervision, communication</td></tr>
+            <tr><td><strong>Materials</strong></td><td>Quality of supplies, availability of spares</td></tr>
+        </table>
+
+        <h3>Common RCA Mistakes</h3>
+        <ul>
+            <li>Stopping at the first "why" — not digging deep enough</li>
+            <li>Blaming individuals rather than identifying system failures</li>
+            <li>Accepting "human error" as a root cause (ask WHY the human error occurred)</li>
+            <li>Not involving the people closest to the problem</li>
+            <li>Rushing the analysis to close the NC quickly</li>
+        </ul>
+
+        <div class="warning-box">
+            <strong>Important:</strong> "Human error" is NEVER an acceptable root cause. Always ask: What in the system allowed or encouraged the human error to occur?
+        </div>
+    </div>
+
+    <div class="activity-box">
+        <div class="activity-label">Interactive Activity</div>
+        <h3>🔍 5-Why Analysis Challenge</h3>
+        <p>For each scenario, select the correct root cause from the options provided:</p>
+        <div id="m3Activity"></div>
+        <button class="btn btn-primary" onclick="checkM3Activity()" style="margin-top: 15px;">Submit Answer</button>
+        <div id="m3ActivityFeedback" class="activity-feedback"></div>
+    </div>
+
+    <div class="quiz-box">
+        <h3>📝 Module 3 Quiz</h3>
+        <div id="m3Quiz"></div>
+        <button class="btn btn-primary" onclick="submitQuiz('m3')">Submit Quiz</button>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="go('m2')">← Previous Module</button>
+        <button class="btn btn-primary" onclick="completeAndGo('m3', 'm4')">Next Module →</button>
+    </div>
+</div>
+
+<!-- MODULE 4 -->
+<div class="screen" id="m4">
+    <div class="breadcrumb">
+        <a onclick="go('hero')">Home</a> <span>›</span> <a onclick="go('modules')">Modules</a> <span>›</span> <span>Module 4</span>
+    </div>
+    <div class="content-section">
+        <h2>Module 4: Corrective and Preventive Action</h2>
+        <p>Once the root cause is identified, the next step is to implement corrective action that addresses the cause and prevents recurrence. Understanding the difference between corrective and preventive action is essential.</p>
+
+        <h3>Corrective Action vs Preventive Action</h3>
+        <table class="info-table">
+            <tr><th>Type</th><th>Definition</th><th>Example</th></tr>
+            <tr><td><strong>Immediate Action</strong></td><td>Action taken to address the immediate problem (containment)</td><td>Replace the expired fire extinguisher immediately</td></tr>
+            <tr><td><strong>Corrective Action</strong></td><td>Action taken to eliminate the root cause of the detected non-conformity</td><td>Update handover procedure to include PMS task reassignment checklist</td></tr>
+            <tr><td><strong>Preventive Action</strong></td><td>Action taken to eliminate the cause of a potential non-conformity (before it occurs)</td><td>Implement automated PMS alerts for all critical safety equipment inspections</td></tr>
+        </table>
+
+        <div class="key-point">
+            <strong>Key Distinction:</strong> Corrective action fixes what went wrong. Preventive action stops similar problems from happening elsewhere in the system.
+        </div>
+
+        <h3>Characteristics of Effective Corrective Action</h3>
+        <ul>
+            <li><strong>Addresses the root cause</strong> — not just the symptom</li>
+            <li><strong>Measurable</strong> — you can verify it has been implemented</li>
+            <li><strong>Time-bound</strong> — has a clear deadline for completion</li>
+            <li><strong>Assigned</strong> — a specific person is responsible</li>
+            <li><strong>Proportionate</strong> — appropriate to the severity of the NC</li>
+            <li><strong>Sustainable</strong> — will remain effective over time</li>
+        </ul>
+
+        <h3>The Corrective Action Process</h3>
+        <ol>
+            <li>Take immediate containment action (if safety risk exists)</li>
+            <li>Conduct root cause analysis</li>
+            <li>Develop corrective action plan</li>
+            <li>Assign responsibility and deadline</li>
+            <li>Implement the corrective action</li>
+            <li>Verify effectiveness (has the problem been eliminated?)</li>
+            <li>Close the NC with evidence of completion</li>
+        </ol>
+
+        <h3>Verification of Effectiveness</h3>
+        <p>An NC should not be closed until the corrective action has been verified as effective. This means checking — after a reasonable period — that the problem has not recurred. Methods include:</p>
+        <ul>
+            <li>Follow-up audit of the specific area</li>
+            <li>Review of records over subsequent months</li>
+            <li>Crew interviews to confirm understanding</li>
+            <li>Master's review confirmation</li>
+        </ul>
+
+        <div class="warning-box">
+            <strong>Common Failure:</strong> Closing NCs with "crew briefed" or "procedure reviewed" as the only corrective action. These are awareness actions, not system changes. SIRE inspectors specifically look for evidence of meaningful corrective action.
+        </div>
+    </div>
+
+    <div class="activity-box">
+        <div class="activity-label">Interactive Activity</div>
+        <h3>⚙️ Corrective Action Evaluation</h3>
+        <p>For each non-conformity, identify whether the proposed action is Immediate Action, Corrective Action, or Preventive Action:</p>
+        <div id="m4Activity"></div>
+        <button class="btn btn-primary" onclick="checkM4Activity()" style="margin-top: 15px;">Submit Answer</button>
+        <div id="m4ActivityFeedback" class="activity-feedback"></div>
+    </div>
+
+    <div class="quiz-box">
+        <h3>📝 Module 4 Quiz</h3>
+        <div id="m4Quiz"></div>
+        <button class="btn btn-primary" onclick="submitQuiz('m4')">Submit Quiz</button>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="go('m3')">← Previous Module</button>
+        <button class="btn btn-primary" onclick="completeAndGo('m4', 'm5')">Next Module →</button>
+    </div>
+</div>
+
+<!-- MODULE 5 -->
+<div class="screen" id="m5">
+    <div class="breadcrumb">
+        <a onclick="go('hero')">Home</a> <span>›</span> <a onclick="go('modules')">Modules</a> <span>›</span> <span>Module 5</span>
+    </div>
+    <div class="content-section">
+        <h2>Module 5: NC Database, Trends & Continuous Improvement</h2>
+        <p>The NC system is not just about fixing individual problems — it is a powerful tool for continuous improvement when data is collected, analysed, and acted upon systematically.</p>
+
+        <h3>NC Database Management</h3>
+        <p>Every non-conformity should be recorded in a database (electronic or paper-based) that captures:</p>
+        <ul>
+            <li>NC number and date raised</li>
+            <li>Description and classification (Major/Minor/Observation)</li>
+            <li>Root cause analysis findings</li>
+            <li>Corrective action taken</li>
+            <li>Responsible person and deadline</li>
+            <li>Verification of effectiveness</li>
+            <li>Date closed</li>
+            <li>Trend category (for analysis)</li>
+        </ul>
+
+        <h3>Trend Analysis</h3>
+        <p>By categorising NCs and reviewing trends, patterns emerge that indicate systemic issues. For example:</p>
+        <ul>
+            <li>Multiple NCs related to maintenance records → PMS system weakness</li>
+            <li>Repeated NCs after crew changes → familiarisation process weakness</li>
+            <li>NCs concentrated in one department → training or leadership gap</li>
+            <li>Same NC recurring after closure → corrective action was ineffective</li>
+        </ul>
+
+        <div class="key-point">
+            <strong>TMSA Element 12:</strong> Continuous improvement requires evidence of trend analysis, effectiveness review, and management action based on NC data. This is a key differentiator between TMSA Stage 2 and Stage 3.
+        </div>
+
+        <h3>Master's Review of NCs</h3>
+        <p>The Master has a specific responsibility under the ISM Code to review non-conformities and ensure:</p>
+        <ul>
+            <li>All NCs are being addressed within agreed timeframes</li>
+            <li>Corrective actions are appropriate and effective</li>
+            <li>Trends are identified and reported to the company</li>
+            <li>The NC system is being used actively (not just for external audits)</li>
+            <li>Crew are encouraged to report without fear of blame</li>
+        </ul>
+
+        <h3>SIRE Inspector Expectations</h3>
+        <p>SIRE inspectors reviewing NC records will look for:</p>
+        <ul>
+            <li>Evidence that NCs are raised regularly (not only during audits)</li>
+            <li>Timely closure of NCs within agreed deadlines</li>
+            <li>Root cause analysis that goes beyond surface-level explanations</li>
+            <li>Corrective actions that address system failures, not just symptoms</li>
+            <li>Verification of effectiveness before closure</li>
+            <li>Master's review and sign-off</li>
+            <li>Trend analysis and management response</li>
+        </ul>
+
+        <div class="warning-box">
+            <strong>Red Flag for Inspectors:</strong> A vessel with zero non-conformities raised internally is a concern — it suggests the system is not being used, not that the vessel is perfect.
+        </div>
+    </div>
+
+    <div class="activity-box">
+        <div class="activity-label">Interactive Activity</div>
+        <h3>📊 NC Trend Analysis Challenge</h3>
+        <p>Review the NC data and identify the correct trend or action required:</p>
+        <div id="m5Activity"></div>
+        <button class="btn btn-primary" onclick="checkM5Activity()" style="margin-top: 15px;">Submit Answer</button>
+        <div id="m5ActivityFeedback" class="activity-feedback"></div>
+    </div>
+
+    <div class="quiz-box">
+        <h3>📝 Module 5 Quiz</h3>
+        <div id="m5Quiz"></div>
+        <button class="btn btn-primary" onclick="submitQuiz('m5')">Submit Quiz</button>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="go('m4')">← Previous Module</button>
+        <button class="btn btn-primary" onclick="completeAndGo('m5', 'modules')">Complete & Return →</button>
+    </div>
+</div>
+
+<!-- ASSESSMENT SCREEN -->
+<div class="screen" id="assess">
+    <div class="breadcrumb">
+        <a onclick="go('hero')">Home</a> <span>›</span> <a onclick="go('modules')">Modules</a> <span>›</span> <span>Assessment</span>
+    </div>
+    <h2 style="color: #1e40af; margin-bottom: 10px;">📝 Final Assessment</h2>
+    <p style="color: #64748b; margin-bottom: 20px;">Answer all questions. You need 70% to pass. Good luck!</p>
+    <div id="assessmentContainer"></div>
+    <div style="text-align: center; margin-top: 30px;">
+        <button class="btn btn-success" onclick="submitAssessment()">Submit Assessment</button>
+    </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div class="screen" id="results">
+    <div class="results-section">
+        <h2>Assessment Complete</h2>
+        <div id="scoreDisplay" class="score-display"></div>
+        <p id="resultMessage"></p>
+        <div id="certificateSection" class="certificate" style="display:none;">
+            <h3>🏆 Certificate of Completion</h3>
+            <p style="margin-top: 10px;">This certifies successful completion of</p>
+            <p style="font-weight: 700; font-size: 1.1em; margin: 10px 0;">Non-Conformity and Corrective Action — The ISM Improvement Loop</p>
+            <p id="certDate"></p>
+        </div>
+        <div style="margin-top: 20px;">
+            <p><strong>XP Earned:</strong> <span id="finalXP">0</span></p>
+            <p><strong>Badges:</strong> <span id="finalBadges">None</span></p>
+        </div>
+        <button class="btn btn-primary" onclick="go('modules')" style="margin-top: 20px;">Review Modules</button>
+    </div>
+</div>
+
+<!-- Quiz Feedback Modal -->
+<div id="quizOverlay" class="quiz-feedback-overlay"></div>
+<div id="quizModal" class="quiz-feedback-modal">
+    <div id="quizModalContent"></div>
+</div>
+
+<script>
+// ==================== COURSE STATE ====================
+const courseState = {
+    currentScreen: 'hero',
+    completedModules: [],
+    xp: 0,
+    badges: [],
+    streak: 0,
+    quizScores: {},
+    assessmentScore: 0,
+    assessmentPassed: false,
+    startTime: Date.now()
+};
+
+// ==================== MODULE DATA ====================
+const modules = [
+    { id: 'm1', title: 'Understanding Non-Conformity', desc: 'Definition, types (Major, Minor, Observation), and triggers for raising NCs', icon: '📋' },
+    { id: 'm2', title: 'How to Raise a Non-Conformity', desc: 'NC report structure, good vs poor descriptions, who can raise NCs', icon: '✍️' },
+    { id: 'm3', title: 'Root Cause Analysis', desc: '5-Why technique, Fishbone diagram, common RCA mistakes', icon: '🔍' },
+    { id: 'm4', title: 'Corrective and Preventive Action', desc: 'Immediate vs corrective vs preventive action, verification of effectiveness', icon: '⚙️' },
+    { id: 'm5', title: 'NC Database, Trends & Continuous Improvement', desc: 'Trend analysis, Master\'s review, TMSA Element 12, SIRE expectations', icon: '📊' }
+];
+
+// ==================== ACTIVITY DATA ====================
+const activities = {
+    m1: [
+        { scenario: "Safety equipment (SCBA) found with expired certification — 6 months overdue, no record of inspection", answer: "Major NC", explanation: "Expired SCBA certification with no inspection record poses a serious threat to crew safety in emergencies and represents a significant system failure." },
+        { scenario: "One entry in the engine room log book has an incorrect date format", answer: "Observation", explanation: "A single date format error is not a departure from a requirement but could indicate a need for better attention to detail." },
+        { scenario: "Enclosed space entry permit found without gas test readings recorded for last entry", answer: "Major NC", explanation: "Missing gas test readings on an enclosed space entry permit is a serious safety concern — crew entered a potentially dangerous space without confirmed atmosphere." },
+        { scenario: "Fire drill attendance sheet missing one crew member's signature", answer: "Minor NC", explanation: "A missing signature is a documentation gap that doesn't pose immediate danger but indicates a breakdown in the record-keeping system." },
+        { scenario: "Slight oil stain noted on engine room floor plates near purifier", answer: "Observation", explanation: "A slight oil stain is not a non-conformity but could indicate a developing leak that should be monitored." }
+    ],
+    m2: [
+        { scenario: "\"Safety equipment not maintained\"", answer: "Poor", explanation: "This description is too vague — it doesn't specify which equipment, what the deficiency is, or which procedure was not followed." },
+        { scenario: "\"Lifeboat davit wire found with 3 broken strands at drum end. SMS Procedure LS-03 requires replacement at 2 broken strands. Last inspection 01 March noted 'satisfactory'.\"", answer: "Good", explanation: "This is specific, references the requirement, provides objective evidence, and identifies the system gap (inspection missed the defect)." },
+        { scenario: "\"Crew not following procedures during mooring operations\"", answer: "Poor", explanation: "This is vague and subjective. It doesn't specify which crew member, which procedure, what was observed, or when it occurred." },
+        { scenario: "\"On 22 April, AB Smith observed operating angle grinder without guard fitted. Risk Assessment RA-2024-015 and Tool Box Talk dated 22 April both specify guard must be fitted.\"", answer: "Good", explanation: "This is specific (who, what, when), references the requirement (RA and TBT), and provides clear objective evidence." },
+        { scenario: "\"Records need improvement\"", answer: "Poor", explanation: "This is completely non-specific. Which records? What improvement? What requirement is not being met?" }
+    ],
+    m3: [
+        { scenario: "Problem: Crew member injured during mooring. The 5-Why analysis reveals: no gloves worn → gloves not available at station → not restocked after last use → no system for checking PPE stock levels at mooring stations. What is the root cause?", answer: "No system for PPE stock management at mooring stations", options: ["Crew member didn't wear gloves", "Gloves not available", "No system for PPE stock management at mooring stations", "Human error"], explanation: "The root cause is the system failure — no process exists to ensure PPE is available where needed. Blaming the crew member or calling it 'human error' doesn't fix the system." },
+        { scenario: "Problem: Emergency generator failed to auto-start during blackout drill. 5-Why: battery flat → not on charge → charger tripped on fault → fault not detected → no alarm for charger failure and PMS check only monthly. What is the root cause?", answer: "No alarm for charger failure and inadequate PMS frequency", options: ["Battery was flat", "Charger tripped", "No alarm for charger failure and inadequate PMS frequency", "Equipment malfunction"], explanation: "The root cause is the combination of no monitoring alarm and insufficient maintenance frequency — the system failed to detect and prevent the failure." },
+        { scenario: "Problem: Expired chemicals found in ship's hospital. 5-Why: not replaced → expiry not tracked → no inventory system → previous Medical Officer managed from memory → handover did not include inventory creation. What is the root cause?", answer: "Handover procedure does not require medical inventory creation", options: ["Chemicals expired", "No inventory system", "Previous officer managed from memory", "Handover procedure does not require medical inventory creation"], explanation: "The root cause is the handover procedure gap — it doesn't require creating/updating a medical inventory, so knowledge was lost at crew change." }
+    ],
+    m4: [
+        { scenario: "NC: Fire extinguisher found expired. Action: Replace the expired extinguisher immediately.", answer: "Immediate Action", explanation: "This is containment — fixing the immediate safety issue. It doesn't address WHY the extinguisher was allowed to expire." },
+        { scenario: "NC: Fire extinguisher found expired. Action: Update the PMS to include automatic alerts 30 days before expiry for all safety equipment.", answer: "Preventive Action", explanation: "This prevents similar problems across ALL safety equipment, not just the one that was found expired. It's a system-wide improvement." },
+        { scenario: "NC: Fire extinguisher found expired. Action: Revise the handover checklist to include verification of all PMS task assignments.", answer: "Corrective Action", explanation: "This addresses the root cause (handover gap that led to missed PMS tasks) and prevents recurrence of this specific type of failure." },
+        { scenario: "NC: Crew member found working at height without harness. Action: Brief all crew on working at height requirements.", answer: "Immediate Action", explanation: "Briefing addresses the immediate awareness gap but doesn't address WHY the crew member wasn't wearing a harness (system failure). It's containment, not correction." },
+        { scenario: "NC: Crew member found working at height without harness. Action: Implement a permit-to-work system for all work at height with mandatory PPE verification checkpoint.", answer: "Corrective Action", explanation: "This addresses the root cause by creating a system control (permit with PPE checkpoint) that prevents the work from proceeding without proper PPE." }
+    ],
+    m5: [
+        { scenario: "Data shows: 8 NCs related to maintenance records in the last 6 months, all from different equipment types but all involving missed PMS tasks after crew changes. What trend does this indicate?", answer: "Familiarisation/handover process weakness", options: ["Equipment reliability problem", "Familiarisation/handover process weakness", "Crew incompetence", "Too many NCs being raised"], explanation: "The pattern shows NCs concentrated after crew changes across different equipment — this indicates the handover/familiarisation process is not ensuring PMS task continuity." },
+        { scenario: "A vessel has raised zero internal NCs in 12 months but received 3 external NCs during a SIRE inspection. What does this suggest?", answer: "The internal NC system is not being used effectively", options: ["The vessel is well-managed", "The internal NC system is not being used effectively", "SIRE inspectors are too strict", "External NCs are more important"], explanation: "Zero internal NCs with external findings suggests the crew is not using the NC system proactively. A healthy system should identify issues before external inspectors do." },
+        { scenario: "Three NCs have been raised and closed for the same issue (oil leak from hydraulic system) in 6 months. What does this indicate?", answer: "Previous corrective actions were ineffective", options: ["The equipment is old", "Previous corrective actions were ineffective", "Too many NCs for one issue", "Normal wear and tear"], explanation: "Recurring NCs for the same issue clearly indicate that previous corrective actions only addressed symptoms, not the root cause. The verification of effectiveness step failed." },
+        { scenario: "NC trend analysis shows 60% of all NCs are classified as 'Observations' with no follow-up action. What is the concern?", answer: "Observations are not being managed as improvement opportunities", options: ["Too many observations being raised", "Observations are not being managed as improvement opportunities", "Classification system is wrong", "Crew are over-reporting"], explanation: "Observations should be tracked and addressed before they become non-conformities. Ignoring them defeats the purpose of the continuous improvement system." }
+    ]
+};
+
+// ==================== QUIZ DATA ====================
+const quizData = {
+    m1: [
+        { q: "According to the ISM Code, what is a non-conformity?", options: ["A physical defect in equipment", "A departure from a specified requirement", "A crew member's mistake", "A port state control finding"], correct: 1, explanation: "ISM Code Section 9 defines a non-conformity as 'an observed situation where objective evidence indicates the non-fulfilment of a specified requirement.'" },
+        { q: "Which of the following would be classified as a Major Non-Conformity?", options: ["A single missing log entry", "Slight rust on deck fittings", "No emergency drills conducted for 3 months", "Minor spelling error in a procedure"], correct: 2, explanation: "Failure to conduct emergency drills for 3 months poses a serious threat to safety and represents a significant failure to implement ISM Code requirements." }
+    ],
+    m2: [
+        { q: "What is the most important element of a well-written NC description?", options: ["Length of the description", "Specific factual observation with reference to the requirement not met", "Name of the person responsible", "Recommendation for corrective action"], correct: 1, explanation: "A good NC description must be specific and factual, clearly stating what was observed and which requirement was not met. Root cause and corrective action come later." },
+        { q: "What is the difference between a non-conformity and a deficiency?", options: ["They are the same thing", "A deficiency is physical; an NC is a system failure", "An NC is more serious than a deficiency", "A deficiency is raised externally only"], correct: 1, explanation: "A deficiency is a physical problem (broken equipment). A non-conformity is a system failure (the maintenance system failed to identify and repair the broken equipment)." }
+    ],
+    m3: [
+        { q: "Why is 'human error' NOT an acceptable root cause?", options: ["Because humans don't make errors", "Because it doesn't identify what in the system allowed the error to occur", "Because it's too simple", "Because auditors don't accept it"], correct: 1, explanation: "Human error is a symptom, not a cause. Root cause analysis must identify what system weakness allowed, encouraged, or failed to prevent the human error." },
+        { q: "In the 5-Why technique, when should you stop asking 'Why'?", options: ["After exactly 5 questions", "When you identify a system-level cause that can be fixed", "When someone accepts responsibility", "After the first answer"], correct: 1, explanation: "The '5' is a guide, not a rule. Stop when you reach a system-level cause that, if addressed, would prevent recurrence. This might take 3 or 7 'whys'." }
+    ],
+    m4: [
+        { q: "What is the key difference between corrective action and preventive action?", options: ["Corrective action is faster", "Corrective action fixes the detected NC; preventive action prevents potential NCs elsewhere", "Preventive action is optional", "There is no difference"], correct: 1, explanation: "Corrective action eliminates the root cause of a detected NC. Preventive action eliminates causes of potential NCs that haven't occurred yet — it's proactive system improvement." },
+        { q: "When should an NC be closed?", options: ["Immediately after corrective action is implemented", "After verification confirms the corrective action is effective", "After 30 days regardless", "When the Master signs it"], correct: 1, explanation: "An NC should only be closed after verification confirms the corrective action has been effective — meaning the problem has not recurred after a reasonable period." }
+    ],
+    m5: [
+        { q: "What does TMSA Element 12 require regarding non-conformities?", options: ["Zero non-conformities", "Evidence of trend analysis and continuous improvement", "Only external NCs to be recorded", "Monthly NC reports to flag state"], correct: 1, explanation: "TMSA Element 12 (Measurement, Analysis and Improvement) requires evidence that NC data is analysed for trends and that management takes action based on findings — demonstrating continuous improvement." },
+        { q: "Why would a SIRE inspector be concerned about a vessel with zero internal NCs?", options: ["It means the vessel is perfect", "It suggests the NC system is not being used actively", "It's not a concern", "It means the crew is well-trained"], correct: 1, explanation: "Zero internal NCs suggests the system is not being used — no vessel is perfect. A healthy safety culture actively identifies and reports non-conformities for improvement." }
+    ]
+};
+
+// ==================== ASSESSMENT DATA ====================
+const assessmentQuestions = [
+    { q: "What is the ISM Code definition of a non-conformity?", options: ["Any equipment failure", "A departure from a specified requirement supported by objective evidence", "A crew complaint", "A port state detention"], correct: 1 },
+    { q: "Which ISM Code section specifically addresses non-conformity reporting and analysis?", options: ["Section 5", "Section 7", "Section 9", "Section 12"], correct: 2 },
+    { q: "A fire extinguisher is found 2 months past its inspection date with no record of any inspection attempt. This is:", options: ["An observation", "A minor NC", "A major NC", "Not an NC"], correct: 1 },
+    { q: "What is the primary purpose of root cause analysis?", options: ["To assign blame", "To identify the fundamental system failure that allowed the NC to occur", "To write a longer report", "To satisfy auditors"], correct: 1 },
+    { q: "In the 5-Why technique, what type of answer indicates you have reached the root cause?", options: ["When someone accepts blame", "When you identify a system-level cause that can be addressed", "After exactly 5 questions", "When the answer is 'human error'"], correct: 1 },
+    { q: "Which fishbone diagram category would 'inadequate training' fall under?", options: ["Equipment", "Environment", "People", "Materials"], correct: 2 },
+    { q: "What is the difference between immediate action and corrective action?", options: ["They are the same", "Immediate action contains the problem; corrective action addresses the root cause", "Corrective action is faster", "Immediate action is optional"], correct: 1 },
+    { q: "A corrective action states 'crew briefed on procedure'. Is this adequate?", options: ["Yes, always", "No — it's an awareness action, not a system change", "Yes, if documented", "Only for minor NCs"], correct: 1 },
+    { q: "When should verification of effectiveness be performed?", options: ["Immediately after implementing corrective action", "After a reasonable period to confirm the problem has not recurred", "Never — it's optional", "Only for major NCs"], correct: 1 },
+    { q: "What does preventive action address?", options: ["The detected non-conformity", "Potential non-conformities that have not yet occurred", "Only major NCs", "Equipment defects"], correct: 1 },
+    { q: "Who has responsibility under ISM to review non-conformities onboard?", options: ["Only the DPA", "The Master", "Only the auditor", "Port state control"], correct: 1 },
+    { q: "What TMSA Element is specifically about continuous improvement?", options: ["Element 3", "Element 7", "Element 8", "Element 12"], correct: 3 },
+    { q: "A vessel has raised zero internal NCs in 12 months. A SIRE inspector would likely:", options: ["Commend the vessel", "Be concerned that the NC system is not being used", "Give a higher rating", "Not notice"], correct: 1 },
+    { q: "Three NCs for the same issue in 6 months indicates:", options: ["Good reporting culture", "Previous corrective actions were ineffective", "Normal operations", "Too many NCs being raised"], correct: 1 },
+    { q: "What should an NC database record include?", options: ["Only the NC description", "NC details, root cause, corrective action, verification, and closure date", "Only major NCs", "Only external audit findings"], correct: 1 },
+    { q: "Why is 'human error' not an acceptable root cause?", options: ["Because humans are perfect", "Because it doesn't identify the system failure that allowed the error", "Because it's too short", "Because auditors prefer longer answers"], correct: 1 },
+    { q: "Which of the following is a trigger for raising a non-conformity?", options: ["Only external audits", "Internal audits, incident investigations, near-misses, and crew observations", "Only the Master can trigger NCs", "Only port state control"], correct: 1 },
+    { q: "What is the connection between NC trend analysis and TMSA Stage 3?", options: ["No connection", "TMSA Stage 3 requires evidence of trend analysis driving management action", "TMSA Stage 3 requires zero NCs", "Trend analysis is only for Stage 1"], correct: 1 },
+    { q: "A well-written NC description should include:", options: ["Opinion about why it happened", "Specific observation, reference to requirement, and objective evidence", "Recommendation for punishment", "Only the date"], correct: 1 },
+    { q: "What is the Master's role in the NC process?", options: ["Only signing closure", "Reviewing NCs, ensuring timely closure, identifying trends, and encouraging reporting", "Raising all NCs personally", "Delegating entirely to C/O"], correct: 1 }
+];
+
+// ==================== NAVIGATION ====================
+function go(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(screenId);
+    if (target) {
+        target.classList.add('active');
+        courseState.currentScreen = screenId;
+        window.scrollTo(0, 0);
+    }
+    if (screenId === 'modules') renderModuleList();
+    if (screenId === 'assess') renderAssessment();
+}
+
+function completeAndGo(moduleId, nextScreen) {
+    if (!courseState.completedModules.includes(moduleId)) {
+        courseState.completedModules.push(moduleId);
+        awardXP(50);
+        courseState.streak++;
+        checkBadges();
+        updateDashboard();
+    }
+    go(nextScreen);
+}
+
+// ==================== RENDER FUNCTIONS ====================
+function renderModuleList() {
+    const container = document.getElementById('moduleList');
+    container.innerHTML = modules.map(m => {
+        const completed = courseState.completedModules.includes(m.id);
+        return `<div class="module-card ${completed ? 'completed' : ''}" onclick="go('${m.id}')">
+            <h3>${m.icon} ${m.title} ${completed ? '✓' : ''}</h3>
+            <p>${m.desc}</p>
+        </div>`;
+    }).join('');
+    
+    const assessBtn = document.getElementById('assessBtn');
+    if (courseState.completedModules.length >= 5) {
+        assessBtn.style.display = 'inline-block';
+    }
+}
+
+function renderActivities() {
+    // Module 1 Activity - NC Classification
+    const m1Container = document.getElementById('m1Activity');
+    if (m1Container) {
+        m1Container.innerHTML = activities.m1.map((item, i) => `
+            <div class="activity-item">
+                <div style="flex:1;"><strong>${i+1}.</strong> ${item.scenario}</div>
+                <select id="m1a${i}">
+                    <option value="">-- Select --</option>
+                    <option value="Major NC">Major NC</option>
+                    <option value="Minor NC">Minor NC</option>
+                    <option value="Observation">Observation</option>
+                </select>
+            </div>
+        `).join('');
+    }
+
+    // Module 2 Activity - NC Description Evaluation
+    const m2Container = document.getElementById('m2Activity');
+    if (m2Container) {
+        m2Container.innerHTML = activities.m2.map((item, i) => `
+            <div class="activity-item">
+                <div style="flex:1;"><strong>${i+1}.</strong> ${item.scenario}</div>
+                <select id="m2a${i}">
+                    <option value="">-- Select --</option>
+                    <option value="Good">Good</option>
+                    <option value="Poor">Poor</option>
+                </select>
+            </div>
+        `).join('');
+    }
+
+    // Module 3 Activity - Root Cause Analysis
+    const m3Container = document.getElementById('m3Activity');
+    if (m3Container) {
+        m3Container.innerHTML = activities.m3.map((item, i) => `
+            <div class="activity-item" style="flex-direction: column; align-items: stretch;">
+                <div><strong>${i+1}.</strong> ${item.scenario}</div>
+                <select id="m3a${i}" style="margin-top: 8px;">
+                    <option value="">-- Select Root Cause --</option>
+                    ${item.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                </select>
+            </div>
+        `).join('');
+    }
+
+    // Module 4 Activity - Corrective Action Evaluation
+    const m4Container = document.getElementById('m4Activity');
+    if (m4Container) {
+        m4Container.innerHTML = activities.m4.map((item, i) => `
+            <div class="activity-item">
+                <div style="flex:1;"><strong>${i+1}.</strong> ${item.scenario}</div>
+                <select id="m4a${i}">
+                    <option value="">-- Select --</option>
+                    <option value="Immediate Action">Immediate Action</option>
+                    <option value="Corrective Action">Corrective Action</option>
+                    <option value="Preventive Action">Preventive Action</option>
+                </select>
+            </div>
+        `).join('');
+    }
+
+    // Module 5 Activity - Trend Analysis
+    const m5Container = document.getElementById('m5Activity');
+    if (m5Container) {
+        m5Container.innerHTML = activities.m5.map((item, i) => `
+            <div class="activity-item" style="flex-direction: column; align-items: stretch;">
+                <div><strong>${i+1}.</strong> ${item.scenario}</div>
+                <select id="m5a${i}" style="margin-top: 8px;">
+                    <option value="">-- Select --</option>
+                    ${item.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                </select>
+            </div>
+        `).join('');
+    }
+}
+
+function renderQuizzes() {
+    Object.keys(quizData).forEach(moduleId => {
+        const container = document.getElementById(`${moduleId}Quiz`);
+        if (container) {
+            container.innerHTML = quizData[moduleId].map((q, qi) => `
+                <div class="question">
+                    <p>${qi + 1}. ${q.q}</p>
+                    ${q.options.map((opt, oi) => `
+                        <label class="option" id="${moduleId}_q${qi}_o${oi}" onclick="selectOption('${moduleId}', ${qi}, ${oi})">
+                            ${opt}
+                        </label>
+                    `).join('')}
+                    <div class="feedback" id="${moduleId}_q${qi}_feedback"></div>
+                </div>
+            `).join('');
+        }
+    });
+}
+
+function renderAssessment() {
+    const container = document.getElementById('assessmentContainer');
+    if (container) {
+        container.innerHTML = assessmentQuestions.map((q, qi) => `
+            <div class="assess-question">
+                <p>${qi + 1}. ${q.q}</p>
+                ${q.options.map((opt, oi) => `
+                    <label class="option" id="assess_q${qi}_o${oi}" onclick="selectAssessOption(${qi}, ${oi})">
+                        ${opt}
+                    </label>
+                `).join('')}
+            </div>
+        `).join('');
+    }
+}
+
+// ==================== ACTIVITY CHECK FUNCTIONS ====================
+function checkM1Activity() {
+    const feedbackContainer = document.getElementById('m1ActivityFeedback');
+    let correct = 0;
+    let html = '';
+    activities.m1.forEach((item, i) => {
+        const selected = document.getElementById(`m1a${i}`).value;
+        const isCorrect = selected === item.answer;
+        if (isCorrect) correct++;
+        html += `<div class="activity-feedback-item ${isCorrect ? 'correct' : 'incorrect'}">
+            <strong>${isCorrect ? '✓' : '✗'} Scenario ${i+1}:</strong> ${isCorrect ? 'Correct!' : `Incorrect. Correct answer: <strong>${item.answer}</strong>`}<br>
+            <em>${item.explanation}</em>
+        </div>`;
+    });
+    html = `<p style="font-weight:700; margin-bottom:10px;">Activity Score: ${Math.round(correct/activities.m1.length*100)}% (${correct}/${activities.m1.length})</p>` + html;
+    feedbackContainer.innerHTML = html;
+    feedbackContainer.classList.add('show');
+    awardXP(correct * 5);
+}
+
+function checkM2Activity() {
+    const feedbackContainer = document.getElementById('m2ActivityFeedback');
+    let correct = 0;
+    let html = '';
+    activities.m2.forEach((item, i) => {
+        const selected = document.getElementById(`m2a${i}`).value;
+        const isCorrect = selected === item.answer;
+        if (isCorrect) correct++;
+        html += `<div class="activity-feedback-item ${isCorrect ? 'correct' : 'incorrect'}">
+            <strong>${isCorrect ? '✓' : '✗'} Description ${i+1}:</strong> ${isCorrect ? 'Correct!' : `Incorrect. Correct answer: <strong>${item.answer}</strong>`}<br>
+            <em>${item.explanation}</em>
+        </div>`;
+    });
+    html = `<p style="font-weight:700; margin-bottom:10px;">Activity Score: ${Math.round(correct/activities.m2.length*100)}% (${correct}/${activities.m2.length})</p>` + html;
+    feedbackContainer.innerHTML = html;
+    feedbackContainer.classList.add('show');
+    awardXP(correct * 5);
+}
+
+function checkM3Activity() {
+    const feedbackContainer = document.getElementById('m3ActivityFeedback');
+    let correct = 0;
+    let html = '';
+    activities.m3.forEach((item, i) => {
+        const selected = document.getElementById(`m3a${i}`).value;
+        const isCorrect = selected === item.answer;
+        if (isCorrect) correct++;
+        html += `<div class="activity-feedback-item ${isCorrect ? 'correct' : 'incorrect'}">
+            <strong>${isCorrect ? '✓' : '✗'} Scenario ${i+1}:</strong> ${isCorrect ? 'Correct!' : `Incorrect. Correct answer: <strong>${item.answer}</strong>`}<br>
+            <em>${item.explanation}</em>
+        </div>`;
+    });
+    html = `<p style="font-weight:700; margin-bottom:10px;">Activity Score: ${Math.round(correct/activities.m3.length*100)}% (${correct}/${activities.m3.length})</p>` + html;
+    feedbackContainer.innerHTML = html;
+    feedbackContainer.classList.add('show');
+    awardXP(correct * 5);
+}
+
+function checkM4Activity() {
+    const feedbackContainer = document.getElementById('m4ActivityFeedback');
+    let correct = 0;
+    let html = '';
+    activities.m4.forEach((item, i) => {
+        const selected = document.getElementById(`m4a${i}`).value;
+        const isCorrect = selected === item.answer;
+        if (isCorrect) correct++;
+        html += `<div class="activity-feedback-item ${isCorrect ? 'correct' : 'incorrect'}">
+            <strong>${isCorrect ? '✓' : '✗'} Action ${i+1}:</strong> ${isCorrect ? 'Correct!' : `Incorrect. Correct answer: <strong>${item.answer}</strong>`}<br>
+            <em>${item.explanation}</em>
+        </div>`;
+    });
+    html = `<p style="font-weight:700; margin-bottom:10px;">Activity Score: ${Math.round(correct/activities.m4.length*100)}% (${correct}/${activities.m4.length})</p>` + html;
+    feedbackContainer.innerHTML = html;
+    feedbackContainer.classList.add('show');
+    awardXP(correct * 5);
+}
+
+function checkM5Activity() {
+    const feedbackContainer = document.getElementById('m5ActivityFeedback');
+    let correct = 0;
+    let html = '';
+    activities.m5.forEach((item, i) => {
+        const selected = document.getElementById(`m5a${i}`).value;
+        const isCorrect = selected === item.answer;
+        if (isCorrect) correct++;
+        html += `<div class="activity-feedback-item ${isCorrect ? 'correct' : 'incorrect'}">
+            <strong>${isCorrect ? '✓' : '✗'} Scenario ${i+1}:</strong> ${isCorrect ? 'Correct!' : `Incorrect. Correct answer: <strong>${item.answer}</strong>`}<br>
+            <em>${item.explanation}</em>
+        </div>`;
+    });
+    html = `<p style="font-weight:700; margin-bottom:10px;">Activity Score: ${Math.round(correct/activities.m5.length*100)}% (${correct}/${activities.m5.length})</p>` + html;
+    feedbackContainer.innerHTML = html;
+    feedbackContainer.classList.add('show');
+    awardXP(correct * 5);
+}
+
+// ==================== QUIZ FUNCTIONS ====================
+const selectedAnswers = {};
+const assessAnswers = {};
+
+function selectOption(moduleId, questionIdx, optionIdx) {
+    if (!selectedAnswers[moduleId]) selectedAnswers[moduleId] = {};
+    selectedAnswers[moduleId][questionIdx] = optionIdx;
+    
+    const quiz = quizData[moduleId];
+    quiz[questionIdx].options.forEach((_, oi) => {
+        const el = document.getElementById(`${moduleId}_q${questionIdx}_o${oi}`);
+        el.classList.remove('selected');
+    });
+    document.getElementById(`${moduleId}_q${questionIdx}_o${optionIdx}`).classList.add('selected');
+}
+
+function submitQuiz(moduleId) {
+    const quiz = quizData[moduleId];
+    let correct = 0;
+    
+    quiz.forEach((q, qi) => {
+        const selected = selectedAnswers[moduleId] ? selectedAnswers[moduleId][qi] : undefined;
+        const feedbackEl = document.getElementById(`${moduleId}_q${qi}_feedback`);
+        
+        q.options.forEach((_, oi) => {
+            const el = document.getElementById(`${moduleId}_q${qi}_o${oi}`);
+            el.classList.remove('selected');
+            if (oi === q.correct) {
+                el.classList.add('correct');
+            } else if (oi === selected && oi !== q.correct) {
+                el.classList.add('incorrect');
+            }
+        });
+        
+        if (selected === q.correct) {
+            correct++;
+            feedbackEl.className = 'feedback correct show';
+            feedbackEl.innerHTML = `✓ Correct! ${q.explanation}`;
+        } else {
+            feedbackEl.className = 'feedback incorrect show';
+            feedbackEl.innerHTML = `✗ Incorrect. ${q.explanation}`;
+        }
+    });
+    
+    const score = Math.round((correct / quiz.length) * 100);
+    courseState.quizScores[moduleId] = score;
+    awardXP(correct * 10);
+    
+    // Show modal feedback
+    const modal = document.getElementById('quizModal');
+    const overlay = document.getElementById('quizOverlay');
+    const content = document.getElementById('quizModalContent');
+    content.innerHTML = `
+        <h3 style="color: ${score >= 70 ? '#16a34a' : '#dc2626'};">${score >= 70 ? '✓' : '✗'} Quiz Completed!</h3>
+        <p style="font-size: 2em; font-weight: 700; margin: 15px 0; color: ${score >= 70 ? '#16a34a' : '#dc2626'};">${score}%</p>
+        <p>${score >= 70 ? '✓ Passed!' : 'Review the material and try again.'}</p>
+    `;
+    modal.classList.add('show');
+    overlay.classList.add('show');
+    setTimeout(() => { modal.classList.remove('show'); overlay.classList.remove('show'); }, 4000);
+}
+
+// ==================== ASSESSMENT FUNCTIONS ====================
+function selectAssessOption(questionIdx, optionIdx) {
+    assessAnswers[questionIdx] = optionIdx;
+    assessmentQuestions[questionIdx].options.forEach((_, oi) => {
+        const el = document.getElementById(`assess_q${questionIdx}_o${oi}`);
+        el.classList.remove('selected');
+    });
+    document.getElementById(`assess_q${questionIdx}_o${optionIdx}`).classList.add('selected');
+}
+
+function submitAssessment() {
+    let correct = 0;
+    assessmentQuestions.forEach((q, qi) => {
+        if (assessAnswers[qi] === q.correct) correct++;
+    });
+    
+    const score = Math.round((correct / assessmentQuestions.length) * 100);
+    courseState.assessmentScore = score;
+    courseState.assessmentPassed = score >= 70;
+    
+    awardXP(score >= 70 ? 100 : 25);
+    checkBadges();
+    
+    // Show results
+    document.getElementById('scoreDisplay').textContent = score + '%';
+    document.getElementById('scoreDisplay').className = `score-display ${score >= 70 ? 'pass' : 'fail'}`;
+    document.getElementById('resultMessage').textContent = score >= 70 ? 
+        `Congratulations! You passed with ${correct}/${assessmentQuestions.length} correct answers.` :
+        `You scored ${correct}/${assessmentQuestions.length}. You need 70% to pass. Please review the modules and try again.`;
+    
+    if (score >= 70) {
+        document.getElementById('certificateSection').style.display = 'block';
+        document.getElementById('certDate').textContent = `Completed: ${new Date().toLocaleDateString()}`;
+    }
+    
+    document.getElementById('finalXP').textContent = courseState.xp;
+    document.getElementById('finalBadges').textContent = courseState.badges.length > 0 ? courseState.badges.join(', ') : 'None';
+    
+    go('results');
+    sendLMSCompletion();
+}
+
+// ==================== GAMIFICATION ====================
+function awardXP(points) {
+    courseState.xp += points;
+    updateDashboard();
+}
+
+function checkBadges() {
+    if (courseState.completedModules.length >= 5 && !courseState.badges.includes('📋 Course Master')) {
+        courseState.badges.push('📋 Course Master');
+    }
+    if (courseState.xp >= 300 && !courseState.badges.includes('⭐ XP Champion')) {
+        courseState.badges.push('⭐ XP Champion');
+    }
+    if (courseState.streak >= 5 && !courseState.badges.includes('🔥 On Fire')) {
+        courseState.badges.push('🔥 On Fire');
+    }
+    if (courseState.assessmentPassed && !courseState.badges.includes('🏆 ISM Expert')) {
+        courseState.badges.push('🏆 ISM Expert');
+    }
+    updateDashboard();
+}
+
+function updateDashboard() {
+    const xpEl = document.getElementById('xpDisplay');
+    const modEl = document.getElementById('moduleProgress');
+    const badgeEl = document.getElementById('badgeCount');
+    const streakEl = document.getElementById('streakDisplay');
+    const progressFill = document.getElementById('progressFill');
+    const badgeDisplay = document.getElementById('badgeDisplay');
+    
+    if (xpEl) xpEl.textContent = courseState.xp;
+    if (modEl) modEl.textContent = `${courseState.completedModules.length}/5`;
+    if (badgeEl) badgeEl.textContent = courseState.badges.length;
+    if (streakEl) streakEl.textContent = courseState.streak;
+    if (progressFill) progressFill.style.width = `${(courseState.completedModules.length / 5) * 100}%`;
+    if (badgeDisplay) {
+        badgeDisplay.innerHTML = courseState.badges.map(b => `<span class="badge">${b}</span>`).join('');
+    }
+}
+
+// ==================== LMS INTEGRATION ====================
+function sendLMSCompletion() {
+    const completionData = {
+        courseId: 'non-conformity-corrective-action-001',
+        courseName: 'Non-Conformity and Corrective Action — The ISM Improvement Loop',
+        completionStatus: courseState.assessmentPassed ? 'PASSED' : 'FAILED',
+        score: courseState.assessmentScore,
+        passingScore: 70,
+        totalXP: courseState.xp,
+        badges: courseState.badges,
+        modulesCompleted: courseState.completedModules,
+        quizScores: courseState.quizScores,
+        completionTime: Math.round((Date.now() - courseState.startTime) / 1000),
+        timestamp: new Date().toISOString()
+    };
+
+    // Method 1: PostMessage API (for iframe-based LMS)
+    try {
+        if (window.parent !== window) {
+            window.parent.postMessage({
+                type: 'COURSE_COMPLETION',
+                data: completionData
+            }, '*');
+        }
+    } catch (e) { /* Not in iframe */ }
+
+    // Method 2: localStorage (offline persistence)
+    try {
+        localStorage.setItem('course_completion_nc_corrective_action', JSON.stringify(completionData));
+    } catch (e) { /* localStorage not available */ }
+
+    // Method 3: REST API (custom LMS)
+    try {
+        fetch('/api/lms/completion', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(completionData)
+        }).catch(() => { /* API not available - offline mode */ });
+    } catch (e) { /* fetch not available */ }
+
+    console.log('LMS Completion Data:', JSON.stringify(completionData, null, 2));
+}
+
+// ==================== INITIALIZATION ====================
+document.addEventListener('DOMContentLoaded', function() {
+    renderActivities();
+    renderQuizzes();
+    updateDashboard();
+});
+</script>
+</body>
+</html>

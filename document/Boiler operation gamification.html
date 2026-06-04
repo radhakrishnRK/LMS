@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boiler Operation and Water Treatment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #1e40af;
+            text-align: center;
+        }
+
+        .dashboard-card h3 {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .dashboard-card .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1e40af;
+        }
+
+        .progress-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hero-screen {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero-screen h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #1e40af;
+        }
+
+        .hero-screen p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            color: #666;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 64, 175, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(107, 114, 128, 0.3);
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .module-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .module-card:hover {
+            border-color: #1e40af;
+            box-shadow: 0 5px 15px rgba(30, 64, 175, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .module-card h3 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .module-card p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .module-content {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .module-content h2 {
+            color: #1e40af;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .module-content h3 {
+            color: #1e40af;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .module-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .module-content li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .activity-box {
+            background: white;
+            border: 2px dashed #1e40af;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .activity-box h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .activity-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f4f8;
+            border-radius: 5px;
+        }
+
+        .activity-item label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .activity-item input[type="radio"],
+        .activity-item input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .feedback-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .feedback-correct {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            color: #065f46;
+        }
+
+        .feedback-incorrect {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            color: #7f1d1d;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .quiz-section {
+            background: white;
+            border: 2px solid #e5e7eb;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .quiz-question h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+
+        .quiz-option {
+            margin-bottom: 10px;
+        }
+
+        .quiz-option label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .quiz-option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .assessment-question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .assessment-question h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+
+        .assessment-option {
+            margin-bottom: 12px;
+        }
+
+        .assessment-option label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .assessment-option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .results-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-screen h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #1e40af;
+        }
+
+        .score-display.passed {
+            color: #10b981;
+        }
+
+        .score-display.failed {
+            color: #ef4444;
+        }
+
+        .certificate {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 40px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border: 3px solid #d97706;
+            text-align: center;
+        }
+
+        .certificate h3 {
+            font-size: 2em;
+            color: #92400e;
+            margin-bottom: 20px;
+        }
+
+        .certificate p {
+            font-size: 1.1em;
+            color: #b45309;
+            margin-bottom: 15px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #1e40af;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .modal-content h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #1e40af;
+        }
+
+        .modal-content p {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal-content .score {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #10b981;
+            margin: 20px 0;
+        }
+
+        .modal-content .score.failed {
+            color: #ef4444;
+        }
+
+        .feedback-detailed {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f4f8;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 0.95em;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Screen -->
+        <div id="hero" class="screen active">
+            <header>
+                <h1>⚙️ Boiler Operation and Water Treatment</h1>
+                <p>Marine Steam Systems - Comprehensive Training Course</p>
+            </header>
+
+            <div class="hero-screen">
+                <h2>Welcome to Your Learning Journey</h2>
+                <p>Master boiler operation, water treatment, and steam system management for marine engineering. This course covers essential knowledge for officers responsible for steam plant operations on tankers and cargo heating vessels.</p>
+
+                <div style="margin: 40px 0;">
+                    <button class="btn" onclick="startCourse()">🚀 Start Course</button>
+                </div>
+
+                <div style="background: #f0f4f8; padding: 20px; border-radius: 8px; margin-top: 30px;">
+                    <h3 style="color: #1e40af; margin-bottom: 15px;">What You'll Learn:</h3>
+                    <ul style="text-align: left; display: inline-block; color: #555;">
+                        <li>✓ Boiler types and combustion management</li>
+                        <li>✓ Steam generation and distribution systems</li>
+                        <li>✓ Water treatment and chemical dosing</li>
+                        <li>✓ Water testing procedures and parameters</li>
+                        <li>✓ Safety devices and emergency procedures</li>
+                        <li>✓ Boiler shutdown and lay-up procedures</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modules Screen -->
+        <div id="modules" class="screen">
+            <div class="breadcrumb">
+                <a onclick="go('hero')">← Home</a> / Modules
+            </div>
+
+            <header>
+                <h1>⚙️ Boiler Operation and Water Treatment</h1>
+                <p>Select a module to begin learning</p>
+            </header>
+
+            <div class="dashboard">
+                <div class="dashboard-card">
+                    <h3>Experience Points</h3>
+                    <div class="value" id="xpDisplay">0</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Badges Earned</h3>
+                    <div class="value" id="badgeDisplay">0</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Modules Completed</h3>
+                    <div class="value" id="completedDisplay">0/5</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Course Progress</h3>
+                    <div class="value" id="progressDisplay">0%</div>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <h3>Overall Progress</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%;">0%</div>
+                </div>
+            </div>
+
+            <div class="modules-grid">
+                <div class="module-card" onclick="go('m1')">
+                    <h3>🔥 Module 1</h3>
+                    <p>Boiler Types & Combustion Management</p>
+                </div>
+                <div class="module-card" onclick="go('m2')">
+                    <h3>💨 Module 2</h3>
+                    <p>Steam Generation & Distribution</p>
+                </div>
+                <div class="module-card" onclick="go('m3')">
+                    <h3>💧 Module 3</h3>
+                    <p>Water Treatment & Chemical Dosing</p>
+                </div>
+                <div class="module-card" onclick="go('m4')">
+                    <h3>🧪 Module 4</h3>
+                    <p>Water Testing & Parameters</p>
+                </div>
+                <div class="module-card" onclick="go('m5')">
+                    <h3>⚠️ Module 5</h3>
+                    <p>Safety Devices & Emergency Procedures</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="btn btn-secondary" onclick="go('assess')">📋 Take Final Assessment</button>
+            </div>
+        </div>
+
+        <!-- Module 1: Boiler Types & Combustion -->
+        <div id="m1" class="screen">
+            <div class="breadcrumb">
+                <a onclick="go('modules')">← Modules</a> / Module 1
+            </div>
+
+            <div class="module-content">
+                <h2>🔥 Module 1: Boiler Types and Combustion Management</h2>
+
+                <h3>Water Tube Boilers</h3>
+                <ul>
+                    <li>Water flows inside tubes, combustion gases outside</li>
+                    <li>Higher efficiency and faster steam generation</li>
+                    <li>Common on modern cargo vessels</li>
+                    <li>Operating pressure: 15-35 bar</li>
+                    <li>Burner control systems for combustion management</li>
+                </ul>
+
+                <h3>Composite Boilers</h3>
+                <ul>
+                    <li>Combination of water tube and fire tube design</li>
+                    <li>Improved heat transfer efficiency</li>
+                    <li>Suitable for steam tankers</li>
+                    <li>Operating pressure: 10-25 bar</li>
+                </ul>
+
+                <h3>Combustion Management</h3>
+                <ul>
+                    <li>Burner control systems regulate fuel flow</li>
+                    <li>Excess air monitoring prevents incomplete combustion</li>
+                    <li>Flame monitoring ensures safe operation</li>
+                    <li>Oxygen content: 2-3% in exhaust gases</li>
+                    <li>Flame failure triggers automatic shutdown</li>
+                </ul>
+
+                <div class="activity-box">
+                    <h4>🎮 INTERACTIVE ACTIVITY: Boiler Type Matching Challenge</h4>
+                    <p>Match the boiler characteristics to the correct boiler type:</p>
+
+                    <div id="m1Activity"></div>
+                    <button class="btn" onclick="checkM1Activity()">Submit Answer</button>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>📝 Module 1 Quiz</h3>
+                    <div id="m1Quiz"></div>
+                    <button class="btn" onclick="submitQuiz('m1')">Submit Quiz</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('modules')">← Back to Modules</button>
+                    <button class="btn" onclick="completeAndGo('m1', 'm2')">Complete & Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 2: Steam Generation & Distribution -->
+        <div id="m2" class="screen">
+            <div class="breadcrumb">
+                <a onclick="go('modules')">← Modules</a> / Module 2
+            </div>
+
+            <div class="module-content">
+                <h2>💨 Module 2: Steam Generation and Distribution</h2>
+
+                <h3>Steam Generation Process</h3>
+                <ul>
+                    <li>Water heated in boiler tubes to saturation point</li>
+                    <li>Steam pressure controlled by safety valves</li>
+                    <li>Superheated steam improves efficiency</li>
+                    <li>Pressure range: 15-35 bar for cargo heating</li>
+                    <li>Temperature: 200-250°C for saturated steam</li>
+                </ul>
+
+                <h3>Steam Distribution Systems</h3>
+                <ul>
+                    <li>Main steam line carries steam from boiler</li>
+                    <li>Branch lines supply cargo heaters and auxiliary equipment</li>
+                    <li>Steam traps remove condensate from lines</li>
+                    <li>Drain valves prevent water hammer</li>
+                    <li>Pressure regulators maintain constant pressure</li>
+                </ul>
+
+                <h3>Pressure Control</h3>
+                <ul>
+                    <li>Safety valves set at maximum operating pressure</li>
+                    <li>Pressure gauges monitored continuously</li>
+                    <li>Relief valves prevent overpressure</li>
+                    <li>Automatic burner control maintains pressure</li>
+                </ul>
+
+                <div class="activity-box">
+                    <h4>🎮 INTERACTIVE ACTIVITY: Steam System Sequencing</h4>
+                    <p>Arrange the steam generation steps in correct order:</p>
+
+                    <div id="m2Activity"></div>
+                    <button class="btn" onclick="checkM2Activity()">Submit Answer</button>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>📝 Module 2 Quiz</h3>
+                    <div id="m2Quiz"></div>
+                    <button class="btn" onclick="submitQuiz('m2')">Submit Quiz</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('m1')">← Previous Module</button>
+                    <button class="btn" onclick="completeAndGo('m2', 'm3')">Complete & Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 3: Water Treatment & Chemical Dosing -->
+        <div id="m3" class="screen">
+            <div class="breadcrumb">
+                <a onclick="go('modules')">← Modules</a> / Module 3
+            </div>
+
+            <div class="module-content">
+                <h2>💧 Module 3: Water Treatment and Chemical Dosing</h2>
+
+                <h3>Boiler Water Treatment</h3>
+                <ul>
+                    <li>Prevents scale formation and corrosion</li>
+                    <li>Maintains water quality for efficient steam generation</li>
+                    <li>Chemical treatment essential for long boiler life</li>
+                    <li>Alkalinity maintained between 200-500 ppm</li>
+                    <li>Total Dissolved Solids (TDS) controlled below 3000 ppm</li>
+                </ul>
+
+                <h3>Chemical Dosing</h3>
+                <ul>
+                    <li>Sodium phosphate prevents scale formation</li>
+                    <li>Sodium hydroxide maintains alkalinity</li>
+                    <li>Oxygen scavenger removes dissolved oxygen</li>
+                    <li>Hydrazine or sodium sulfite used as oxygen scavengers</li>
+                    <li>Dosing based on water test results</li>
+                </ul>
+
+                <h3>Blow-Down Procedure</h3>
+                <ul>
+                    <li>Removes concentrated salts and impurities</li>
+                    <li>Performed daily or as needed</li>
+                    <li>Blow-down valve opened slowly to avoid thermal shock</li>
+                    <li>Typically 5-10% of boiler water volume</li>
+                    <li>Recorded in water treatment log</li>
+                </ul>
+
+                <div class="activity-box">
+                    <h4>🎮 INTERACTIVE ACTIVITY: Water Treatment Decision Scenario</h4>
+                    <p>Select the correct treatment action for each water condition:</p>
+
+                    <div id="m3Activity"></div>
+                    <button class="btn" onclick="checkM3Activity()">Submit Answer</button>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>📝 Module 3 Quiz</h3>
+                    <div id="m3Quiz"></div>
+                    <button class="btn" onclick="submitQuiz('m3')">Submit Quiz</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('m2')">← Previous Module</button>
+                    <button class="btn" onclick="completeAndGo('m3', 'm4')">Complete & Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 4: Water Testing & Parameters -->
+        <div id="m4" class="screen">
+            <div class="breadcrumb">
+                <a onclick="go('modules')">← Modules</a> / Module 4
+            </div>
+
+            <div class="module-content">
+                <h2>🧪 Module 4: Water Testing and Parameters</h2>
+
+                <h3>Water Testing Procedures</h3>
+                <ul>
+                    <li>Alkalinity test measures pH and alkalinity</li>
+                    <li>Chloride test detects salt contamination</li>
+                    <li>Phosphate test verifies treatment chemical levels</li>
+                    <li>Oxygen scavenger test confirms corrosion protection</li>
+                    <li>Tests performed daily or per procedure</li>
+                </ul>
+
+                <h3>Key Parameters</h3>
+                <ul>
+                    <li>Alkalinity: 200-500 ppm (as CaCO3)</li>
+                    <li>Chloride: Less than 100 ppm</li>
+                    <li>Phosphate: 10-30 ppm</li>
+                    <li>Oxygen scavenger: 10-30 ppm</li>
+                    <li>Total Dissolved Solids (TDS): Below 3000 ppm</li>
+                </ul>
+
+                <h3>Water Testing Equipment</h3>
+                <ul>
+                    <li>Alkalinity test kit with indicator</li>
+                    <li>Chloride test kit (silver nitrate method)</li>
+                    <li>Phosphate test kit</li>
+                    <li>Oxygen scavenger test kit</li>
+                    <li>TDS meter for electronic measurement</li>
+                </ul>
+
+                <div class="activity-box">
+                    <h4>🎮 INTERACTIVE ACTIVITY: Parameter Identification Challenge</h4>
+                    <p>Identify the correct parameter for each water quality issue:</p>
+
+                    <div id="m4Activity"></div>
+                    <button class="btn" onclick="checkM4Activity()">Submit Answer</button>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>📝 Module 4 Quiz</h3>
+                    <div id="m4Quiz"></div>
+                    <button class="btn" onclick="submitQuiz('m4')">Submit Quiz</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('m3')">← Previous Module</button>
+                    <button class="btn" onclick="completeAndGo('m4', 'm5')">Complete & Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 5: Safety Devices & Emergency -->
+        <div id="m5" class="screen">
+            <div class="breadcrumb">
+                <a onclick="go('modules')">← Modules</a> / Module 5
+            </div>
+
+            <div class="module-content">
+                <h2>⚠️ Module 5: Safety Devices and Emergency Procedures</h2>
+
+                <h3>Boiler Safety Devices</h3>
+                <ul>
+                    <li>Safety valves set at maximum operating pressure</li>
+                    <li>Low water alarm prevents dry firing</li>
+                    <li>Flame failure detector stops fuel flow</li>
+                    <li>Pressure relief valve prevents overpressure</li>
+                    <li>Temperature sensors monitor boiler temperature</li>
+                </ul>
+
+                <h3>Emergency Shutdown Criteria</h3>
+                <ul>
+                    <li>Pressure exceeds maximum operating limit</li>
+                    <li>Water level drops below safe minimum</li>
+                    <li>Flame failure detected</li>
+                    <li>Abnormal vibration or noise</li>
+                    <li>Fuel supply contamination detected</li>
+                </ul>
+
+                <h3>Boiler Shutdown and Lay-Up</h3>
+                <ul>
+                    <li>Gradual cooling prevents thermal shock</li>
+                    <li>Fuel supply isolated and purged</li>
+                    <li>Boiler drained and inspected</li>
+                    <li>Lay-up procedure preserves boiler internally</li>
+                    <li>Soot blowing performed before shutdown</li>
+                </ul>
+
+                <div class="activity-box">
+                    <h4>🎮 INTERACTIVE ACTIVITY: Safety Response Scenario</h4>
+                    <p>Select the correct action for each emergency situation:</p>
+
+                    <div id="m5Activity"></div>
+                    <button class="btn" onclick="checkM5Activity()">Submit Answer</button>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>📝 Module 5 Quiz</h3>
+                    <div id="m5Quiz"></div>
+                    <button class="btn" onclick="submitQuiz('m5')">Submit Quiz</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('m4')">← Previous Module</button>
+                    <button class="btn" onclick="completeAndGo('m5', 'assess')">Complete & Take Assessment →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assessment Screen -->
+        <div id="assess" class="screen">
+            <div class="breadcrumb">
+                <a onclick="go('modules')">← Modules</a> / Final Assessment
+            </div>
+
+            <div class="module-content">
+                <h2>📋 Final Assessment</h2>
+                <p style="margin-bottom: 20px; color: #666;">Answer all questions. You need 70% to pass. This assessment tests your understanding of all course material.</p>
+
+                <div id="assessmentQuestions"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('modules')">← Back to Modules</button>
+                    <button class="btn" onclick="submitAssessment()">Submit Assessment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="screen">
+            <div class="results-screen">
+                <h2>🎉 Course Completed!</h2>
+
+                <div id="resultContent"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="go('modules')">← Back to Modules</button>
+                    <button class="btn" onclick="go('hero')">🏠 Return to Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+            <h3 id="feedbackTitle">Quiz Complete!</h3>
+            <p id="feedbackMessage"></p>
+            <div class="score" id="feedbackScore"></div>
+            <button class="btn" onclick="closeFeedback()">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        // Course State
+        const courseState = {
+            currentScreen: 'hero',
+            xp: 0,
+            badges: [],
+            modulesCompleted: [],
+            quizScores: {},
+            activityScores: {},
+            assessmentScore: 0,
+            assessmentPassed: false
+        };
+
+        // Activity Data
+        const activities = {
+            m1: {
+                title: 'Boiler Type Matching',
+                items: [
+                    { question: 'Water flows inside tubes, combustion gases outside', correct: 'Water Tube', options: ['Water Tube', 'Composite'] },
+                    { question: 'Combination of water tube and fire tube design', correct: 'Composite', options: ['Water Tube', 'Composite'] },
+                    { question: 'Common on modern cargo vessels', correct: 'Water Tube', options: ['Water Tube', 'Composite'] },
+                    { question: 'Suitable for steam tankers', correct: 'Composite', options: ['Water Tube', 'Composite'] },
+                    { question: 'Operating pressure: 15-35 bar', correct: 'Water Tube', options: ['Water Tube', 'Composite'] }
+                ],
+                explanations: {
+                    'Water flows inside tubes, combustion gases outside': 'This is the defining characteristic of water tube boilers, which allows for higher efficiency and faster steam generation.',
+                    'Combination of water tube and fire tube design': 'Composite boilers combine both designs to improve heat transfer efficiency, making them ideal for steam tankers.',
+                    'Common on modern cargo vessels': 'Water tube boilers are the standard on modern cargo vessels due to their superior efficiency and reliability.',
+                    'Suitable for steam tankers': 'Composite boilers are specifically designed for steam tanker applications where reliability and efficiency are critical.',
+                    'Operating pressure: 15-35 bar': 'Water tube boilers typically operate at 15-35 bar, which is higher than composite boilers (10-25 bar).'
+                }
+            },
+            m2: {
+                title: 'Steam System Sequencing',
+                items: [
+                    { question: 'Water heated in boiler tubes to saturation point', correct: 1, order: 1 },
+                    { question: 'Steam pressure controlled by safety valves', correct: 2, order: 2 },
+                    { question: 'Steam distributed through main steam line', correct: 3, order: 3 },
+                    { question: 'Steam traps remove condensate from lines', correct: 4, order: 4 },
+                    { question: 'Pressure regulators maintain constant pressure', correct: 5, order: 5 }
+                ],
+                explanations: {
+                    1: 'First, water must be heated to saturation point to generate steam.',
+                    2: 'Safety valves then control the pressure to prevent overpressure conditions.',
+                    3: 'Steam is distributed through the main steam line to various consumers.',
+                    4: 'Steam traps remove condensate that forms as steam cools in the lines.',
+                    5: 'Finally, pressure regulators maintain constant pressure throughout the system.'
+                }
+            },
+            m3: {
+                title: 'Water Treatment Decisions',
+                items: [
+                    { question: 'Alkalinity below 200 ppm', correct: 'Add sodium hydroxide', options: ['Add sodium hydroxide', 'Perform blow-down', 'Add oxygen scavenger'] },
+                    { question: 'Chloride above 100 ppm', correct: 'Perform blow-down', options: ['Add sodium hydroxide', 'Perform blow-down', 'Add oxygen scavenger'] },
+                    { question: 'Phosphate below 10 ppm', correct: 'Add sodium phosphate', options: ['Add sodium hydroxide', 'Perform blow-down', 'Add sodium phosphate'] },
+                    { question: 'Dissolved oxygen detected', correct: 'Add oxygen scavenger', options: ['Add sodium hydroxide', 'Perform blow-down', 'Add oxygen scavenger'] },
+                    { question: 'TDS above 3000 ppm', correct: 'Perform blow-down', options: ['Add sodium hydroxide', 'Perform blow-down', 'Add oxygen scavenger'] }
+                ],
+                explanations: {
+                    'Alkalinity below 200 ppm': 'Low alkalinity requires adding sodium hydroxide to raise pH and alkalinity levels.',
+                    'Chloride above 100 ppm': 'High chloride indicates salt contamination and requires blow-down to remove concentrated salts.',
+                    'Phosphate below 10 ppm': 'Low phosphate means insufficient scale prevention, so sodium phosphate must be added.',
+                    'Dissolved oxygen detected': 'Dissolved oxygen causes corrosion and must be removed by adding oxygen scavenger (hydrazine or sodium sulfite).',
+                    'TDS above 3000 ppm': 'High TDS indicates excessive dissolved solids requiring blow-down to remove impurities.'
+                }
+            },
+            m4: {
+                title: 'Parameter Identification',
+                items: [
+                    { question: 'Measures pH and alkalinity', correct: 'Alkalinity', options: ['Alkalinity', 'Chloride', 'Phosphate'] },
+                    { question: 'Detects salt contamination', correct: 'Chloride', options: ['Alkalinity', 'Chloride', 'Phosphate'] },
+                    { question: 'Verifies treatment chemical levels', correct: 'Phosphate', options: ['Alkalinity', 'Chloride', 'Phosphate'] },
+                    { question: 'Confirms corrosion protection', correct: 'Oxygen scavenger', options: ['Alkalinity', 'Chloride', 'Oxygen scavenger'] },
+                    { question: 'Measures total dissolved solids', correct: 'TDS', options: ['Alkalinity', 'Chloride', 'TDS'] }
+                ],
+                explanations: {
+                    'Measures pH and alkalinity': 'The alkalinity test measures both pH and alkalinity levels using indicator solutions.',
+                    'Detects salt contamination': 'The chloride test detects salt contamination using the silver nitrate method.',
+                    'Verifies treatment chemical levels': 'The phosphate test verifies that treatment chemicals are at proper levels.',
+                    'Confirms corrosion protection': 'The oxygen scavenger test confirms that corrosion protection is adequate.',
+                    'Measures total dissolved solids': 'TDS meters electronically measure total dissolved solids in the boiler water.'
+                }
+            },
+            m5: {
+                title: 'Safety Response Scenarios',
+                items: [
+                    { question: 'Pressure exceeds maximum operating limit', correct: 'Activate safety valve', options: ['Activate safety valve', 'Continue operation', 'Increase fuel'] },
+                    { question: 'Water level drops below safe minimum', correct: 'Shut down boiler immediately', options: ['Activate safety valve', 'Shut down boiler immediately', 'Add more fuel'] },
+                    { question: 'Flame failure detected', correct: 'Stop fuel flow automatically', options: ['Activate safety valve', 'Stop fuel flow automatically', 'Increase air supply'] },
+                    { question: 'Abnormal vibration or noise detected', correct: 'Shut down and inspect', options: ['Activate safety valve', 'Shut down and inspect', 'Increase pressure'] },
+                    { question: 'Fuel supply contamination detected', correct: 'Isolate and purge fuel system', options: ['Activate safety valve', 'Isolate and purge fuel system', 'Continue operation'] }
+                ],
+                explanations: {
+                    'Pressure exceeds maximum operating limit': 'The safety valve automatically activates to relieve excess pressure and prevent boiler damage.',
+                    'Water level drops below safe minimum': 'Low water level can cause dry firing and boiler damage, so immediate shutdown is required.',
+                    'Flame failure detected': 'The flame failure detector automatically stops fuel flow to prevent dangerous conditions.',
+                    'Abnormal vibration or noise detected': 'Abnormal vibration indicates potential mechanical problems requiring immediate shutdown and inspection.',
+                    'Fuel supply contamination detected': 'Contaminated fuel must be isolated and the system purged before resuming operation.'
+                }
+            }
+        };
+
+        // Quiz Data
+        const quizzes = {
+            m1: [
+                {
+                    question: 'What is the typical operating pressure for water tube boilers?',
+                    options: ['5-10 bar', '15-35 bar', '40-50 bar'],
+                    correct: 1
+                },
+                {
+                    question: 'Which boiler type is common on modern cargo vessels?',
+                    options: ['Fire tube', 'Water tube', 'Composite'],
+                    correct: 1
+                }
+            ],
+            m2: [
+                {
+                    question: 'What is the typical steam temperature for saturated steam?',
+                    options: ['100-150°C', '200-250°C', '300-350°C'],
+                    correct: 1
+                },
+                {
+                    question: 'What is the purpose of steam traps?',
+                    options: ['Generate steam', 'Remove condensate', 'Control pressure'],
+                    correct: 1
+                }
+            ],
+            m3: [
+                {
+                    question: 'What is the typical alkalinity range for boiler water?',
+                    options: ['50-100 ppm', '200-500 ppm', '1000-2000 ppm'],
+                    correct: 1
+                },
+                {
+                    question: 'What is the maximum TDS level for boiler water?',
+                    options: ['1000 ppm', '2000 ppm', '3000 ppm'],
+                    correct: 2
+                }
+            ],
+            m4: [
+                {
+                    question: 'What is the maximum chloride level in boiler water?',
+                    options: ['50 ppm', '100 ppm', '200 ppm'],
+                    correct: 1
+                },
+                {
+                    question: 'What is the typical phosphate range in treated boiler water?',
+                    options: ['5-10 ppm', '10-30 ppm', '50-100 ppm'],
+                    correct: 1
+                }
+            ],
+            m5: [
+                {
+                    question: 'What triggers automatic shutdown of the boiler?',
+                    options: ['Low pressure', 'Flame failure', 'High temperature'],
+                    correct: 1
+                },
+                {
+                    question: 'What is the purpose of soot blowing?',
+                    options: ['Generate steam', 'Remove soot deposits', 'Control pressure'],
+                    correct: 1
+                }
+            ]
+        };
+
+        // Assessment Questions
+        const assessmentQuestions = [
+            { question: 'What is the main advantage of water tube boilers?', options: ['Lower cost', 'Higher efficiency', 'Simpler design'], correct: 1 },
+            { question: 'What is the typical operating pressure range for composite boilers?', options: ['5-10 bar', '10-25 bar', '30-40 bar'], correct: 1 },
+            { question: 'What is the purpose of the burner control system?', options: ['Generate steam', 'Regulate fuel flow', 'Control pressure'], correct: 1 },
+            { question: 'What oxygen content should be maintained in exhaust gases?', options: ['0.5-1%', '2-3%', '5-6%'], correct: 1 },
+            { question: 'What is the temperature range for saturated steam?', options: ['100-150°C', '200-250°C', '300-350°C'], correct: 1 },
+            { question: 'What is the purpose of drain valves in steam lines?', options: ['Generate steam', 'Prevent water hammer', 'Control pressure'], correct: 1 },
+            { question: 'What is the maximum TDS level for boiler water?', options: ['1000 ppm', '2000 ppm', '3000 ppm'], correct: 2 },
+            { question: 'Which chemical prevents scale formation in boiler water?', options: ['Sodium hydroxide', 'Sodium phosphate', 'Hydrazine'], correct: 1 },
+            { question: 'What is the typical alkalinity range for boiler water?', options: ['50-100 ppm', '200-500 ppm', '1000-2000 ppm'], correct: 1 },
+            { question: 'What is the maximum chloride level in boiler water?', options: ['50 ppm', '100 ppm', '200 ppm'], correct: 1 },
+            { question: 'What is the purpose of oxygen scavenger?', options: ['Generate steam', 'Remove dissolved oxygen', 'Control pressure'], correct: 1 },
+            { question: 'How often should blow-down be performed?', options: ['Weekly', 'Daily or as needed', 'Monthly'], correct: 1 },
+            { question: 'What is the typical phosphate range in treated boiler water?', options: ['5-10 ppm', '10-30 ppm', '50-100 ppm'], correct: 1 },
+            { question: 'What triggers the low water alarm?', options: ['High pressure', 'Low water level', 'High temperature'], correct: 1 },
+            { question: 'What is the purpose of flame failure detection?', options: ['Generate steam', 'Stop fuel flow', 'Control pressure'], correct: 1 },
+            { question: 'What should be done before boiler shutdown?', options: ['Increase pressure', 'Perform soot blowing', 'Add more fuel'], correct: 1 },
+            { question: 'What is the purpose of pressure relief valve?', options: ['Generate steam', 'Prevent overpressure', 'Control temperature'], correct: 1 },
+            { question: 'What is the typical blow-down volume?', options: ['1-2%', '5-10%', '15-20%'], correct: 1 },
+            { question: 'Which boiler type is suitable for steam tankers?', options: ['Fire tube', 'Water tube', 'Composite'], correct: 2 },
+            { question: 'What is the purpose of safety valves?', options: ['Generate steam', 'Control maximum pressure', 'Remove condensate'], correct: 1 }
+        ];
+
+        // Navigation
+        function go(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            courseState.currentScreen = screenId;
+        }
+
+        function startCourse() {
+            renderActivities();
+            renderQuizzes();
+            renderAssessment();
+            go('modules');
+        }
+
+        function completeAndGo(moduleId, nextScreen) {
+            if (!courseState.modulesCompleted.includes(moduleId)) {
+                courseState.modulesCompleted.push(moduleId);
+                awardXP(50);
+            }
+            updateProgress();
+            go(nextScreen);
+        }
+
+        // Render Activities
+        function renderActivities() {
+            Object.keys(activities).forEach(key => {
+                const activity = activities[key];
+                const container = document.getElementById(key + 'Activity');
+                let html = '';
+
+                activity.items.forEach((item, idx) => {
+                    html += `<div class="activity-item">
+                        <strong>${item.question}</strong><br>`;
+
+                    const options = item.options || ['1','2','3','4','5'];
+
+                    options.forEach(option => {
+                        html += `<label>
+                            <input type="radio" name="${key}_${idx}" value="${option}">
+                            ${option}
+                        </label>`;
+                    });
+
+                    html += `</div>`;
+                });
+
+                container.innerHTML = html;
+            });
+        }
+
+        // Check Activities with Feedback
+        function checkM1Activity() {
+            checkActivity('m1');
+        }
+
+        function checkM2Activity() {
+            checkActivity('m2');
+        }
+
+        function checkM3Activity() {
+            checkActivity('m3');
+        }
+
+        function checkM4Activity() {
+            checkActivity('m4');
+        }
+
+        function checkM5Activity() {
+            checkActivity('m5');
+        }
+
+        function checkActivity(moduleId) {
+            const activity = activities[moduleId];
+            let correct = 0;
+            let feedbackHtml = '';
+
+            activity.items.forEach((item, idx) => {
+                const selected = document.querySelector(`input[name="${moduleId}_${idx}"]:checked`);
+                const isCorrect = selected && String(selected.value) === String(item.correct);
+
+                if (isCorrect) {
+                    correct++;
+                    feedbackHtml += `<div class="feedback-box feedback-correct show">
+                        <strong>✓ ${item.question}</strong><br>
+                        <strong>✓ Correct!</strong><br>
+                        ${activity.explanations[item.question] || ''}
+                    </div>`;
+                } else {
+                    feedbackHtml += `<div class="feedback-box feedback-incorrect show">
+                        <strong>✗ ${item.question}</strong><br>
+                        <strong>✗ Incorrect. Correct answer: ${item.correct}</strong><br>
+                        ${activity.explanations[item.question] || ''}
+                    </div>`;
+                }
+            });
+
+            const score = Math.round((correct / activity.items.length) * 100);
+            courseState.activityScores[moduleId] = score;
+
+            if (score >= 80) {
+                awardXP(25);
+            }
+
+            // Insert feedback after activity
+            const activityContainer = document.getElementById(moduleId + 'Activity');
+            activityContainer.innerHTML += `<div style="margin-top: 20px; padding: 15px; background: #f0f4f8; border-radius: 5px;">
+                <strong>Activity Score: ${score}%</strong>
+            </div>` + feedbackHtml;
+
+            document.querySelector(`#${moduleId} .btn`).disabled = true;
+        }
+
+        // Render Quizzes
+        function renderQuizzes() {
+            Object.keys(quizzes).forEach(key => {
+                const quiz = quizzes[key];
+                const container = document.getElementById(key + 'Quiz');
+                let html = '';
+
+                quiz.forEach((q, idx) => {
+                    html += `<div class="quiz-question">
+                        <h4>Question ${idx + 1}: ${q.question}</h4>`;
+                    
+                    q.options.forEach((option, optIdx) => {
+                        html += `<div class="quiz-option">
+                            <label>
+                                <input type="radio" name="${key}_quiz_${idx}" value="${optIdx}">
+                                ${option}
+                            </label>
+                        </div>`;
+                    });
+                    
+                    html += `</div>`;
+                });
+
+                container.innerHTML = html;
+            });
+        }
+
+        // Submit Quiz
+        function submitQuiz(moduleId) {
+            const quiz = quizzes[moduleId];
+            let correct = 0;
+
+            quiz.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="${moduleId}_quiz_${idx}"]:checked`);
+                if (selected && parseInt(selected.value) === q.correct) {
+                    correct++;
+                }
+            });
+
+            const score = Math.round((correct / quiz.length) * 100);
+            courseState.quizScores[moduleId] = score;
+
+            if (score >= 70) {
+                awardXP(15);
+            }
+
+            showFeedback('Quiz Complete!', `You scored ${score}% on the Module ${moduleId.substring(1)} Quiz!`, score);
+        }
+
+        // Render Assessment
+        function renderAssessment() {
+            const container = document.getElementById('assessmentQuestions');
+            let html = '';
+
+            assessmentQuestions.forEach((q, idx) => {
+                html += `<div class="assessment-question">
+                    <h4>Question ${idx + 1}: ${q.question}</h4>`;
+                
+                q.options.forEach((option, optIdx) => {
+                    html += `<div class="assessment-option">
+                        <label>
+                            <input type="radio" name="assess_${idx}" value="${optIdx}">
+                            ${option}
+                        </label>
+                    </div>`;
+                });
+                
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Submit Assessment
+        function submitAssessment() {
+            let correct = 0;
+
+            assessmentQuestions.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="assess_${idx}"]:checked`);
+                if (selected && parseInt(selected.value) === q.correct) {
+                    correct++;
+                }
+            });
+
+            const score = Math.round((correct / assessmentQuestions.length) * 100);
+            const passed = score >= 70;
+
+            courseState.assessmentScore = score;
+            courseState.assessmentPassed = passed;
+
+            if (passed) {
+                awardXP(100);
+                checkBadges();
+            }
+
+            displayResults(score, passed);
+            sendLMSCompletion(score, passed);
+        }
+
+        // Display Results
+        function displayResults(score, passed) {
+            const resultContent = document.getElementById('resultContent');
+            const scoreClass = passed ? 'passed' : 'failed';
+            const message = passed ? '🎉 Congratulations! You Passed!' : '❌ You Did Not Pass';
+            const passMessage = passed ? 'You have successfully completed this course!' : 'You need 70% to pass. Please review the material and try again.';
+
+            let html = `<div class="score-display ${scoreClass}">${score}%</div>
+                <p style="font-size: 1.2em; margin-bottom: 20px;">${message}</p>
+                <p style="color: #666; margin-bottom: 30px;">${passMessage}</p>`;
+
+            if (passed) {
+                html += `<div class="certificate">
+                    <h3>🏆 Certificate of Completion</h3>
+                    <p>This certifies that you have successfully completed</p>
+                    <p style="font-size: 1.3em; font-weight: bold;">Boiler Operation and Water Treatment</p>
+                    <p>with a score of ${score}%</p>
+                    <p style="margin-top: 20px; font-size: 0.9em;">Date: ${new Date().toLocaleDateString()}</p>
+                </div>`;
+
+                html += `<div style="background: #f0f4f8; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                    <h4 style="color: #1e40af; margin-bottom: 10px;">Course Statistics:</h4>
+                    <p>📊 Total XP Earned: ${courseState.xp}</p>
+                    <p>🏅 Badges Earned: ${courseState.badges.length}</p>
+                    <p>✅ Modules Completed: ${courseState.modulesCompleted.length}/5</p>
+                </div>`;
+            }
+
+            resultContent.innerHTML = html;
+            go('results');
+        }
+
+        // XP and Badges
+        function awardXP(amount) {
+            courseState.xp += amount;
+            document.getElementById('xpDisplay').textContent = courseState.xp;
+            updateProgress();
+        }
+
+        function checkBadges() {
+            const badges = [];
+
+            if (courseState.modulesCompleted.length === 5) {
+                badges.push('🏅 Course Master');
+            }
+
+            if (courseState.xp >= 300) {
+                badges.push('⭐ XP Champion');
+            }
+
+            if (courseState.assessmentScore >= 90) {
+                badges.push('🔥 On Fire');
+            }
+
+            courseState.badges = badges;
+            document.getElementById('badgeDisplay').textContent = badges.length;
+        }
+
+        function updateProgress() {
+            const completed = courseState.modulesCompleted.length;
+            const total = 5;
+            const percentage = Math.round((completed / total) * 100);
+
+            document.getElementById('completedDisplay').textContent = `${completed}/${total}`;
+            document.getElementById('progressDisplay').textContent = `${percentage}%`;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressBar').textContent = percentage + '%';
+        }
+
+        // Feedback Modal
+        function showFeedback(title, message, score) {
+            document.getElementById('feedbackTitle').textContent = title;
+            document.getElementById('feedbackMessage').textContent = message;
+            document.getElementById('feedbackScore').textContent = `${score}%`;
+            document.getElementById('feedbackScore').className = score >= 70 ? 'score' : 'score failed';
+            document.getElementById('feedbackModal').classList.add('show');
+        }
+
+        function closeFeedback() {
+            document.getElementById('feedbackModal').classList.remove('show');
+        }
+
+        // LMS Integration
+        function sendLMSCompletion(score, passed) {
+            const completionData = {
+                courseId: 'boiler-operation-water-treatment-001',
+                courseName: 'Boiler Operation and Water Treatment',
+                completionStatus: passed ? 'PASSED' : 'FAILED',
+                score: score,
+                passingScore: 70,
+                totalXP: courseState.xp,
+                badges: courseState.badges,
+                modulesCompleted: courseState.modulesCompleted,
+                completionTime: Math.round(Date.now() / 1000),
+                timestamp: new Date().toISOString()
+            };
+
+            // Store in localStorage
+            localStorage.setItem('courseCompletion_boiler', JSON.stringify(completionData));
+
+            // PostMessage API for iframe LMS
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'lmsCompletion',
+                    data: completionData
+                }, '*');
+            }
+
+            // REST API for custom LMS
+            try {
+                fetch('/api/lms/completion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(completionData)
+                }).catch(() => {});
+            } catch (e) {}
+
+            console.log('Course Completion Data:', completionData);
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
