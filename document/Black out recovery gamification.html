@@ -822,6 +822,11 @@
 
     <script>
         // Course State
+        const blackoutModuleTitles = {m1:"Blackout Causes & Immediate Consequences",m2:"Emergency Generator Operation",m3:"Power Restoration Sequence",m4:"Bridge-ER Communication & Coordination",m5:"SIRE Compliance & Testing Records"};
+        const blackoutModuleIds = ['m1','m2','m3','m4','m5'];
+        function reportModuleComplete({moduleIndex,moduleTitle,score,maxScore,passingScore,totalModules,completedModules}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_MODULE_COMPLETE",source:"course",payload:{moduleIndex,moduleTitle,score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed",totalModules,completedModules,allModulesComplete:completedModules===totalModules}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+        function reportAssessment({score,maxScore,passingScore}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+        function reportModuleDone(moduleId){if(!courseState.modulesCompleted.includes(moduleId)){return;}const mi=blackoutModuleIds.indexOf(moduleId);if(mi>=0){reportModuleComplete({moduleIndex:mi,moduleTitle:blackoutModuleTitles[moduleId],score:1,maxScore:1,passingScore:70,totalModules:blackoutModuleIds.length,completedModules:courseState.modulesCompleted.length});}}
         const courseState = {
             currentScreen: 'hero',
             xp: 0,
@@ -987,6 +992,7 @@
             document.querySelector('#m1 .activity-section').innerHTML += feedback;
             awardXP(25);
             courseState.modulesCompleted.push('m1');
+            reportModuleDone('m1');
             updateDashboard();
         }
 
@@ -1013,6 +1019,7 @@
             document.querySelector('#m2 .activity-section').innerHTML += feedback;
             awardXP(25);
             courseState.modulesCompleted.push('m2');
+            reportModuleDone('m2');
             updateDashboard();
         }
 
@@ -1039,6 +1046,7 @@
             document.querySelector('#m3 .activity-section').innerHTML += feedback;
             awardXP(25);
             courseState.modulesCompleted.push('m3');
+            reportModuleDone('m3');
             updateDashboard();
         }
 
@@ -1065,6 +1073,7 @@
             document.querySelector('#m4 .activity-section').innerHTML += feedback;
             awardXP(25);
             courseState.modulesCompleted.push('m4');
+            reportModuleDone('m4');
             updateDashboard();
         }
 
@@ -1091,6 +1100,7 @@
             document.querySelector('#m5 .activity-section').innerHTML += feedback;
             awardXP(25);
             courseState.modulesCompleted.push('m5');
+            reportModuleDone('m5');
             updateDashboard();
         }
 
@@ -1175,7 +1185,7 @@
 
             const score = Math.round((correct / assessmentQuestions.length) * 100);
             courseState.assessmentScore = score;
-
+            if(!courseState.assessmentReported){courseState.assessmentReported=true;reportAssessment({score:correct,maxScore:assessmentQuestions.length,passingScore:70});}
             displayResults(score);
             sendLMSCompletion(score);
         }

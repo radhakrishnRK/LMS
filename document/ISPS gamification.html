@@ -954,6 +954,10 @@
 
     <script>
         // ==================== COURSE STATE ====================
+        const ispsModuleTitles={m1:"ISPS Code Purpose & Structure",m2:"Security Levels (MARSEC 1, 2, 3)",m3:"Ship Security Plan & SSO Responsibilities",m4:"Access Control, Drills & Incident Reporting",m5:"Port Facilities & Cyber Security"};
+        const ispsModuleIds=['m1','m2','m3','m4','m5'];
+        function reportModuleComplete({moduleIndex,moduleTitle,score,maxScore,passingScore,totalModules,completedModules}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_MODULE_COMPLETE",source:"course",payload:{moduleIndex,moduleTitle,score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed",totalModules,completedModules,allModulesComplete:completedModules===totalModules}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+        function reportAssessment({score,maxScore,passingScore}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
         window.courseState = {
             currentScreen: 'hero',
             totalXP: 0,
@@ -979,6 +983,8 @@
                 courseState.modulesCompleted.push(moduleId);
                 awardXP(50);
                 updateModuleStats();
+                const mi=ispsModuleIds.indexOf(moduleId);
+                if(mi>=0){reportModuleComplete({moduleIndex:mi,moduleTitle:ispsModuleTitles[moduleId],score:1,maxScore:1,passingScore:70,totalModules:ispsModuleIds.length,completedModules:courseState.modulesCompleted.length});}
             }
             go(nextScreenId);
         }
@@ -1314,6 +1320,7 @@
             const percentage = Math.round((score / assessmentQuestions.length) * 100);
             const passed = percentage >= 70;
             courseState.assessmentScore = percentage;
+            if(!courseState.assessmentReported){courseState.assessmentReported=true;reportAssessment({score,maxScore:assessmentQuestions.length,passingScore:70});}
             courseState.completionTime = Math.round((Date.now() - courseState.startTime) / 1000);
 
             if (passed) {

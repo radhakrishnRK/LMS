@@ -935,6 +935,10 @@
     
     <script>
         // Course State
+        const culturalModuleTitles = {m1:"Why Culture Matters",m2:"Communication Across Barriers",m3:"Cultural Dimensions & Safety",m4:"Managing Cultural Conflict",m5:"Case Studies & MLC Compliance"};
+        const culturalModuleIds = ['m1','m2','m3','m4','m5'];
+        function reportModuleComplete({moduleIndex,moduleTitle,score,maxScore,passingScore,totalModules,completedModules}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_MODULE_COMPLETE",source:"course",payload:{moduleIndex,moduleTitle,score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed",totalModules,completedModules,allModulesComplete:completedModules===totalModules}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+        function reportAssessment({score,maxScore,passingScore}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
         const courseState = {
             currentScreen: 'hero',
             xp: 0,
@@ -1836,7 +1840,7 @@
             
             courseState.assessment = { score, passed };
             courseState.xp += xpEarned;
-            
+            if(!courseState.assessmentReported){courseState.assessmentReported=true;reportAssessment({score:correct,maxScore:assessmentQuestions.length,passingScore:70});}
             if (!courseState.modulesCompleted.includes('assess')) {
                 courseState.modulesCompleted.push('assess');
             }
@@ -1919,6 +1923,8 @@
             
             if (!courseState.modulesCompleted.includes(module)) {
                 courseState.modulesCompleted.push(module);
+                const mi=culturalModuleIds.indexOf(module);
+                if(mi>=0){reportModuleComplete({moduleIndex:mi,moduleTitle:culturalModuleTitles[module],score:1,maxScore:1,passingScore:70,totalModules:culturalModuleIds.length,completedModules:courseState.modulesCompleted.length});}
             }
         }
         

@@ -535,6 +535,10 @@
 
     <script>
         // Course State
+        const mocModuleTitles={m1:"What Constitutes a Change?",m2:"Why MOC is Needed",m3:"The MOC Process",m4:"Crew Change & Implementation",m5:"Documentation & Case Studies"};
+        const mocModuleIds=['m1','m2','m3','m4','m5'];
+        function reportModuleComplete({moduleIndex,moduleTitle,score,maxScore,passingScore,totalModules,completedModules}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_MODULE_COMPLETE",source:"course",payload:{moduleIndex,moduleTitle,score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed",totalModules,completedModules,allModulesComplete:completedModules===totalModules}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+        function reportAssessment({score,maxScore,passingScore}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
         const courseState = {
             currentScreen: 'hero',
             xp: 0,
@@ -647,6 +651,8 @@
                 awardXP(50);
                 checkBadges();
                 updateDashboard();
+                const mi=mocModuleIds.indexOf(module);
+                if(mi>=0){reportModuleComplete({moduleIndex:mi,moduleTitle:mocModuleTitles[module],score:1,maxScore:1,passingScore:70,totalModules:mocModuleIds.length,completedModules:courseState.modulesCompleted.length});}
             }
             go(nextScreen);
         }
@@ -824,6 +830,7 @@
             const score = Math.round((correct / assessmentQuestions.length) * 100);
             const passed = score >= 70;
             courseState.assessmentScore = score;
+            if(!courseState.assessmentReported){courseState.assessmentReported=true;reportAssessment({score:correct,maxScore:assessmentQuestions.length,passingScore:70});}
             
             let resultsHtml = `<h3>${passed ? '✓ PASSED' : '✗ FAILED'}</h3>`;
             resultsHtml += `<div class="score-display ${passed ? '' : 'failed'}">${score}%</div>`;

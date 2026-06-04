@@ -918,6 +918,10 @@
 
     <script>
         // Global course state
+        const bwmModuleTitles = {m1:"BWM Convention Purpose & Structure",m2:"D-1 & D-2 Compliance Standards",m3:"BWM Plan & Record Book",m4:"Treatment Systems & Operations",m5:"Port State Inspection & Compliance"};
+        const bwmModuleIds = ['m1','m2','m3','m4','m5'];
+        function reportModuleComplete({moduleIndex,moduleTitle,score,maxScore,passingScore,totalModules,completedModules}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_MODULE_COMPLETE",source:"course",payload:{moduleIndex,moduleTitle,score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed",totalModules,completedModules,allModulesComplete:completedModules===totalModules}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+        function reportAssessment({score,maxScore,passingScore}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
         window.courseState = {
             currentScreen: 'hero',
             totalXP: 0,
@@ -1254,6 +1258,8 @@
             if (!window.courseState.modulesCompleted.includes(moduleId)) {
                 window.courseState.modulesCompleted.push(moduleId);
                 awardXP(50);
+                const mi=bwmModuleIds.indexOf(moduleId);
+                if(mi>=0){const completedModules=window.courseState.modulesCompleted.length;reportModuleComplete({moduleIndex:mi,moduleTitle:bwmModuleTitles[moduleId],score:1,maxScore:1,passingScore:70,totalModules:bwmModuleIds.length,completedModules});}
             }
             updateProgress();
             go(nextScreenId);
@@ -1522,7 +1528,7 @@
 
             window.courseState.assessmentScore = percent;
             awardXP(score * 5);
-
+            if(!window.courseState.assessmentReported){window.courseState.assessmentReported=true;reportAssessment({score,maxScore:assessmentQuestions.length,passingScore:70});}
             displayResults(percent, passed, score);
             sendLMSCompletion(percent, passed);
         }

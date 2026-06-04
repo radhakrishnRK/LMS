@@ -632,6 +632,9 @@ table.info-table tr:nth-child(even){background:#f8f9fa}
 
 <script>
 // ============ COURSE STATE ============
+const bridgeModuleTitles = {1:"Lookout Duties",2:"Helmsman Duties",3:"Mooring Station Duties",4:"Gangway, Pilot Ladder & Cargo Area Safety",5:"Toolbox Talks & SIRE Interaction"};
+function reportModuleComplete({moduleIndex,moduleTitle,score,maxScore,passingScore,totalModules,completedModules}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_MODULE_COMPLETE",source:"course",payload:{moduleIndex,moduleTitle,score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed",totalModules,completedModules,allModulesComplete:completedModules===totalModules}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+function reportAssessment({score,maxScore,passingScore}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
 window.courseState = {
   xp: 0,
   modulesCompleted: [],
@@ -847,6 +850,7 @@ function completeModule(n) {
     courseState.modulesCompleted.push(n);
     courseState.xp += 30;
     checkBadges();
+    reportModuleComplete({moduleIndex:n-1,moduleTitle:bridgeModuleTitles[n],score:1,maxScore:1,passingScore:70,totalModules:5,completedModules:courseState.modulesCompleted.length});
   }
   go('dashboard');
 }
@@ -883,6 +887,7 @@ function submitAssessment() {
   courseState.xp += correct * 5;
 
   const passed = score >= 70;
+  if(!courseState.assessmentReported){courseState.assessmentReported=true;reportAssessment({score:correct,maxScore:assessmentQuestions.length,passingScore:70});}
   checkBadges();
 
   // Show results

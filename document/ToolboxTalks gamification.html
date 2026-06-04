@@ -965,6 +965,10 @@ Conducted by: ________________________  Date: ________________________
 
     <script>
         // ==================== STATE MANAGEMENT ====================
+        const ttModuleTitles={m1:"Purpose and Fundamentals",m2:"Essential Elements of a Toolbox Talk",m3:"Best Practices & Conducting Toolbox Talks",m4:"Common Failures & SIRE Inspector Questions"};
+        const ttModuleIds=['m1','m2','m3','m4'];
+        function reportModuleComplete({moduleIndex,moduleTitle,score,maxScore,passingScore,totalModules,completedModules}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_MODULE_COMPLETE",source:"course",payload:{moduleIndex,moduleTitle,score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed",totalModules,completedModules,allModulesComplete:completedModules===totalModules}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+        function reportAssessment({score,maxScore,passingScore}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
         window.courseState = {
             currentScreen: 'hero',
             totalXP: 0,
@@ -1242,6 +1246,8 @@ Conducted by: ________________________  Date: ________________________
         function completeAndGo(moduleId, nextScreenId) {
             if (!window.courseState.modulesCompleted.includes(moduleId)) {
                 window.courseState.modulesCompleted.push(moduleId);
+                const mi=ttModuleIds.indexOf(moduleId);
+                if(mi>=0){reportModuleComplete({moduleIndex:mi,moduleTitle:ttModuleTitles[moduleId],score:1,maxScore:1,passingScore:70,totalModules:ttModuleIds.length,completedModules:window.courseState.modulesCompleted.length});}
             }
             updateProgress();
             go(nextScreenId);
@@ -1450,6 +1456,7 @@ Conducted by: ________________________  Date: ________________________
 
             const score = (correct / assessmentQuestions.length) * 100;
             window.courseState.assessmentScore = score;
+            if(!window.courseState.assessmentReported){window.courseState.assessmentReported=true;reportAssessment({score:correct,maxScore:assessmentQuestions.length,passingScore:70});}
 
             html += `<div class="score-display ${score >= 70 ? 'pass' : 'fail'}">${score.toFixed(0)}%</div>`;
             html += `<p style="text-align: center; font-size: 18px; margin: 20px 0;"><strong>${correct}/${assessmentQuestions.length} questions correct</strong></p>`;

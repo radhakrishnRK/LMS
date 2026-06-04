@@ -1191,6 +1191,10 @@
 
     <script>
         // ==================== STATE MANAGEMENT ====================
+        const wpsModuleTitles={m1:"Hazard Identification",m2:"Risk Assessment",m3:"Control Measures",m4:"Emergency Response"};
+        const wpsModuleIds=['m1','m2','m3','m4'];
+        function reportModuleComplete({moduleIndex,moduleTitle,score,maxScore,passingScore,totalModules,completedModules}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_MODULE_COMPLETE",source:"course",payload:{moduleIndex,moduleTitle,score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed",totalModules,completedModules,allModulesComplete:completedModules===totalModules}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+        function reportAssessment({score,maxScore,passingScore}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
         window.courseState = {
             currentScreen: 'hero',
             totalXP: 0,
@@ -1217,6 +1221,8 @@
                 courseState.modulesCompleted.push(currentModule);
                 awardXP(50, currentModule);
                 checkBadges();
+                const mi=wpsModuleIds.indexOf(currentModule);
+                if(mi>=0){reportModuleComplete({moduleIndex:mi,moduleTitle:wpsModuleTitles[currentModule],score:1,maxScore:1,passingScore:70,totalModules:wpsModuleIds.length,completedModules:courseState.modulesCompleted.length});}
             }
             go(nextModule);
         }
@@ -1693,6 +1699,7 @@
 
             const score = Math.round((correct / assessmentQuestions.length) * 100);
             courseState.assessmentScore = score;
+            if(!courseState.assessmentReported){courseState.assessmentReported=true;reportAssessment({score:correct,maxScore:assessmentQuestions.length,passingScore:70});}
 
             // Award XP based on performance
             if (score >= 90) {

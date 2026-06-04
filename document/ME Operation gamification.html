@@ -604,6 +604,10 @@
 
     <script>
         // ==================== COURSE STATE ====================
+        const meModuleTitles={m1:"Main Engine Types and Operation Principles",m2:"Daily Watchkeeping and Parameter Reading",m3:"Engine Performance Monitoring and Trends",m4:"Fuel Injection, Cooling and Lubrication Systems",m5:"Common Fault Conditions and Emergency Procedures"};
+        const meModuleIds=['m1','m2','m3','m4','m5'];
+        function reportModuleComplete({moduleIndex,moduleTitle,score,maxScore,passingScore,totalModules,completedModules}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_MODULE_COMPLETE",source:"course",payload:{moduleIndex,moduleTitle,score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed",totalModules,completedModules,allModulesComplete:completedModules===totalModules}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+        function reportAssessment({score,maxScore,passingScore}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
         const courseState = {
             currentScreen: 'hero',
             totalXP: 0,
@@ -725,6 +729,8 @@
                 awardXP(50);
                 checkBadges();
                 updateProgress();
+                const mi=meModuleIds.indexOf(module);
+                if(mi>=0){reportModuleComplete({moduleIndex:mi,moduleTitle:meModuleTitles[module],score:1,maxScore:1,passingScore:70,totalModules:meModuleIds.length,completedModules:courseState.modulesCompleted.length});}
             }
             go(nextScreen);
         }
@@ -1054,6 +1060,7 @@
             const passed = score >= 70;
             
             courseState.assessmentScore = score;
+            if(!courseState.assessmentReported){courseState.assessmentReported=true;reportAssessment({score:correct,maxScore:assessmentQuestions.length,passingScore:70});}
             awardXP(passed ? 100 : 50);
             checkBadges();
             sendLMSCompletion(passed);

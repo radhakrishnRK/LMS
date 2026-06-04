@@ -808,6 +808,10 @@
     </div>
 
     <script>
+        const steeringModuleTitles={m1:"Steering Gear Types & Hydraulic Systems",m2:"SOLAS Testing Requirements",m3:"Emergency Steering Operations",m4:"Failure Modes & Troubleshooting",m5:"Record-Keeping & Compliance"};
+        const steeringModuleIds=['m1','m2','m3','m4','m5'];
+        function reportModuleComplete({moduleIndex,moduleTitle,score,maxScore,passingScore,totalModules,completedModules}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_MODULE_COMPLETE",source:"course",payload:{moduleIndex,moduleTitle,score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed",totalModules,completedModules,allModulesComplete:completedModules===totalModules}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+        function reportAssessment({score,maxScore,passingScore}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
         const courseState = {
             currentScreen: 'hero',
             xp: 0,
@@ -911,7 +915,11 @@
         }
 
         function completeAndGo(screen) {
-            courseState.modulesCompleted.push(screen);
+            if(!courseState.modulesCompleted.includes(screen)){
+                courseState.modulesCompleted.push(screen);
+                const mi=steeringModuleIds.indexOf(screen);
+                if(mi>=0){reportModuleComplete({moduleIndex:mi,moduleTitle:steeringModuleTitles[screen],score:1,maxScore:1,passingScore:70,totalModules:steeringModuleIds.length,completedModules:courseState.modulesCompleted.length});}
+            }
             go(screen);
         }
 
@@ -1139,7 +1147,7 @@
             const score = Math.round((correct / assessmentQuestions.length) * 100);
             courseState.assessmentScore = score;
             const passed = score >= 70;
-
+            if(!courseState.assessmentReported){courseState.assessmentReported=true;reportAssessment({score:correct,maxScore:assessmentQuestions.length,passingScore:70});}
             awardXP(correct * 5);
             checkBadges();
             displayResults(score, passed, correct);

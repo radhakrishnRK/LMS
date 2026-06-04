@@ -634,6 +634,10 @@
     </div>
 
     <script>
+      const vfModuleTitles={m1:"Why Familiarisation Matters",m2:"Familiarisation Checklist Content",m3:"Rank-Specific Familiarisation Requirements",m4:"Handover Period & Sign-Off",m5:"MOC & SIRE Compliance"};
+      const vfModuleIds=['m1','m2','m3','m4','m5'];
+      function reportModuleComplete({moduleIndex,moduleTitle,score,maxScore,passingScore,totalModules,completedModules}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_MODULE_COMPLETE",source:"course",payload:{moduleIndex,moduleTitle,score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed",totalModules,completedModules,allModulesComplete:completedModules===totalModules}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
+      function reportAssessment({score,maxScore,passingScore}){const percentage=Math.round((score/maxScore)*100);const message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score,maxScore,percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
       const courseState = {
         currentScreen: "hero",
         xp: 0,
@@ -1303,6 +1307,7 @@
         });
         const score = Math.round((correct / assessmentQuestions.length) * 100);
         courseState.assessmentScore = score;
+        if(!courseState.assessmentReported){courseState.assessmentReported=true;reportAssessment({score:correct,maxScore:assessmentQuestions.length,passingScore:70});}
 
         if (score >= 70) {
           awardXP(50);
@@ -1355,6 +1360,8 @@
         if (!courseState.modulesCompleted.includes(moduleId)) {
           courseState.modulesCompleted.push(moduleId);
           awardXP(10);
+          const mi=vfModuleIds.indexOf(moduleId);
+          if(mi>=0){reportModuleComplete({moduleIndex:mi,moduleTitle:vfModuleTitles[moduleId],score:1,maxScore:1,passingScore:70,totalModules:vfModuleIds.length,completedModules:courseState.modulesCompleted.length});}
         }
         go(screen);
       }

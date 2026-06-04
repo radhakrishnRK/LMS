@@ -916,7 +916,8 @@ var aData=[
 // ══════════════════════
 // STATE
 // ══════════════════════
-var points=0,assessAnswers={},assessTimer=null,assessTimeLeft=1080;
+var points=0,assessAnswers={},assessTimer=null,assessTimeLeft=1080,vapourAssessReported=false;
+function reportAssessment({score,maxScore,passingScore}){var percentage=Math.round((score/maxScore)*100);var message={type:"COURSE_ASSESSMENT_COMPLETE",source:"course",payload:{score:score,maxScore:maxScore,percentage:percentage,status:percentage>=passingScore?"passed":"failed"}};if(window.parent&&window.parent!==window){window.parent.postMessage(message,"*");}}
 
 // ══════════════════════
 // NAV
@@ -1204,6 +1205,7 @@ function submitA(){
     bd.appendChild(div);
   });
   if(passed)document.getElementById('cert').className='cert show';
+  if(!vapourAssessReported){vapourAssessReported=true;reportAssessment({score:correct,maxScore:18,passingScore:75});}
   panel.scrollIntoView({behavior:'smooth'});
 }
 
